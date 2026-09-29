@@ -1,9 +1,9 @@
 import { Routes, Route } from "react-router-dom";
 
-import IndentList from "../pages/indent/IndentList";
-import IndentForm from "../pages/indent/IndentForm";
-import IndentView from "../pages/indent/IndentView";
-import IndentPrint from "../pages/indent/IndentPrint";
+import IndentList from "../../pages/indent/IndentList";
+import IndentForm from "../../pages/indent/IndentForm";
+import IndentView from "../../pages/indent/IndentView";
+import IndentPrint from "../../pages/indent/IndentPrint";
 
 export default function IndentRoutes() {
 

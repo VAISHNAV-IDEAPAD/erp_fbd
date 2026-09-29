@@ -1,8 +1,8 @@
 import { Card, Alert, Spinner } from "react-bootstrap";
 
-import IndentHeader from "./IndentHeader";
+import IndentHeader from "../../components/indent/IndentHeader";
 import IndentDetails from "./IndentDetails";
-import IndentGrid from "./IndentGrid";
+import IndentGrid from "../../components/indent/IndentGrid";
 import IndentFooter from "./IndentFooter";
 import useIndent from "./useIndent";
 

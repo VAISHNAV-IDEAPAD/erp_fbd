@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getPurchaseDashboard } from "../services/purchaseService";
+import { getPurchaseDashboard } from "../../services/purchaseService";
 
 export default function usePurchaseDashboard() {
 

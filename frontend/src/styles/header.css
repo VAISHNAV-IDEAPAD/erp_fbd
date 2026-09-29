@@ -1,0 +1,492 @@
+/* =====================================================
+   ERP FASHION HEADER
+===================================================== */
+
+.erp-header-wrapper {
+  width: 100%;
+  position: relative;
+  z-index: 1000;
+}
+
+
+/* =====================================================
+   BLUE HEADER
+===================================================== */
+
+.erp-header {
+  width: 100%;
+  height: 60px;
+
+  padding: 0 30px !important;
+
+  background: #0b4dbd !important;
+
+  border: none !important;
+
+  box-shadow: none !important;
+}
+
+.erp-header .container-fluid {
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+}
+
+
+/* =====================================================
+   ERP LOGO
+===================================================== */
+
+.erp-logo {
+  color: white !important;
+
+  font-size: 32px !important;
+
+  font-weight: 700 !important;
+
+  text-decoration: none !important;
+
+  margin-right: 45px;
+
+  padding: 0 !important;
+
+  white-space: nowrap;
+}
+
+.erp-logo:hover {
+  color: white !important;
+}
+
+
+/* =====================================================
+   TOP NAVIGATION
+===================================================== */
+
+.erp-nav-menu {
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 34px;
+}
+
+
+.erp-nav-item {
+  height: 60px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  padding: 0;
+
+  background: transparent !important;
+
+  border: none !important;
+
+  outline: none !important;
+
+  color: white !important;
+
+  font-size: 17px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+
+.erp-nav-item svg {
+  font-size: 10px;
+}
+
+
+.erp-nav-item:hover {
+  color: white !important;
+}
+
+
+.erp-nav-item:focus {
+  outline: none !important;
+
+  box-shadow: none !important;
+}
+
+
+.erp-nav-active {
+  color: white !important;
+}
+
+
+/* =====================================================
+   RIGHT ICONS
+===================================================== */
+
+.erp-header-icons {
+  margin-left: auto;
+
+  display: flex;
+  align-items: center;
+
+  gap: 20px;
+}
+
+
+.erp-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 4px;
+
+  background: transparent !important;
+
+  border: none !important;
+
+  outline: none !important;
+
+  color: #000000 !important;
+
+  font-size: 22px;
+
+  cursor: pointer;
+}
+
+
+.erp-icon-btn:hover {
+  color: #001f5c !important;
+}
+
+
+.erp-icon-btn:focus {
+  outline: none !important;
+
+  box-shadow: none !important;
+}
+
+
+/* =====================================================
+   SEARCH BAR
+===================================================== */
+
+.erp-search-wrapper {
+  width: 100%;
+
+  padding: 11px 34px 11px 34px;
+
+  background: #ffffff;
+}
+
+
+.erp-search-box {
+  width: 100%;
+
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+
+  border: 1px solid #1b5fc4;
+
+  border-radius: 22px;
+
+  background: white;
+
+  overflow: hidden;
+}
+
+
+.erp-search-icon {
+  margin-left: 16px;
+
+  margin-right: 6px;
+
+  font-size: 14px;
+}
+
+
+.erp-search-input {
+  flex: 1;
+
+  height: 100%;
+
+  border: none !important;
+
+  outline: none !important;
+
+  padding: 0 12px 0 4px;
+
+  background: transparent;
+
+  font-size: 14px;
+
+  color: #444;
+}
+
+
+.erp-search-input::placeholder {
+  color: #687385;
+}
+
+
+.erp-search-input:focus {
+  outline: none !important;
+
+  box-shadow: none !important;
+}
+
+
+/* =====================================================
+   MEGA MENU
+===================================================== */
+
+.mega-menu-container {
+  width: 100%;
+
+  background: #ffffff;
+
+  padding: 0 22px 34px 22px;
+
+  border-top: 1px solid #d8dee8;
+
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
+
+  position: relative;
+
+  z-index: 999;
+}
+
+
+/* =====================================================
+   MEGA MENU GRID
+===================================================== */
+
+.mega-menu-inner {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 12px;
+
+  padding-top: 0;
+}
+
+
+/* =====================================================
+   MEGA MENU COLUMN
+===================================================== */
+
+.mega-menu-column {
+  min-height: 300px;
+
+  background: #ffffff;
+
+  border-left: 3px solid #0b4dbd;
+
+  overflow: hidden;
+}
+
+
+/* =====================================================
+   COLUMN TITLE
+===================================================== */
+
+.mega-menu-title {
+  width: 100%;
+
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #f0f3f9;
+
+  color: #0751bd;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  border-bottom: 1px solid #dce2ec;
+}
+
+
+/* =====================================================
+   MENU LINK
+===================================================== */
+
+.mega-menu-item {
+  width: 100%;
+
+  min-height: 39px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  padding: 0 12px;
+
+  background: #f5f7fb;
+
+  color: #5e6878 !important;
+
+  text-decoration: none !important;
+
+  font-size: 14px;
+
+  border-bottom: 1px solid #e0e5ed;
+
+  cursor: pointer;
+
+  box-sizing: border-box;
+
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+
+.mega-menu-item:hover {
+  background: #e8effb;
+
+  color: #145bc1 !important;
+
+  text-decoration: none !important;
+}
+
+
+.mega-menu-item:visited {
+  color: #5e6878 !important;
+
+  text-decoration: none !important;
+}
+
+
+.mega-menu-item:active {
+  text-decoration: none !important;
+}
+
+
+.mega-menu-item:focus {
+  outline: none !important;
+
+  text-decoration: none !important;
+}
+
+
+/* =====================================================
+   ARROW
+===================================================== */
+
+.mega-menu-arrow {
+  width: 8px;
+
+  min-width: 8px;
+
+  font-size: 8px;
+
+  color: #8d98a8;
+}
+
+
+.mega-menu-item:hover .mega-menu-arrow {
+  color: #145bc1;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 1100px) {
+
+  .erp-logo {
+    font-size: 28px !important;
+
+    margin-right: 25px;
+  }
+
+  .erp-nav-menu {
+    gap: 20px;
+  }
+
+  .erp-nav-item {
+    font-size: 15px;
+  }
+
+  .mega-menu-inner {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+
+@media (max-width: 700px) {
+
+  .erp-header {
+    height: auto;
+
+    min-height: 60px;
+
+    padding: 8px 15px !important;
+  }
+
+  .erp-header .container-fluid {
+    flex-wrap: wrap;
+  }
+
+  .erp-logo {
+    width: 100%;
+
+    margin-right: 0;
+
+    margin-bottom: 8px;
+  }
+
+  .erp-nav-menu {
+    width: 100%;
+
+    height: 45px;
+
+    gap: 18px;
+
+    overflow-x: auto;
+  }
+
+  .erp-nav-item {
+    height: 45px;
+
+    font-size: 14px;
+
+    white-space: nowrap;
+  }
+
+  .erp-header-icons {
+    position: absolute;
+
+    right: 12px;
+
+    top: 10px;
+  }
+
+  .erp-search-wrapper {
+    padding: 10px 12px;
+  }
+
+  .mega-menu-container {
+    padding: 0 10px 20px 10px;
+  }
+
+  .mega-menu-inner {
+    grid-template-columns: 1fr;
+  }
+
+}

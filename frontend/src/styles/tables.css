@@ -1,0 +1,25 @@
+.table {
+
+    margin-bottom: 0;
+
+}
+
+.table th {
+
+    background: #f8f9fa;
+    font-weight: 600;
+
+}
+
+.table td {
+
+    vertical-align: middle;
+
+}
+
+.card-header {
+
+    background: white;
+    font-weight: 600;
+
+}

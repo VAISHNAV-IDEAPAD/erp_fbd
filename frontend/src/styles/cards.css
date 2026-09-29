@@ -1,0 +1,32 @@
+.dashboard-card{
+
+    border:none;
+    border-radius:18px;
+    transition:.3s;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    background:white;
+}
+
+.dashboard-card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:0 15px 35px rgba(0,0,0,.15);
+
+}
+
+.card-title-small{
+
+    font-size:15px;
+
+    color:#777;
+
+}
+
+.dashboard-icon{
+
+    font-size:52px;
+
+    opacity:.75;
+
+}

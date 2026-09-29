@@ -1,0 +1,17 @@
+.app-layout{
+
+    display:flex;
+
+}
+
+.content-area{
+
+    flex:1;
+
+    padding:20px;
+
+    background:#f4f6f9;
+
+    min-height:100vh;
+
+}

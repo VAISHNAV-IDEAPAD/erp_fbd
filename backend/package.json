@@ -1,0 +1,32 @@
+{
+  "name": "erp",
+  "version": "1.0.0",
+  "description": "Apparel ERP Backend",
+  "main": "app.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [
+    "erp",
+    "apparel",
+    "node",
+    "express",
+    "sqlite"
+  ],
+  "author": "Vaishnav V",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap-icons": "^1.13.1",
+    "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
+    "express": "^5.1.0",
+    "pg": "^8.16.3",
+    "react-icons": "^5.7.0",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

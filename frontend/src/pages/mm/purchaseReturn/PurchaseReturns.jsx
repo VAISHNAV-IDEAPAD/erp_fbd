@@ -1,10 +1,15 @@
 import React from "react";
+import MMModuleView from "../../../components/common/MMModuleView";
 
 export default function PurchaseReturns() {
     return (
-        <div className="container mt-4">
-            <h2>Purchase Return</h2>
-            <p>Purchase Return Module</p>
-        </div>
+        <MMModuleView
+            title="Purchase Returns"
+            moduleName="PurchaseReturns"
+            apiEndpoint="/api/purchase/returns"
+            initialSampleData={[
+                { id: 1, DocNo: "PRT-501", DocDate: "2026-09-28", Department: "Store", ItemName: "Defective Yarns 30s", Quantity: 50, Status: "Completed" }
+            ]}
+        />
     );
 }

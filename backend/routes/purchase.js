@@ -1,10 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const purchaseController = require("../controllers/purchaseController");
 
-router.get("/", (req, res) => {
-    res.json({
-        message: "Module under development"
-    });
-});
+router.get("/overview", purchaseController.getOverview);
+router.get("/supplier-ledger", purchaseController.getSupplierLedger);
+router.get("/", purchaseController.getOverview);
 
 module.exports = router;

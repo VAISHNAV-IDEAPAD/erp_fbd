@@ -1,10 +1,14 @@
 import React from "react";
+import MMModuleView from "../../../components/common/MMModuleView";
 
 export default function RejectionReturns() {
     return (
-        <div className="container mt-4">
-            <h2>Rejection Return</h2>
-            <p>Rejection Return Module</p>
-        </div>
+        <MMModuleView
+            title="Rejection Returns"
+            moduleName="RejectionReturns"
+            initialSampleData={[
+                { id: 1, DocNo: "REJ-101", DocDate: "2026-10-01", Department: "Quality Control", ItemName: "Damaged Fabric Rolls", Quantity: 80, Status: "Completed" }
+            ]}
+        />
     );
 }

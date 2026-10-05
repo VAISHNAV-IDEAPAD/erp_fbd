@@ -76,6 +76,16 @@ app.use("/api/sales-invoices", require("./routes/salesInvoices"));
 app.use("/api/customer-payments", require("./routes/customerPayments"));
 app.use("/api/customer-outstanding", require("./routes/customerOutstanding"));
 app.use("/api/approvals", require("./routes/approvals"));
+app.use("/api/purchase", require("./routes/purchase"));
+app.use("/api/users", require("./routes/users"));
+app.use("/api/roles", require("./routes/users"));
+app.use("/api/pendingpo", require("./routes/pendingpo"));
+app.use("/api/pending-po", require("./routes/pendingpo"));
+app.use("/api/purchaseregister", require("./routes/purchaseRegister"));
+app.use("/api/supplierledger", require("./routes/purchase"));
+app.use("/api/dispatch", require("./routes/dispatches"));
+app.use("/api/purchase-orders", require("./routes/purchaseOrders"));
+app.use("/api/purchase-requisition", require("./routes/purchaseRequisitions"));
 
 // Dashboards and report data sources.
 app.use("/api/dashboard/purchase", require("./routes/purchaseDashboard"));

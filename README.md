@@ -1,5 +1,10 @@
 # ERP FBD - Fashion & Apparel Enterprise Resource Planning
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-erpfbd.vercel.app-000000?style=for-the-badge&logo=vercel)](https://erpfbd.vercel.app)
+[![Deployment Status](https://img.shields.io/badge/Deployment-Production%20Active-success?style=for-the-badge)](https://erpfbd.vercel.app)
+
+> 🌐 **Live Production URL**: [https://erpfbd.vercel.app](https://erpfbd.vercel.app)
+
 A comprehensive Enterprise Resource Planning (ERP) platform designed specifically for apparel and fashion manufacturing, material management, inventory control, and production workflows.
 
 ---
@@ -46,15 +51,12 @@ Runs at `http://localhost:3000`.
 
 ## ☁️ Deployment to Vercel
 
-1. Log into [Vercel](https://vercel.com).
-2. Click **Add New...** -> **Project**.
-3. Import the GitHub repository: **`VAISHNAV-IDEAPAD/erp_fbd`**.
-4. Configure Project:
-   - **Framework Preset**: Create React App
-   - **Root Directory**: `./` (or `frontend` for static frontend)
-5. Click **Deploy**.
+The project is configured for automated deployments to Vercel via GitHub:
+- **Production URL**: [https://erpfbd.vercel.app](https://erpfbd.vercel.app)
+- **Repository**: `VAISHNAV-IDEAPAD/erp_fbd`
+- **Branch**: `main`
 
-Any subsequent git push to the `main` branch will automatically trigger a new production build on Vercel!
+Any git push to the `main` branch automatically triggers a new production build on Vercel at [https://erpfbd.vercel.app](https://erpfbd.vercel.app).
 
 ---
 

@@ -115,7 +115,21 @@ app.get("/", (req, res) => {
     });
 });
 
+app.get("/api", (req, res) => {
+    res.json({
+        success: true,
+        message: "ERP Backend Running"
+    });
+});
+
 app.get("/health", (req, res) => {
+    res.json({
+        success: true,
+        status: "Running"
+    });
+});
+
+app.get("/api/health", (req, res) => {
     res.json({
         success: true,
         status: "Running"

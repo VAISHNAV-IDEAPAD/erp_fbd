@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://localhost:3000/api";
+const API = process.env.REACT_APP_API_URL || "/api";
 
 // ==========================
 // Dashboard
@@ -13,14 +13,23 @@ export const getPurchaseDashboard = () =>
 // Purchase Orders
 // ==========================
 
-export const getPurchaseOrders = () =>
-    axios.get(`${API}/purchaseorders`);
+export const getPurchaseOrders = (params = {}) =>
+    axios.get(`${API}/purchaseorders`, { params });
+
+export const getPurchaseOrder = (id) =>
+    axios.get(`${API}/purchaseorders/${id}`);
 
 export const savePurchaseOrder = (data) =>
     axios.post(`${API}/purchaseorders`, data);
 
 export const updatePurchaseOrder = (id, data) =>
     axios.put(`${API}/purchaseorders/${id}`, data);
+
+export const updatePurchaseOrderStatus = (id, status, approveTag) =>
+    axios.patch(`${API}/purchaseorders/${id}/status`, { status, approveTag });
+
+export const bulkPurchaseOrderAction = (action, poIds) =>
+    axios.post(`${API}/purchaseorders/bulk-action`, { action, poIds });
 
 export const deletePurchaseOrder = (id) =>
     axios.delete(`${API}/purchaseorders/${id}`);

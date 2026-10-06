@@ -109,13 +109,13 @@ export default function PendingPOTable() {
 
                                     <tr key={po.POID || index}>
 
-                                        <td>{po.PONumber}</td>
+                                        <td>{po.PONumber || po.PONo || `PO-${po.POID || index}`}</td>
 
-                                        <td>{po.SupplierName}</td>
+                                        <td>{po.SupplierName || "Unknown"}</td>
 
                                         <td className="text-end">
                                             <Badge bg="warning">
-                                                {po.PendingQty}
+                                                {po.PendingQty ?? po.Quantity ?? 0}
                                             </Badge>
                                         </td>
 

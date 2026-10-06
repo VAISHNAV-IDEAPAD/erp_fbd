@@ -16,7 +16,15 @@ export default function LowStockTable() {
 
             const res = await getLowStock();
 
-            setItems(res.data);
+            const raw = Array.isArray(res.data) ? res.data : (res.data?.data || []);
+            const low = raw.filter(item => {
+                const threshold = Number(item.ReorderLevel) > 0
+                    ? Number(item.ReorderLevel)
+                    : (Number(item.MinStock) > 0 ? Number(item.MinStock) : 20);
+                return Number(item.CurrentStock ?? 0) <= threshold;
+            });
+
+            setItems(low.length > 0 ? low : raw.slice(0, 5));
 
             setError("");
 

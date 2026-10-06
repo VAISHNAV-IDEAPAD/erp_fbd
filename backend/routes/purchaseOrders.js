@@ -53,6 +53,24 @@ router.put(
 
 
 // ===============================
+// Update Purchase Order Status
+// ===============================
+router.patch(
+    "/:id/status",
+    purchaseOrderController.updateStatus
+);
+
+
+// ===============================
+// Bulk Action
+// ===============================
+router.post(
+    "/bulk-action",
+    purchaseOrderController.bulkAction
+);
+
+
+// ===============================
 // Delete Purchase Order
 // ===============================
 router.delete(

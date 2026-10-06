@@ -1,0 +1,319 @@
+﻿/* ==========================================================================
+   PURCHASE ORDER WORKBENCH - STYLES MATCHING TPCS FASHION ERP
+   ========================================================================== */
+
+.po-workbench-container {
+    padding: 12px 18px 30px 18px;
+    background-color: #f8fafc;
+    min-height: calc(100vh - 80px);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Page Title */
+.po-page-title {
+    color: #1a689d;
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    letter-spacing: -0.2px;
+}
+
+/* Filter Card / Controls Bar */
+.po-filter-bar {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 10px 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.po-filter-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.po-input-control {
+    font-size: 0.82rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    padding: 4px 10px;
+    height: 32px;
+    background-color: #ffffff;
+    transition: border-color 0.15s ease-in-out;
+}
+
+.po-input-control:focus {
+    border-color: #2563eb;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+.po-radio-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    height: 32px;
+}
+
+.po-radio-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.82rem;
+    color: #334155;
+    cursor: pointer;
+    user-select: none;
+}
+
+.po-radio-item input[type="radio"] {
+    cursor: pointer;
+    accent-color: #1a689d;
+    margin: 0;
+}
+
+.po-btn-new {
+    background-color: #2e7d32 !important;
+    border-color: #2e7d32 !important;
+    color: #ffffff !important;
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    padding: 5px 14px !important;
+    border-radius: 4px !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.po-btn-new:hover {
+    background-color: #1b5e20 !important;
+    border-color: #1b5e20 !important;
+}
+
+/* Action Toolbar */
+.po-toolbar-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.po-toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.po-tool-btn {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    border-radius: 3px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 4px 8px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.po-tool-btn:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+    border-color: #94a3b8;
+}
+
+.po-tool-btn.active {
+    background: #e0f2fe;
+    color: #0369a1;
+    border-color: #38bdf8;
+}
+
+.po-toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.po-page-indicator {
+    background: #0284c7;
+    color: #ffffff;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 3px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 28px;
+}
+
+.po-bulk-btn {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    height: 28px;
+    border-radius: 3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Main Data Table */
+.po-table-wrapper {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    overflow-x: auto;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.po-table {
+    width: 100%;
+    margin-bottom: 0;
+    font-size: 0.77rem;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+/* Table Header */
+.po-table thead th {
+    background-color: #1a689d;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.74rem;
+    padding: 8px 6px;
+    border-bottom: 1px solid #14537d;
+    border-right: 1px solid #2076af;
+    white-space: nowrap;
+    text-align: left;
+    vertical-align: middle;
+    letter-spacing: 0.1px;
+}
+
+.po-table thead th:last-child {
+    border-right: none;
+}
+
+.po-table tbody td {
+    padding: 6px 6px;
+    border-bottom: 1px solid #e2e8f0;
+    border-right: 1px solid #f1f5f9;
+    color: #334155;
+    vertical-align: middle;
+    white-space: nowrap;
+    line-height: 1.25;
+}
+
+.po-table tbody td:last-child {
+    border-right: none;
+}
+
+.po-table tbody tr:hover td {
+    background-color: #f0f7ff;
+}
+
+.po-table tbody tr.selected td {
+    background-color: #e0f2fe;
+}
+
+/* Action Dropdown inside table */
+.po-action-dropdown-btn {
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 3px;
+    height: 23px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    line-height: 1;
+}
+
+.po-action-dropdown-btn:hover {
+    background-color: #f8fafc;
+    border-color: #94a3b8;
+}
+
+/* Approve Tag Badges */
+.po-tag-pending {
+    color: #d97706;
+    font-weight: 700;
+    font-size: 0.73rem;
+    letter-spacing: 0.2px;
+}
+
+.po-tag-approved {
+    color: #16a34a;
+    font-weight: 700;
+    font-size: 0.73rem;
+    letter-spacing: 0.2px;
+}
+
+.po-tag-cancelled {
+    color: #dc2626;
+    font-weight: 700;
+    font-size: 0.73rem;
+}
+
+/* Table Checkbox */
+.po-checkbox {
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+    accent-color: #1a689d;
+    margin: 0;
+    vertical-align: middle;
+}
+
+/* Alignments */
+.text-numeric {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Modal styling */
+.po-modal-header {
+    background-color: #1a689d;
+    color: #ffffff;
+    padding: 12px 18px;
+}
+
+.po-modal-header .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.po-items-table {
+    font-size: 0.8rem;
+    margin-bottom: 0;
+}
+
+.po-items-table th {
+    background-color: #f1f5f9;
+    color: #334155;
+    font-weight: 600;
+    font-size: 0.76rem;
+    padding: 6px 8px;
+    border-bottom: 1px solid #cbd5e1;
+}
+
+.po-items-table td {
+    padding: 5px 8px;
+    vertical-align: middle;
+}

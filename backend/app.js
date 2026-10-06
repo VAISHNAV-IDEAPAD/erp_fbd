@@ -64,6 +64,7 @@ app.use("/api/stockissues", require("./routes/stockIssues"));
 app.use("/api/stock-adjustments", require("./routes/stockAdjustments"));
 app.use("/api/stock-ledger", require("./routes/stockLedger"));
 app.use("/api/stock-summary", require("./routes/stockSummary"));
+app.use("/api/stocksummary", require("./routes/stockSummary"));
 app.use("/api/boms", require("./routes/boms"));
 app.use("/api/production-orders", require("./routes/productionOrders"));
 app.use("/api/material-issues", require("./routes/materialIssues"));

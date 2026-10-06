@@ -144,6 +144,27 @@ export default function Header() {
               <FaChevronDown />
             </button>
 
+            {/* EXPORTS */}
+
+            <button
+              type="button"
+              className="erp-nav-item"
+              onClick={() => toggleMenu("EXPORTS")}
+            >
+              <span>EXPORTS</span>
+              <FaChevronDown />
+            </button>
+
+            {/* FM */}
+
+            <button
+              type="button"
+              className="erp-nav-item"
+              onClick={() => toggleMenu("FM")}
+            >
+              <span>FM</span>
+              <FaChevronDown />
+            </button>
 
             {/* ADMIN */}
 
@@ -160,6 +181,27 @@ export default function Header() {
               <FaChevronDown />
             </button>
 
+            {/* NEW */}
+
+            <button
+              type="button"
+              className="erp-nav-item"
+              onClick={() => toggleMenu("NEW")}
+            >
+              <span>NEW</span>
+              <FaChevronDown />
+            </button>
+
+            {/* RECENT */}
+
+            <button
+              type="button"
+              className="erp-nav-item"
+              onClick={() => toggleMenu("RECENT")}
+            >
+              <span>RECENT</span>
+              <FaChevronDown />
+            </button>
 
             {/* REPORTS */}
 
@@ -179,18 +221,28 @@ export default function Header() {
           </div>
 
 
-          {/* RIGHT SIDE ICONS */}
+          {/* RIGHT SIDE ICONS & BRANCH */}
 
-          <div className="erp-header-icons">
+          <div className="erp-header-icons d-flex align-items-center">
 
-            <button
-              type="button"
-              className="erp-icon-btn"
-              title="Notifications"
-              onClick={closeMenu}
-            >
-              <FaBell />
-            </button>
+            <div className="d-none d-md-flex flex-column text-end me-3 text-white">
+              <span className="fw-bold" style={{ fontSize: "0.82rem", lineHeight: 1.2 }}>Plot No. 9B</span>
+              <span style={{ fontSize: "0.68rem", opacity: 0.85 }}>01-Apr-2026 - 31-Mar-2027</span>
+            </div>
+
+            <div className="position-relative me-2">
+              <button
+                type="button"
+                className="erp-icon-btn"
+                title="Notifications"
+                onClick={closeMenu}
+              >
+                <FaBell />
+              </button>
+              <span className="badge rounded-circle bg-white text-primary position-absolute top-0 start-100 translate-middle shadow-sm" style={{ fontSize: "0.62rem", padding: "3px 5px", transform: "translate(-30%, -10%)" }}>
+                9
+              </span>
+            </div>
 
             <button
               type="button"

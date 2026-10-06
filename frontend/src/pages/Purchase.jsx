@@ -1,5 +1,5 @@
-import PurchaseDashboard from "./purchase/PurchaseDashboard";
+import PurchaseOrder from "./purchase/PurchaseOrder";
 
 export default function Purchase() {
-    return <PurchaseDashboard />;
+    return <PurchaseOrder />;
 }

@@ -234,4 +234,210 @@ CREATE TABLE IF NOT EXISTS GRNDetails (
 
 });
 
+// ======================================================
+// EXTEND PURCHASE ORDERS SCHEMA & SEED DATA
+// ======================================================
+
+const extraColumns = [
+    "DeliverTo TEXT DEFAULT 'Plot No. 9B'",
+    "Currency TEXT DEFAULT 'INR'",
+    "PurchaseType TEXT DEFAULT 'Regular PO'",
+    "ExchangeRate REAL DEFAULT 1",
+    "BillTo TEXT DEFAULT 'ALPINE APPARELS PVT. LTD.'",
+    "EnteredBy TEXT DEFAULT 'Admin'",
+    "EnteredOn TEXT",
+    "UpdatedBy TEXT",
+    "UpdatedOn TEXT",
+    "ApproveTag TEXT DEFAULT 'PENDING'",
+    "MaterialSource TEXT DEFAULT 'Domestic'"
+];
+
+extraColumns.forEach(colDef => {
+    db.run(`ALTER TABLE PurchaseOrders ADD COLUMN ${colDef}`, () => {
+        // Ignore column already exists errors
+    });
+});
+
+// Seed sample suppliers and purchase orders matching reference ERP interface
+setTimeout(() => {
+    // 1. Ensure required suppliers exist
+    const suppliers = [
+        ["SUP-001", "TEMPESTI SPA", "Foreign", "Import"],
+        ["SUP-002", "GUAN HONG HARDWARE PRODUCTS CO. LIMITED", "Foreign", "Import"],
+        ["SUP-003", "ZIBO BANGHSI INDUSTRY & COMMERCE CO.LTD.", "Foreign", "Import"],
+        ["SUP-004", "AMERICAN & EFIRD HK LTD", "Foreign", "Import"],
+        ["SUP-005", "ALPINE APPARELS PVT. LTD.", "Domestic", "Domestic"]
+    ];
+
+    suppliers.forEach(([code, name, state, type]) => {
+        db.run(
+            `INSERT OR IGNORE INTO Suppliers (SupplierCode, SupplierName, State, Address) VALUES (?, ?, ?, ?)`,
+            [code, name, state, type]
+        );
+    });
+
+    // 2. Ensure sample items exist
+    const sampleItems = [
+        ["FAB-001", "Cotton Twill Fabric 220 GSM", "Fabric", "Mtrs", 250, 15, 30],
+        ["ZIP-001", "YKK Metallic Zipper #5", "Accessories", "Pcs", 45, 10, 25],
+        ["HDW-001", "Alloy Buckle Matte Finish", "Hardware", "Pcs", 80, 50, 100],
+        ["THD-001", "Industrial Spun Polyester Thread", "Trims", "Cones", 120, 8, 20],
+        ["BTN-001", "Resin Shirt Buttons 18L", "Accessories", "Gross", 35, 5, 15]
+    ];
+
+    sampleItems.forEach(([code, name, cat, uom, rate, minStock, reorder]) => {
+        db.run(
+            `INSERT OR IGNORE INTO Items (ItemCode, ItemName, Category, UOM, Rate, CurrentStock, MinStock, ReorderLevel) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            [code, name, cat, uom, rate, minStock, minStock, reorder]
+        );
+    });
+
+    // 3. Check if screenshot sample purchase orders exist, insert if not present
+    db.get("SELECT COUNT(*) AS count FROM PurchaseOrders", (err, row) => {
+        if (!err && row && row.count === 0) {
+            const seedPOs = [
+                {
+                    PONo: "PO/AAPL9B/26-27/962",
+                    PODate: "06-10-2026",
+                    ApproveTag: "PENDING",
+                    SupplierCode: "SUP-001",
+                    DeliverTo: "Plot No. 9B",
+                    Currency: "EURO",
+                    PurchaseType: "Regular PO",
+                    ExchangeRate: 96,
+                    BillTo: "ALPINE APPARELS PVT. LTD.",
+                    EnteredBy: "FahadHasan",
+                    EnteredOn: "Oct 6 2026 5:44PM",
+                    UpdatedBy: null,
+                    UpdatedOn: null,
+                    MaterialSource: "Import",
+                    Status: "Open",
+                    TotalAmount: 4512,
+                    items: [
+                        { ItemID: 1, Quantity: 27, Rate: 96, Amount: 2592 },
+                        { ItemID: 2, Quantity: 20, Rate: 96, Amount: 1920 }
+                    ]
+                },
+                {
+                    PONo: "PO/AAPL9B/26-27/961",
+                    PODate: "06-10-2026",
+                    ApproveTag: "PENDING",
+                    SupplierCode: "SUP-002",
+                    DeliverTo: "Plot No. 9B",
+                    Currency: "USD",
+                    PurchaseType: "Regular PO",
+                    ExchangeRate: 96,
+                    BillTo: "ALPINE APPARELS PVT. LTD.",
+                    EnteredBy: "FahadHasan",
+                    EnteredOn: "Oct 6 2026 5:29PM",
+                    UpdatedBy: "FahadHasan",
+                    UpdatedOn: "Oct 6 2026 5:31PM",
+                    MaterialSource: "Import",
+                    Status: "Open",
+                    TotalAmount: 84960,
+                    items: [
+                        { ItemID: 3, Quantity: 500, Rate: 96, Amount: 48000 },
+                        { ItemID: 2, Quantity: 200, Rate: 96, Amount: 19200 },
+                        { ItemID: 4, Quantity: 185, Rate: 96, Amount: 17760 }
+                    ]
+                },
+                {
+                    PONo: "PO/AAPL9B/26-27/960",
+                    PODate: "06-10-2026",
+                    ApproveTag: "PENDING",
+                    SupplierCode: "SUP-003",
+                    DeliverTo: "Plot No. 9B",
+                    Currency: "USD",
+                    PurchaseType: "Regular PO",
+                    ExchangeRate: 96,
+                    BillTo: "ALPINE APPARELS PVT. LTD.",
+                    EnteredBy: "FahadHasan",
+                    EnteredOn: "Oct 6 2026 5:28PM",
+                    UpdatedBy: null,
+                    UpdatedOn: null,
+                    MaterialSource: "Import",
+                    Status: "Open",
+                    TotalAmount: 15648,
+                    items: [
+                        { ItemID: 1, Quantity: 100, Rate: 96, Amount: 9600 },
+                        { ItemID: 5, Quantity: 63, Rate: 96, Amount: 6048 }
+                    ]
+                },
+                {
+                    PONo: "PO/AAPL9B/26-27/959",
+                    PODate: "06-10-2026",
+                    ApproveTag: "APPROVED",
+                    SupplierCode: "SUP-004",
+                    DeliverTo: "Plot No. 9B",
+                    Currency: "USD",
+                    PurchaseType: "Regular PO",
+                    ExchangeRate: 96,
+                    BillTo: "ALPINE APPARELS PVT. LTD.",
+                    EnteredBy: "FahadHasan",
+                    EnteredOn: "Oct 6 2026 4:07PM",
+                    UpdatedBy: null,
+                    UpdatedOn: null,
+                    MaterialSource: "Import",
+                    Status: "Approved",
+                    TotalAmount: 8256,
+                    items: [
+                        { ItemID: 4, Quantity: 86, Rate: 96, Amount: 8256 }
+                    ]
+                },
+                {
+                    PONo: "PO/AAPL9B/26-27/958",
+                    PODate: "06-10-2026",
+                    ApproveTag: "APPROVED",
+                    SupplierCode: "SUP-003",
+                    DeliverTo: "Plot No. 9B",
+                    Currency: "USD",
+                    PurchaseType: "Regular PO",
+                    ExchangeRate: 96,
+                    BillTo: "ALPINE APPARELS PVT. LTD.",
+                    EnteredBy: "FahadHasan",
+                    EnteredOn: "Oct 6 2026 3:50PM",
+                    UpdatedBy: "FahadHasan",
+                    UpdatedOn: "Oct 6 2026 3:51PM",
+                    MaterialSource: "Import",
+                    Status: "Approved",
+                    TotalAmount: 43305,
+                    items: [
+                        { ItemID: 1, Quantity: 251.0968, Rate: 96, Amount: 24105.29 },
+                        { ItemID: 2, Quantity: 200, Rate: 96, Amount: 19200 }
+                    ]
+                }
+            ];
+
+            seedPOs.forEach(po => {
+                db.get("SELECT SupplierID FROM Suppliers WHERE SupplierCode = ?", [po.SupplierCode], (sErr, sRow) => {
+                    const supId = sRow ? sRow.SupplierID : null;
+                    db.run(
+                        `INSERT INTO PurchaseOrders (
+                            PONo, PODate, SupplierID, DeliverTo, Currency, PurchaseType, ExchangeRate, 
+                            BillTo, EnteredBy, EnteredOn, UpdatedBy, UpdatedOn, ApproveTag, MaterialSource, Status, TotalAmount, NetAmount
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                        [
+                            po.PONo, po.PODate, supId, po.DeliverTo, po.Currency, po.PurchaseType, po.ExchangeRate,
+                            po.BillTo, po.EnteredBy, po.EnteredOn, po.UpdatedBy, po.UpdatedOn, po.ApproveTag, po.MaterialSource, po.Status, po.TotalAmount, po.TotalAmount
+                        ],
+                        function (insErr) {
+                            if (!insErr && this.lastID) {
+                                const newPoId = this.lastID;
+                                po.items.forEach(item => {
+                                    db.run(
+                                        `INSERT INTO PurchaseOrderDetails (POID, ItemID, Quantity, Rate, Amount, ReceivedQty, PendingQty)
+                                         VALUES (?, ?, ?, ?, ?, 0, ?)`,
+                                        [newPoId, item.ItemID, item.Quantity, item.Rate, item.Amount, item.Quantity]
+                                    );
+                                });
+                            }
+                        }
+                    );
+                });
+            });
+        }
+    });
+}, 1000);
+
 console.log("✅ Purchase Tables Loaded");

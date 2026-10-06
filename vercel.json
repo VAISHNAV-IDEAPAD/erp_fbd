@@ -3,14 +3,11 @@
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/build",
   "functions": {
-    "api/*.js": {
-      "includeFiles": "backend/**"
+    "index.js": {
+      "includeFiles": "{backend/**,frontend/build/**}"
+    },
+    "app.js": {
+      "includeFiles": "{backend/**,frontend/build/**}"
     }
-  },
-  "rewrites": [
-    {
-      "source": "/((?!api).*)",
-      "destination": "/index.html"
-    }
-  ]
+  }
 }

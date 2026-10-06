@@ -108,17 +108,21 @@ app.use("/api/reports/pending-dispatch", require("./routes/pendingDispatch"));
 // HEALTH CHECK
 // ======================================================
 
-app.get("/", (req, res) => {
+// ======================================================
+// HEALTH CHECK
+// ======================================================
+
+app.get("/api", (req, res) => {
     res.json({
         success: true,
         message: "ERP Backend Running"
     });
 });
 
-app.get("/api", (req, res) => {
+app.get("/api/health", (req, res) => {
     res.json({
         success: true,
-        message: "ERP Backend Running"
+        status: "Running"
     });
 });
 
@@ -129,12 +133,39 @@ app.get("/health", (req, res) => {
     });
 });
 
-app.get("/api/health", (req, res) => {
-    res.json({
-        success: true,
-        status: "Running"
+// ======================================================
+// FRONTEND STATIC ASSETS & SPA ROUTING
+// ======================================================
+
+const path = require("path");
+const fs = require("fs");
+
+const candidates = [
+    path.resolve(__dirname, "../frontend/build"),
+    path.resolve(__dirname, "frontend/build"),
+    path.resolve(process.cwd(), "frontend/build")
+];
+
+const buildDir = candidates.find(dir => fs.existsSync(dir));
+
+if (buildDir) {
+    app.use(express.static(buildDir));
+
+    // Fallback for SPA routing in Express 5
+    app.use((req, res, next) => {
+        if (req.method !== "GET" && req.method !== "HEAD") {
+            return next();
+        }
+        if (req.path.startsWith("/api")) {
+            return next();
+        }
+        const indexPath = path.join(buildDir, "index.html");
+        if (fs.existsSync(indexPath)) {
+            return res.sendFile(indexPath);
+        }
+        next();
     });
-});
+}
 
 // ======================================================
 // 404

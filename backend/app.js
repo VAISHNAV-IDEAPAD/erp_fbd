@@ -24,6 +24,7 @@ require("./database/indentTables");
 require("./database/approvalTables");
 require("./database/employees");
 require("./database/masterTables");
+require("./database/internalOrderTables");
 
 // ======================================================
 // ROUTES
@@ -72,6 +73,7 @@ app.use("/api/production-receipts", require("./routes/productionReceipts"));
 app.use("/api/production-costing", require("./routes/productionCosting"));
 app.use("/api/production-variance", require("./routes/productionVariance"));
 app.use("/api/sales-orders", require("./routes/salesOrders"));
+app.use("/api/internal-orders", require("./routes/internalOrders"));
 app.use("/api/dispatches", require("./routes/dispatches"));
 app.use("/api/sales-invoices", require("./routes/salesInvoices"));
 app.use("/api/customer-payments", require("./routes/customerPayments"));

@@ -71,6 +71,8 @@ import CustomerOutstanding from "./pages/sm/customerOutstanding/CustomerOutstand
 import CustomerPayments from "./pages/sm/customerPayments/CustomerPayments";
 import SalesReports from "./pages/sm/salesReports/SalesReports";
 import SalesDashboard from "./pages/sm/salesDashboard/SalesDashboard";
+import InternalOrder from "./pages/sm/internalOrder/InternalOrder";
+import InternalOrderMaster from "./pages/sm/internalOrder/InternalOrderMaster";
 
 // =======================================
 // ADMIN & MASTER MODULES
@@ -185,6 +187,13 @@ function App() {
                 <Route path="/customer-payments" element={<CustomerPayments />} />
                 <Route path="/sales-report" element={<SalesReports />} />
                 <Route path="/sales-dashboard" element={<SalesDashboard />} />
+                <Route path="/internal-orders" element={<InternalOrder />} />
+                <Route path="/sm/internal-order" element={<InternalOrder />} />
+                <Route path="/sm/internal-orders" element={<InternalOrder />} />
+                <Route path="/internal-order-master" element={<InternalOrderMaster />} />
+                <Route path="/internal-order-master/:id" element={<InternalOrderMaster />} />
+                <Route path="/internal-orders/:id" element={<InternalOrderMaster />} />
+                <Route path="/internal-orders/new" element={<InternalOrderMaster />} />
 
                 {/* ADMIN & MASTERS */}
                 <Route path="/company-master" element={<CompanyMasters />} />

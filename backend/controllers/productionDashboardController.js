@@ -40,10 +40,7 @@ exports.getProductionDashboard = (req, res) => {
         ) AS ProducedQty,
 
         -- Total Rejected Qty
-        (
-            SELECT IFNULL(SUM(RejectedQty),0)
-            FROM ProductionReceipts
-        ) AS RejectedQty,
+        0 AS RejectedQty,
 
         -- Total Production Cost
         (

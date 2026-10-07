@@ -26,6 +26,9 @@ import {
   FaCheck,
   FaTimes,
   FaPrint,
+  FaFileExcel,
+  FaFilePdf,
+  FaDownload,
   FaHistory,
   FaLock,
   FaCheckCircle,
@@ -54,6 +57,10 @@ import {
   getStyleById,
   getItems
 } from "../../services/styleManagementService";
+import {
+  exportTechSheetToExcel,
+  exportTechSheetToPdf
+} from "../../utils/techSheetExport";
 
 export default function TechSheet() {
   const location = useLocation();
@@ -324,6 +331,32 @@ export default function TechSheet() {
       setShowPrintModal(true);
     } catch (err) {
       alert("Failed to load Tech Sheet for printing: " + (err.response?.data?.message || err.message));
+    }
+  };
+
+  const handleDirectExportExcel = async (sheetId) => {
+    try {
+      let data = printSheetData;
+      if (!data || data.sheet?.tech_sheet_id !== sheetId) {
+        const res = await getTechSheetById(sheetId);
+        data = res.data;
+      }
+      exportTechSheetToExcel(data);
+    } catch (err) {
+      alert("Failed to export Tech Sheet to Excel: " + (err.response?.data?.message || err.message));
+    }
+  };
+
+  const handleDirectExportPdf = async (sheetId) => {
+    try {
+      let data = printSheetData;
+      if (!data || data.sheet?.tech_sheet_id !== sheetId) {
+        const res = await getTechSheetById(sheetId);
+        data = res.data;
+      }
+      exportTechSheetToPdf(data);
+    } catch (err) {
+      alert("Failed to export Tech Sheet to PDF: " + (err.response?.data?.message || err.message));
     }
   };
 
@@ -627,10 +660,32 @@ export default function TechSheet() {
                           variant="outline-info"
                           size="sm"
                           className="py-0 px-2"
-                          title="Print Factory Specification Sheet"
+                          title="Preview & Print Technical Specification Sheet"
                           onClick={() => handleOpenPrint(ts.tech_sheet_id)}
                         >
                           <FaPrint className="me-1" /> Spec
+                        </Button>
+
+                        {/* Quick Excel Export */}
+                        <Button
+                          variant="outline-success"
+                          size="sm"
+                          className="py-0 px-2"
+                          title="Export Full Tech Sheet to Excel (.xls)"
+                          onClick={() => handleDirectExportExcel(ts.tech_sheet_id)}
+                        >
+                          <FaFileExcel className="me-1" /> Excel
+                        </Button>
+
+                        {/* Quick PDF Export */}
+                        <Button
+                          variant="outline-danger"
+                          size="sm"
+                          className="py-0 px-2"
+                          title="Export Full Tech Sheet to PDF"
+                          onClick={() => handleDirectExportPdf(ts.tech_sheet_id)}
+                        >
+                          <FaFilePdf className="me-1" /> PDF
                         </Button>
 
                         {/* Edit Button */}
@@ -2133,6 +2188,37 @@ export default function TechSheet() {
               Cancel
             </Button>
             <div className="d-flex gap-2">
+              {isEditing && formData.tech_sheet_id && (
+                <>
+                  <Button
+                    variant="outline-success"
+                    size="sm"
+                    type="button"
+                    title="Export complete Tech Sheet to Excel"
+                    onClick={() => handleDirectExportExcel(formData.tech_sheet_id)}
+                  >
+                    <FaFileExcel className="me-1" /> Excel
+                  </Button>
+                  <Button
+                    variant="outline-danger"
+                    size="sm"
+                    type="button"
+                    title="Export complete Tech Sheet to PDF"
+                    onClick={() => handleDirectExportPdf(formData.tech_sheet_id)}
+                  >
+                    <FaFilePdf className="me-1" /> PDF
+                  </Button>
+                  <Button
+                    variant="outline-primary"
+                    size="sm"
+                    type="button"
+                    title="Preview specification sheet"
+                    onClick={() => handleOpenPrint(formData.tech_sheet_id)}
+                  >
+                    <FaPrint className="me-1" /> Preview
+                  </Button>
+                </>
+              )}
               {formData.status !== "Approved" && (
                 <Button variant="success" size="sm" type="submit">
                   <FaCheck className="me-1" /> Save Tech Sheet
@@ -2154,11 +2240,28 @@ export default function TechSheet() {
             </Modal.Title>
             <div className="ms-auto me-3 d-flex gap-2">
               <Button
-                variant="primary"
+                variant="success"
+                size="sm"
+                onClick={() => exportTechSheetToExcel(printSheetData)}
+                title="Export complete Tech Sheet (all 9 sections) to Excel (.xls)"
+              >
+                <FaFileExcel className="me-1" /> Export to Excel
+              </Button>
+              <Button
+                variant="danger"
+                size="sm"
+                onClick={() => exportTechSheetToPdf(printSheetData)}
+                title="Export complete Tech Sheet (all 9 sections) to PDF"
+              >
+                <FaFilePdf className="me-1" /> Export to PDF
+              </Button>
+              <Button
+                variant="outline-secondary"
                 size="sm"
                 onClick={() => window.print()}
+                title="Quick browser print"
               >
-                <FaPrint className="me-1" /> Print / Export PDF
+                <FaPrint className="me-1" /> Quick Print
               </Button>
             </div>
           </Modal.Header>
@@ -2473,6 +2576,34 @@ export default function TechSheet() {
               </Row>
             </div>
           </Modal.Body>
+          <Modal.Footer className="py-2 bg-light d-flex justify-content-between d-print-none">
+            <Button variant="secondary" size="sm" onClick={() => setShowPrintModal(false)}>
+              Close Preview
+            </Button>
+            <div className="d-flex gap-2">
+              <Button
+                variant="success"
+                size="sm"
+                onClick={() => exportTechSheetToExcel(printSheetData)}
+              >
+                <FaFileExcel className="me-1" /> Export to Excel (.xls)
+              </Button>
+              <Button
+                variant="danger"
+                size="sm"
+                onClick={() => exportTechSheetToPdf(printSheetData)}
+              >
+                <FaFilePdf className="me-1" /> Export to PDF
+              </Button>
+              <Button
+                variant="outline-secondary"
+                size="sm"
+                onClick={() => window.print()}
+              >
+                <FaPrint className="me-1" /> Print
+              </Button>
+            </div>
+          </Modal.Footer>
         </Modal>
       )}
 

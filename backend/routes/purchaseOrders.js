@@ -16,6 +16,26 @@ router.get(
 
 
 // ===============================
+// Get Next PO Number Preview
+// IMPORTANT: BEFORE /:id
+// ===============================
+router.get(
+    "/next-no",
+    purchaseOrderController.getNextPONumber
+);
+
+
+// ===============================
+// Get Pending Indent Items (Link with Indent)
+// IMPORTANT: BEFORE /:id
+// ===============================
+router.get(
+    "/pending-indents",
+    purchaseOrderController.getPendingIndentItems
+);
+
+
+// ===============================
 // Get Purchase Order Details
 // IMPORTANT: BEFORE /:id
 // ===============================

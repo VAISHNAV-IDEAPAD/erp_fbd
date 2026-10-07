@@ -150,7 +150,23 @@ export default function MegaMenu({
 
     const smMenu = [
         {
+            title: "STYLE MANAGEMENT",
+
+            items: [
+                {
+                    label: "Style Master",
+                    path: "/style-master"
+                },
+                {
+                    label: "Tech Sheet",
+                    path: "/tech-sheets"
+                }
+            ]
+        },
+
+        {
             title: "SAMPLES",
+
             items: [
                 {
                     label: "Sample FTN",

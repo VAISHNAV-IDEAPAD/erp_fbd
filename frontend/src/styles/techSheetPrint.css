@@ -1,0 +1,71 @@
+/* Technical Specification Sheet Print Styles */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #printable-spec-sheet,
+  #printable-spec-sheet * {
+    visibility: visible;
+  }
+
+  #printable-spec-sheet {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 10mm 15mm;
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt;
+  }
+
+  .printable-spec-sheet table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: auto;
+  }
+
+  .printable-spec-sheet tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  .printable-spec-sheet thead {
+    display: table-header-group;
+  }
+
+  .printable-spec-sheet th {
+    background-color: #f1f3f5 !important;
+    color: #111 !important;
+    border: 1px solid #444 !important;
+    font-size: 9pt !important;
+    font-weight: 700 !important;
+    padding: 4px 6px !important;
+  }
+
+  .printable-spec-sheet td {
+    border: 1px solid #666 !important;
+    font-size: 9pt !important;
+    padding: 4px 6px !important;
+  }
+
+  .printable-spec-sheet .badge {
+    border: 1px solid #000 !important;
+    color: #000 !important;
+    background: transparent !important;
+    font-weight: 600;
+  }
+
+  .printable-spec-sheet h4,
+  .printable-spec-sheet h6 {
+    color: #000 !important;
+  }
+
+  .modal-header,
+  .modal-footer,
+  .d-print-none {
+    display: none !important;
+  }
+}

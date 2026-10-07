@@ -86,19 +86,55 @@ CREATE TABLE IF NOT EXISTS PurchaseOrders (
 
     PODate TEXT,
 
+    PurchaseType TEXT,
+
+    ReleaseOption TEXT,
+
     SupplierID INTEGER,
 
     DeliveryDate TEXT,
 
+    QuoteNo TEXT,
+
+    QuoteDate TEXT,
+
+    FreightCharges REAL DEFAULT 0,
+
+    OtherCharges TEXT,
+
     TotalAmount REAL DEFAULT 0,
 
+    SubTotal REAL DEFAULT 0,
+
     GSTAmount REAL DEFAULT 0,
+
+    CGSTAmount REAL DEFAULT 0,
+
+    SGSTAmount REAL DEFAULT 0,
+
+    IGSTAmount REAL DEFAULT 0,
 
     NetAmount REAL DEFAULT 0,
 
     Status TEXT DEFAULT 'Open',
 
     Remarks TEXT,
+
+    PaymentTerms TEXT,
+
+    DeliveryTerms TEXT,
+
+    ShipToAddress TEXT,
+
+    InternalMemo TEXT,
+
+    TermsConditions TEXT,
+
+    Attachments TEXT,
+
+    EnteredBy TEXT,
+
+    CustomerOrderNo TEXT,
 
     CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
 
@@ -115,6 +151,30 @@ CREATE TABLE IF NOT EXISTS PurchaseOrders (
 
 });
 
+// Safe migrations for PurchaseOrders
+[
+    "ALTER TABLE PurchaseOrders ADD COLUMN PurchaseType TEXT",
+    "ALTER TABLE PurchaseOrders ADD COLUMN ReleaseOption TEXT",
+    "ALTER TABLE PurchaseOrders ADD COLUMN QuoteNo TEXT",
+    "ALTER TABLE PurchaseOrders ADD COLUMN QuoteDate TEXT",
+    "ALTER TABLE PurchaseOrders ADD COLUMN FreightCharges REAL DEFAULT 0",
+    "ALTER TABLE PurchaseOrders ADD COLUMN OtherCharges TEXT",
+    "ALTER TABLE PurchaseOrders ADD COLUMN SubTotal REAL DEFAULT 0",
+    "ALTER TABLE PurchaseOrders ADD COLUMN CGSTAmount REAL DEFAULT 0",
+    "ALTER TABLE PurchaseOrders ADD COLUMN SGSTAmount REAL DEFAULT 0",
+    "ALTER TABLE PurchaseOrders ADD COLUMN IGSTAmount REAL DEFAULT 0",
+    "ALTER TABLE PurchaseOrders ADD COLUMN PaymentTerms TEXT",
+    "ALTER TABLE PurchaseOrders ADD COLUMN DeliveryTerms TEXT",
+    "ALTER TABLE PurchaseOrders ADD COLUMN ShipToAddress TEXT",
+    "ALTER TABLE PurchaseOrders ADD COLUMN InternalMemo TEXT",
+    "ALTER TABLE PurchaseOrders ADD COLUMN TermsConditions TEXT",
+    "ALTER TABLE PurchaseOrders ADD COLUMN Attachments TEXT",
+    "ALTER TABLE PurchaseOrders ADD COLUMN EnteredBy TEXT",
+    "ALTER TABLE PurchaseOrders ADD COLUMN CustomerOrderNo TEXT"
+].forEach(sql => {
+    db.run(sql, () => {});
+});
+
 // ======================================================
 // PURCHASE ORDER DETAILS
 // ======================================================
@@ -126,7 +186,23 @@ CREATE TABLE IF NOT EXISTS PurchaseOrderDetails (
 
     POID INTEGER,
 
+    IndentID INTEGER,
+
+    IndentDetailID INTEGER,
+
+    IndentNo TEXT,
+
+    ProfitCenter TEXT,
+
     ItemID INTEGER,
+
+    Color TEXT,
+
+    SizeRange TEXT,
+
+    CostPrice REAL DEFAULT 0,
+
+    BalIndentQty REAL DEFAULT 0,
 
     Quantity REAL,
 
@@ -134,9 +210,15 @@ CREATE TABLE IF NOT EXISTS PurchaseOrderDetails (
 
     Amount REAL,
 
+    ExFTYDate TEXT,
+
+    MatReqDate TEXT,
+
     ReceivedQty REAL DEFAULT 0,
 
     PendingQty REAL DEFAULT 0,
+
+    SupplierID INTEGER,
 
     FOREIGN KEY(POID)
         REFERENCES PurchaseOrders(POID)
@@ -153,6 +235,23 @@ CREATE TABLE IF NOT EXISTS PurchaseOrderDetails (
     else
         console.log("✓ PurchaseOrderDetails Ready");
 
+});
+
+// Safe migrations for PurchaseOrderDetails
+[
+    "ALTER TABLE PurchaseOrderDetails ADD COLUMN IndentID INTEGER",
+    "ALTER TABLE PurchaseOrderDetails ADD COLUMN IndentDetailID INTEGER",
+    "ALTER TABLE PurchaseOrderDetails ADD COLUMN IndentNo TEXT",
+    "ALTER TABLE PurchaseOrderDetails ADD COLUMN ProfitCenter TEXT",
+    "ALTER TABLE PurchaseOrderDetails ADD COLUMN Color TEXT",
+    "ALTER TABLE PurchaseOrderDetails ADD COLUMN SizeRange TEXT",
+    "ALTER TABLE PurchaseOrderDetails ADD COLUMN CostPrice REAL DEFAULT 0",
+    "ALTER TABLE PurchaseOrderDetails ADD COLUMN BalIndentQty REAL DEFAULT 0",
+    "ALTER TABLE PurchaseOrderDetails ADD COLUMN ExFTYDate TEXT",
+    "ALTER TABLE PurchaseOrderDetails ADD COLUMN MatReqDate TEXT",
+    "ALTER TABLE PurchaseOrderDetails ADD COLUMN SupplierID INTEGER"
+].forEach(sql => {
+    db.run(sql, () => {});
 });
 
 // ======================================================

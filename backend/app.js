@@ -25,6 +25,7 @@ require("./database/approvalTables");
 require("./database/employees");
 require("./database/masterTables");
 require("./database/internalOrderTables");
+require("./database/styleManagementTables");
 
 // ======================================================
 // ROUTES
@@ -55,6 +56,9 @@ app.use("/api/companies", require("./routes/companies"));
 // This keeps the individual route/controller implementations isolated while
 // making every completed workflow available to the React application.
 app.use("/api/styles", require("./routes/styles"));
+app.use("/api/style-master", require("./routes/styles"));
+app.use("/api/tech-sheets", require("./routes/techSheets"));
+app.use("/api/tech-sheet", require("./routes/techSheets"));
 app.use("/api/customers", require("./routes/customers"));
 app.use("/api/purchaserequisition", require("./routes/purchaseRequisitions"));
 app.use("/api/purchaseorders", require("./routes/purchaseOrders"));

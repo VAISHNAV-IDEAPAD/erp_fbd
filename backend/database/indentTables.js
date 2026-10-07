@@ -70,6 +70,8 @@ db.serialize(() => {
 
         Remarks TEXT,
 
+        OrderedQty REAL DEFAULT 0,
+
         FOREIGN KEY (IndentID)
             REFERENCES Indents(IndentID)
             ON DELETE CASCADE,
@@ -87,6 +89,8 @@ db.serialize(() => {
         }
 
     });
+
+    db.run("ALTER TABLE IndentDetails ADD COLUMN OrderedQty REAL DEFAULT 0", () => {});
 
     // ======================================================
     // INDEXES

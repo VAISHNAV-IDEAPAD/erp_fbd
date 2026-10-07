@@ -19,6 +19,15 @@ export const getPurchaseOrders = (params = {}) =>
 export const getPurchaseOrder = (id) =>
     axios.get(`${API}/purchaseorders/${id}`);
 
+export const getPurchaseOrderById = (id) =>
+    axios.get(`${API}/purchaseorders/${id}`);
+
+export const getPendingIndentsForPO = (params) =>
+    axios.get(`${API}/purchaseorders/pending-indents`, { params });
+
+export const getNextPONumber = () =>
+    axios.get(`${API}/purchaseorders/next-no`);
+
 export const savePurchaseOrder = (data) =>
     axios.post(`${API}/purchaseorders`, data);
 
@@ -74,6 +83,12 @@ export const getItems = () =>
 
 export const getSuppliers = () =>
     axios.get(`${API}/suppliers`);
+
+export const getDepartments = () =>
+    axios.get(`${API}/departments`);
+
+export const getColours = () =>
+    axios.get(`${API}/colours`);
 
 // ==========================
 // Indents

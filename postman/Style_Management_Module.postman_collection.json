@@ -1,0 +1,425 @@
+{
+  "info": {
+    "name": "Style Management Module (SM)",
+    "_postman_id": "style-management-module-postman",
+    "description": "Enterprise Style Management API collection for bags, leather goods, belts, wallets, card holders, and apparel manufacturing ERP. Covers Style Master, Multi-Color/Size grids, and 10-Tab Tech Sheet lifecycle.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "style_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "tech_sheet_id",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Style Master",
+      "item": [
+        {
+          "name": "List All Styles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/styles?search=&product_category=&status=&page=1&limit=20",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "styles"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": ""
+                },
+                {
+                  "key": "product_category",
+                  "value": ""
+                },
+                {
+                  "key": "status",
+                  "value": ""
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Style by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/styles/{{style_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "styles",
+                "{{style_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Style Metadata / Options",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/styles/options",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "styles",
+                "options"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Style Master",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"style_no\": \"LB-2025-99\",\n  \"style_name\": \"Deluxe Saffiano Crossbody\",\n  \"short_description\": \"Structured crossbody bag with adjustable strap and polished gold hardware.\",\n  \"product_category\": \"Bags\",\n  \"product_type\": \"Crossbody Bag\",\n  \"bag_type\": \"Crossbody Bag\",\n  \"customer_id\": 1,\n  \"brand\": \"Coach New York\",\n  \"collection\": \"Autumn 2025\",\n  \"season\": \"FW25\",\n  \"gender\": \"Women\",\n  \"status\": \"Draft\",\n  \"revision\": \"01\",\n  \"usage\": \"Daily / Evening\",\n  \"target_market\": \"North America\",\n  \"material_group\": \"Saffiano Leather\",\n  \"construction_type\": \"Turned Edge Stitched\",\n  \"packaging_type\": \"Dust Bag + Box\",\n  \"country_of_origin\": \"India\",\n  \"hsn_code\": \"42022190\",\n  \"uom\": \"PCS\",\n  \"moq\": 100,\n  \"lead_time\": \"45 Days\",\n  \"remarks\": \"Sample review passed.\",\n  \"colors\": [\n    {\n      \"color_code\": \"BLK-01\",\n      \"color_name\": \"Jet Black\",\n      \"pantone\": \"19-4008 TCX\",\n      \"color_family\": \"Black\",\n      \"material_color\": \"Cross-grain Saffiano\",\n      \"status\": \"Active\"\n    },\n    {\n      \"color_code\": \"RED-01\",\n      \"color_name\": \"Crimson Red\",\n      \"pantone\": \"19-1664 TCX\",\n      \"color_family\": \"Red\",\n      \"material_color\": \"Saffiano Red\",\n      \"status\": \"Active\"\n    }\n  ],\n  \"sizes\": [\n    {\n      \"size_code\": \"STD\",\n      \"size_name\": \"Standard\",\n      \"length\": 24,\n      \"width\": 8.5,\n      \"height\": 16,\n      \"gusset\": 8.5,\n      \"handle_drop\": 0,\n      \"strap_length\": 120,\n      \"strap_width\": 2,\n      \"weight\": 0.45,\n      \"uom\": \"cm\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/styles",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "styles"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Style Master",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"style_name\": \"Deluxe Saffiano Crossbody (Updated)\",\n  \"short_description\": \"Updated specifications and revised measurements.\",\n  \"status\": \"In Review\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/styles/{{style_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "styles",
+                "{{style_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Duplicate Style",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/styles/{{style_id}}/duplicate",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "styles",
+                "{{style_id}}",
+                "duplicate"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Style",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/styles/{{style_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "styles",
+                "{{style_id}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Tech Sheet",
+      "item": [
+        {
+          "name": "List Tech Sheets",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/tech-sheets?style_id=&status=&search=",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tech-sheets"
+              ],
+              "query": [
+                {
+                  "key": "style_id",
+                  "value": ""
+                },
+                {
+                  "key": "status",
+                  "value": ""
+                },
+                {
+                  "key": "search",
+                  "value": ""
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Tech Sheet by ID (Full 10-Tabs)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/tech-sheets/{{tech_sheet_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tech-sheets",
+                "{{tech_sheet_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Tech Sheet",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"style_id\": 1,\n  \"sample_no\": \"SMP-POSTMAN-01\",\n  \"effective_date\": \"2025-03-01\",\n  \"prepared_by\": \"Tech Designer\",\n  \"remarks\": \"Initial technical specification release.\",\n  \"dimensions\": [\n    {\n      \"dimension_type\": \"Body Height\",\n      \"specification\": \"Base to top opening\",\n      \"value\": 30,\n      \"tolerance_minus\": 0.5,\n      \"tolerance_plus\": 0.5,\n      \"uom\": \"cm\",\n      \"remarks\": \"Measure center\"\n    },\n    {\n      \"dimension_type\": \"Body Width\",\n      \"specification\": \"Base seam to seam\",\n      \"value\": 38,\n      \"tolerance_minus\": 0.5,\n      \"tolerance_plus\": 0.5,\n      \"uom\": \"cm\",\n      \"remarks\": \"Flat measurement\"\n    }\n  ],\n  \"materials\": [\n    {\n      \"line_no\": 1,\n      \"item_id\": 1,\n      \"material_name\": \"Leather Sheet - Napa\",\n      \"material_type\": \"Main Leather\",\n      \"consumption\": 14.5,\n      \"uom\": \"SQFT\",\n      \"wastage_percent\": 10\n    }\n  ],\n  \"components\": [\n    {\n      \"line_no\": 1,\n      \"item_id\": 3,\n      \"component_name\": \"Metal Zipper #5\",\n      \"component_type\": \"Hardware\",\n      \"color\": \"Antique Brass\",\n      \"size\": \"38 cm\",\n      \"qty\": 1,\n      \"uom\": \"PCS\"\n    }\n  ],\n  \"construction\": {\n    \"construction_method\": \"Turned Edge Stitched\",\n    \"stitch_type\": \"Lockstitch 301\",\n    \"spi\": \"7-8 SPI\",\n    \"thread_type\": \"Continuous Filament Bonded\",\n    \"seam_allowance\": \"8 mm\",\n    \"edge_treatment\": \"3 coats edge paint with intermediate sanding\",\n    \"special_notes\": \"Clean symmetrical alignment required.\"\n  },\n  \"colors\": [\n    {\n      \"color_name\": \"Cognac Tan\",\n      \"pantone\": \"18-1140 TCX\",\n      \"main_material_color\": \"Napa Tan\",\n      \"lining_color\": \"Sand Beige Twill\",\n      \"hardware_color\": \"Antique Brass\"\n    }\n  ],\n  \"operations\": [\n    {\n      \"sequence\": 1,\n      \"operation_code\": \"OP-01\",\n      \"operation_name\": \"Leather Cutting\",\n      \"work_center\": \"Cutting\",\n      \"machine\": \"Clicker Press\",\n      \"smv\": 4.5,\n      \"skill_level\": \"Skilled\"\n    },\n    {\n      \"sequence\": 2,\n      \"operation_code\": \"OP-02\",\n      \"operation_name\": \"Main Stitching\",\n      \"work_center\": \"Stitching\",\n      \"machine\": \"Post Bed\",\n      \"smv\": 12,\n      \"skill_level\": \"Master Artisan\"\n    }\n  ],\n  \"quality\": [\n    {\n      \"inspection_point\": \"Dimensions Check\",\n      \"standard\": \"AQL 1.5\",\n      \"tolerance\": \"+/- 5mm\",\n      \"inspection_method\": \"Steel Ruler\",\n      \"critical\": \"Yes\"\n    }\n  ],\n  \"packaging\": {\n    \"polybag_size\": \"500 x 600 mm\",\n    \"dust_bag\": \"100% Non-woven 90 GSM\",\n    \"carton_qty\": 10,\n    \"packing_instruction\": \"Tissue stuffing inside to retain shape.\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/tech-sheets",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tech-sheets"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Tech Sheet",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"remarks\": \"Updated operation breakdown and notes.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/tech-sheets/{{tech_sheet_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tech-sheets",
+                "{{tech_sheet_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Submit Tech Sheet for Approval",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"submitted_by\": \"Merchandiser Lead\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/tech-sheets/{{tech_sheet_id}}/submit",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tech-sheets",
+                "{{tech_sheet_id}}",
+                "submit"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Approve Tech Sheet (Locks Sheet)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"approved_by\": \"QA Director\",\n  \"approval_remarks\": \"Approved for bulk production standard.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/tech-sheets/{{tech_sheet_id}}/approve",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tech-sheets",
+                "{{tech_sheet_id}}",
+                "approve"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reject Tech Sheet",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rejected_by\": \"QA Manager\",\n  \"rejection_reason\": \"Tolerance on strap drop exceeds allowable standard.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/tech-sheets/{{tech_sheet_id}}/reject",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tech-sheets",
+                "{{tech_sheet_id}}",
+                "reject"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create New Revision Clone (e.g. 01 -> 02)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/tech-sheets/{{tech_sheet_id}}/revision",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tech-sheets",
+                "{{tech_sheet_id}}",
+                "revision"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Tech Sheet",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/tech-sheets/{{tech_sheet_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "tech-sheets",
+                "{{tech_sheet_id}}"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

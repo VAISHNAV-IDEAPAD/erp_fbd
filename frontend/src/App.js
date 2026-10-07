@@ -61,6 +61,12 @@ import OperationMaster from "./pages/pm/operationMaster/OperationMaster";
 import ProductionDashboard from "./pages/pm/productionDashboard/ProductionDashboard";
 
 // =======================================
+// SM (STYLE MANAGEMENT)
+// =======================================
+import StyleMaster from "./pages/style-management/StyleMaster";
+import TechSheet from "./pages/style-management/TechSheet";
+
+// =======================================
 // SM (SALES MANAGEMENT)
 // =======================================
 import Customers from "./pages/sm/customers/Customers";
@@ -177,6 +183,13 @@ function App() {
                 <Route path="/wip" element={<WorkInProgress />} />
                 <Route path="/styles" element={<Styles />} />
                 <Route path="/production-dashboard" element={<ProductionDashboard />} />
+
+                {/* SM (STYLE MANAGEMENT) */}
+                <Route path="/style-master" element={<StyleMaster />} />
+                <Route path="/style-master/:id" element={<StyleMaster />} />
+                <Route path="/tech-sheets" element={<TechSheet />} />
+                <Route path="/tech-sheets/:id" element={<TechSheet />} />
+                <Route path="/tech-sheet" element={<TechSheet />} />
 
                 {/* SM (SALES MANAGEMENT) */}
                 <Route path="/customers" element={<Customers />} />

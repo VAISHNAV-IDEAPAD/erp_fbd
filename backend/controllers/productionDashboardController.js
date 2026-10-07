@@ -50,7 +50,7 @@ exports.getProductionDashboard = (req, res) => {
 
         -- Work In Progress Qty
         (
-            (SELECT IFNULL(SUM(OrderQty),0)
+            (SELECT IFNULL(SUM(PlannedQty),0)
              FROM ProductionOrders)
 
             -
@@ -67,7 +67,7 @@ exports.getProductionDashboard = (req, res) => {
 
                 WHEN
                 (
-                    SELECT IFNULL(SUM(OrderQty),0)
+                    SELECT IFNULL(SUM(PlannedQty),0)
                     FROM ProductionOrders
                 ) = 0
 
@@ -84,7 +84,7 @@ exports.getProductionDashboard = (req, res) => {
                     /
 
                     (
-                        SELECT IFNULL(SUM(OrderQty),0)
+                        SELECT IFNULL(SUM(PlannedQty),0)
                         FROM ProductionOrders
                     )
 

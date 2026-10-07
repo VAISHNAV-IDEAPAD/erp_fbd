@@ -72,7 +72,7 @@ exports.getMISDashboard = (req, res) => {
 
         -- WIP Qty
         (
-            (SELECT IFNULL(SUM(OrderQty),0)
+            (SELECT IFNULL(SUM(PlannedQty),0)
              FROM ProductionOrders)
 
             -

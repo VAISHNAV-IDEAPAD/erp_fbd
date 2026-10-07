@@ -36,7 +36,7 @@ exports.getPurchaseDashboard = (req, res) => {
 
         -- Total Received Value
         (
-            SELECT IFNULL(SUM(Amount),0)
+            SELECT IFNULL(SUM(ReceivedQty * Rate),0)
             FROM GRNDetails
         ) AS ReceivedValue,
 

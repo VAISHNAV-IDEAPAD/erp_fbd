@@ -24,11 +24,25 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>ERP Fashion</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="root">
+      <div style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1e3a8a;background:#f8fafc;">
+        <div style="text-align:center;">
+          <div style="width:44px;height:44px;border:4px solid #cbd5e1;border-top:4px solid #2563eb;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px auto;"></div>
+          <div style="font-size:16px;font-weight:700;letter-spacing:0.5px;color:#1e293b;">ERP FASHION</div>
+          <div style="font-size:13px;color:#64748b;margin-top:4px;">Loading ERP System...</div>
+        </div>
+      </div>
+      <style>
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+      </style>
+    </div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

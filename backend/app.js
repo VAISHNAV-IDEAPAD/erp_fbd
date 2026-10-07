@@ -165,8 +165,15 @@ if (buildDir) {
         if (req.path.startsWith("/api")) {
             return next();
         }
+        // Do NOT serve index.html for missing static files (scripts, styles, images)
+        if (req.path.startsWith("/static/") || /\.[a-zA-Z0-9]+$/.test(req.path)) {
+            return res.status(404).send("Asset Not Found");
+        }
         const indexPath = path.join(buildDir, "index.html");
         if (fs.existsSync(indexPath)) {
+            res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            res.setHeader("Pragma", "no-cache");
+            res.setHeader("Expires", "0");
             return res.sendFile(indexPath);
         }
         next();

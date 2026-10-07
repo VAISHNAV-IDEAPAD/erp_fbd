@@ -16,19 +16,16 @@ export default function useDashboard() {
         try {
 
             const res = await dashboardService.getDashboard();
-
-console.log("Dashboard Response:", res);
-
-setDashboard(res.data.data);
+            const data = res?.data?.data || res?.data || {};
+            setDashboard(typeof data === "object" && data !== null ? data : {});
         } catch (err) {
-
             console.error(err);
-
             setError(
                 err.response?.data?.message ||
                 err.message ||
                 "Unable to load dashboard"
             );
+            setDashboard({});
 
         } finally {
 

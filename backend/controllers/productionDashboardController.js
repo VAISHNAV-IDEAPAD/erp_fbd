@@ -23,7 +23,7 @@ exports.getProductionDashboard = (req, res) => {
 
         -- Total Material Issued Qty
         (
-            SELECT IFNULL(SUM(IssuedQty),0)
+            SELECT IFNULL(SUM(Quantity),0)
             FROM MaterialIssueDetails
         ) AS MaterialIssuedQty,
 

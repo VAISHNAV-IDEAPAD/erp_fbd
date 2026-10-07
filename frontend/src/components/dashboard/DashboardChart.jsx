@@ -24,7 +24,9 @@ ChartJS.register(
     Legend
 );
 
-export default function DashboardChart({ dashboard }) {
+export default function DashboardChart({ dashboard = {} }) {
+
+    const safe = dashboard || {};
 
     const data = {
         labels: [
@@ -38,14 +40,14 @@ export default function DashboardChart({ dashboard }) {
         datasets: [
             {
                 label: "Sales",
-                data: [12, 18, 10, 22, 16, dashboard.SalesValue || 0],
+                data: [12, 18, 10, 22, 16, safe.SalesValue || 0],
                 borderColor: "#0d6efd",
                 backgroundColor: "rgba(13,110,253,.15)",
                 tension: .4
             },
             {
                 label: "Purchase",
-                data: [15, 10, 14, 20, 19, dashboard.PurchaseValue || 0],
+                data: [15, 10, 14, 20, 19, safe.PurchaseValue || 0],
                 borderColor: "#198754",
                 backgroundColor: "rgba(25,135,84,.15)",
                 tension: .4

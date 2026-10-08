@@ -196,6 +196,10 @@ export default function TypeaheadDropdown({
           disabled={disabled}
           className="typeahead-input"
           autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="off"
+          spellCheck={false}
+          data-lpignore="true"
         />
 
         {clearable && value && !disabled && (

@@ -42,6 +42,145 @@ import {
 } from "../../services/purchaseService";
 
 import PurchaseOrderPrintModal from "../../components/purchase/PurchaseOrderPrintModal";
+import TypeaheadDropdown from "../../components/common/TypeaheadDropdown";
+
+// Fallback & reference master data (matching JenixCloud TPCS Fashion ERP)
+const DEFAULT_ITEM_GROUPS = [
+  "Fabrics",
+  "Leather",
+  "Zippers",
+  "Sliders",
+  "Buttons",
+  "Threads",
+  "Hardware & Trims",
+  "Accessories",
+  "Linings",
+  "Webbing & Tapes",
+  "Foam & Reinforcements",
+  "Adhesives & Chemicals",
+  "Packaging Materials"
+];
+
+const DEFAULT_ITEM_CATEGORIES = [
+  "Raw Material",
+  "Trim / Component",
+  "Hardware",
+  "Consumables",
+  "Packaging Material",
+  "Finished Goods",
+  "Semi-Finished Goods"
+];
+
+const DEFAULT_INDENT_TYPES = [
+  "Standard / Regular",
+  "Urgent / Critical",
+  "Sample Order",
+  "Job Work",
+  "Re-order",
+  "Seasonal Bulk"
+];
+
+const DEFAULT_INDENT_SUGGESTIONS = [
+  "IND000001",
+  "IND000002",
+  "IND000003",
+  "IND000004",
+  "IND000005",
+  "IND000006",
+  "IND000007",
+  "IND000008"
+];
+
+const DEFAULT_ENTERED_BY = [
+  "Vaishnav V",
+  "Admin User",
+  "Purchase Manager",
+  "Store Incharge",
+  "Merchandiser - Team A",
+  "Merchandiser - Team B",
+  "Production Coordinator"
+];
+
+const DEFAULT_CUSTOMER_ORDERS = [
+  "CO-2024-001",
+  "CO-2024-002",
+  "CO-2024-003",
+  "CO-2024-004",
+  "ORD-EXPORT-01",
+  "ORD-EXPORT-02",
+  "ORD-DOM-01",
+  "ORD-DOM-02"
+];
+
+const DEFAULT_ITEMS = [
+  { ItemID: 101, ItemCode: "SLD-YKK-001", ItemName: "YKK VISLON SLIDER WITH PULLER NO.8", Category: "Sliders" },
+  { ItemID: 102, ItemCode: "SLD-YKK-002", ItemName: "YKK SLIDER CFC NO.5 DFBAD868- 8540717", Category: "Sliders" },
+  { ItemID: 103, ItemCode: "SLD-YKK-003", ItemName: "YKK SLIDER METAL NO.5 05 M ZF6 PC2", Category: "Sliders" },
+  { ItemID: 104, ItemCode: "SLD-YKK-004", ItemName: "YKK EXCELLA SLIDER NO.3 03 SG DFHNT2 PC2", Category: "Sliders" },
+  { ItemID: 105, ItemCode: "SLD-YKK-005", ItemName: "YKK METAL SLIDER WITH O RING NO.5 DFORING 02D - 3212000", Category: "Sliders" },
+  { ItemID: 106, ItemCode: "SLD-YKK-006", ItemName: "YKK SLIDER METAL NO.3 DA81ND16", Category: "Sliders" },
+  { ItemID: 107, ItemCode: "SLD-YKK-007", ItemName: "YKK SLIDER METAL NO.3 DFORING C8", Category: "Sliders" },
+  { ItemID: 108, ItemCode: "SLD-YKK-008", ItemName: "YKK SLIDER METAL NO.5 DFORING C6", Category: "Sliders" },
+  { ItemID: 109, ItemCode: "ZIP-YKK-009", ItemName: "YKK NYLON ZIPPER NO.5 CLOSE END (BLACK) 15CM", Category: "Zippers" },
+  { ItemID: 110, ItemCode: "ZIP-YKK-010", ItemName: "YKK VISLON ZIPPER NO.8 OPEN END 60CM", Category: "Zippers" },
+  { ItemID: 111, ItemCode: "PUL-YKK-011", ItemName: "YKK PULLER LEATHERETTE 45MM", Category: "Trims" },
+  { ItemID: 1, ItemCode: "RM001", ItemName: "Leather Sheet - Full Grain Tan", Category: "Leather" },
+  { ItemID: 2, ItemCode: "FAB001", ItemName: "Cotton Twill Fabric 240 GSM", Category: "Fabrics" },
+  { ItemID: 3, ItemCode: "ZIP001", ItemName: "Metal Zipper #5 Antique Brass", Category: "Zippers" },
+  { ItemID: 4, ItemCode: "LTH002", ItemName: "Full Grain Suede Leather", Category: "Leather" },
+  { ItemID: 5, ItemCode: "THD001", ItemName: "Industrial Spun Polyester Thread 40/2", Category: "Threads" },
+  { ItemID: 6, ItemCode: "BTN001", ItemName: "Horn Button 4-Hole 24L", Category: "Buttons" },
+  { ItemID: 9, ItemCode: "HDW-001", ItemName: "Alloy Buckle Matte Finish 35mm", Category: "Hardware" }
+];
+
+const DEFAULT_COLOURS = [
+  "Black",
+  "Navy Blue",
+  "Tan Brown",
+  "Antique Brass",
+  "Dark Brown",
+  "Gun Metal",
+  "Nickel",
+  "Rose Gold",
+  "Shiny Nickel",
+  "Cognac",
+  "Burgundy",
+  "Olive Green",
+  "Beige",
+  "Off White",
+  "Grey"
+];
+
+const DEFAULT_SUPPLIERS = [
+  { SupplierID: 1, SupplierName: "Classic Leather Corp", SupplierCode: "SUP-001" },
+  { SupplierID: 2, SupplierName: "Apex Fabrics Ltd", SupplierCode: "SUP-002" },
+  { SupplierID: 3, SupplierName: "YKK India Pvt Ltd", SupplierCode: "SUP-003" },
+  { SupplierID: 4, SupplierName: "National Hardware & Trims", SupplierCode: "SUP-004" },
+  { SupplierID: 5, SupplierName: "Vardhman Threads", SupplierCode: "SUP-005" },
+  { SupplierID: 6, SupplierName: "Zenith Packaging Solutions", SupplierCode: "SUP-006" },
+  { SupplierID: 7, SupplierName: "Global Tannery Exports", SupplierCode: "SUP-007" }
+];
+
+const DEFAULT_DEPARTMENTS = [
+  { DepartmentID: 1, DepartmentName: "Cutting Department" },
+  { DepartmentID: 2, DepartmentName: "Preparation & Skiving" },
+  { DepartmentID: 3, DepartmentName: "Assembly & Stitching" },
+  { DepartmentID: 4, DepartmentName: "Finishing & Edge Painting" },
+  { DepartmentID: 5, DepartmentName: "Packing & Inspection" },
+  { DepartmentID: 6, DepartmentName: "Stores & Inventory" },
+  { DepartmentID: 7, DepartmentName: "Sample Department" }
+];
+
+const DEFAULT_CHARGE_ACCOUNTS = [
+  "Freight Charges",
+  "Packing & Forwarding",
+  "Insurance",
+  "Loading & Unloading",
+  "Customs Duty",
+  "Courier Charges",
+  "Handling Fees",
+  "Other Charges"
+];
 
 export default function PurchaseOrder() {
   // ==========================================
@@ -129,6 +268,38 @@ export default function PurchaseOrder() {
   const [viewingPO, setViewingPO] = useState(null);
   const [allPurchaseOrders, setAllPurchaseOrders] = useState([]);
 
+  // Memoized options for TypeaheadDropdowns
+  const itemOptions = useMemo(() => {
+    const list = itemsMaster.length > 0 ? itemsMaster : DEFAULT_ITEMS;
+    return list.map((it) => ({
+      label: it.ItemName,
+      value: it.ItemID || it.ItemCode || it.ItemName,
+      code: it.ItemCode,
+      subtext: it.Category || it.category,
+      raw: it
+    }));
+  }, [itemsMaster]);
+
+  const supplierOptions = useMemo(() => {
+    const list = suppliersMaster.length > 0 ? suppliersMaster : DEFAULT_SUPPLIERS;
+    return list.map((s) => ({
+      label: `${s.SupplierName}${s.SupplierCode ? ` (${s.SupplierCode})` : ""}`,
+      value: s.SupplierID,
+      code: s.SupplierCode,
+      raw: s
+    }));
+  }, [suppliersMaster]);
+
+  const colourOptions = useMemo(() => {
+    const list = coloursMaster.length > 0 ? coloursMaster : DEFAULT_COLOURS;
+    return list.map((c) => (typeof c === "string" ? c : c.ColourName || c.ColorName || c.name || String(c)));
+  }, [coloursMaster]);
+
+  const departmentOptions = useMemo(() => {
+    const list = departmentsMaster.length > 0 ? departmentsMaster : DEFAULT_DEPARTMENTS;
+    return list.map((d) => (typeof d === "string" ? d : d.DepartmentName || d.name || String(d)));
+  }, [departmentsMaster]);
+
   // ==========================================
   // INITIAL DATA LOADING
   // ==========================================
@@ -147,19 +318,44 @@ export default function PurchaseOrder() {
       ]);
 
       if (supRes.status === "fulfilled" && supRes.value.data) {
-        setSuppliersMaster(Array.isArray(supRes.value.data) ? supRes.value.data : supRes.value.data.data || []);
+        const supData = Array.isArray(supRes.value.data) ? supRes.value.data : supRes.value.data.data || [];
+        setSuppliersMaster(supData.length > 0 ? supData : DEFAULT_SUPPLIERS);
+      } else {
+        setSuppliersMaster(DEFAULT_SUPPLIERS);
       }
+
       if (deptRes.status === "fulfilled" && deptRes.value.data) {
-        setDepartmentsMaster(Array.isArray(deptRes.value.data) ? deptRes.value.data : deptRes.value.data.data || []);
+        const deptData = Array.isArray(deptRes.value.data) ? deptRes.value.data : deptRes.value.data.data || [];
+        setDepartmentsMaster(deptData.length > 0 ? deptData : DEFAULT_DEPARTMENTS);
+      } else {
+        setDepartmentsMaster(DEFAULT_DEPARTMENTS);
       }
+
       if (colRes.status === "fulfilled" && colRes.value.data) {
-        setColoursMaster(Array.isArray(colRes.value.data) ? colRes.value.data : colRes.value.data.data || []);
+        const colData = Array.isArray(colRes.value.data) ? colRes.value.data : colRes.value.data.data || [];
+        setColoursMaster(colData.length > 0 ? colData : DEFAULT_COLOURS);
+      } else {
+        setColoursMaster(DEFAULT_COLOURS);
       }
+
       if (itmRes.status === "fulfilled" && itmRes.value.data) {
-        setItemsMaster(Array.isArray(itmRes.value.data) ? itmRes.value.data : itmRes.value.data.data || []);
+        const itmData = Array.isArray(itmRes.value.data) ? itmRes.value.data : itmRes.value.data.data || [];
+        const merged = [...itmData];
+        DEFAULT_ITEMS.forEach((def) => {
+          if (!merged.some((m) => (m.ItemCode && m.ItemCode === def.ItemCode) || (m.ItemName && m.ItemName.toLowerCase() === def.ItemName.toLowerCase()))) {
+            merged.push(def);
+          }
+        });
+        setItemsMaster(merged);
+      } else {
+        setItemsMaster(DEFAULT_ITEMS);
       }
     } catch (e) {
       console.warn("Could not load some masters:", e);
+      setItemsMaster(DEFAULT_ITEMS);
+      setSuppliersMaster(DEFAULT_SUPPLIERS);
+      setColoursMaster(DEFAULT_COLOURS);
+      setDepartmentsMaster(DEFAULT_DEPARTMENTS);
     }
   };
 
@@ -673,6 +869,7 @@ export default function PurchaseOrder() {
                 >
                   <option value="">&lt;--Select--&gt;</option>
                   <option value="Domestic">Domestic</option>
+                  <option value="Service PO">Service PO</option>
                   <option value="Import">Import</option>
                   <option value="Job Work">Job Work</option>
                   <option value="Regular Purchase">Regular Purchase</option>
@@ -730,33 +927,15 @@ export default function PurchaseOrder() {
                 <Form.Label className="small fw-semibold text-secondary mb-1">
                   Indent No
                 </Form.Label>
-                <InputGroup size="sm" className="mb-1">
-                  <Form.Control
-                    placeholder="Enter Indent No"
-                    value={indentInput}
-                    onChange={(e) => setIndentInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        addTag(indentInput, indentNosList, setIndentNosList, setIndentInput);
-                      }
-                    }}
-                    list="indentSuggestions"
-                  />
-                  <datalist id="indentSuggestions">
-                    <option value="IND000001" />
-                    <option value="IND000002" />
-                    <option value="IND000003" />
-                    <option value="IND000004" />
-                    <option value="IND000005" />
-                  </datalist>
-                  <Button
-                    variant="outline-secondary"
-                    onClick={() => addTag(indentInput, indentNosList, setIndentNosList, setIndentInput)}
-                  >
-                    <FaPlus />
-                  </Button>
-                </InputGroup>
+                <TypeaheadDropdown
+                  value={indentInput}
+                  onChange={(val) => setIndentInput(val)}
+                  options={DEFAULT_INDENT_SUGGESTIONS}
+                  placeholder="Enter Indent No"
+                  showAddButton={true}
+                  onAdd={(val) => addTag(val || indentInput, indentNosList, setIndentNosList, setIndentInput)}
+                  className="mb-1"
+                />
                 {/* Scrollable List Box matching screenshot */}
                 <div
                   className="border rounded p-1 bg-light overflow-auto"
@@ -792,11 +971,12 @@ export default function PurchaseOrder() {
                 <Form.Label className="small fw-semibold text-secondary mb-1">
                   Entered By
                 </Form.Label>
-                <Form.Control
-                  size="sm"
-                  placeholder="Type and select Entered By"
+                <TypeaheadDropdown
                   value={enteredBy}
-                  onChange={(e) => setEnteredBy(e.target.value)}
+                  onChange={(val) => setEnteredBy(val)}
+                  options={DEFAULT_ENTERED_BY}
+                  placeholder="Type and select Entered By"
+                  showAddButton={false}
                 />
               </Form.Group>
 
@@ -811,7 +991,8 @@ export default function PurchaseOrder() {
                   onChange={(e) => setReleaseOption(e.target.value)}
                 >
                   <option value="1. One PO per supplier">1. One PO per supplier</option>
-                  <option value="2. Combined PO">2. Combined PO</option>
+                  <option value="2. One PO per supplier & each required">2. One PO per supplier & each required</option>
+                  <option value="3. Combined PO">3. Combined PO</option>
                 </Form.Select>
               </Form.Group>
 
@@ -820,11 +1001,12 @@ export default function PurchaseOrder() {
                 <Form.Label className="small fw-semibold text-secondary mb-1">
                   Customer Order No
                 </Form.Label>
-                <Form.Control
-                  size="sm"
-                  placeholder="Type and select Customer Order No"
+                <TypeaheadDropdown
                   value={customerOrderNo}
-                  onChange={(e) => setCustomerOrderNo(e.target.value)}
+                  onChange={(val) => setCustomerOrderNo(val)}
+                  options={DEFAULT_CUSTOMER_ORDERS}
+                  placeholder="Type and select Customer Order No"
+                  showAddButton={false}
                 />
               </Form.Group>
 
@@ -869,34 +1051,15 @@ export default function PurchaseOrder() {
                 <Form.Label className="small fw-semibold text-secondary mb-1">
                   Item Group
                 </Form.Label>
-                <InputGroup size="sm" className="mb-1">
-                  <Form.Control
-                    placeholder="Type and select Item Group"
-                    value={itemGroupInput}
-                    onChange={(e) => setItemGroupInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        addTag(itemGroupInput, itemGroupsList, setItemGroupsList, setItemGroupInput);
-                      }
-                    }}
-                    list="groupSuggestions"
-                  />
-                  <datalist id="groupSuggestions">
-                    <option value="Fabrics" />
-                    <option value="Leather" />
-                    <option value="Zippers" />
-                    <option value="Buttons" />
-                    <option value="Threads" />
-                    <option value="Accessories" />
-                  </datalist>
-                  <Button
-                    variant="outline-secondary"
-                    onClick={() => addTag(itemGroupInput, itemGroupsList, setItemGroupsList, setItemGroupInput)}
-                  >
-                    <FaPlus />
-                  </Button>
-                </InputGroup>
+                <TypeaheadDropdown
+                  value={itemGroupInput}
+                  onChange={(val) => setItemGroupInput(val)}
+                  options={DEFAULT_ITEM_GROUPS}
+                  placeholder="Type and select Item Group"
+                  showAddButton={true}
+                  onAdd={(val) => addTag(val || itemGroupInput, itemGroupsList, setItemGroupsList, setItemGroupInput)}
+                  className="mb-1"
+                />
                 <div
                   className="border rounded p-1 bg-light overflow-auto"
                   style={{ height: "72px" }}
@@ -930,11 +1093,12 @@ export default function PurchaseOrder() {
                 <Form.Label className="small fw-semibold text-secondary mb-1">
                   Item Category
                 </Form.Label>
-                <Form.Control
-                  size="sm"
-                  placeholder="Type & select Item Category"
+                <TypeaheadDropdown
                   value={itemCategory}
-                  onChange={(e) => setItemCategory(e.target.value)}
+                  onChange={(val) => setItemCategory(val)}
+                  options={DEFAULT_ITEM_CATEGORIES}
+                  placeholder="Type & select Item Category"
+                  showAddButton={false}
                 />
               </Form.Group>
 
@@ -943,11 +1107,12 @@ export default function PurchaseOrder() {
                 <Form.Label className="small fw-semibold text-secondary mb-1">
                   Indent Type
                 </Form.Label>
-                <Form.Control
-                  size="sm"
-                  placeholder="Type & Select Indent Type"
+                <TypeaheadDropdown
                   value={indentType}
-                  onChange={(e) => setIndentType(e.target.value)}
+                  onChange={(val) => setIndentType(val)}
+                  options={DEFAULT_INDENT_TYPES}
+                  placeholder="Type & Select Indent Type"
+                  showAddButton={false}
                 />
               </Form.Group>
 
@@ -992,31 +1157,16 @@ export default function PurchaseOrder() {
                 <Form.Label className="small fw-semibold text-secondary mb-1">
                   Item
                 </Form.Label>
-                <InputGroup size="sm" className="mb-1">
-                  <Form.Control
-                    placeholder="Item"
-                    value={itemInput}
-                    onChange={(e) => setItemInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        addTag(itemInput, itemsList, setItemsList, setItemInput);
-                      }
-                    }}
-                    list="itemSuggestions"
-                  />
-                  <datalist id="itemSuggestions">
-                    {itemsMaster.map((it) => (
-                      <option key={it.ItemID} value={it.ItemName} />
-                    ))}
-                  </datalist>
-                  <Button
-                    variant="outline-secondary"
-                    onClick={() => addTag(itemInput, itemsList, setItemsList, setItemInput)}
-                  >
-                    <FaPlus />
-                  </Button>
-                </InputGroup>
+                <TypeaheadDropdown
+                  value={itemInput}
+                  onChange={(val) => setItemInput(val)}
+                  options={itemOptions}
+                  placeholder="Item"
+                  showAddButton={true}
+                  dropdownWidth="min(520px, 90vw)"
+                  onAdd={(val) => addTag(val || itemInput, itemsList, setItemsList, setItemInput)}
+                  className="mb-1"
+                />
                 <div
                   className="border rounded p-1 bg-light overflow-auto"
                   style={{ height: "72px" }}
@@ -1050,22 +1200,24 @@ export default function PurchaseOrder() {
                 <Form.Label className="small fw-semibold text-secondary mb-1">
                   Supplier
                 </Form.Label>
-                <Form.Select
-                  size="sm"
-                  value={selectedSupplierId}
-                  onChange={(e) => {
-                    setSelectedSupplierId(e.target.value);
-                    const sup = suppliersMaster.find((s) => String(s.SupplierID) === e.target.value);
-                    setSupplierInput(sup ? sup.SupplierName : "");
+                <TypeaheadDropdown
+                  value={supplierInput}
+                  onChange={(val) => {
+                    setSupplierInput(val);
+                    const match = suppliersMaster.find(
+                      (s) => s.SupplierName?.toLowerCase() === val.toLowerCase()
+                    );
+                    setSelectedSupplierId(match ? match.SupplierID : "");
                   }}
-                >
-                  <option value="">Type and select Received From</option>
-                  {suppliersMaster.map((s) => (
-                    <option key={s.SupplierID} value={s.SupplierID}>
-                      {s.SupplierName} ({s.SupplierCode || "SUP"})
-                    </option>
-                  ))}
-                </Form.Select>
+                  onSelect={(supObj, label) => {
+                    setSupplierInput(label);
+                    setSelectedSupplierId(supObj?.SupplierID || supObj?.value || "");
+                  }}
+                  options={supplierOptions}
+                  placeholder="Type and select Received From"
+                  dropdownWidth="min(450px, 90vw)"
+                  showAddButton={false}
+                />
               </Form.Group>
 
               {/* Classification Radio: Both / Leather / Non-Leather */}
@@ -1109,33 +1261,17 @@ export default function PurchaseOrder() {
                 <Form.Label className="small fw-semibold text-secondary mb-1">
                   Colour
                 </Form.Label>
-                <InputGroup size="sm" className="mb-1">
-                  <Form.Control
-                    placeholder="Colour"
-                    value={colourInput}
-                    onChange={(e) => setColourInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        addTag(colourInput, coloursList, setColoursList, setColourInput);
-                      }
-                    }}
-                    list="colourSuggestions"
-                  />
-                  <datalist id="colourSuggestions">
-                    <option value="Black" />
-                    <option value="Navy Blue" />
-                    <option value="Tan Brown" />
-                    <option value="Antique Brass" />
-                    <option value="Dark Brown" />
-                  </datalist>
-                  <Button
-                    variant="outline-secondary"
-                    onClick={() => addTag(colourInput, coloursList, setColoursList, setColourInput)}
-                  >
-                    <FaPlus />
-                  </Button>
-                </InputGroup>
+                <TypeaheadDropdown
+                  value={colourInput}
+                  onChange={(val) => setColourInput(val)}
+                  options={colourOptions}
+                  placeholder="Colour"
+                  showAddButton={true}
+                  align="right"
+                  dropdownWidth="min(360px, 90vw)"
+                  onAdd={(val) => addTag(val || colourInput, coloursList, setColoursList, setColourInput)}
+                  className="mb-1"
+                />
                 <div
                   className="border rounded p-1 bg-light overflow-auto"
                   style={{ height: "72px" }}
@@ -1169,18 +1305,15 @@ export default function PurchaseOrder() {
                 <Form.Label className="small fw-semibold text-secondary mb-1">
                   Department
                 </Form.Label>
-                <Form.Select
-                  size="sm"
+                <TypeaheadDropdown
                   value={departmentInput}
-                  onChange={(e) => setDepartmentInput(e.target.value)}
-                >
-                  <option value="">Type & Select Department</option>
-                  {departmentsMaster.map((d) => (
-                    <option key={d.DepartmentID} value={d.DepartmentName}>
-                      {d.DepartmentName}
-                    </option>
-                  ))}
-                </Form.Select>
+                  onChange={(val) => setDepartmentInput(val)}
+                  options={departmentOptions}
+                  placeholder="Type & Select Department"
+                  align="right"
+                  dropdownWidth="min(360px, 90vw)"
+                  showAddButton={false}
+                />
               </Form.Group>
             </Col>
           </Row>
@@ -1369,11 +1502,13 @@ export default function PurchaseOrder() {
                   {otherCharges.map((ch) => (
                     <tr key={ch.id}>
                       <td>
-                        <Form.Control
-                          size="sm"
-                          placeholder="Type an..."
+                        <TypeaheadDropdown
                           value={ch.accountName}
-                          onChange={(e) => handleChargeChange(ch.id, "accountName", e.target.value)}
+                          onChange={(val) => handleChargeChange(ch.id, "accountName", val)}
+                          options={DEFAULT_CHARGE_ACCOUNTS}
+                          placeholder="Type an..."
+                          showAddButton={false}
+                          dropdownWidth="min(320px, 90vw)"
                         />
                       </td>
                       <td>

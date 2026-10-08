@@ -1,0 +1,157 @@
+/* Typeahead / Autocomplete Searchable Dropdown CSS matching JenixCloud / TPCS Fashion ERP */
+.typeahead-container {
+  position: relative;
+  width: 100%;
+}
+
+.typeahead-input-group {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+}
+
+.typeahead-input {
+  font-size: 12px !important;
+  color: #1e293b !important;
+  border-color: #cbd5e1 !important;
+  background-color: #ffffff !important;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.typeahead-input:focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2) !important;
+  outline: none !important;
+}
+
+.typeahead-btn-add {
+  font-size: 11px !important;
+  padding: 0 10px !important;
+  border-color: #cbd5e1 !important;
+  background-color: #f8fafc !important;
+  color: #475569 !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+.typeahead-btn-add:hover {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  border-color: #94a3b8 !important;
+}
+
+.typeahead-clear-btn {
+  position: absolute;
+  right: 36px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0 4px;
+  z-index: 5;
+  line-height: 1;
+}
+
+.typeahead-clear-btn.no-add-btn {
+  right: 8px;
+}
+
+.typeahead-clear-btn:hover {
+  color: #ef4444;
+}
+
+/* Floating Dropdown Overlay */
+.typeahead-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 9999;
+  min-width: 100%;
+  max-width: 550px;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  margin-top: 2px;
+  max-height: 240px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0;
+  list-style: none;
+}
+
+/* Custom Sleek Scrollbar */
+.typeahead-menu::-webkit-scrollbar {
+  width: 6px;
+}
+.typeahead-menu::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+.typeahead-menu::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+.typeahead-menu::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.typeahead-item {
+  padding: 6px 10px;
+  font-size: 12px;
+  color: #1e293b;
+  cursor: pointer;
+  border-bottom: 1px solid #f8fafc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  white-space: normal;
+  word-break: break-word;
+  line-height: 1.35;
+  transition: background-color 0.1s ease;
+}
+
+.typeahead-item:last-child {
+  border-bottom: none;
+}
+
+.typeahead-item:hover,
+.typeahead-item.active {
+  background-color: #e0f2fe;
+  color: #0369a1;
+  font-weight: 500;
+}
+
+.typeahead-item-code {
+  font-size: 11px;
+  color: #64748b;
+  font-family: monospace;
+  margin-left: 8px;
+  flex-shrink: 0;
+}
+
+.typeahead-item:hover .typeahead-item-code,
+.typeahead-item.active .typeahead-item-code {
+  color: #0284c7;
+}
+
+.typeahead-empty {
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #94a3b8;
+  font-style: italic;
+  text-align: center;
+}
+
+.typeahead-loading {
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #64748b;
+  text-align: center;
+}

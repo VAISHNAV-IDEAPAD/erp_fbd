@@ -43,6 +43,7 @@ import {
 
 import PurchaseOrderPrintModal from "../../components/purchase/PurchaseOrderPrintModal";
 import TypeaheadDropdown from "../../components/common/TypeaheadDropdown";
+import "../../styles/purchaseOrder.css";
 
 // Fallback & reference master data (matching JenixCloud TPCS Fashion ERP)
 const DEFAULT_ITEM_GROUPS = [
@@ -819,19 +820,17 @@ export default function PurchaseOrder() {
   };
 
   return (
-    <Container fluid className="px-3 py-3" style={{ background: "#f8f9fa", minHeight: "100vh" }}>
+    <Container fluid className="po-erp-page">
       {/* ====================================================
           PAGE HEADER
       ===================================================== */}
-      <div className="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+      <div className="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
         <div>
-          <h4 className="fw-bold text-primary mb-0" style={{ letterSpacing: "-0.5px" }}>
-            Purchase Order
-          </h4>
-          <span className="text-muted small">Create and link Purchase Orders with approved Indents</span>
+          <div className="po-erp-title">Purchase Order</div>
+          <div className="po-erp-subtitle">Create and link Purchase Orders with approved Indents</div>
         </div>
         <div className="d-flex gap-2">
-          <Button variant="outline-primary" size="sm" onClick={() => handleOpenPOViewer(null)}>
+          <Button className="po-erp-btn-primary" onClick={() => handleOpenPOViewer(null)}>
             <FaEye className="me-1" /> View Past Orders ({allPurchaseOrders.length})
           </Button>
         </div>
@@ -842,1005 +841,977 @@ export default function PurchaseOrder() {
           variant={notification.type}
           dismissible
           onClose={() => setNotification(null)}
-          className="py-2 small shadow-sm"
+          className="py-1 px-3 mb-2 small shadow-none border"
+          style={{ fontSize: "11.5px" }}
         >
           {notification.message}
         </Alert>
       )}
 
       {/* ====================================================
-          TOP FILTER & CRITERIA FORM (MATCHING SCREENSHOT 1)
+          TOP FILTER & CRITERIA FORM (MATCHING JENIXCLOUD ERP)
       ===================================================== */}
-      <Card className="border shadow-sm mb-3" style={{ background: "#ffffff" }}>
-        <Card.Body className="p-3">
-          <Row className="g-3">
-            {/* ---------------- COLUMN 1 ---------------- */}
-            <Col lg={3} md={6}>
-              {/* Purchase Type */}
-              <Form.Group className="mb-2">
-                <Form.Label className="small fw-semibold text-secondary mb-1">
-                  Purchase Type <span className="text-danger">*</span>
+      <div className="mb-3">
+        <Row className="g-3">
+          {/* ---------------- COLUMN 1 ---------------- */}
+          <Col lg={3} md={6}>
+            {/* Purchase Type */}
+            <Form.Group className="mb-2">
+              <Form.Label className="po-erp-label">
+                Purchase Type <span className="req">*</span>
+              </Form.Label>
+              <Form.Select
+                size="sm"
+                value={purchaseType}
+                onChange={(e) => setPurchaseType(e.target.value)}
+                className="po-erp-select w-100"
+              >
+                <option value="">&lt;--Select--&gt;</option>
+                <option value="Domestic">Domestic</option>
+                <option value="Service PO">Service PO</option>
+                <option value="Import">Import</option>
+                <option value="Job Work">Job Work</option>
+                <option value="Regular Purchase">Regular Purchase</option>
+                <option value="Capital Goods">Capital Goods</option>
+              </Form.Select>
+            </Form.Group>
+
+            {/* Indent Nos Excel Import */}
+            <Form.Group className="mb-2">
+              <div className="d-flex justify-content-between align-items-center mb-1">
+                <Form.Label className="po-erp-label mb-0">
+                  Indent Nos Excel
                 </Form.Label>
-                <Form.Select
-                  size="sm"
-                  value={purchaseType}
-                  onChange={(e) => setPurchaseType(e.target.value)}
-                  className="border-secondary-subtle"
-                >
-                  <option value="">&lt;--Select--&gt;</option>
-                  <option value="Domestic">Domestic</option>
-                  <option value="Service PO">Service PO</option>
-                  <option value="Import">Import</option>
-                  <option value="Job Work">Job Work</option>
-                  <option value="Regular Purchase">Regular Purchase</option>
-                  <option value="Capital Goods">Capital Goods</option>
-                </Form.Select>
-              </Form.Group>
-
-              {/* Indent Nos Excel Import */}
-              <Form.Group className="mb-2">
-                <div className="d-flex justify-content-between align-items-center mb-1">
-                  <Form.Label className="small fw-semibold text-secondary mb-0">
-                    Indent Nos Excel
-                  </Form.Label>
-                  <Button
-                    variant="link"
-                    className="p-0 small text-decoration-none"
-                    style={{ fontSize: "11px" }}
-                    onClick={() => setShowExcelFormatModal(true)}
-                  >
-                    <FaFileExcel className="me-1 text-success" />
-                    View excel format
-                  </Button>
-                </div>
-                <div className="d-flex gap-1">
-                  <input
-                    type="file"
-                    ref={excelFileInputRef}
-                    style={{ display: "none" }}
-                    accept=".xlsx,.xls,.csv,.txt"
-                    onChange={handleExcelImport}
-                  />
-                  <Button
-                    variant="outline-secondary"
-                    size="sm"
-                    className="w-100 text-truncate text-start small d-flex align-items-center justify-content-between"
-                    onClick={() => excelFileInputRef.current?.click()}
-                  >
-                    <span>Choose file</span>
-                    <FaUpload className="text-muted ms-1" />
-                  </Button>
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    className="d-flex align-items-center px-2"
-                    onClick={() => excelFileInputRef.current?.click()}
-                    title="Import Indents from Excel"
-                  >
-                    <FaUpload className="me-1" /> Import
-                  </Button>
-                </div>
-              </Form.Group>
-
-              {/* Indent No + List Box */}
-              <Form.Group className="mb-2">
-                <Form.Label className="small fw-semibold text-secondary mb-1">
-                  Indent No
-                </Form.Label>
-                <TypeaheadDropdown
-                  value={indentInput}
-                  onChange={(val) => setIndentInput(val)}
-                  options={DEFAULT_INDENT_SUGGESTIONS}
-                  placeholder="Enter Indent No"
-                  showAddButton={true}
-                  onAdd={(val) => addTag(val || indentInput, indentNosList, setIndentNosList, setIndentInput)}
-                  className="mb-1"
-                />
-                {/* Scrollable List Box matching screenshot */}
-                <div
-                  className="border rounded p-1 bg-light overflow-auto"
-                  style={{ height: "72px" }}
-                >
-                  {indentNosList.length > 0 ? (
-                    indentNosList.map((tag) => (
-                      <div
-                        key={tag}
-                        className="d-flex justify-content-between align-items-center bg-white px-2 py-0 mb-1 rounded border small"
-                      >
-                        <span className="fw-semibold text-dark">{tag}</span>
-                        <span
-                          role="button"
-                          className="text-danger fw-bold ms-2"
-                          onClick={() => removeTag(tag, indentNosList, setIndentNosList)}
-                          title="Remove"
-                        >
-                          ×
-                        </span>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-muted text-center small py-3" style={{ fontSize: "11px" }}>
-                      No Indents added yet
-                    </div>
-                  )}
-                </div>
-              </Form.Group>
-
-              {/* Entered By */}
-              <Form.Group className="mb-2">
-                <Form.Label className="small fw-semibold text-secondary mb-1">
-                  Entered By
-                </Form.Label>
-                <TypeaheadDropdown
-                  value={enteredBy}
-                  onChange={(val) => setEnteredBy(val)}
-                  options={DEFAULT_ENTERED_BY}
-                  placeholder="Type and select Entered By"
-                  showAddButton={false}
-                />
-              </Form.Group>
-
-              {/* Release Option */}
-              <Form.Group className="mb-2">
-                <Form.Label className="small fw-semibold text-secondary mb-1">
-                  Release Option <span className="text-danger">*</span>
-                </Form.Label>
-                <Form.Select
-                  size="sm"
-                  value={releaseOption}
-                  onChange={(e) => setReleaseOption(e.target.value)}
-                >
-                  <option value="1. One PO per supplier">1. One PO per supplier</option>
-                  <option value="2. One PO per supplier & each required">2. One PO per supplier & each required</option>
-                  <option value="3. Combined PO">3. Combined PO</option>
-                </Form.Select>
-              </Form.Group>
-
-              {/* Customer Order No */}
-              <Form.Group className="mb-2">
-                <Form.Label className="small fw-semibold text-secondary mb-1">
-                  Customer Order No
-                </Form.Label>
-                <TypeaheadDropdown
-                  value={customerOrderNo}
-                  onChange={(val) => setCustomerOrderNo(val)}
-                  options={DEFAULT_CUSTOMER_ORDERS}
-                  placeholder="Type and select Customer Order No"
-                  showAddButton={false}
-                />
-              </Form.Group>
-
-              {/* Display & Edit Row Buttons */}
-              <div className="d-flex gap-2 mt-3 align-items-center">
                 <Button
-                  variant="primary"
-                  size="sm"
-                  className="fw-semibold px-3"
-                  onClick={() => handleFetchIndentItems(true)}
-                  disabled={loadingGrid}
+                  variant="link"
+                  className="p-0 text-decoration-none"
+                  style={{ fontSize: "11px", color: "#337ab7" }}
+                  onClick={() => setShowExcelFormatModal(true)}
                 >
-                  {loadingGrid && isEditMode ? <Spinner size="sm" className="me-1" /> : null}
-                  Display & Edit Row
-                </Button>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  className="fw-semibold px-3"
-                  onClick={() => handleFetchIndentItems(false)}
-                  disabled={loadingGrid}
-                >
-                  {loadingGrid && !isEditMode ? <Spinner size="sm" className="me-1" /> : null}
-                  Display
-                </Button>
-                <Button
-                  variant="outline-success"
-                  size="sm"
-                  className="px-2"
-                  onClick={handleExportCSV}
-                  title="Export table to Excel / CSV"
-                >
-                  <FaFileExcel />
+                  <FaFileExcel className="me-1 text-success" />
+                  View excel format
                 </Button>
               </div>
-            </Col>
-
-            {/* ---------------- COLUMN 2 ---------------- */}
-            <Col lg={3} md={6}>
-              {/* Item Group */}
-              <Form.Group className="mb-2">
-                <Form.Label className="small fw-semibold text-secondary mb-1">
-                  Item Group
-                </Form.Label>
-                <TypeaheadDropdown
-                  value={itemGroupInput}
-                  onChange={(val) => setItemGroupInput(val)}
-                  options={DEFAULT_ITEM_GROUPS}
-                  placeholder="Type and select Item Group"
-                  showAddButton={true}
-                  onAdd={(val) => addTag(val || itemGroupInput, itemGroupsList, setItemGroupsList, setItemGroupInput)}
-                  className="mb-1"
+              <div className="d-flex gap-1">
+                <input
+                  type="file"
+                  ref={excelFileInputRef}
+                  style={{ display: "none" }}
+                  accept=".xlsx,.xls,.csv,.txt"
+                  onChange={handleExcelImport}
                 />
-                <div
-                  className="border rounded p-1 bg-light overflow-auto"
-                  style={{ height: "72px" }}
+                <Button
+                  variant="outline-secondary"
+                  size="sm"
+                  className="po-erp-btn-excel w-100 text-truncate text-start d-flex align-items-center justify-content-between"
+                  onClick={() => excelFileInputRef.current?.click()}
                 >
-                  {itemGroupsList.length > 0 ? (
-                    itemGroupsList.map((tag) => (
-                      <div
-                        key={tag}
-                        className="d-flex justify-content-between align-items-center bg-white px-2 py-0 mb-1 rounded border small"
-                      >
-                        <span className="fw-semibold text-dark">{tag}</span>
-                        <span
-                          role="button"
-                          className="text-danger fw-bold ms-2"
-                          onClick={() => removeTag(tag, itemGroupsList, setItemGroupsList)}
-                        >
-                          ×
-                        </span>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-muted text-center small py-3" style={{ fontSize: "11px" }}>
-                      All Groups
-                    </div>
-                  )}
-                </div>
-              </Form.Group>
-
-              {/* Item Category */}
-              <Form.Group className="mb-2">
-                <Form.Label className="small fw-semibold text-secondary mb-1">
-                  Item Category
-                </Form.Label>
-                <TypeaheadDropdown
-                  value={itemCategory}
-                  onChange={(val) => setItemCategory(val)}
-                  options={DEFAULT_ITEM_CATEGORIES}
-                  placeholder="Type & select Item Category"
-                  showAddButton={false}
-                />
-              </Form.Group>
-
-              {/* Indent Type */}
-              <Form.Group className="mb-2">
-                <Form.Label className="small fw-semibold text-secondary mb-1">
-                  Indent Type
-                </Form.Label>
-                <TypeaheadDropdown
-                  value={indentType}
-                  onChange={(val) => setIndentType(val)}
-                  options={DEFAULT_INDENT_TYPES}
-                  placeholder="Type & Select Indent Type"
-                  showAddButton={false}
-                />
-              </Form.Group>
-
-              {/* Material Source Radio */}
-              <Form.Group className="mb-2 mt-3">
-                <Form.Label className="small fw-semibold text-secondary mb-1 d-block">
-                  Material Source
-                </Form.Label>
-                <div className="d-flex gap-3 small">
-                  <Form.Check
-                    type="radio"
-                    id="src-dom"
-                    label="Domestic"
-                    name="materialSource"
-                    checked={materialSource === "Domestic"}
-                    onChange={() => setMaterialSource("Domestic")}
-                  />
-                  <Form.Check
-                    type="radio"
-                    id="src-imp"
-                    label="Import"
-                    name="materialSource"
-                    checked={materialSource === "Import"}
-                    onChange={() => setMaterialSource("Import")}
-                  />
-                  <Form.Check
-                    type="radio"
-                    id="src-all"
-                    label="All"
-                    name="materialSource"
-                    checked={materialSource === "All"}
-                    onChange={() => setMaterialSource("All")}
-                  />
-                </div>
-              </Form.Group>
-            </Col>
-
-            {/* ---------------- COLUMN 3 ---------------- */}
-            <Col lg={3} md={6}>
-              {/* Item */}
-              <Form.Group className="mb-2">
-                <Form.Label className="small fw-semibold text-secondary mb-1">
-                  Item
-                </Form.Label>
-                <TypeaheadDropdown
-                  value={itemInput}
-                  onChange={(val) => setItemInput(val)}
-                  options={itemOptions}
-                  placeholder="Item"
-                  showAddButton={true}
-                  dropdownWidth="min(520px, 90vw)"
-                  onAdd={(val) => addTag(val || itemInput, itemsList, setItemsList, setItemInput)}
-                  className="mb-1"
-                />
-                <div
-                  className="border rounded p-1 bg-light overflow-auto"
-                  style={{ height: "72px" }}
+                  <span>Choose file</span>
+                  <FaUpload className="text-muted ms-1" />
+                </Button>
+                <Button
+                  className="po-erp-btn-primary px-2"
+                  onClick={() => excelFileInputRef.current?.click()}
+                  title="Import Indents from Excel"
                 >
-                  {itemsList.length > 0 ? (
-                    itemsList.map((tag) => (
-                      <div
-                        key={tag}
-                        className="d-flex justify-content-between align-items-center bg-white px-2 py-0 mb-1 rounded border small"
+                  <FaUpload className="me-1" /> Import
+                </Button>
+              </div>
+            </Form.Group>
+
+            {/* Indent No + List Box */}
+            <Form.Group className="mb-2">
+              <Form.Label className="po-erp-label">
+                Indent No
+              </Form.Label>
+              <TypeaheadDropdown
+                value={indentInput}
+                onChange={(val) => setIndentInput(val)}
+                options={DEFAULT_INDENT_SUGGESTIONS}
+                placeholder="Enter Indent No"
+                showAddButton={true}
+                onAdd={(val) => addTag(val || indentInput, indentNosList, setIndentNosList, setIndentInput)}
+                className="mb-1"
+              />
+              {/* Scrollable List Box matching screenshot */}
+              <div className="po-erp-listbox">
+                {indentNosList.length > 0 ? (
+                  indentNosList.map((tag) => (
+                    <div key={tag} className="po-erp-listbox-item">
+                      <span className="fw-semibold text-dark">{tag}</span>
+                      <span
+                        role="button"
+                        className="remove-x"
+                        onClick={() => removeTag(tag, indentNosList, setIndentNosList)}
+                        title="Remove"
                       >
-                        <span className="fw-semibold text-dark text-truncate">{tag}</span>
-                        <span
-                          role="button"
-                          className="text-danger fw-bold ms-2"
-                          onClick={() => removeTag(tag, itemsList, setItemsList)}
-                        >
-                          ×
-                        </span>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-muted text-center small py-3" style={{ fontSize: "11px" }}>
-                      All Items
+                        ×
+                      </span>
                     </div>
-                  )}
-                </div>
-              </Form.Group>
+                  ))
+                ) : (
+                  <div className="text-muted text-center py-3" style={{ fontSize: "11px" }}>
+                    No Indents added yet
+                  </div>
+                )}
+              </div>
+            </Form.Group>
 
-              {/* Supplier */}
-              <Form.Group className="mb-2">
-                <Form.Label className="small fw-semibold text-secondary mb-1">
-                  Supplier
-                </Form.Label>
-                <TypeaheadDropdown
-                  value={supplierInput}
-                  onChange={(val) => {
-                    setSupplierInput(val);
-                    const match = suppliersMaster.find(
-                      (s) => s.SupplierName?.toLowerCase() === val.toLowerCase()
-                    );
-                    setSelectedSupplierId(match ? match.SupplierID : "");
-                  }}
-                  onSelect={(supObj, label) => {
-                    setSupplierInput(label);
-                    setSelectedSupplierId(supObj?.SupplierID || supObj?.value || "");
-                  }}
-                  options={supplierOptions}
-                  placeholder="Type and select Received From"
-                  dropdownWidth="min(450px, 90vw)"
-                  showAddButton={false}
-                />
-              </Form.Group>
+            {/* Entered By */}
+            <Form.Group className="mb-2">
+              <Form.Label className="po-erp-label">
+                Entered By
+              </Form.Label>
+              <TypeaheadDropdown
+                value={enteredBy}
+                onChange={(val) => setEnteredBy(val)}
+                options={DEFAULT_ENTERED_BY}
+                placeholder="Type and select Entered By"
+                showAddButton={false}
+              />
+            </Form.Group>
 
-              {/* Classification Radio: Both / Leather / Non-Leather */}
-              <Form.Group className="mb-2 mt-3">
-                <Form.Label className="small fw-semibold text-secondary mb-1 d-block">
-                  Classification
-                </Form.Label>
-                <div className="d-flex gap-3 small">
-                  <Form.Check
-                    type="radio"
-                    id="class-both"
-                    label="Both"
-                    name="classification"
-                    checked={classification === "Both"}
-                    onChange={() => setClassification("Both")}
-                  />
-                  <Form.Check
-                    type="radio"
-                    id="class-lth"
-                    label="Leather"
-                    name="classification"
-                    checked={classification === "Leather"}
-                    onChange={() => setClassification("Leather")}
-                  />
-                  <Form.Check
-                    type="radio"
-                    id="class-non"
-                    label="Non-Leather"
-                    name="classification"
-                    checked={classification === "Non-Leather"}
-                    onChange={() => setClassification("Non-Leather")}
-                  />
-                </div>
-              </Form.Group>
-            </Col>
+            {/* Release Option */}
+            <Form.Group className="mb-2">
+              <Form.Label className="po-erp-label">
+                Release Option <span className="req">*</span>
+              </Form.Label>
+              <Form.Select
+                size="sm"
+                value={releaseOption}
+                onChange={(e) => setReleaseOption(e.target.value)}
+                className="po-erp-select w-100"
+              >
+                <option value="1. One PO per supplier">1. One PO per supplier</option>
+                <option value="2. One PO per supplier & each required">2. One PO per supplier & each required</option>
+                <option value="3. Combined PO">3. Combined PO</option>
+              </Form.Select>
+            </Form.Group>
 
-            {/* ---------------- COLUMN 4 ---------------- */}
-            <Col lg={3} md={6}>
-              {/* Colour */}
-              <Form.Group className="mb-2">
-                <Form.Label className="small fw-semibold text-secondary mb-1">
-                  Colour
-                </Form.Label>
-                <TypeaheadDropdown
-                  value={colourInput}
-                  onChange={(val) => setColourInput(val)}
-                  options={colourOptions}
-                  placeholder="Colour"
-                  showAddButton={true}
-                  align="right"
-                  dropdownWidth="min(360px, 90vw)"
-                  onAdd={(val) => addTag(val || colourInput, coloursList, setColoursList, setColourInput)}
-                  className="mb-1"
-                />
-                <div
-                  className="border rounded p-1 bg-light overflow-auto"
-                  style={{ height: "72px" }}
-                >
-                  {coloursList.length > 0 ? (
-                    coloursList.map((tag) => (
-                      <div
-                        key={tag}
-                        className="d-flex justify-content-between align-items-center bg-white px-2 py-0 mb-1 rounded border small"
+            {/* Customer Order No */}
+            <Form.Group className="mb-2">
+              <Form.Label className="po-erp-label">
+                Customer Order No
+              </Form.Label>
+              <TypeaheadDropdown
+                value={customerOrderNo}
+                onChange={(val) => setCustomerOrderNo(val)}
+                options={DEFAULT_CUSTOMER_ORDERS}
+                placeholder="Type and select Customer Order No"
+                showAddButton={false}
+              />
+            </Form.Group>
+
+            {/* Display & Edit Row Buttons */}
+            <div className="d-flex gap-2 mt-3 align-items-center">
+              <Button
+                className="po-erp-btn-primary px-3"
+                onClick={() => handleFetchIndentItems(true)}
+                disabled={loadingGrid}
+              >
+                {loadingGrid && isEditMode ? <Spinner size="sm" className="me-1" /> : null}
+                Display & Edit Row
+              </Button>
+              <Button
+                className="po-erp-btn-primary px-3"
+                onClick={() => handleFetchIndentItems(false)}
+                disabled={loadingGrid}
+              >
+                {loadingGrid && !isEditMode ? <Spinner size="sm" className="me-1" /> : null}
+                Display
+              </Button>
+              <Button
+                className="po-erp-btn-excel"
+                onClick={handleExportCSV}
+                title="Export table to Excel / CSV"
+              >
+                <FaFileExcel />
+              </Button>
+            </div>
+          </Col>
+
+          {/* ---------------- COLUMN 2 ---------------- */}
+          <Col lg={3} md={6}>
+            {/* Item Group */}
+            <Form.Group className="mb-2">
+              <Form.Label className="po-erp-label">
+                Item Group
+              </Form.Label>
+              <TypeaheadDropdown
+                value={itemGroupInput}
+                onChange={(val) => setItemGroupInput(val)}
+                options={DEFAULT_ITEM_GROUPS}
+                placeholder="Type and select Item Group"
+                showAddButton={true}
+                onAdd={(val) => addTag(val || itemGroupInput, itemGroupsList, setItemGroupsList, setItemGroupInput)}
+                className="mb-1"
+              />
+              <div className="po-erp-listbox">
+                {itemGroupsList.length > 0 ? (
+                  itemGroupsList.map((tag) => (
+                    <div key={tag} className="po-erp-listbox-item">
+                      <span className="fw-semibold text-dark">{tag}</span>
+                      <span
+                        role="button"
+                        className="remove-x"
+                        onClick={() => removeTag(tag, itemGroupsList, setItemGroupsList)}
+                        title="Remove"
                       >
-                        <span className="fw-semibold text-dark">{tag}</span>
-                        <span
-                          role="button"
-                          className="text-danger fw-bold ms-2"
-                          onClick={() => removeTag(tag, coloursList, setColoursList)}
-                        >
-                          ×
-                        </span>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-muted text-center small py-3" style={{ fontSize: "11px" }}>
-                      All Colours
+                        ×
+                      </span>
                     </div>
-                  )}
-                </div>
-              </Form.Group>
+                  ))
+                ) : (
+                  <div className="text-muted text-center py-3" style={{ fontSize: "11px" }}>
+                    All Groups
+                  </div>
+                )}
+              </div>
+            </Form.Group>
 
-              {/* Department */}
-              <Form.Group className="mb-2">
-                <Form.Label className="small fw-semibold text-secondary mb-1">
-                  Department
-                </Form.Label>
-                <TypeaheadDropdown
-                  value={departmentInput}
-                  onChange={(val) => setDepartmentInput(val)}
-                  options={departmentOptions}
-                  placeholder="Type & Select Department"
-                  align="right"
-                  dropdownWidth="min(360px, 90vw)"
-                  showAddButton={false}
+            {/* Item Category */}
+            <Form.Group className="mb-2">
+              <Form.Label className="po-erp-label">
+                Item Category
+              </Form.Label>
+              <TypeaheadDropdown
+                value={itemCategory}
+                onChange={(val) => setItemCategory(val)}
+                options={DEFAULT_ITEM_CATEGORIES}
+                placeholder="Type & select Item Category"
+                showAddButton={false}
+              />
+            </Form.Group>
+
+            {/* Indent Type */}
+            <Form.Group className="mb-2">
+              <Form.Label className="po-erp-label">
+                Indent Type
+              </Form.Label>
+              <TypeaheadDropdown
+                value={indentType}
+                onChange={(val) => setIndentType(val)}
+                options={DEFAULT_INDENT_TYPES}
+                placeholder="Type & Select Indent Type"
+                showAddButton={false}
+              />
+            </Form.Group>
+
+            {/* Material Source Radio */}
+            <Form.Group className="mb-2 mt-3">
+              <Form.Label className="po-erp-label d-block">
+                Material Source
+              </Form.Label>
+              <div className="po-erp-radios">
+                <Form.Check
+                  type="radio"
+                  id="src-dom"
+                  label="Domestic"
+                  name="materialSource"
+                  checked={materialSource === "Domestic"}
+                  onChange={() => setMaterialSource("Domestic")}
                 />
-              </Form.Group>
-            </Col>
-          </Row>
-        </Card.Body>
-      </Card>
+                <Form.Check
+                  type="radio"
+                  id="src-imp"
+                  label="Import"
+                  name="materialSource"
+                  checked={materialSource === "Import"}
+                  onChange={() => setMaterialSource("Import")}
+                />
+                <Form.Check
+                  type="radio"
+                  id="src-all"
+                  label="All"
+                  name="materialSource"
+                  checked={materialSource === "All"}
+                  onChange={() => setMaterialSource("All")}
+                />
+              </div>
+            </Form.Group>
+          </Col>
+
+          {/* ---------------- COLUMN 3 ---------------- */}
+          <Col lg={3} md={6}>
+            {/* Item */}
+            <Form.Group className="mb-2">
+              <Form.Label className="po-erp-label">
+                Item
+              </Form.Label>
+              <TypeaheadDropdown
+                value={itemInput}
+                onChange={(val) => setItemInput(val)}
+                options={itemOptions}
+                placeholder="Item"
+                showAddButton={true}
+                dropdownWidth="min(520px, 90vw)"
+                onAdd={(val) => addTag(val || itemInput, itemsList, setItemsList, setItemInput)}
+                className="mb-1"
+              />
+              <div className="po-erp-listbox">
+                {itemsList.length > 0 ? (
+                  itemsList.map((tag) => (
+                    <div key={tag} className="po-erp-listbox-item">
+                      <span className="fw-semibold text-dark text-truncate">{tag}</span>
+                      <span
+                        role="button"
+                        className="remove-x"
+                        onClick={() => removeTag(tag, itemsList, setItemsList)}
+                        title="Remove"
+                      >
+                        ×
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-muted text-center py-3" style={{ fontSize: "11px" }}>
+                    All Items
+                  </div>
+                )}
+              </div>
+            </Form.Group>
+
+            {/* Supplier */}
+            <Form.Group className="mb-2">
+              <Form.Label className="po-erp-label">
+                Supplier
+              </Form.Label>
+              <TypeaheadDropdown
+                value={supplierInput}
+                onChange={(val) => {
+                  setSupplierInput(val);
+                  const match = suppliersMaster.find(
+                    (s) => s.SupplierName?.toLowerCase() === val.toLowerCase()
+                  );
+                  setSelectedSupplierId(match ? match.SupplierID : "");
+                }}
+                onSelect={(supObj, label) => {
+                  setSupplierInput(label);
+                  setSelectedSupplierId(supObj?.SupplierID || supObj?.value || "");
+                }}
+                options={supplierOptions}
+                placeholder="Type and select Received From"
+                dropdownWidth="min(450px, 90vw)"
+                showAddButton={false}
+              />
+            </Form.Group>
+
+            {/* Classification Radio: Both / Leather / Non-Leather */}
+            <Form.Group className="mb-2 mt-3">
+              <Form.Label className="po-erp-label d-block">
+                Classification
+              </Form.Label>
+              <div className="po-erp-radios">
+                <Form.Check
+                  type="radio"
+                  id="class-both"
+                  label="Both"
+                  name="classification"
+                  checked={classification === "Both"}
+                  onChange={() => setClassification("Both")}
+                />
+                <Form.Check
+                  type="radio"
+                  id="class-lth"
+                  label="Leather"
+                  name="classification"
+                  checked={classification === "Leather"}
+                  onChange={() => setClassification("Leather")}
+                />
+                <Form.Check
+                  type="radio"
+                  id="class-non"
+                  label="Non-Leather"
+                  name="classification"
+                  checked={classification === "Non-Leather"}
+                  onChange={() => setClassification("Non-Leather")}
+                />
+              </div>
+            </Form.Group>
+          </Col>
+
+          {/* ---------------- COLUMN 4 ---------------- */}
+          <Col lg={3} md={6}>
+            {/* Colour */}
+            <Form.Group className="mb-2">
+              <Form.Label className="po-erp-label">
+                Colour
+              </Form.Label>
+              <TypeaheadDropdown
+                value={colourInput}
+                onChange={(val) => setColourInput(val)}
+                options={colourOptions}
+                placeholder="Colour"
+                showAddButton={true}
+                align="right"
+                dropdownWidth="min(360px, 90vw)"
+                onAdd={(val) => addTag(val || colourInput, coloursList, setColoursList, setColourInput)}
+                className="mb-1"
+              />
+              <div className="po-erp-listbox">
+                {coloursList.length > 0 ? (
+                  coloursList.map((tag) => (
+                    <div key={tag} className="po-erp-listbox-item">
+                      <span className="fw-semibold text-dark">{tag}</span>
+                      <span
+                        role="button"
+                        className="remove-x"
+                        onClick={() => removeTag(tag, coloursList, setColoursList)}
+                        title="Remove"
+                      >
+                        ×
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-muted text-center py-3" style={{ fontSize: "11px" }}>
+                    All Colours
+                  </div>
+                )}
+              </div>
+            </Form.Group>
+
+            {/* Department */}
+            <Form.Group className="mb-2">
+              <Form.Label className="po-erp-label">
+                Department
+              </Form.Label>
+              <TypeaheadDropdown
+                value={departmentInput}
+                onChange={(val) => setDepartmentInput(val)}
+                options={departmentOptions}
+                placeholder="Type & Select Department"
+                align="right"
+                dropdownWidth="min(360px, 90vw)"
+                showAddButton={false}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
+      </div>
 
       {/* ====================================================
           ITEMS TABLE (DEEP BLUE HEADER MATCHING SCREENSHOT 1 & 2)
       ===================================================== */}
-      <Card className="border shadow-sm mb-3">
-        <style>{`
-          .po-main-table th {
-            background-color: #1976d2 !important;
-            color: #ffffff !important;
-            font-size: 12px;
-            font-weight: 600;
-            white-space: nowrap;
-            vertical-align: middle;
-            border-color: #1565c0 !important;
-          }
-          .po-main-table td {
-            font-size: 13px;
-            vertical-align: middle;
-          }
-        `}</style>
-        <div className="table-responsive" style={{ maxHeight: "420px" }}>
-          <Table bordered hover size="sm" className="po-main-table mb-0 text-nowrap">
-            <thead className="sticky-top">
-              <tr>
-                <th style={{ width: "38px" }} className="text-center">
-                  <Form.Check
-                    type="checkbox"
-                    checked={gridRows.length > 0 && selectedRowKeys.size === gridRows.length}
-                    onChange={handleToggleAllRows}
-                  />
-                </th>
-                <th>Indent No</th>
-                <th>Profit Center</th>
-                <th>Supplier</th>
-                <th>Group</th>
-                <th>Item Name</th>
-                <th>Color</th>
-                <th>Size Range</th>
-                <th className="text-end">Rate</th>
-                <th className="text-end">Cost Price</th>
-                <th className="text-end">Bal Indent Qty</th>
-                {isEditMode && <th className="text-end text-warning">Order Qty</th>}
-                <th>Ex.FTY Date</th>
-                <th>Mat. Req. Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {gridRows.length > 0 ? (
-                gridRows.map((row) => {
-                  const isChecked = selectedRowKeys.has(row.key);
-                  return (
-                    <tr key={row.key} className={isChecked ? "table-active" : ""}>
-                      <td className="text-center">
-                        <Form.Check
-                          type="checkbox"
-                          checked={isChecked}
-                          onChange={() => handleToggleRow(row.key)}
+      <div className="table-responsive mb-2" style={{ maxHeight: "420px", border: "1px solid #2e6da4" }}>
+        <Table hover size="sm" className="po-ribbon-table mb-0 text-nowrap">
+          <thead className="sticky-top">
+            <tr>
+              <th style={{ width: "36px" }} className="text-center">
+                <Form.Check
+                  type="checkbox"
+                  checked={gridRows.length > 0 && selectedRowKeys.size === gridRows.length}
+                  onChange={handleToggleAllRows}
+                />
+              </th>
+              <th>Indent No</th>
+              <th>Profit Center</th>
+              <th>Supplier</th>
+              <th>Group</th>
+              <th>Item Name</th>
+              <th>Color</th>
+              <th>Size Range</th>
+              <th className="text-end">Rate</th>
+              <th className="text-end">Cost Price</th>
+              <th className="text-end">Bal Indent Qty</th>
+              {isEditMode && <th className="text-end text-warning">Order Qty</th>}
+              <th>Ex.FTY Date</th>
+              <th>Mat. Req. Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {gridRows.length > 0 ? (
+              gridRows.map((row) => {
+                const isChecked = selectedRowKeys.has(row.key);
+                return (
+                  <tr key={row.key} className={isChecked ? "table-active" : ""}>
+                    <td className="text-center">
+                      <Form.Check
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => handleToggleRow(row.key)}
+                      />
+                    </td>
+                    <td className="fw-bold" style={{ color: "#337ab7" }}>{row.indentNo}</td>
+                    <td>{row.profitCenter}</td>
+                    <td>{row.supplierName}</td>
+                    <td>{row.group}</td>
+                    <td className="fw-semibold">
+                      {row.itemName}
+                      {row.itemCode && <span className="text-muted small ms-1">({row.itemCode})</span>}
+                    </td>
+                    <td>{row.color}</td>
+                    <td>{row.sizeRange}</td>
+
+                    {/* Rate (editable in edit mode) */}
+                    <td className="text-end">
+                      {isEditMode ? (
+                        <Form.Control
+                          type="number"
+                          size="sm"
+                          className="po-erp-input text-end py-0 px-1"
+                          style={{ width: "80px", display: "inline-block" }}
+                          value={row.rate}
+                          onChange={(e) => handleGridCellChange(row.key, "rate", e.target.value)}
+                        />
+                      ) : (
+                        Number(row.rate).toFixed(2)
+                      )}
+                    </td>
+
+                    <td className="text-end text-muted">{Number(row.costPrice).toFixed(2)}</td>
+                    <td className="text-end fw-bold text-secondary">{row.balIndentQty}</td>
+
+                    {/* Order Qty (editable in edit mode) */}
+                    {isEditMode && (
+                      <td className="text-end">
+                        <Form.Control
+                          type="number"
+                          size="sm"
+                          className="po-erp-input text-end py-0 px-1 fw-bold text-success"
+                          style={{ width: "80px", display: "inline-block" }}
+                          value={row.orderQty}
+                          max={row.balIndentQty}
+                          onChange={(e) => handleGridCellChange(row.key, "orderQty", e.target.value)}
                         />
                       </td>
-                      <td className="fw-bold text-primary">{row.indentNo}</td>
-                      <td>{row.profitCenter}</td>
-                      <td>{row.supplierName}</td>
-                      <td>{row.group}</td>
-                      <td className="fw-semibold">
-                        {row.itemName}
-                        {row.itemCode && <span className="text-muted small ms-1">({row.itemCode})</span>}
-                      </td>
-                      <td>{row.color}</td>
-                      <td>{row.sizeRange}</td>
-
-                      {/* Rate (editable in edit mode) */}
-                      <td className="text-end">
-                        {isEditMode ? (
-                          <Form.Control
-                            type="number"
-                            size="sm"
-                            className="text-end py-0 px-1"
-                            style={{ width: "90px", display: "inline-block" }}
-                            value={row.rate}
-                            onChange={(e) => handleGridCellChange(row.key, "rate", e.target.value)}
-                          />
-                        ) : (
-                          Number(row.rate).toFixed(2)
-                        )}
-                      </td>
-
-                      <td className="text-end text-muted">{Number(row.costPrice).toFixed(2)}</td>
-                      <td className="text-end fw-bold text-secondary">{row.balIndentQty}</td>
-
-                      {/* Order Qty (editable in edit mode) */}
-                      {isEditMode && (
-                        <td className="text-end">
-                          <Form.Control
-                            type="number"
-                            size="sm"
-                            className="text-end py-0 px-1 fw-bold text-success"
-                            style={{ width: "90px", display: "inline-block" }}
-                            value={row.orderQty}
-                            max={row.balIndentQty}
-                            onChange={(e) => handleGridCellChange(row.key, "orderQty", e.target.value)}
-                          />
-                        </td>
-                      )}
-
-                      {/* Ex FTY Date */}
-                      <td>
-                        {isEditMode ? (
-                          <Form.Control
-                            type="date"
-                            size="sm"
-                            value={row.exFTYDate}
-                            onChange={(e) => handleGridCellChange(row.key, "exFTYDate", e.target.value)}
-                          />
-                        ) : (
-                          row.exFTYDate
-                        )}
-                      </td>
-
-                      {/* Mat Req Date */}
-                      <td>{row.matReqDate}</td>
-                    </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td colSpan={isEditMode ? 14 : 13} className="text-center py-5 text-muted">
-                    {loadingGrid ? (
-                      <div>
-                        <Spinner animation="border" size="sm" className="me-2 text-primary" />
-                        Fetching pending Indent items...
-                      </div>
-                    ) : (
-                      <div>
-                        No items displayed. Select Indent No or filters above and click{" "}
-                        <strong>Display</strong> or <strong>Display & Edit Row</strong>.
-                      </div>
                     )}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </Table>
-        </div>
-        <Card.Footer className="bg-light py-2 d-flex justify-content-between align-items-center small text-muted">
-          <span>
-            Showing <strong>{gridRows.length}</strong> items | <strong>{selectedRowKeys.size}</strong> selected for Purchase Order
-          </span>
-          <span className="fw-semibold text-dark">
-            Selected Items Subtotal: ₹{itemsSubTotal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-          </span>
-        </Card.Footer>
-      </Card>
+
+                    {/* Ex FTY Date */}
+                    <td>
+                      {isEditMode ? (
+                        <Form.Control
+                          type="date"
+                          size="sm"
+                          className="po-erp-input"
+                          value={row.exFTYDate}
+                          onChange={(e) => handleGridCellChange(row.key, "exFTYDate", e.target.value)}
+                        />
+                      ) : (
+                        row.exFTYDate
+                      )}
+                    </td>
+
+                    {/* Mat Req Date */}
+                    <td>{row.matReqDate}</td>
+                  </tr>
+                );
+              })
+            ) : (
+              <tr>
+                <td colSpan={isEditMode ? 14 : 13} className="text-center py-4 text-muted">
+                  {loadingGrid ? (
+                    <div>
+                      <Spinner animation="border" size="sm" className="me-2" style={{ color: "#337ab7" }} />
+                      Fetching pending Indent items...
+                    </div>
+                  ) : (
+                    <div>
+                      No items displayed. Select Indent No or filters above and click{" "}
+                      <strong>Display</strong> or <strong>Display & Edit Row</strong>.
+                    </div>
+                  )}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </Table>
+      </div>
+
+      <div className="d-flex justify-content-between align-items-center py-1 px-2 border rounded mb-3 bg-light small" style={{ fontSize: "11px" }}>
+        <span>
+          Showing <strong>{gridRows.length}</strong> items | <strong>{selectedRowKeys.size}</strong> selected for Purchase Order
+        </span>
+        <span className="fw-semibold text-dark">
+          Selected Items Subtotal: ₹{itemsSubTotal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+        </span>
+      </div>
 
       {/* ====================================================
           OTHER CHARGES & QUOTE DETAILS (SCREENSHOT 2)
       ===================================================== */}
-      <Card className="border shadow-sm mb-3">
-        <Card.Body className="p-3">
-          <div className="d-flex align-items-center gap-2 mb-2 pb-1 border-bottom">
-            <span className="fw-bold text-primary fs-6">Other Charges</span>
-            <FaCog className="text-muted" />
-          </div>
+      <div className="mb-3">
+        <div className="po-erp-section-title">
+          Other Charges
+          <button type="button" className="po-erp-gear-btn" title="Other charges settings">
+            ⚙
+          </button>
+        </div>
 
-          <Row className="g-3">
-            {/* Charges Table */}
-            <Col lg={7}>
-              <Table bordered size="sm" className="small mb-2">
-                <thead style={{ background: "#e3f2fd" }}>
-                  <tr>
-                    <th>Account Name</th>
-                    <th style={{ width: "95px" }}>Currency</th>
-                    <th style={{ width: "110px" }}>Value</th>
-                    <th style={{ width: "120px" }}>Tax Group</th>
-                    <th style={{ width: "65px" }} className="text-end">CGST</th>
-                    <th style={{ width: "65px" }} className="text-end">SGST</th>
-                    <th style={{ width: "65px" }} className="text-end">IGST</th>
-                    <th style={{ width: "40px" }} className="text-center">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {otherCharges.map((ch) => (
-                    <tr key={ch.id}>
-                      <td>
-                        <TypeaheadDropdown
-                          value={ch.accountName}
-                          onChange={(val) => handleChargeChange(ch.id, "accountName", val)}
-                          options={DEFAULT_CHARGE_ACCOUNTS}
-                          placeholder="Type an..."
-                          showAddButton={false}
-                          dropdownWidth="min(320px, 90vw)"
-                        />
-                      </td>
-                      <td>
-                        <Form.Select
-                          size="sm"
-                          value={ch.currency}
-                          onChange={(e) => handleChargeChange(ch.id, "currency", e.target.value)}
+        <Row className="g-3">
+          {/* Charges Table */}
+          <Col lg={7}>
+            <Table size="sm" className="po-charges-table mb-2">
+              <thead>
+                <tr>
+                  <th>Account Name</th>
+                  <th style={{ width: "95px" }}>Currency</th>
+                  <th style={{ width: "110px" }}>Value</th>
+                  <th style={{ width: "120px" }}>Tax Group</th>
+                  <th style={{ width: "70px" }}>CGST</th>
+                  <th style={{ width: "70px" }}>SGST</th>
+                  <th style={{ width: "70px" }}>IGST</th>
+                  <th style={{ width: "35px" }} className="text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {otherCharges.map((ch, idx) => (
+                  <tr key={ch.id}>
+                    <td>
+                      <TypeaheadDropdown
+                        value={ch.accountName}
+                        onChange={(val) => handleChargeChange(ch.id, "accountName", val)}
+                        options={DEFAULT_CHARGE_ACCOUNTS}
+                        placeholder="Type an..."
+                        showAddButton={false}
+                        dropdownWidth="min(320px, 90vw)"
+                      />
+                    </td>
+                    <td>
+                      <Form.Select
+                        size="sm"
+                        value={ch.currency}
+                        onChange={(e) => handleChargeChange(ch.id, "currency", e.target.value)}
+                        className="po-erp-select w-100"
+                      >
+                        <option value="INR">&lt;--Select--&gt;</option>
+                        <option value="INR">INR</option>
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="GBP">GBP</option>
+                      </Form.Select>
+                    </td>
+                    <td>
+                      <Form.Control
+                        type="number"
+                        size="sm"
+                        placeholder="Enter Amount"
+                        value={ch.value}
+                        onChange={(e) => handleChargeChange(ch.id, "value", e.target.value)}
+                        className="po-erp-input"
+                      />
+                    </td>
+                    <td>
+                      <Form.Select
+                        size="sm"
+                        value={ch.taxGroup}
+                        onChange={(e) => handleChargeChange(ch.id, "taxGroup", e.target.value)}
+                        className="po-erp-select w-100"
+                      >
+                        <option value="Select Tax Group">Select Tax Group</option>
+                        <option value="Exempt">Exempt</option>
+                        <option value="GST 5%">GST 5%</option>
+                        <option value="GST 12%">GST 12%</option>
+                        <option value="GST 18%">GST 18%</option>
+                        <option value="GST 28%">GST 28%</option>
+                      </Form.Select>
+                    </td>
+                    <td>
+                      <div className="po-charges-disabled-cell">{ch.cgst || "0.00"}</div>
+                    </td>
+                    <td>
+                      <div className="po-charges-disabled-cell">{ch.sgst || "0.00"}</div>
+                    </td>
+                    <td>
+                      <div className="po-charges-disabled-cell">{ch.igst || "0.00"}</div>
+                    </td>
+                    <td className="text-center align-middle">
+                      {idx === otherCharges.length - 1 ? (
+                        <button
+                          type="button"
+                          className="po-charge-add-btn"
+                          onClick={addChargeRow}
+                          title="Add charge row"
                         >
-                          <option value="INR">INR</option>
-                          <option value="USD">USD</option>
-                          <option value="EUR">EUR</option>
-                          <option value="GBP">GBP</option>
-                        </Form.Select>
-                      </td>
-                      <td>
-                        <Form.Control
-                          type="number"
-                          size="sm"
-                          placeholder="Enter Amount"
-                          value={ch.value}
-                          onChange={(e) => handleChargeChange(ch.id, "value", e.target.value)}
-                        />
-                      </td>
-                      <td>
-                        <Form.Select
-                          size="sm"
-                          value={ch.taxGroup}
-                          onChange={(e) => handleChargeChange(ch.id, "taxGroup", e.target.value)}
-                        >
-                          <option value="Exempt">Exempt</option>
-                          <option value="GST 5%">GST 5%</option>
-                          <option value="GST 12%">GST 12%</option>
-                          <option value="GST 18%">GST 18%</option>
-                          <option value="GST 28%">GST 28%</option>
-                        </Form.Select>
-                      </td>
-                      <td className="text-end align-middle bg-light">{ch.cgst}</td>
-                      <td className="text-end align-middle bg-light">{ch.sgst}</td>
-                      <td className="text-end align-middle bg-light">{ch.igst}</td>
-                      <td className="text-center align-middle">
+                          +
+                        </button>
+                      ) : (
                         <Button
-                          variant="outline-danger"
+                          variant="link"
                           size="sm"
-                          className="py-0 px-1 border-0"
+                          className="p-0 text-danger border-0"
                           onClick={() => removeChargeRow(ch.id)}
                           title="Remove Charge"
                         >
                           <FaTimes />
                         </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-              <Button variant="outline-primary" size="sm" onClick={addChargeRow} className="small">
-                <FaPlus className="me-1" /> Add Charge Row
-              </Button>
-            </Col>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </Col>
 
-            {/* Quote and Freight Inputs */}
-            <Col lg={5}>
-              <Row className="g-2">
-                <Col md={6}>
-                  <Form.Group className="mb-2">
-                    <Form.Label className="small fw-semibold text-secondary mb-1">
-                      Quote No
-                    </Form.Label>
-                    <Form.Control
-                      size="sm"
-                      placeholder="Enter Quote No"
-                      value={quoteNo}
-                      onChange={(e) => setQuoteNo(e.target.value)}
-                    />
-                  </Form.Group>
-                </Col>
-                <Col md={6}>
-                  <Form.Group className="mb-2">
-                    <Form.Label className="small fw-semibold text-secondary mb-1">
-                      Freight Charges
-                    </Form.Label>
-                    <Form.Control
-                      type="number"
-                      size="sm"
-                      placeholder="Enter Freight Charges"
-                      value={freightCharges}
-                      onChange={(e) => setFreightCharges(e.target.value)}
-                    />
-                  </Form.Group>
-                </Col>
-                <Col md={6}>
-                  <Form.Group className="mb-2">
-                    <Form.Label className="small fw-semibold text-secondary mb-1">
-                      Quote Date
-                    </Form.Label>
-                    <Form.Control
-                      type="date"
-                      size="sm"
-                      value={quoteDate}
-                      onChange={(e) => setQuoteDate(e.target.value)}
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-        </Card.Body>
-      </Card>
+          {/* Quote and Freight Inputs */}
+          <Col lg={5}>
+            <Row className="g-2">
+              <Col md={6}>
+                <Form.Group className="mb-2">
+                  <Form.Label className="po-erp-label">
+                    Quote No
+                  </Form.Label>
+                  <Form.Control
+                    size="sm"
+                    placeholder="Enter Quote No"
+                    value={quoteNo}
+                    onChange={(e) => setQuoteNo(e.target.value)}
+                    className="po-erp-input"
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-2">
+                  <Form.Label className="po-erp-label">
+                    Freight Charges
+                  </Form.Label>
+                  <Form.Control
+                    type="number"
+                    size="sm"
+                    placeholder="Enter Freight Charges"
+                    value={freightCharges}
+                    onChange={(e) => setFreightCharges(e.target.value)}
+                    className="po-erp-input"
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-2">
+                  <Form.Label className="po-erp-label">
+                    Quote Date
+                  </Form.Label>
+                  <Form.Control
+                    type="date"
+                    size="sm"
+                    value={quoteDate}
+                    onChange={(e) => setQuoteDate(e.target.value)}
+                    className="po-erp-input"
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </div>
 
       {/* ====================================================
           INSTRUCTIONS & TERMS (SCREENSHOTS 2 & 3)
       ===================================================== */}
-      <Card className="border shadow-sm mb-3">
-        <Card.Body className="p-3">
-          <div className="fw-bold text-primary fs-6 mb-2 pb-1 border-bottom">
-            Instructions & Terms
-          </div>
+      <div className="mb-3">
+        <div className="po-erp-section-title">
+          Instructions & Terms
+        </div>
 
-          <Row className="g-3">
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label className="small fw-semibold text-secondary mb-1">
-                  Remark
-                </Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  size="sm"
-                  placeholder="Enter Remark"
-                  value={remark}
-                  onChange={(e) => setRemark(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label className="small fw-semibold text-secondary mb-1">
-                  Payment Terms
-                </Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  size="sm"
-                  placeholder="Enter Payment Terms"
-                  value={paymentTerms}
-                  onChange={(e) => setPaymentTerms(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label className="small fw-semibold text-secondary mb-1">
-                  Delivery Terms
-                </Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  size="sm"
-                  placeholder="Enter Delivery Terms"
-                  value={deliveryTerms}
-                  onChange={(e) => setDeliveryTerms(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <div className="d-flex justify-content-between align-items-center mb-1">
-                  <Form.Label className="small fw-semibold text-secondary mb-0">
-                    Ship To Address
-                  </Form.Label>
-                  <Button
-                    variant="link"
-                    className="p-0 text-decoration-none small"
-                    onClick={() => setShowAddressPickerModal(true)}
-                    title="Select Alternate Plant Address"
-                  >
-                    <FaBuilding className="me-1" /> Choose Address
-                  </Button>
-                </div>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  size="sm"
-                  value={shipToAddress}
-                  onChange={(e) => setShipToAddress(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-
-            <Col md={6}>
-              <Form.Group className="mb-2">
-                <Form.Label className="small fw-semibold text-secondary mb-1">
-                  Internal Memo
-                </Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  size="sm"
-                  placeholder="Enter Internal Memo"
-                  value={internalMemo}
-                  onChange={(e) => setInternalMemo(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-
-            {/* Attachments (Screenshot 4) */}
-            <Col md={6}>
-              <Form.Label className="small fw-semibold text-secondary mb-1 d-block">
-                Attachments
+        <Row className="g-3">
+          <Col md={6}>
+            <Form.Group className="mb-3">
+              <Form.Label className="po-erp-label">
+                Remark
               </Form.Label>
-              <input
-                type="file"
-                multiple
-                ref={fileInputRef}
-                style={{ display: "none" }}
-                onChange={handleFileAttachment}
-              />
-              <Button
-                variant="outline-primary"
+              <Form.Control
+                as="textarea"
+                rows={3}
                 size="sm"
-                className="mb-2"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                <FaPaperclip className="me-1" /> + Add files...
-              </Button>
-              <div className="border rounded p-2 bg-light overflow-auto" style={{ maxHeight: "80px" }}>
-                {attachments.length > 0 ? (
-                  attachments.map((file, i) => (
-                    <Badge
-                      bg="info"
-                      key={i}
-                      className="me-2 mb-1 p-2 text-dark border d-inline-flex align-items-center gap-1"
-                    >
-                      {file.name} ({file.size})
-                      <FaTimes
-                        role="button"
-                        className="text-danger ms-1"
-                        onClick={() => removeAttachment(i)}
-                      />
-                    </Badge>
-                  ))
-                ) : (
-                  <span className="text-muted small">No files attached.</span>
-                )}
+                placeholder="Enter Remark"
+                value={remark}
+                onChange={(e) => setRemark(e.target.value)}
+                className="po-erp-textarea"
+              />
+            </Form.Group>
+          </Col>
+
+          <Col md={6}>
+            <Form.Group className="mb-3">
+              <Form.Label className="po-erp-label">
+                Payment Terms
+              </Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                size="sm"
+                placeholder="Enter Payment Terms"
+                value={paymentTerms}
+                onChange={(e) => setPaymentTerms(e.target.value)}
+                className="po-erp-textarea"
+              />
+            </Form.Group>
+          </Col>
+
+          <Col md={6}>
+            <Form.Group className="mb-3">
+              <Form.Label className="po-erp-label">
+                Delivery Terms
+              </Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                size="sm"
+                placeholder="Enter Delivery Terms"
+                value={deliveryTerms}
+                onChange={(e) => setDeliveryTerms(e.target.value)}
+                className="po-erp-textarea"
+              />
+            </Form.Group>
+          </Col>
+
+          <Col md={6}>
+            <Form.Group className="mb-3">
+              <div className="d-flex justify-content-between align-items-center mb-1">
+                <Form.Label className="po-erp-label mb-0">
+                  Ship To Address
+                </Form.Label>
+                <Button
+                  variant="link"
+                  className="p-0 text-decoration-none small"
+                  style={{ color: "#337ab7" }}
+                  onClick={() => setShowAddressPickerModal(true)}
+                  title="Select Alternate Plant Address"
+                >
+                  <FaBuilding className="me-1" /> Choose Address
+                </Button>
               </div>
-            </Col>
-          </Row>
-        </Card.Body>
-      </Card>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                size="sm"
+                value={shipToAddress}
+                onChange={(e) => setShipToAddress(e.target.value)}
+                className="po-erp-textarea"
+              />
+            </Form.Group>
+          </Col>
+
+          <Col md={6}>
+            <Form.Group className="mb-2">
+              <Form.Label className="po-erp-label">
+                Internal Memo
+              </Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                size="sm"
+                placeholder="Enter Internal Memo"
+                value={internalMemo}
+                onChange={(e) => setInternalMemo(e.target.value)}
+                className="po-erp-textarea"
+              />
+            </Form.Group>
+          </Col>
+
+          {/* Attachments */}
+          <Col md={6}>
+            <Form.Label className="po-erp-label d-block">
+              Attachments
+            </Form.Label>
+            <input
+              type="file"
+              multiple
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              onChange={handleFileAttachment}
+            />
+            <Button
+              className="po-erp-btn-primary mb-2"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <FaPaperclip className="me-1" /> + Add files...
+            </Button>
+            <div className="border rounded p-2 bg-light overflow-auto" style={{ maxHeight: "72px" }}>
+              {attachments.length > 0 ? (
+                attachments.map((file, i) => (
+                  <Badge
+                    bg="info"
+                    key={i}
+                    className="me-2 mb-1 p-2 text-dark border d-inline-flex align-items-center gap-1"
+                  >
+                    {file.name} ({file.size})
+                    <FaTimes
+                      role="button"
+                      className="text-danger ms-1"
+                      onClick={() => removeAttachment(i)}
+                    />
+                  </Badge>
+                ))
+              ) : (
+                <span className="text-muted small" style={{ fontSize: "11px" }}>No files attached.</span>
+              )}
+            </div>
+          </Col>
+        </Row>
+      </div>
 
       {/* ====================================================
-          TERMS & CONDITIONS (SCREENSHOT 4)
+          TERMS & CONDITIONS
       ===================================================== */}
-      <Card className="border shadow-sm mb-4">
-        <Card.Body className="p-3">
-          <div className="fw-bold text-primary fs-6 mb-2 pb-1 border-bottom">
-            Terms & Conditions
-          </div>
-          <Form.Group className="mb-2">
-            <Form.Control
-              as="textarea"
-              rows={3}
-              size="sm"
-              value={termsAndConditions}
-              onChange={(e) => setTermsAndConditions(e.target.value)}
-            />
-          </Form.Group>
-          <Form.Check
-            type="checkbox"
-            id="default-terms-check"
-            label="Make this as my default Terms & Conditions"
-            checked={defaultTermsChecked}
-            onChange={(e) => setDefaultTermsChecked(e.target.checked)}
-            className="small text-secondary"
+      <div className="mb-4">
+        <div className="po-erp-section-title">
+          Terms & Conditions
+        </div>
+        <Form.Group className="mb-2">
+          <Form.Control
+            as="textarea"
+            rows={3}
+            size="sm"
+            value={termsAndConditions}
+            onChange={(e) => setTermsAndConditions(e.target.value)}
+            className="po-erp-textarea"
           />
-        </Card.Body>
-      </Card>
+        </Form.Group>
+        <Form.Check
+          type="checkbox"
+          id="default-terms-check"
+          label="Make this as my default Terms & Conditions"
+          checked={defaultTermsChecked}
+          onChange={(e) => setDefaultTermsChecked(e.target.checked)}
+          className="small text-secondary"
+          style={{ fontSize: "11px" }}
+        />
+      </div>
 
       {/* ====================================================
           BOTTOM TOTALS & ACTION BUTTONS (SCREENSHOT 4)
       ===================================================== */}
-      <Card className="border shadow-sm mb-4 bg-white sticky-bottom">
-        <Card.Body className="py-2 px-3 d-flex flex-wrap justify-content-between align-items-center">
-          <div className="d-flex gap-4 small text-secondary">
-            <div>
-              Items Total: <strong>₹{itemsSubTotal.toFixed(2)}</strong>
-            </div>
-            {otherChargesTotal > 0 && (
-              <div>
-                Other Charges: <strong>₹{otherChargesTotal.toFixed(2)}</strong>
-              </div>
-            )}
-            {freightAmount > 0 && (
-              <div>
-                Freight: <strong>₹{freightAmount.toFixed(2)}</strong>
-              </div>
-            )}
-            <div>
-              Est. GST: <strong>₹{totalTaxAmount.toFixed(2)}</strong>
-            </div>
-            <div className="fs-6 fw-bold text-primary border-start ps-3">
-              Net Total: ₹{grandTotalAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-            </div>
+      <div className="po-bottom-bar d-flex flex-wrap justify-content-between align-items-center">
+        <div className="d-flex gap-4 small text-secondary" style={{ fontSize: "11.5px" }}>
+          <div>
+            Items Total: <strong>₹{itemsSubTotal.toFixed(2)}</strong>
           </div>
+          {otherChargesTotal > 0 && (
+            <div>
+              Other Charges: <strong>₹{otherChargesTotal.toFixed(2)}</strong>
+            </div>
+          )}
+          {freightAmount > 0 && (
+            <div>
+              Freight: <strong>₹{freightAmount.toFixed(2)}</strong>
+            </div>
+          )}
+          <div>
+            Est. GST: <strong>₹{totalTaxAmount.toFixed(2)}</strong>
+          </div>
+          <div className="fs-6 fw-bold border-start ps-3" style={{ color: "#337ab7" }}>
+            Net Total: ₹{grandTotalAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+          </div>
+        </div>
 
-          <div className="d-flex gap-2">
-            <Button
-              variant="success"
-              size="md"
-              className="fw-bold px-4 d-flex align-items-center gap-2"
-              onClick={handleSavePO}
-              disabled={savingPO}
-              style={{ backgroundColor: "#2e7d32", borderColor: "#2e7d32" }}
-            >
-              {savingPO ? <Spinner size="sm" /> : <FaSave />}
-              Save
-            </Button>
-            <Button
-              variant="primary"
-              size="md"
-              className="fw-bold px-4 d-flex align-items-center gap-2"
-              onClick={() => handleOpenPOViewer(null)}
-              style={{ backgroundColor: "#1976d2", borderColor: "#1976d2" }}
-            >
-              <FaEye />
-              View
-            </Button>
-          </div>
-        </Card.Body>
-      </Card>
+        <div className="d-flex gap-2">
+          <Button
+            className="po-erp-btn-save"
+            onClick={handleSavePO}
+            disabled={savingPO}
+          >
+            {savingPO ? <Spinner size="sm" /> : <FaSave />}
+            Save
+          </Button>
+          <Button
+            className="po-erp-btn-view"
+            onClick={() => handleOpenPOViewer(null)}
+          >
+            <FaEye />
+            View
+          </Button>
+        </div>
+      </div>
 
       {/* ====================================================
           MODAL 1: EXCEL FORMAT GUIDE

@@ -25,9 +25,21 @@ db.serialize(() => {
 
         Priority TEXT DEFAULT 'Normal',
 
-        Status TEXT DEFAULT 'Draft',
+        Status TEXT DEFAULT 'Open',
 
         Remarks TEXT,
+
+        IndentMethod TEXT DEFAULT 'Manual',
+
+        IndentType TEXT DEFAULT 'For Stock',
+
+        OtherReference TEXT,
+
+        VersionNo INTEGER DEFAULT 0,
+
+        EnteredBy TEXT DEFAULT 'Admin',
+
+        SupplierName TEXT,
 
         CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
 

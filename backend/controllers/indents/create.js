@@ -135,24 +135,36 @@ function createIndent(body, res) {
                     RequiredDate,
                     Priority,
                     Status,
-                    Remarks
+                    Remarks,
+                    IndentMethod,
+                    IndentType,
+                    OtherReference,
+                    VersionNo,
+                    EnteredBy,
+                    SupplierName
                 )
                 VALUES
-                (?,?,?,?,?,?,?,?,?)
+                (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             `;
 
             db.run(
                 headerSql,
                 [
-                    indentNo,
+                    body.IndentNo || indentNo,
                     body.IndentDate || new Date().toISOString().substring(0, 10),
                     body.DepartmentID,
                     body.EmployeeID,
                     body.WarehouseID || null,
                     body.RequiredDate,
                     body.Priority || "Normal",
-                    "Draft",
-                    body.Remarks || ""
+                    body.Status || "Open",
+                    body.Remarks || "",
+                    body.IndentMethod || "Manual",
+                    body.IndentType || "For Stock",
+                    body.OtherReference || "",
+                    body.VersionNo || 0,
+                    body.EnteredBy || "Admin",
+                    body.SupplierName || ""
                 ],
                 function (err) {
 

@@ -27,6 +27,7 @@ export default function TypeaheadDropdown({
   showAddButton = false,
   onAdd,
   clearable = true,
+  requiredIndicator = false,
   size = "sm",
   disabled = false,
   className = "",
@@ -34,7 +35,9 @@ export default function TypeaheadDropdown({
   onSelect,
   dropdownWidth = "min(520px, max(100%, 360px))",
   maxHeight = 240,
-  autoSelectOnEnter = false
+  autoSelectOnEnter = false,
+  showSubtext = false,
+  showCode = false
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -52,9 +55,9 @@ export default function TypeaheadDropdown({
       }
       if (opt && typeof opt === "object") {
         return {
-          label: String(opt.label || opt.name || opt.ItemName || opt.SupplierName || opt.value || ""),
-          value: opt.value !== undefined ? opt.value : (opt.id || opt.ItemID || opt.SupplierID || opt.label),
-          code: opt.code || opt.ItemCode || opt.SupplierCode || "",
+          label: String(opt.label || opt.name || opt.ItemName || opt.SupplierName || opt.ColourName || opt.value || ""),
+          value: opt.value !== undefined ? opt.value : (opt.id || opt.ItemID || opt.SupplierID || opt.ColourID || opt.label),
+          code: opt.code || opt.ItemCode || opt.SupplierCode || opt.ColourCode || "",
           subtext: opt.subtext || opt.category || opt.Category || "",
           raw: opt
         };
@@ -63,18 +66,24 @@ export default function TypeaheadDropdown({
     });
   }, [options]);
 
-  // Filter options based on input value
+  // High-performance filter capped at 100 items for 60fps rendering
   const filteredOptions = useMemo(() => {
     const search = (value || "").trim().toLowerCase();
     if (!search) {
-      return normalizedOptions;
+      return normalizedOptions.slice(0, 100);
     }
-    return normalizedOptions.filter((opt) => {
+    const result = [];
+    for (let i = 0; i < normalizedOptions.length; i++) {
+      const opt = normalizedOptions[i];
       const matchLabel = opt.label.toLowerCase().includes(search);
       const matchCode = opt.code && opt.code.toLowerCase().includes(search);
       const matchSub = opt.subtext && opt.subtext.toLowerCase().includes(search);
-      return matchLabel || matchCode || matchSub;
-    });
+      if (matchLabel || matchCode || matchSub) {
+        result.push(opt);
+        if (result.length >= 100) break;
+      }
+    }
+    return result;
   }, [normalizedOptions, value]);
 
   // Close when clicking outside
@@ -182,7 +191,7 @@ export default function TypeaheadDropdown({
   };
 
   return (
-    <div className={`typeahead-container ${className}`} ref={containerRef}>
+    <div className={`typeahead-container ${isOpen ? "is-open" : ""} ${className}`} ref={containerRef}>
       <div className="typeahead-input-group">
         <Form.Control
           ref={inputRef}
@@ -202,10 +211,14 @@ export default function TypeaheadDropdown({
           data-lpignore="true"
         />
 
+        {requiredIndicator && (
+          <span className={`typeahead-required-star ${value ? "has-val" : ""}`}>*</span>
+        )}
+
         {clearable && value && !disabled && (
           <button
             type="button"
-            className={`typeahead-clear-btn ${!showAddButton ? "no-add-btn" : ""}`}
+            className={`typeahead-clear-btn ${!requiredIndicator ? "no-star" : ""} ${!showAddButton ? "no-add-btn" : ""}`}
             onClick={handleClear}
             title="Clear"
           >
@@ -251,13 +264,13 @@ export default function TypeaheadDropdown({
               >
                 <div className="text-truncate">
                   <span>{opt.label}</span>
-                  {opt.subtext && (
+                  {showSubtext && opt.subtext && (
                     <span className="small text-muted ms-1" style={{ fontSize: "10.5px" }}>
                       ({opt.subtext})
                     </span>
                   )}
                 </div>
-                {opt.code && !opt.label.includes(opt.code) && (
+                {showCode && opt.code && !opt.label.includes(opt.code) && (
                   <span className="typeahead-item-code">[{opt.code}]</span>
                 )}
               </li>

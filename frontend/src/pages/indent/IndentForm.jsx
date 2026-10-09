@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Table, Button, Spinner, Alert } from "react-bootstrap";
 import { 
     FaSave, 
@@ -10,6 +10,7 @@ import {
     FaPaperclip 
 } from "react-icons/fa";
 import axios from "axios";
+import TypeaheadDropdown from "../../components/common/TypeaheadDropdown";
 import "../../styles/indentsList.css";
 
 export default function IndentForm({ onNavigateView }) {
@@ -65,15 +66,16 @@ export default function IndentForm({ onNavigateView }) {
 
     const loadMasters = async () => {
         try {
-            // Load items
-            const iRes = await axios.get("/api/items?limit=100");
+            // Load all items (full catalog for instant autocomplete)
+            const iRes = await axios.get("/api/items?limit=6000");
             if (iRes.data && iRes.data.success) {
                 setItemsList(iRes.data.data || []);
             }
-            // Load colours
+            // Load colours and sort alphabetically
             const cRes = await axios.get("/api/colours");
             if (cRes.data && cRes.data.success) {
-                setColoursList(cRes.data.data || []);
+                const rawColours = cRes.data.data || [];
+                setColoursList(rawColours.sort((a, b) => (a.ColourName || "").localeCompare(b.ColourName || "")));
             }
             // Load suppliers
             const sRes = await axios.get("/api/suppliers");
@@ -81,7 +83,7 @@ export default function IndentForm({ onNavigateView }) {
                 setSuppliersList(sRes.data.data || []);
             }
             // Load IOs
-            const ioRes = await axios.get("/api/internal-orders?limit=30");
+            const ioRes = await axios.get("/api/internal-orders?limit=100");
             if (ioRes.data && ioRes.data.success) {
                 setIoList(ioRes.data.data || []);
             }
@@ -89,6 +91,15 @@ export default function IndentForm({ onNavigateView }) {
             console.error("Failed to load masters:", e);
         }
     };
+
+    // Computed unique sizes from items list + standards
+    const sizeOptions = useMemo(() => {
+        const set = new Set(["Standard", "20 CM", "58 Inch", "1.2 mm", "MTR", "SQFT", "KG", "PCS", "L", "M", "S", "XL", "XXL"]);
+        itemsList.forEach(it => {
+            if (it.Size && it.Size.trim()) set.add(it.Size.trim());
+        });
+        return Array.from(set).sort();
+    }, [itemsList]);
 
     // -------------------------------------------------------------------------
     // GRID LINE HELPERS
@@ -290,22 +301,22 @@ export default function IndentForm({ onNavigateView }) {
                     {/* Department */}
                     <div className="ind-form-field mb-2">
                         <label className="ind-form-label">Department</label>
-                        <input 
-                            type="text" 
-                            className="ind-form-input" 
+                        <TypeaheadDropdown 
                             placeholder="Type & Select Department"
                             value={department}
-                            onChange={(e) => setDepartment(e.target.value)}
-                            list="department-datalist"
+                            onChange={(val) => setDepartment(val)}
+                            options={[
+                                "Raw Material Store 9B",
+                                "9b Fabric Store",
+                                "Leather Cutting",
+                                "Fabric Store",
+                                "Trims Store",
+                                "Production Planning",
+                                "Cutting Department",
+                                "Finishing Department"
+                            ]}
+                            dropdownWidth="100%"
                         />
-                        <datalist id="department-datalist">
-                            <option value="Raw Material Store 9B" />
-                            <option value="9b Fabric Store" />
-                            <option value="Leather Cutting" />
-                            <option value="Fabric Store" />
-                            <option value="Trims Store" />
-                            <option value="Production Planning" />
-                        </datalist>
                     </div>
 
                     {/* Branch */}
@@ -313,19 +324,19 @@ export default function IndentForm({ onNavigateView }) {
                         <label className="ind-form-label">
                             Branch <span className="ind-req-star">*</span>
                         </label>
-                        <input 
-                            type="text" 
-                            className="ind-form-input" 
+                        <TypeaheadDropdown 
                             placeholder="Type and select Branch"
                             value={branch}
-                            onChange={(e) => setBranch(e.target.value)}
-                            list="branch-datalist"
+                            onChange={(val) => setBranch(val)}
+                            options={[
+                                "Plot No. 9B",
+                                "Plot No. 10A",
+                                "Central Warehouse",
+                                "Head Office"
+                            ]}
+                            requiredIndicator={true}
+                            dropdownWidth="100%"
                         />
-                        <datalist id="branch-datalist">
-                            <option value="Plot No. 9B" />
-                            <option value="Plot No. 10A" />
-                            <option value="Central Warehouse" />
-                        </datalist>
                     </div>
 
                     {/* Default branch checkbox */}
@@ -380,21 +391,19 @@ export default function IndentForm({ onNavigateView }) {
                     {/* Indent Type */}
                     <div className="ind-form-field mb-2">
                         <label className="ind-form-label">Indent Type</label>
-                        <input 
-                            type="text" 
-                            className="ind-form-input" 
+                        <TypeaheadDropdown 
                             placeholder="Type & Select Indent Type"
                             value={indentType}
-                            onChange={(e) => setIndentType(e.target.value)}
-                            list="indent-type-datalist"
+                            onChange={(val) => setIndentType(val)}
+                            options={[
+                                "For Stock",
+                                "Excess",
+                                "Order Specific",
+                                "Project",
+                                "Sample"
+                            ]}
+                            dropdownWidth="100%"
                         />
-                        <datalist id="indent-type-datalist">
-                            <option value="For Stock" />
-                            <option value="Excess" />
-                            <option value="Order Specific" />
-                            <option value="Project" />
-                            <option value="Sample" />
-                        </datalist>
                     </div>
                 </div>
             </div>
@@ -464,22 +473,37 @@ export default function IndentForm({ onNavigateView }) {
                                     {/* IO Ref + Desc Box */}
                                     <td>
                                         <div className="d-flex align-items-center gap-1">
-                                            <input 
-                                                type="text" 
-                                                className="ind-grid-input" 
-                                                style={{ width: "100px" }}
-                                                placeholder="Enter IO Ref."
-                                                value={line.ioRef}
-                                                onChange={(e) => updateLine(line.id, "ioRef", e.target.value)}
-                                                list="io-ref-datalist"
-                                            />
+                                            <div style={{ width: "120px" }}>
+                                                <TypeaheadDropdown
+                                                    value={line.ioRef}
+                                                    onChange={(val, ioObj) => {
+                                                        updateLine(line.id, "ioRef", val);
+                                                        if (ioObj) {
+                                                            const raw = ioObj.raw || ioObj;
+                                                            updateLine(line.id, "ioDesc", `${raw.Customer || ""} - ${raw.Season || ""}`.trim());
+                                                        }
+                                                    }}
+                                                    options={ioList.map(io => ({
+                                                        label: io.IONo,
+                                                        value: io.IONo,
+                                                        subtext: `${io.Customer || ""} ${io.Season || ""}`.trim(),
+                                                        raw: io
+                                                    }))}
+                                                    placeholder="Enter IO Ref."
+                                                    dropdownWidth="260px"
+                                                    showSubtext={true}
+                                                />
+                                            </div>
                                             <button 
                                                 type="button" 
                                                 className="btn btn-sm btn-light border p-0 px-1" 
                                                 style={{ height: "24px" }}
                                                 title="Select IO"
                                                 onClick={() => {
-                                                    if (ioList.length > 0) updateLine(line.id, "ioRef", ioList[0].IONo);
+                                                    if (ioList.length > 0) {
+                                                        updateLine(line.id, "ioRef", ioList[0].IONo);
+                                                        updateLine(line.id, "ioDesc", `${ioList[0].Customer || ""} - ${ioList[0].Season || ""}`.trim());
+                                                    }
                                                 }}
                                             >
                                                 <FaListUl size={9} />
@@ -488,74 +512,73 @@ export default function IndentForm({ onNavigateView }) {
                                                 {line.ioDesc || "-"}
                                             </div>
                                         </div>
-                                        <datalist id="io-ref-datalist">
-                                            {ioList.map(io => (
-                                                <option key={io.IOID} value={io.IONo}>{io.Customer} - {io.Season}</option>
-                                            ))}
-                                        </datalist>
                                     </td>
 
                                     {/* Item */}
                                     <td>
-                                        <input 
-                                            type="text" 
-                                            className="ind-grid-input" 
-                                            placeholder="Type & Select Item"
+                                        <TypeaheadDropdown
                                             value={line.itemName || line.itemCode}
-                                            onChange={(e) => updateLine(line.id, "itemCode", e.target.value)}
-                                            list={`items-catalog-${line.id}`}
+                                            onChange={(val, itemObj) => {
+                                                if (itemObj) {
+                                                    const code = itemObj.ItemCode || itemObj.code || val;
+                                                    const name = itemObj.ItemName || itemObj.label || val;
+                                                    const id = itemObj.ItemID || itemObj.value;
+                                                    updateLine(line.id, "itemCode", code);
+                                                    updateLine(line.id, "itemName", name);
+                                                    updateLine(line.id, "itemId", id);
+                                                    const raw = itemObj.raw || itemObj;
+                                                    if (raw.Color && !line.colour) updateLine(line.id, "colour", raw.Color);
+                                                    if (raw.Size && !line.sizeRange) updateLine(line.id, "sizeRange", raw.Size);
+                                                } else {
+                                                    updateLine(line.id, "itemName", val);
+                                                    updateLine(line.id, "itemCode", val);
+                                                }
+                                            }}
+                                            options={itemsList.map(it => ({
+                                                label: it.ItemName,
+                                                value: it.ItemID,
+                                                code: it.ItemCode,
+                                                raw: it
+                                            }))}
+                                            placeholder="Type & Select Item"
+                                            requiredIndicator={true}
+                                            dropdownWidth="min(550px, max(100%, 380px))"
                                         />
-                                        <datalist id={`items-catalog-${line.id}`}>
-                                            {itemsList.map(it => (
-                                                <option key={it.ItemID} value={it.ItemCode}>
-                                                    {it.ItemName} ({it.Color || ""})
-                                                </option>
-                                            ))}
-                                        </datalist>
                                     </td>
 
                                     {/* Supplier */}
                                     <td>
-                                        <input 
-                                            type="text" 
-                                            className="ind-grid-input" 
-                                            placeholder="Type & Select Supplier"
+                                        <TypeaheadDropdown
                                             value={line.supplier}
-                                            onChange={(e) => updateLine(line.id, "supplier", e.target.value)}
-                                            list={`supplier-catalog-${line.id}`}
+                                            onChange={(val) => updateLine(line.id, "supplier", val)}
+                                            options={suppliersList.map(s => s.SupplierName || s.name || s)}
+                                            placeholder="Type & Select Supplier"
+                                            requiredIndicator={false}
+                                            dropdownWidth="min(400px, max(100%, 260px))"
                                         />
-                                        <datalist id={`supplier-catalog-${line.id}`}>
-                                            {suppliersList.map(s => (
-                                                <option key={s.SupplierID} value={s.SupplierName} />
-                                            ))}
-                                        </datalist>
                                     </td>
 
                                     {/* Colour */}
                                     <td>
-                                        <input 
-                                            type="text" 
-                                            className="ind-grid-input" 
-                                            placeholder="Type & Select Colour"
+                                        <TypeaheadDropdown
                                             value={line.colour}
-                                            onChange={(e) => updateLine(line.id, "colour", e.target.value)}
-                                            list={`colour-catalog-${line.id}`}
+                                            onChange={(val) => updateLine(line.id, "colour", val)}
+                                            options={coloursList.map(c => c.ColourName || c.name || c)}
+                                            placeholder="Type & Select Colour"
+                                            requiredIndicator={true}
+                                            dropdownWidth="min(350px, max(100%, 240px))"
                                         />
-                                        <datalist id={`colour-catalog-${line.id}`}>
-                                            {coloursList.map(c => (
-                                                <option key={c.ColourID} value={c.ColourName} />
-                                            ))}
-                                        </datalist>
                                     </td>
 
                                     {/* Size Range */}
                                     <td>
-                                        <input 
-                                            type="text" 
-                                            className="ind-grid-input" 
-                                            placeholder="Type & Select Size Range"
+                                        <TypeaheadDropdown
                                             value={line.sizeRange}
-                                            onChange={(e) => updateLine(line.id, "sizeRange", e.target.value)}
+                                            onChange={(val) => updateLine(line.id, "sizeRange", val)}
+                                            options={sizeOptions}
+                                            placeholder="Type & Select Size Range"
+                                            requiredIndicator={true}
+                                            dropdownWidth="min(300px, max(100%, 200px))"
                                         />
                                     </td>
 

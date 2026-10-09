@@ -18,6 +18,7 @@ import {
 } from "react-icons/fa";
 import axios from "axios";
 import IndentForm from "../../indent/IndentForm";
+import TypeaheadDropdown from "../../../components/common/TypeaheadDropdown";
 import "../../../styles/indentsList.css";
 
 export default function StockIndents(props) {
@@ -65,6 +66,7 @@ export default function StockIndents(props) {
     });
 
     const [availableItems, setAvailableItems] = useState([]);
+    const [suppliersList, setSuppliersList] = useState([]);
     const [departments, setDepartments] = useState(["Raw Material Store", "Cutting", "Sewing", "Finishing", "Packaging", "Quality Control"]);
     const [isSaving, setIsSaving] = useState(false);
 
@@ -74,6 +76,7 @@ export default function StockIndents(props) {
     useEffect(() => {
         loadIndents();
         loadAvailableItems();
+        loadSuppliers();
     }, [statusFilter]);
 
     // Close action dropdown on click outside
@@ -115,6 +118,15 @@ export default function StockIndents(props) {
             const res = await axios.get("/api/items?limit=50");
             if (res.data && res.data.success) {
                 setAvailableItems(res.data.data || []);
+            }
+        } catch (e) {}
+    };
+
+    const loadSuppliers = async () => {
+        try {
+            const res = await axios.get("/api/suppliers");
+            if (res.data && res.data.success) {
+                setSuppliersList(res.data.data || []);
             }
         } catch (e) {}
     };
@@ -293,17 +305,14 @@ export default function StockIndents(props) {
             {/* Top Filter Bar matching JenixCloud */}
             <div className="ind-filter-bar">
                 {/* Supplier Name */}
-                <div className="ind-filter-group">
+                <div className="ind-filter-group" style={{ width: "210px" }}>
                     <label className="ind-filter-label">Supplier Name</label>
-                    <input 
-                        type="text" 
-                        className="ind-filter-input" 
-                        placeholder="Supplier Search..."
+                    <TypeaheadDropdown
+                        placeholder="Type & Select Supplier"
                         value={supplierSearch}
-                        onChange={(e) => setSupplierSearch(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === "Enter") loadIndents();
-                        }}
+                        onChange={(val) => setSupplierSearch(val)}
+                        options={suppliersList.map(s => s.SupplierName || s.name || s)}
+                        dropdownWidth="280px"
                     />
                 </div>
 

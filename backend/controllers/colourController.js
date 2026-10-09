@@ -15,7 +15,7 @@ exports.getAllColours = (req, res) => {
             Status,
             CreatedAt
         FROM Colours
-        ORDER BY ColourID DESC
+        ORDER BY ColourName ASC
     `;
 
     db.all(sql, [], (err, rows) => {

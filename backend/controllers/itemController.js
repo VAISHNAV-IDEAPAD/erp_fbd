@@ -2,21 +2,31 @@ console.log("✅ NEW itemController Loaded");
 const db = require("../config/database");
 
     // Get All Items
-   exports.getAllItems = (req, res) => {
+exports.getAllItems = (req, res) => {
+    const { search, limit } = req.query;
+    let sql = "SELECT * FROM Items WHERE 1=1";
+    const params = [];
 
-    const sql = `
-        SELECT *
-        FROM Items
-        ORDER BY ItemID DESC
-    `;
+    if (search && search.trim()) {
+        sql += " AND (ItemName LIKE ? OR ItemCode LIKE ? OR Category LIKE ? OR Color LIKE ?)";
+        const term = `%${search.trim()}%`;
+        params.push(term, term, term, term);
+    }
 
-    db.all(sql, [], (err, rows) => {
+    sql += " ORDER BY ItemName ASC";
 
-        if (err)
+    if (limit) {
+        sql += " LIMIT ?";
+        params.push(parseInt(limit, 10));
+    }
+
+    db.all(sql, params, (err, rows) => {
+        if (err) {
             return res.status(500).json({
                 success: false,
                 error: err.message
             });
+        }
 
         res.json({
             success: true,

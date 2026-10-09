@@ -93,6 +93,7 @@ app.use("/api/supplierledger", require("./routes/purchase"));
 app.use("/api/dispatch", require("./routes/dispatches"));
 app.use("/api/purchase-orders", require("./routes/purchaseOrders"));
 app.use("/api/purchase-requisition", require("./routes/purchaseRequisitions"));
+app.use("/api/material-planning", require("./routes/materialPlanning"));
 
 // Dashboards and report data sources.
 app.use("/api/dashboard/purchase", require("./routes/purchaseDashboard"));

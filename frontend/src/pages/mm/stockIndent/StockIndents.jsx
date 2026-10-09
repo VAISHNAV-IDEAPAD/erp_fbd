@@ -17,9 +17,13 @@ import {
     FaBuilding 
 } from "react-icons/fa";
 import axios from "axios";
+import IndentForm from "../../indent/IndentForm";
 import "../../../styles/indentsList.css";
 
-export default function StockIndents() {
+export default function StockIndents(props) {
+    // Mode: "list" or "form"
+    const [viewMode, setViewMode] = useState(props.mode || "list");
+
     // -------------------------------------------------------------------------
     // STATE: LIST DATA & FILTERS
     // -------------------------------------------------------------------------
@@ -270,6 +274,17 @@ export default function StockIndents() {
         }
     };
 
+    if (viewMode === "form") {
+        return (
+            <IndentForm 
+                onNavigateView={() => {
+                    setViewMode("list");
+                    loadIndents();
+                }}
+            />
+        );
+    }
+
     return (
         <div className="ind-erp-page">
             {/* Page Title */}
@@ -330,7 +345,7 @@ export default function StockIndents() {
                 <button 
                     type="button" 
                     className="ind-btn-new"
-                    onClick={() => setShowNewModal(true)}
+                    onClick={() => setViewMode("form")}
                 >
                     <FaPlus size={11} /> New Indent
                 </button>

@@ -126,6 +126,7 @@ function App() {
 
                 {/* PURCHASE MODULE */}
                 <Route path="/indents" element={<Indents />} />
+                <Route path="/indents/new" element={<Indents mode="form" />} />
                 <Route path="/purchase-requisition" element={<PurchaseRequisition />} />
                 <Route path="/purchase-orders" element={<PurchaseOrder />} />
                 <Route path="/purchase/orders" element={<PurchaseOrder />} />
@@ -137,6 +138,7 @@ function App() {
 
                 {/* MM & INVENTORY */}
                 <Route path="/stock-indent" element={<StockIndents />} />
+                <Route path="/stock-indent/new" element={<StockIndents mode="form" />} />
                 <Route path="/indent-approval" element={<IndentApproval />} />
                 <Route path="/gate-entry" element={<GateEntries />} />
                 <Route path="/item-issue" element={<ItemIssue />} />

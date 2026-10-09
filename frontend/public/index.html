@@ -33,16 +33,77 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root">
       <div style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#1e3a8a;background:#f8fafc;">
-        <div style="text-align:center;">
+        <div style="text-align:center;max-width:440px;padding:20px;">
           <div style="width:44px;height:44px;border:4px solid #cbd5e1;border-top:4px solid #2563eb;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px auto;"></div>
           <div style="font-size:16px;font-weight:700;letter-spacing:0.5px;color:#1e293b;">ERP FASHION</div>
-          <div style="font-size:13px;color:#64748b;margin-top:4px;">Loading ERP System...</div>
+          <div id="erp-loading-text" style="font-size:13px;color:#64748b;margin-top:4px;">Loading ERP System...</div>
+          
+          <div id="erp-loading-timeout" style="display:none;margin-top:16px;padding:12px;background:#ffffff;border:1px solid #e2e8f0;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+            <div style="font-size:12px;color:#475569;margin-bottom:10px;">
+              Taking longer than usual? Your browser may have cached an earlier build.
+            </div>
+            <button onclick="window.__clearCacheAndReload()" style="background:#2563eb;color:#ffffff;border:none;padding:6px 16px;border-radius:4px;font-size:12px;font-weight:600;cursor:pointer;transition:background 0.2s;">
+              Clear Cache &amp; Reload
+            </button>
+          </div>
         </div>
       </div>
       <style>
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
       </style>
     </div>
+
+    <script>
+      (function() {
+        window.__reactMounted = false;
+
+        window.__clearCacheAndReload = function() {
+          try {
+            if ('caches' in window) {
+              caches.keys().then(function(keys) {
+                keys.forEach(function(k) { caches.delete(k); });
+              });
+            }
+            localStorage.clear();
+            sessionStorage.clear();
+          } catch (e) {
+            console.error(e);
+          }
+          var cleanUrl = window.location.origin + window.location.pathname;
+          window.location.replace(cleanUrl + '?_cb=' + Date.now());
+        };
+
+        // If a script load error occurs before mount
+        window.addEventListener('error', function(e) {
+          if (!window.__reactMounted) {
+            var timeoutBox = document.getElementById('erp-loading-timeout');
+            if (timeoutBox) {
+              timeoutBox.style.display = 'block';
+              var txt = document.getElementById('erp-loading-text');
+              if (txt) txt.textContent = 'Application update detected.';
+            }
+          }
+        });
+
+        // Watchdog: If React hasn't mounted in 3 seconds, show recovery button
+        setTimeout(function() {
+          if (!window.__reactMounted) {
+            var timeoutBox = document.getElementById('erp-loading-timeout');
+            if (timeoutBox) {
+              timeoutBox.style.display = 'block';
+            }
+          }
+        }, 3000);
+
+        // Auto-heal: If still not mounted after 5 seconds on initial load, auto-reload once
+        setTimeout(function() {
+          if (!window.__reactMounted && !window.location.search.includes('_cb=')) {
+            console.warn('Auto-healing stale browser session...');
+            window.__clearCacheAndReload();
+          }
+        }, 5000);
+      })();
+    </script>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

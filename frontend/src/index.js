@@ -7,6 +7,7 @@ import App from "./App";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+window.__reactMounted = true;
 
 root.render(
     <React.StrictMode>

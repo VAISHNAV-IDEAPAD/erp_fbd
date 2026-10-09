@@ -155,7 +155,15 @@ const candidates = [
 const buildDir = candidates.find(dir => fs.existsSync(dir));
 
 if (buildDir) {
-    app.use(express.static(buildDir));
+    app.use(express.static(buildDir, {
+        setHeaders: (res, filePath) => {
+            if (filePath.endsWith(".html") || filePath.endsWith("index.html")) {
+                res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate, max-age=0");
+                res.setHeader("Pragma", "no-cache");
+                res.setHeader("Expires", "0");
+            }
+        }
+    }));
 
     // Fallback for SPA routing in Express 5
     app.use((req, res, next) => {
@@ -171,7 +179,7 @@ if (buildDir) {
         }
         const indexPath = path.join(buildDir, "index.html");
         if (fs.existsSync(indexPath)) {
-            res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate, max-age=0");
             res.setHeader("Pragma", "no-cache");
             res.setHeader("Expires", "0");
             return res.sendFile(indexPath);

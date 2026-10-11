@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import {
@@ -8,6 +8,7 @@ import {
   FaTrash,
   FaFileInvoice,
 } from "react-icons/fa";
+import TypeaheadDropdown from "../../components/common/TypeaheadDropdown";
 
 const API_URL = process.env.REACT_APP_API_URL || "/api";
 
@@ -49,6 +50,30 @@ export default function ItemReceiptForm() {
     },
   ]);
 
+  const [selectedSupplierName, setSelectedSupplierName] = useState("");
+
+  const supplierOptions = useMemo(() => {
+    return (suppliers || []).map((s) => ({
+      label: s.SupplierName || s.supplierName || "",
+      value: s.SupplierID || s.supplierId || s.id,
+      code: s.SupplierCode || s.supplierCode || "",
+      raw: s,
+    }));
+  }, [suppliers]);
+
+  useEffect(() => {
+    if (form.SupplierID && suppliers.length > 0) {
+      const match = suppliers.find(
+        (s) => String(s.SupplierID || s.supplierId || s.id) === String(form.SupplierID)
+      );
+      if (match) {
+        setSelectedSupplierName(match.SupplierName || match.supplierName || "");
+      }
+    } else if (!form.SupplierID) {
+      setSelectedSupplierName("");
+    }
+  }, [form.SupplierID, suppliers]);
+
   // ---------------------------------------
   // LOAD MASTER DATA
   // ---------------------------------------
@@ -65,7 +90,11 @@ export default function ItemReceiptForm() {
     try {
       const response = await axios.get(`${API_URL}/suppliers`);
 
-      const data = response.data?.data || response.data || [];
+      const data =
+        response.data?.value ||
+        response.data?.data ||
+        response.data ||
+        [];
 
       setSuppliers(Array.isArray(data) ? data : []);
     } catch (error) {
@@ -274,7 +303,7 @@ export default function ItemReceiptForm() {
   };
 
   return (
-    <div className="container-fluid py-3">
+    <div className="container-fluid py-3 item-receipt-form">
 
       {/* HEADER */}
       <div className="d-flex justify-content-between align-items-center mb-3">
@@ -382,34 +411,35 @@ export default function ItemReceiptForm() {
                   Supplier <span className="text-danger">*</span>
                 </label>
 
-                <select
-                  className="form-select"
-                  name="SupplierID"
-                  value={form.SupplierID}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">
-                    Select Supplier
-                  </option>
-
-                  {suppliers.map((supplier, index) => (
-                    <option
-                      key={
-                        supplier.SupplierID ||
-                        supplier.supplierId ||
-                        index
-                      }
-                      value={
-                        supplier.SupplierID ||
-                        supplier.supplierId
-                      }
-                    >
-                      {supplier.SupplierName ||
-                        supplier.supplierName}
-                    </option>
-                  ))}
-                </select>
+                <TypeaheadDropdown
+                  options={supplierOptions}
+                  value={selectedSupplierName}
+                  onChange={(label, supObj) => {
+                    setSelectedSupplierName(label);
+                    const supId = supObj?.value || supObj?.SupplierID || supObj?.id;
+                    if (supId) {
+                      setForm((prev) => ({ ...prev, SupplierID: supId }));
+                    } else if (!label) {
+                      setForm((prev) => ({ ...prev, SupplierID: "" }));
+                    } else {
+                      const match = suppliers.find(
+                        (s) =>
+                          (s.SupplierName || s.supplierName || "").toLowerCase() ===
+                          label.toLowerCase()
+                      );
+                      setForm((prev) => ({
+                        ...prev,
+                        SupplierID: match
+                          ? match.SupplierID || match.supplierId || match.id
+                          : prev.SupplierID,
+                      }));
+                    }
+                  }}
+                  placeholder="Type and select Supplier..."
+                  showCode={true}
+                  dropdownWidth="min(450px, 90vw)"
+                  clearable={true}
+                />
               </div>
 
               <div className="col-md-3">

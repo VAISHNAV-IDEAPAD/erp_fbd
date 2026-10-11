@@ -332,10 +332,6 @@ export default function MegaMenu({
                     path: "/departments"
                 },
                 {
-                    label: "Style Master",
-                    path: "/styles"
-                },
-                {
                     label: "Warehouse Master",
                     path: "/warehouses"
                 }

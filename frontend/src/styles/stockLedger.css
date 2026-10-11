@@ -182,6 +182,7 @@
     margin-bottom: 14px;
     max-width: 580px;
     z-index: 50;
+    overflow: visible !important;
     animation: fadeIn 0.15s ease-out;
 }
 
@@ -194,6 +195,10 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px 16px;
+}
+
+.sl-popover-field {
+    position: relative;
 }
 
 .sl-popover-field label {
@@ -221,6 +226,51 @@
     border-color: #2563eb;
     outline: none;
     box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+/* Typeahead overrides for Stock Ledger */
+.sl-popover-field .typeahead-container {
+    width: 100%;
+    position: relative;
+}
+
+.sl-popover-field .typeahead-input {
+    width: 100% !important;
+    height: 30px !important;
+    font-size: 12px !important;
+    padding: 4px 8px !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 3px !important;
+    background: #ffffff !important;
+    color: #1e293b !important;
+}
+
+.sl-popover-field .typeahead-input:focus {
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12) !important;
+}
+
+.sl-popover-field .typeahead-menu {
+    border: 1px solid #cbd5e1 !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15) !important;
+    border-radius: 3px !important;
+    max-height: 210px !important;
+    z-index: 99999 !important;
+    min-width: 100% !important;
+}
+
+.sl-input-store-wrap .typeahead-container {
+    min-width: 260px;
+}
+
+.sl-input-store-wrap .typeahead-input {
+    height: 32px !important;
+    padding: 4px 10px !important;
+    font-size: 13px !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 3px !important;
+    background: #ffffff !important;
+    min-width: 260px !important;
 }
 
 .sl-radio-group {

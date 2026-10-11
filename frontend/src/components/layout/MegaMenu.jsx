@@ -34,10 +34,6 @@ export default function MegaMenu({
                     path: "/pending-po"
                 },
                 {
-                    label: "GRN",
-                    path: "/grn"
-                },
-                {
                     label: "Purchase Return",
                     path: "/purchase-return"
                 }

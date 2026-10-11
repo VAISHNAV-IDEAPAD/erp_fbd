@@ -7,8 +7,10 @@ import {
   FaPlus,
   FaTrash,
   FaFileInvoice,
+  FaSearch,
 } from "react-icons/fa";
 import TypeaheadDropdown from "../../components/common/TypeaheadDropdown";
+import SupplierLookup from "../../components/purchase/SupplierLookup";
 
 const API_URL = process.env.REACT_APP_API_URL || "/api";
 
@@ -51,6 +53,7 @@ export default function ItemReceiptForm() {
   ]);
 
   const [selectedSupplierName, setSelectedSupplierName] = useState("");
+  const [showSupplierLookup, setShowSupplierLookup] = useState(false);
 
   const supplierOptions = useMemo(() => {
     return (suppliers || []).map((s) => ({
@@ -407,39 +410,64 @@ export default function ItemReceiptForm() {
               </div>
 
               <div className="col-md-3">
-                <label className="form-label">
-                  Supplier <span className="text-danger">*</span>
+                <label className="form-label d-flex justify-content-between align-items-center mb-1">
+                  <span>
+                    Supplier <span className="text-danger">*</span>
+                  </span>
+                  <a
+                    href="/master/suppliers"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary text-decoration-none small"
+                    style={{ fontSize: "11.5px" }}
+                    title="Open Supplier Master in a new tab"
+                  >
+                    Supplier Master ↗
+                  </a>
                 </label>
 
-                <TypeaheadDropdown
-                  options={supplierOptions}
-                  value={selectedSupplierName}
-                  onChange={(label, supObj) => {
-                    setSelectedSupplierName(label);
-                    const supId = supObj?.value || supObj?.SupplierID || supObj?.id;
-                    if (supId) {
-                      setForm((prev) => ({ ...prev, SupplierID: supId }));
-                    } else if (!label) {
-                      setForm((prev) => ({ ...prev, SupplierID: "" }));
-                    } else {
-                      const match = suppliers.find(
-                        (s) =>
-                          (s.SupplierName || s.supplierName || "").toLowerCase() ===
-                          label.toLowerCase()
-                      );
-                      setForm((prev) => ({
-                        ...prev,
-                        SupplierID: match
-                          ? match.SupplierID || match.supplierId || match.id
-                          : prev.SupplierID,
-                      }));
-                    }
-                  }}
-                  placeholder="Type and select Supplier..."
-                  showCode={true}
-                  dropdownWidth="min(450px, 90vw)"
-                  clearable={true}
-                />
+                <div className="d-flex gap-1 align-items-stretch">
+                  <div className="flex-grow-1" style={{ minWidth: 0 }}>
+                    <TypeaheadDropdown
+                      options={supplierOptions}
+                      value={selectedSupplierName}
+                      onChange={(label, supObj) => {
+                        setSelectedSupplierName(label);
+                        const supId = supObj?.value || supObj?.SupplierID || supObj?.id;
+                        if (supId) {
+                          setForm((prev) => ({ ...prev, SupplierID: supId }));
+                        } else if (!label) {
+                          setForm((prev) => ({ ...prev, SupplierID: "" }));
+                        } else {
+                          const match = suppliers.find(
+                            (s) =>
+                              (s.SupplierName || s.supplierName || "").toLowerCase() ===
+                              label.toLowerCase()
+                          );
+                          setForm((prev) => ({
+                            ...prev,
+                            SupplierID: match
+                              ? match.SupplierID || match.supplierId || match.id
+                              : prev.SupplierID,
+                          }));
+                        }
+                      }}
+                      placeholder="Type and select Supplier..."
+                      showCode={true}
+                      dropdownWidth="min(450px, 90vw)"
+                      clearable={true}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary d-flex align-items-center justify-content-center px-2"
+                    title="Lookup from Supplier Master"
+                    onClick={() => setShowSupplierLookup(true)}
+                    style={{ height: "38px", flexShrink: 0 }}
+                  >
+                    <FaSearch />
+                  </button>
+                </div>
               </div>
 
               <div className="col-md-3">
@@ -765,6 +793,20 @@ export default function ItemReceiptForm() {
         </div>
 
       </form>
+
+      {/* SUPPLIER LOOKUP MODAL */}
+      <SupplierLookup
+        show={showSupplierLookup}
+        onHide={() => setShowSupplierLookup(false)}
+        suppliers={suppliers}
+        onSelect={(sup) => {
+          const supId = sup.SupplierID || sup.supplierId || sup.id;
+          const supName = sup.SupplierName || sup.supplierName || "";
+          setSelectedSupplierName(supName);
+          setForm((prev) => ({ ...prev, SupplierID: supId }));
+          setShowSupplierLookup(false);
+        }}
+      />
 
     </div>
   );

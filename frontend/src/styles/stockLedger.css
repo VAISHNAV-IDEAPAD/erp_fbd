@@ -1,0 +1,401 @@
+/* ==========================================================================
+   TPCS FASHION STYLE STOCK LEDGER
+   ========================================================================== */
+
+.stock-ledger-page {
+    background-color: #f8fafc;
+    min-height: calc(100vh - 70px);
+    padding: 16px 20px 40px 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #1e293b;
+}
+
+.stock-ledger-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #1a5695;
+    margin-bottom: 12px;
+    letter-spacing: -0.2px;
+}
+
+/* --------------------------------------------------------------------------
+   TOP FILTER / CRITERIA BAR
+   -------------------------------------------------------------------------- */
+.sl-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 16px;
+    margin-bottom: 14px;
+}
+
+.sl-field-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.sl-field-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #475569;
+    margin-bottom: 4px;
+}
+
+.sl-input-date-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.sl-input-date-wrap input {
+    height: 32px;
+    padding: 4px 10px;
+    font-size: 13px;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    background: #ffffff;
+    width: 140px;
+    color: #1e293b;
+}
+
+.sl-input-date-wrap input:focus {
+    border-color: #2563eb;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+.sl-input-store-wrap input,
+.sl-input-store-wrap select {
+    height: 32px;
+    padding: 4px 10px;
+    font-size: 13px;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    background: #ffffff;
+    min-width: 260px;
+    color: #1e293b;
+}
+
+.sl-input-store-wrap input:focus,
+.sl-input-store-wrap select:focus {
+    border-color: #2563eb;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+/* --------------------------------------------------------------------------
+   ACTION TOOLBAR
+   -------------------------------------------------------------------------- */
+.sl-toolbar-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.sl-toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sl-tool-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    border-radius: 3px;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    padding: 0;
+}
+
+.sl-tool-btn:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+    color: #0f172a;
+}
+
+.sl-tool-btn.btn-excel {
+    color: #16a34a;
+}
+.sl-tool-btn.btn-excel:hover {
+    background: #dcfce7;
+    border-color: #86efac;
+}
+
+.sl-tool-btn.btn-pdf {
+    color: #dc2626;
+}
+.sl-tool-btn.btn-pdf:hover {
+    background: #fee2e2;
+    border-color: #fca5a5;
+}
+
+.sl-filter-toggle-btn {
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 12px;
+    font-size: 13px;
+    font-weight: 500;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    color: #334155;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+}
+
+.sl-filter-toggle-btn:hover,
+.sl-filter-toggle-btn.active {
+    background: #e2e8f0;
+    border-color: #94a3b8;
+    color: #0f172a;
+}
+
+.sl-pagination-badge {
+    background-color: #2563eb;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 3px;
+    line-height: 1;
+}
+
+/* --------------------------------------------------------------------------
+   FILTER POPOVER / CARD (MATCHING SCREENSHOT 2)
+   -------------------------------------------------------------------------- */
+.sl-filter-popover {
+    position: relative;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    border-radius: 4px;
+    padding: 16px;
+    margin-bottom: 14px;
+    max-width: 580px;
+    z-index: 50;
+    animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.sl-popover-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 16px;
+}
+
+.sl-popover-field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: #475569;
+    margin-bottom: 2px;
+}
+
+.sl-popover-field input,
+.sl-popover-field select {
+    width: 100%;
+    height: 30px;
+    font-size: 12px;
+    padding: 4px 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    background: #ffffff;
+    color: #1e293b;
+}
+
+.sl-popover-field input:focus,
+.sl-popover-field select:focus {
+    border-color: #2563eb;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+.sl-radio-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+    font-size: 12px;
+    color: #334155;
+}
+
+.sl-radio-group label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    margin-bottom: 0;
+    font-weight: normal;
+}
+
+.sl-popover-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 14px;
+    padding-top: 10px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.sl-btn-reset {
+    height: 30px;
+    padding: 0 14px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #2563eb;
+    background: #ffffff;
+    border: 1px solid #2563eb;
+    border-radius: 3px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+}
+
+.sl-btn-reset:hover {
+    background: #eff6ff;
+}
+
+.sl-btn-apply {
+    height: 30px;
+    padding: 0 16px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #ffffff;
+    background: #2563eb;
+    border: 1px solid #2563eb;
+    border-radius: 3px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+}
+
+.sl-btn-apply:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+}
+
+/* --------------------------------------------------------------------------
+   STOCK LEDGER TABLE (JENIX DEEP BLUE THEME)
+   -------------------------------------------------------------------------- */
+.sl-table-container {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    overflow-x: auto;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.sl-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.sl-table th {
+    background-color: #175d9e;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 8px 10px;
+    text-align: left;
+    border: 1px solid #144f87;
+    letter-spacing: 0.1px;
+    user-select: none;
+}
+
+.sl-table th.num-col,
+.sl-table td.num-col {
+    text-align: right;
+}
+
+.sl-table th.center-col,
+.sl-table td.center-col {
+    text-align: center;
+}
+
+.sl-table td {
+    padding: 6px 10px;
+    border: 1px solid #e2e8f0;
+    color: #1e293b;
+    font-size: 12px;
+    background: #ffffff;
+}
+
+.sl-table tbody tr:hover td {
+    background-color: #f8fafc;
+}
+
+/* Item group header */
+.sl-item-header-row td {
+    background-color: #ffffff;
+    font-weight: 600;
+    font-size: 12.5px;
+    color: #0f172a;
+    padding: 9px 12px;
+    border-top: 1px solid #cbd5e1;
+    border-bottom: 1px solid #cbd5e1;
+    letter-spacing: 0.1px;
+}
+
+/* Summary / Total row */
+.sl-total-row td {
+    background-color: #ede9fe !important; /* light lavender matching screenshot */
+    font-weight: 700;
+    color: #4c1d95;
+    border-top: 2px solid #c4b5fd;
+    border-bottom: 2px solid #c4b5fd;
+    padding: 8px 10px;
+}
+
+/* Empty State */
+.sl-empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #64748b;
+    font-size: 14px;
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background: #ffffff !important;
+    }
+    .sl-toolbar-row,
+    .sl-filter-bar,
+    .sl-filter-popover,
+    header,
+    nav {
+        display: none !important;
+    }
+    .stock-ledger-page {
+        padding: 0 !important;
+    }
+    .sl-table th {
+        background-color: #175d9e !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    .sl-total-row td {
+        background-color: #ede9fe !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}

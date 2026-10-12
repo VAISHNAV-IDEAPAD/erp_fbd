@@ -3,7 +3,6 @@ import { Row, Col, Spinner, Alert } from "react-bootstrap";
 import DashboardCard from "./DashboardCard";
 import DashboardChart from "./DashboardChart";
 import ProductionStatus from "./ProductionStatus";
-import LowStockTable from "./LowStockTable";
 import PendingPOTable from "./PendingPOTable";
 import QuickActions from "./QuickActions";
 import RecentActivity from "./RecentActivity";
@@ -140,18 +139,12 @@ export default function DashboardGrid() {
             </Row>
 
             {/* ==========================================================
-               LOW STOCK + PENDING PURCHASE ORDERS
+               PENDING PURCHASE ORDERS
             =========================================================== */}
 
             <Row className="g-4 mb-4">
 
-                <Col xl={6} lg={12}>
-
-                    <LowStockTable />
-
-                </Col>
-
-                <Col xl={6} lg={12}>
+                <Col xl={12}>
 
                     <PendingPOTable />
 

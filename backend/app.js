@@ -26,6 +26,7 @@ require("./database/employees");
 require("./database/masterTables");
 require("./database/internalOrderTables");
 require("./database/styleManagementTables");
+require("./database/floorReturnTables");
 
 // ======================================================
 // ROUTES
@@ -67,6 +68,7 @@ app.use("/api/grn", require("./routes/grn"));
 app.use("/api/stock-issues", require("./routes/stockIssues"));
 app.use("/api/stockissues", require("./routes/stockIssues"));
 app.use("/api/stock-adjustments", require("./routes/stockAdjustments"));
+app.use("/api/floor-returns", require("./routes/floorReturns"));
 app.use("/api/stock-ledger", require("./routes/stockLedger"));
 app.use("/api/stock-summary", require("./routes/stockSummary"));
 app.use("/api/stocksummary", require("./routes/stockSummary"));

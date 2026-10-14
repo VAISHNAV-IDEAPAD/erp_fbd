@@ -59,6 +59,8 @@ import WorkInProgress from "./pages/pm/workInProgress/WorkInProgress";
 import Styles from "./pages/pm/styles/Styles";
 import OperationMaster from "./pages/pm/operationMaster/OperationMaster";
 import ProductionDashboard from "./pages/pm/productionDashboard/ProductionDashboard";
+import ConversionGRN from "./pages/pm/subcontract/ConversionGRN";
+import PMModulePage from "./pages/pm/common/PMModulePage";
 
 // =======================================
 // SM (STYLE MANAGEMENT)
@@ -112,7 +114,6 @@ function App() {
     return (
         <BrowserRouter>
             <Header />
-            <SearchBar />
 
             <Routes>
                 {/* CORE DASHBOARDS */}
@@ -185,6 +186,44 @@ function App() {
                 <Route path="/wip" element={<WorkInProgress />} />
                 <Route path="/styles" element={<Styles />} />
                 <Route path="/production-dashboard" element={<ProductionDashboard />} />
+
+                {/* SUBCONTRACT & CONVERSION GRN (TPCS FASHION MATCH) */}
+                <Route path="/conversion-grn" element={<ConversionGRN />} />
+                <Route path="/subcontract-conversion-grn" element={<ConversionGRN />} />
+                <Route path="/pm/subcontract-material-conversion-grn" element={<ConversionGRN />} />
+                <Route path="/pm/subcontract-order-dc" element={<PMModulePage title="Subcontract Order / DC" category="Subcontract" />} />
+                <Route path="/pm/subcontract-grn" element={<PMModulePage title="Subcontract GRN" category="Subcontract" />} />
+                <Route path="/pm/subcontract-material-conversion-dc" element={<PMModulePage title="Subcontract Material Conversion DC" category="Subcontract" />} />
+                <Route path="/pm/subcontract-order-approval" element={<PMModulePage title="Subcontract Order Approval" category="Subcontract" />} />
+                <Route path="/pm/subcontract-conversion-approval" element={<PMModulePage title="Subcontract Conversion Approval" category="Subcontract" />} />
+                <Route path="/pm/subcontract-po" element={<PMModulePage title="Subcontract PO" category="Subcontract" />} />
+                <Route path="/pm/subcontract-po-approval" element={<PMModulePage title="Subcontract PO Approval" category="Subcontract" />} />
+
+                {/* PRODUCTION MODULE ITEMS */}
+                <Route path="/pm/cutting-slip" element={<PMModulePage title="Cutting Slip" category="Production" />} />
+                <Route path="/pm/cutting-slip-printing" element={<PMModulePage title="Cutting Slip Printing" category="Production" />} />
+                <Route path="/pm/delivery-note" element={<PMModulePage title="Delivery Note" category="Production" />} />
+                <Route path="/pm/finished-goods-transfer-note" element={<PMModulePage title="Finished Goods Transfer Note" category="Production" />} />
+                <Route path="/pm/man-hours" element={<PMModulePage title="Man Hours" category="Production" />} />
+                <Route path="/pm/daily-production-target" element={<PMModulePage title="Daily Production Target" category="Production Tracking" />} />
+                <Route path="/pm/line-output-with-size" element={<PMModulePage title="Line Output With Size" category="Production Tracking" />} />
+                <Route path="/pm/display-board" element={<PMModulePage title="Display Board" category="Production Tracking" />} />
+                <Route path="/pm/line-balancing-report" element={<PMModulePage title="Line Balancing Report" category="Production Reports" />} />
+                <Route path="/pm/hourly-production-report-v2" element={<PMModulePage title="Hourly Production Report V2" category="Production Reports" />} />
+                <Route path="/pm/line-output-by-style" element={<PMModulePage title="Line Output By Style" category="Production WIP" />} />
+
+                {/* COMPONENT MODULE ITEMS */}
+                <Route path="/pm/component-cutting-plan" element={<PMModulePage title="Component Cutting Plan" category="Component" />} />
+                <Route path="/pm/link-rfid-components" element={<PMModulePage title="Link RFID for Components" category="Component" />} />
+                <Route path="/pm/treatment-output-tracking" element={<PMModulePage title="Treatment Output Tracking" category="Component" />} />
+                <Route path="/pm/treatment-output-tracking-2" element={<PMModulePage title="Treatment Output Tracking" category="Component" />} />
+                <Route path="/pm/supermarket-to-treatment" element={<PMModulePage title="Supermarket to Treatment" category="Component" />} />
+                <Route path="/pm/supermarket-inward" element={<PMModulePage title="Supermarket Inward" category="Component" />} />
+                <Route path="/pm/supermarket-to-stitching" element={<PMModulePage title="Supermarket to Stitching" category="Component" />} />
+                <Route path="/pm/treatment-sub-process-output" element={<PMModulePage title="Treatment Sub Process Output" category="Component" />} />
+                <Route path="/pm/rfid-details" element={<PMModulePage title="RFID Details" category="Component" />} />
+                <Route path="/pm/component-checklist" element={<PMModulePage title="Component Checklist" category="Component" />} />
+                <Route path="/pm/cutting-sticker-component-checklist" element={<PMModulePage title="Cutting Sticker for Component Checklist" category="Component" />} />
 
                 {/* SM (STYLE MANAGEMENT) */}
                 <Route path="/style-master" element={<StyleMaster />} />

@@ -86,10 +86,26 @@ export default function Header() {
 
           <Navbar.Brand
             href="/"
-            className="erp-logo"
+            className="erp-logo d-flex align-items-center"
             onClick={closeMenu}
+            style={{ textDecoration: "none" }}
           >
-            ERP Fashion
+            <svg
+              width="26"
+              height="26"
+              viewBox="0 0 100 100"
+              style={{ marginRight: "8px", fill: "none", stroke: "#60a5fa", strokeWidth: "5" }}
+            >
+              <ellipse cx="50" cy="50" rx="42" ry="16" transform="rotate(30 50 50)" />
+              <ellipse cx="50" cy="50" rx="42" ry="16" transform="rotate(-30 50 50)" />
+              <ellipse cx="50" cy="50" rx="42" ry="16" transform="rotate(90 50 50)" />
+              <circle cx="50" cy="50" r="5" fill="#ffffff" stroke="none" />
+              <circle cx="16" cy="30" r="4" fill="#93c5fd" stroke="none" />
+              <circle cx="84" cy="70" r="4" fill="#93c5fd" stroke="none" />
+              <circle cx="50" cy="8" r="4" fill="#93c5fd" stroke="none" />
+            </svg>
+            <span style={{ fontWeight: 800, letterSpacing: "-0.5px", color: "#ffffff", fontSize: "20px" }}>TPCS</span>
+            <span style={{ fontWeight: 400, color: "#ffffff", fontSize: "20px" }}>Fashion</span>
           </Navbar.Brand>
 
 
@@ -226,8 +242,8 @@ export default function Header() {
           <div className="erp-header-icons d-flex align-items-center">
 
             <div className="d-none d-md-flex flex-column text-end me-3 text-white">
-              <span className="fw-bold" style={{ fontSize: "0.82rem", lineHeight: 1.2 }}>Plot No. 9B</span>
-              <span style={{ fontSize: "0.68rem", opacity: 0.85 }}>01-Apr-2026 - 31-Mar-2027</span>
+              <span className="fw-bold" style={{ fontSize: "0.82rem", lineHeight: 1.2 }}>Plot No. 30</span>
+              <span style={{ fontSize: "0.68rem", opacity: 0.85 }}>FY 01-Apr-2026 - 31-Mar-2027</span>
             </div>
 
             <div className="position-relative me-2">
@@ -249,38 +265,24 @@ export default function Header() {
               className="erp-icon-btn"
               title="Profile"
               onClick={closeMenu}
+              style={{
+                width: "30px",
+                height: "30px",
+                borderRadius: "50%",
+                background: "rgba(255, 255, 255, 0.2)",
+                border: "1px solid rgba(255, 255, 255, 0.4)",
+                color: "#ffffff",
+                fontWeight: "bold",
+                fontSize: "13px"
+              }}
             >
-              <FaUserCircle />
+              9
             </button>
 
           </div>
 
         </Container>
       </Navbar>
-
-
-      {/* =====================================
-          SEARCH BAR
-      ====================================== */}
-
-      <div className="erp-search-wrapper">
-
-        <div className="erp-search-box">
-
-          <span className="erp-search-icon">
-            🔍
-          </span>
-
-          <input
-            type="text"
-            placeholder="Search Menu..."
-            className="erp-search-input"
-          />
-
-        </div>
-
-      </div>
-
 
       {/* =====================================
           MEGA MENU

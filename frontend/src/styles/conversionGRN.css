@@ -1,0 +1,412 @@
+/* ==========================================================================
+   TPCS FASHION - CONVERSION GRN (SUBCONTRACT MATERIAL CONVERSION GRN)
+   Exact replica of JenixCloud / TPCS Fashion tr_tag=JSTCGRN
+   ========================================================================== */
+
+.cgrn-page {
+    background-color: #ffffff;
+    min-height: calc(100vh - 65px);
+    padding: 16px 20px 40px 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #333333;
+}
+
+/* Page Header Title */
+.cgrn-page-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #1a5695;
+    margin-bottom: 12px;
+    letter-spacing: -0.2px;
+}
+
+/* Top Row: Associate Search & Right-side Action Buttons */
+.cgrn-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 14px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.cgrn-search-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.cgrn-search-label {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: #475569;
+    margin-bottom: 4px;
+}
+
+.cgrn-search-input {
+    height: 32px;
+    width: 260px;
+    padding: 4px 10px;
+    font-size: 12.5px;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    background: #ffffff;
+    color: #1e293b;
+    outline: none;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.cgrn-search-input:focus {
+    border-color: #2172ba;
+    box-shadow: 0 0 0 2px rgba(33, 114, 186, 0.2);
+}
+
+.cgrn-search-input::placeholder {
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.cgrn-right-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cgrn-btn-new {
+    background-color: #35aa47;
+    border: 1px solid #2e943e;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 3px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+    transition: background-color 0.15s ease;
+}
+
+.cgrn-btn-new:hover {
+    background-color: #2d923d;
+}
+
+.cgrn-btn-bulk {
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+    font-size: 12.5px;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 3px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+}
+
+.cgrn-btn-bulk:hover {
+    background-color: #f8fafc;
+    border-color: #94a3b8;
+}
+
+/* Toolbar */
+.cgrn-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 4px 0;
+}
+
+.cgrn-toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cgrn-icon-btn {
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    color: #475569;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.15s ease;
+}
+
+.cgrn-icon-btn:hover {
+    background-color: #f1f5f9;
+    color: #2172ba;
+    border-color: #94a3b8;
+}
+
+.cgrn-filter-btn {
+    height: 30px;
+    padding: 0 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    color: #475569;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+}
+
+.cgrn-filter-btn:hover,
+.cgrn-filter-btn.active {
+    background-color: #f1f5f9;
+    color: #2172ba;
+    border-color: #2172ba;
+}
+
+.cgrn-page-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 6px;
+    background: #e2e8f0;
+    color: #334155;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Filter Panel */
+.cgrn-filter-drawer {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.cgrn-filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.cgrn-filter-group label {
+    font-size: 11.5px;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.cgrn-filter-group select,
+.cgrn-filter-group input {
+    height: 28px;
+    padding: 2px 8px;
+    font-size: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    background: #ffffff;
+}
+
+/* Table */
+.cgrn-table-container {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 3px;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.cgrn-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.cgrn-table thead tr {
+    background-color: #2172ba;
+    color: #ffffff;
+}
+
+.cgrn-table th {
+    padding: 8px 10px;
+    font-weight: 600;
+    font-size: 12px;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    user-select: none;
+}
+
+.cgrn-table th:last-child {
+    border-right: none;
+}
+
+.cgrn-table tbody tr {
+    border-bottom: 1px solid #f1f5f9;
+    cursor: pointer;
+    transition: background-color 0.1s ease;
+}
+
+.cgrn-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.cgrn-table tbody tr.selected {
+    background-color: #eff6ff !important;
+}
+
+.cgrn-table td {
+    padding: 7px 10px;
+    color: #1e293b;
+    border-right: 1px solid #f1f5f9;
+}
+
+.cgrn-table td:last-child {
+    border-right: none;
+}
+
+/* Action button in table */
+.cgrn-action-btn {
+    background-color: #2172ba;
+    color: #ffffff;
+    border: none;
+    border-radius: 3px;
+    padding: 3px 8px;
+    font-size: 11px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.cgrn-action-btn:hover {
+    background-color: #1a5695;
+}
+
+.cgrn-action-menu {
+    position: absolute;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    z-index: 1050;
+    min-width: 140px;
+    padding: 4px 0;
+}
+
+.cgrn-action-menu-item {
+    padding: 6px 12px;
+    font-size: 12px;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.cgrn-action-menu-item:hover {
+    background-color: #f1f5f9;
+    color: #2172ba;
+}
+
+/* Status Badges */
+.cgrn-status-badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.cgrn-status-approved {
+    background-color: #dcfce7;
+    color: #15803d;
+}
+
+.cgrn-status-pending {
+    background-color: #fef3c7;
+    color: #b45309;
+}
+
+.cgrn-status-completed {
+    background-color: #e0e7ff;
+    color: #4338ca;
+}
+
+/* Modal styling */
+.cgrn-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 16px;
+}
+
+.cgrn-modal-container {
+    background: #ffffff;
+    border-radius: 6px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 860px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.cgrn-modal-header {
+    background: #2172ba;
+    color: #ffffff;
+    padding: 12px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cgrn-modal-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.cgrn-modal-close {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.cgrn-modal-body {
+    padding: 18px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.cgrn-modal-footer {
+    padding: 12px 18px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}

@@ -1,0 +1,650 @@
+/* ==========================================================================
+   TPCS FASHION ITEM ISSUE STYLES
+   Matches Jenix Cloud TPCS Fashion ERP Interface
+   ========================================================================== */
+
+.item-issue-page {
+    background-color: #ffffff;
+    min-height: calc(100vh - 65px);
+    padding: 16px 20px 40px 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #333333;
+}
+
+/* Page Header Title */
+.ii-page-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #1a5695;
+    margin-bottom: 12px;
+    letter-spacing: -0.2px;
+}
+
+/* --------------------------------------------------------------------------
+   TOP CRITERIA / ASSOCIATE SEARCH & NEW BUTTON ROW
+   -------------------------------------------------------------------------- */
+.ii-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 14px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.ii-search-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.ii-search-label {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: #475569;
+    margin-bottom: 4px;
+}
+
+.ii-search-input {
+    height: 32px;
+    width: 250px;
+    padding: 4px 10px;
+    font-size: 12.5px;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    background: #ffffff;
+    color: #1e293b;
+    outline: none;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.ii-search-input:focus {
+    border-color: #337ab7;
+    box-shadow: 0 0 0 2px rgba(51, 122, 183, 0.2);
+}
+
+.ii-search-input::placeholder {
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.ii-btn-new {
+    background-color: #35aa47;
+    border: 1px solid #2e943e;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 3px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.ii-btn-new:hover {
+    background-color: #2e943e;
+    color: #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+   ACTION TOOLBAR ROW
+   -------------------------------------------------------------------------- */
+.ii-toolbar-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 2px 0;
+}
+
+.ii-toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+}
+
+.ii-tool-btn {
+    height: 28px;
+    padding: 2px 8px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    color: #337ab7;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+}
+
+.ii-tool-btn:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+    color: #23527c;
+}
+
+.ii-tool-btn-filter {
+    color: #337ab7;
+    font-weight: 500;
+    font-size: 11.5px;
+    padding: 2px 10px;
+}
+
+.ii-tool-btn-filter.active {
+    background: #e8f4fc;
+    border-color: #337ab7;
+    color: #23527c;
+}
+
+/* Pagination Badge */
+.ii-page-badge {
+    background-color: #337ab7;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    width: 26px;
+    height: 26px;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* --------------------------------------------------------------------------
+   FILTER CARD / DRAWER
+   -------------------------------------------------------------------------- */
+.ii-filter-card {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 12px;
+    animation: iiFadeIn 0.2s ease-in-out;
+}
+
+@keyframes iiFadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.ii-filter-item {
+    display: flex;
+    flex-direction: column;
+    min-width: 140px;
+}
+
+.ii-filter-label {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 4px;
+}
+
+.ii-filter-select {
+    height: 30px;
+    padding: 2px 8px;
+    font-size: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    background: #ffffff;
+    color: #1e293b;
+    outline: none;
+}
+
+.ii-filter-select:focus {
+    border-color: #337ab7;
+}
+
+.ii-filter-btn-reset {
+    height: 30px;
+    padding: 0 12px;
+    font-size: 12px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    color: #475569;
+    cursor: pointer;
+}
+
+.ii-filter-btn-reset:hover {
+    background: #e2e8f0;
+}
+
+.ii-filter-btn-apply {
+    height: 30px;
+    padding: 0 14px;
+    font-size: 12px;
+    background: #337ab7;
+    border: 1px solid #2b669a;
+    border-radius: 3px;
+    color: #ffffff;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.ii-filter-btn-apply:hover {
+    background: #286090;
+}
+
+/* --------------------------------------------------------------------------
+   COLUMNS CHOOSER DROPDOWN
+   -------------------------------------------------------------------------- */
+.ii-column-dropdown {
+    position: absolute;
+    top: 32px;
+    left: 45px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1050;
+    padding: 10px 12px;
+    width: 240px;
+    max-height: 360px;
+    overflow-y: auto;
+}
+
+.ii-col-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #334155;
+    padding: 3px 0;
+    cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   TABLE STYLING
+   Matches TPCS Blue Grid exactly
+   -------------------------------------------------------------------------- */
+.ii-table-container {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    border-radius: 2px;
+}
+
+.ii-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-bottom: 0;
+    min-width: 1500px;
+}
+
+/* Table Header */
+.ii-table thead th {
+    background-color: #337ab7;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 8px 10px;
+    border: 1px solid #2b669a;
+    white-space: nowrap;
+    text-align: left;
+    vertical-align: middle;
+    user-select: none;
+}
+
+.ii-table thead th.text-end {
+    text-align: right;
+}
+
+.ii-table thead th.text-center {
+    text-align: center;
+}
+
+/* Table Body */
+.ii-table tbody tr {
+    border-bottom: 1px solid #e2e8f0;
+    transition: background-color 0.1s ease-in-out;
+    cursor: pointer;
+}
+
+.ii-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.ii-table tbody tr.selected-row {
+    background-color: #e8f4fc !important;
+}
+
+.ii-table tbody tr.empty-grid-row {
+    cursor: default;
+    background-color: #ffffff;
+    height: 28px;
+}
+
+.ii-table tbody tr.empty-grid-row:hover {
+    background-color: #ffffff;
+}
+
+.ii-table tbody td {
+    padding: 6px 10px;
+    vertical-align: middle;
+    color: #333333;
+    white-space: nowrap;
+    border-right: 1px solid #f1f5f9;
+}
+
+.ii-table tbody td.text-end {
+    text-align: right;
+}
+
+.ii-table tbody td.text-center {
+    text-align: center;
+}
+
+/* Empty grid cells with faint borders */
+.ii-table tbody tr.empty-grid-row td {
+    border-right: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+    padding: 0;
+    height: 28px;
+}
+
+/* Action Dropdown Button in Table */
+.ii-action-btn-wrap {
+    position: relative;
+    display: inline-block;
+}
+
+.ii-action-btn {
+    background: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 2px;
+    padding: 2px 8px;
+    font-size: 11.5px;
+    color: #333333;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.15s ease-in-out;
+}
+
+.ii-action-btn:hover {
+    background: #f5f5f5;
+    border-color: #adadad;
+}
+
+.ii-action-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    min-width: 140px;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 3px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+    padding: 4px 0;
+    margin-top: 2px;
+    list-style: none;
+    text-align: left;
+}
+
+.ii-action-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 12px;
+    font-size: 12px;
+    color: #333333;
+    text-decoration: none;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+}
+
+.ii-action-item:hover {
+    background-color: #337ab7;
+    color: #ffffff;
+}
+
+.ii-action-item:hover svg {
+    color: #ffffff !important;
+}
+
+.ii-action-item.danger:hover {
+    background-color: #dc3545;
+    color: #ffffff;
+}
+
+/* Issue No Link */
+.ii-doc-no {
+    color: #337ab7;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.ii-doc-no:hover {
+    text-decoration: underline;
+    color: #23527c;
+}
+
+.ii-updated-by {
+    color: #475569;
+    font-size: 11.5px;
+}
+
+.ii-updated-on {
+    color: #64748b;
+    font-size: 11px;
+    line-height: 1.2;
+}
+
+/* --------------------------------------------------------------------------
+   MODAL STYLES
+   -------------------------------------------------------------------------- */
+.ii-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.ii-modal-card {
+    background: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    max-width: 950px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: iiModalIn 0.2s ease-out;
+}
+
+@keyframes iiModalIn {
+    from { opacity: 0; transform: scale(0.97); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.ii-modal-header {
+    background-color: #337ab7;
+    color: #ffffff;
+    padding: 12px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ii-modal-title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.ii-modal-close-btn {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+}
+
+.ii-modal-body {
+    padding: 16px 20px;
+    overflow-y: auto;
+    font-size: 12.5px;
+}
+
+.ii-modal-footer {
+    padding: 12px 20px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Form Grid */
+.ii-form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.ii-form-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.ii-form-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 4px;
+}
+
+.ii-form-control {
+    height: 32px;
+    padding: 4px 8px;
+    font-size: 12.5px;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    background: #ffffff;
+    color: #1e293b;
+    outline: none;
+}
+
+.ii-form-control:focus {
+    border-color: #337ab7;
+    box-shadow: 0 0 0 2px rgba(51, 122, 183, 0.15);
+}
+
+.ii-form-control[readonly],
+.ii-form-control:disabled {
+    background-color: #f1f5f9;
+    color: #64748b;
+}
+
+/* Modal Items Table */
+.ii-items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+    margin-bottom: 12px;
+    font-size: 12px;
+}
+
+.ii-items-table th {
+    background: #f1f5f9;
+    color: #334155;
+    font-weight: 600;
+    padding: 6px 8px;
+    border: 1px solid #cbd5e1;
+    font-size: 11.5px;
+}
+
+.ii-items-table td {
+    padding: 4px 6px;
+    border: 1px solid #cbd5e1;
+    vertical-align: middle;
+}
+
+.ii-items-table input,
+.ii-items-table select {
+    width: 100%;
+    height: 28px;
+    padding: 2px 6px;
+    font-size: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 2px;
+}
+
+.ii-btn-add-row {
+    background: #ffffff;
+    border: 1px dashed #337ab7;
+    color: #337ab7;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.ii-btn-add-row:hover {
+    background: #e8f4fc;
+}
+
+.ii-btn-del-row {
+    background: transparent;
+    border: none;
+    color: #dc3545;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 4px;
+}
+
+.ii-btn-del-row:hover {
+    color: #a71d2a;
+}
+
+/* Print voucher preview styles */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    .ii-printable-area, .ii-printable-area * {
+        visibility: visible;
+    }
+    .ii-printable-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+}

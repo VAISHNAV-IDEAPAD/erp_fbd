@@ -1,0 +1,577 @@
+/* ==========================================================================
+   TPCS FASHION - STOCK CONVERSION STYLES
+   Exact Replica of JenixCloud / TPCS Fashion Stock Conversion Interface
+   ========================================================================== */
+
+.stock-conversion-page {
+    background-color: #ffffff;
+    min-height: calc(100vh - 65px);
+    padding: 16px 20px 40px 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #333333;
+}
+
+/* Page Header Title */
+.sc-page-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #1a5695;
+    margin-bottom: 12px;
+    letter-spacing: -0.2px;
+}
+
+/* --------------------------------------------------------------------------
+   TOP ROW: SUPPLIER SEARCH & NEW BUTTON
+   -------------------------------------------------------------------------- */
+.sc-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 14px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.sc-search-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.sc-search-label {
+    font-size: 12.5px;
+    font-weight: 500;
+    color: #475569;
+    margin-bottom: 4px;
+}
+
+.sc-search-input {
+    height: 32px;
+    width: 250px;
+    padding: 4px 10px;
+    font-size: 12.5px;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    background: #ffffff;
+    color: #1e293b;
+    outline: none;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.sc-search-input:focus {
+    border-color: #2172ba;
+    box-shadow: 0 0 0 2px rgba(33, 114, 186, 0.2);
+}
+
+.sc-search-input::placeholder {
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.sc-btn-new {
+    background-color: #35aa47;
+    border: 1px solid #2e943e;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 3px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.sc-btn-new:hover {
+    background-color: #2e943e;
+    color: #ffffff;
+}
+
+/* --------------------------------------------------------------------------
+   TOOLBAR ROW
+   -------------------------------------------------------------------------- */
+.sc-toolbar-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 2px 0;
+}
+
+.sc-toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sc-tool-btn {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    height: 30px;
+    padding: 0 10px;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition: all 0.15s ease-in-out;
+}
+
+.sc-tool-btn:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+    border-color: #94a3b8;
+}
+
+.sc-tool-btn-filter {
+    padding: 0 12px;
+}
+
+.sc-tool-btn-filter.active {
+    background-color: #e2e8f0;
+    border-color: #94a3b8;
+    color: #0f172a;
+}
+
+.sc-page-badge {
+    background-color: #2172ba;
+    color: #ffffff;
+    width: 26px;
+    height: 26px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 3px;
+    cursor: default;
+    user-select: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* --------------------------------------------------------------------------
+   EXPANDABLE FILTER DRAWER
+   -------------------------------------------------------------------------- */
+.sc-filter-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    animation: scFadeDown 0.15s ease-out;
+}
+
+@keyframes scFadeDown {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.sc-filter-item {
+    display: flex;
+    flex-direction: column;
+    min-width: 170px;
+}
+
+.sc-filter-label {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.sc-filter-select {
+    height: 30px;
+    padding: 3px 8px;
+    font-size: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    background: #ffffff;
+    color: #1e293b;
+    outline: none;
+}
+
+.sc-filter-select:focus {
+    border-color: #2172ba;
+}
+
+.sc-filter-btn-reset {
+    height: 30px;
+    padding: 0 12px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    font-size: 12px;
+    color: #64748b;
+    cursor: pointer;
+}
+
+.sc-filter-btn-reset:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+.sc-filter-btn-apply {
+    height: 30px;
+    padding: 0 14px;
+    background: #2172ba;
+    border: 1px solid #1a5695;
+    border-radius: 3px;
+    font-size: 12px;
+    color: #ffffff;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.sc-filter-btn-apply:hover {
+    background: #1a5695;
+}
+
+/* --------------------------------------------------------------------------
+   TABLE CONTAINER & TPCS HEADER STYLE
+   -------------------------------------------------------------------------- */
+.sc-table-container {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    overflow-x: auto;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.sc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+    white-space: nowrap;
+}
+
+/* Distinctive TPCS Blue Table Header */
+.sc-table thead tr {
+    background-color: #2172ba;
+    color: #ffffff;
+}
+
+.sc-table th {
+    padding: 10px 10px;
+    font-weight: 600;
+    text-align: left;
+    border-right: 1px solid rgba(255, 255, 255, 0.18);
+    font-size: 12px;
+    vertical-align: middle;
+    user-select: none;
+}
+
+.sc-table th:last-child {
+    border-right: none;
+}
+
+.sc-table tbody tr {
+    border-bottom: 1px solid #e2e8f0;
+    transition: background-color 0.1s ease;
+    cursor: pointer;
+}
+
+.sc-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+/* Selected row highlight */
+.sc-table tbody tr.selected-row {
+    background-color: #f0f7ff;
+}
+
+.sc-table tbody tr.selected-row td:first-child {
+    border-left: 3px solid #2172ba;
+}
+
+.sc-table td {
+    padding: 7px 10px;
+    color: #334155;
+    border-right: 1px solid #f1f5f9;
+    vertical-align: middle;
+    font-size: 12px;
+}
+
+.sc-table td:last-child {
+    border-right: none;
+}
+
+.sc-table.table-sm td,
+.sc-table.table-sm th {
+    padding: 5px 8px;
+}
+
+/* Action Dropdown Button in Table */
+.sc-action-btn-wrap {
+    position: relative;
+    display: inline-block;
+}
+
+.sc-action-btn {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    padding: 3px 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #334155;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.12s ease;
+}
+
+.sc-action-btn:hover {
+    background: #f8fafc;
+    border-color: #94a3b8;
+    color: #0f172a;
+}
+
+.sc-action-menu {
+    position: absolute;
+    top: calc(100% + 2px);
+    left: 0;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    min-width: 150px;
+    z-index: 1050;
+    padding: 4px 0;
+    text-align: left;
+}
+
+.sc-action-item {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 6px 12px;
+    font-size: 12px;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.1s;
+}
+
+.sc-action-item:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+}
+
+.sc-action-item.danger:hover {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+/* Document Number Link */
+.sc-doc-no {
+    color: #1a5695;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.sc-doc-no:hover {
+    text-decoration: underline;
+    color: #0d3866;
+}
+
+/* Empty State */
+.sc-empty-state {
+    text-align: center;
+    padding: 30px !important;
+    color: #64748b;
+    font-style: italic;
+}
+
+/* --------------------------------------------------------------------------
+   MODALS: NEW / VIEW / EDIT
+   -------------------------------------------------------------------------- */
+.sc-modal-header {
+    background-color: #2172ba;
+    color: #ffffff;
+    padding: 12px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sc-modal-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.sc-modal-close {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+    opacity: 0.85;
+}
+
+.sc-modal-close:hover {
+    opacity: 1;
+}
+
+.sc-modal-body {
+    padding: 20px;
+    max-height: 75vh;
+    overflow-y: auto;
+}
+
+.sc-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px 18px;
+    margin-bottom: 20px;
+}
+
+.sc-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.sc-form-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #475569;
+    margin-bottom: 4px;
+}
+
+.sc-form-label span.req {
+    color: #dc2626;
+}
+
+.sc-form-control {
+    height: 32px;
+    padding: 4px 10px;
+    font-size: 12.5px;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    background: #ffffff;
+    color: #1e293b;
+    outline: none;
+}
+
+.sc-form-control:focus {
+    border-color: #2172ba;
+    box-shadow: 0 0 0 2px rgba(33, 114, 186, 0.2);
+}
+
+.sc-form-control:disabled {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+/* Items Conversion Table in Modal */
+.sc-items-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-top: 10px;
+    border: 1px solid #cbd5e1;
+}
+
+.sc-items-table th {
+    background-color: #f1f5f9;
+    color: #334155;
+    padding: 8px 10px;
+    font-weight: 600;
+    border: 1px solid #cbd5e1;
+    font-size: 11.5px;
+}
+
+.sc-items-table td {
+    padding: 6px 8px;
+    border: 1px solid #cbd5e1;
+    vertical-align: middle;
+}
+
+.sc-items-table input,
+.sc-items-table select {
+    width: 100%;
+    height: 28px;
+    padding: 2px 6px;
+    font-size: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 2px;
+}
+
+.sc-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 12px 20px;
+    border-top: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+
+.sc-btn-cancel {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    padding: 6px 16px;
+    font-size: 13px;
+    color: #475569;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.sc-btn-save {
+    background: #35aa47;
+    border: 1px solid #2e943e;
+    padding: 6px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffffff;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.sc-btn-save:hover {
+    background: #2e943e;
+}
+
+/* Detail View Layout */
+.sc-detail-header-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px 18px;
+    font-size: 12.5px;
+}
+
+.sc-detail-label {
+    font-weight: 600;
+    color: #475569;
+    margin-right: 6px;
+}
+
+.sc-detail-val {
+    color: #0f172a;
+}

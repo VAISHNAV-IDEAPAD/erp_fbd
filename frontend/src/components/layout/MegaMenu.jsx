@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 
-export default function MegaMenu({ activeMenu, closeMenu }) {
+export default function MegaMenu({
+    activeMenu,
+    closeMenu,
+    leftOffset = 210,
+    onMouseEnter,
+    onMouseLeave
+}) {
     // =========================================
     // PM MENU (EXACT MATCH FOR TPCS FASHION SCREENSHOT)
     // =========================================
@@ -36,7 +42,7 @@ export default function MegaMenu({ activeMenu, closeMenu }) {
                 { label: "Subcontract Material Conversion DC", path: "/pm/subcontract-material-conversion-dc" },
                 { label: "Subcontract Material Conversion GRN", path: "/conversion-grn" },
                 { label: "Subcontract Order Approval", path: "/pm/subcontract-order-approval" },
-                { label: "Subcontract Conversion Approval", path: "/pm/subcontract-conversion-approval" },
+                { label: "Subcontract Conversion Approval", path: "/pm/subcontract-conversion-approval", sectionBreak: true },
                 { label: "Subcontract PO", path: "/pm/subcontract-po" },
                 { label: "Subcontract PO Approval", path: "/pm/subcontract-po-approval" }
             ]
@@ -49,7 +55,7 @@ export default function MegaMenu({ activeMenu, closeMenu }) {
                 { label: "Treatment Output Tracking", path: "/pm/treatment-output-tracking" },
                 { label: "Treatment Output Tracking", path: "/pm/treatment-output-tracking-2" },
                 { label: "Supermarket to Treatment", path: "/pm/supermarket-to-treatment" },
-                { label: "Supermarket Inward", path: "/pm/supermarket-inward" },
+                { label: "Supermarket Inward", path: "/pm/supermarket-inward", sectionBreak: true },
                 { label: "Supermarket to Stitching", path: "/pm/supermarket-to-stitching" },
                 { label: "Treatment Sub Process Output", path: "/pm/treatment-sub-process-output" },
                 { label: "RFID Details", path: "/pm/rfid-details" },
@@ -254,8 +260,18 @@ export default function MegaMenu({ activeMenu, closeMenu }) {
         };
     }).filter(col => !menuSearch.trim() || col.items.length > 0 || col.hasMatchCard);
 
+    // Compute left style
+    const containerStyle = leftOffset != null
+        ? { left: `min(${leftOffset}px, calc(100vw - 870px))` }
+        : {};
+
     return (
-        <div className={`mega-menu-container mega-menu-${(activeMenu || "").toLowerCase()}`}>
+        <div
+            className={`mega-menu-container mega-menu-${(activeMenu || "").toLowerCase()}`}
+            style={containerStyle}
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+        >
             {/* Top Search Bar */}
             <div className="mega-menu-search-wrapper">
                 <div className="mega-menu-search-bar">
@@ -271,7 +287,7 @@ export default function MegaMenu({ activeMenu, closeMenu }) {
                 </div>
             </div>
 
-            {/* Columns Grid */}
+            {/* Columns Grid matching TPCS screenshot */}
             <div
                 className="mega-menu-inner"
                 style={{
@@ -282,22 +298,23 @@ export default function MegaMenu({ activeMenu, closeMenu }) {
             >
                 {filteredColumns.map((column, index) => (
                     <div
-                        className={`mega-menu-column ${index > 0 ? "has-divider" : ""}`}
+                        className="mega-menu-column"
                         key={`${column.title}-${index}`}
                     >
-                        {/* COLUMN TITLE */}
+                        {/* COLUMN HEADER WITH BLUE ACCENT */}
                         <div className="mega-menu-title-header">
+                            <span className="mega-menu-accent-bar" />
                             <span className="mega-menu-title-text">{column.title}</span>
                         </div>
 
-                        {/* MENU ITEMS */}
+                        {/* MENU ITEMS AS CARDS */}
                         <div className="mega-menu-items-list">
                             {column.items.map((item, itemIdx) => (
                                 <React.Fragment key={`${item.label}-${itemIdx}`}>
                                     {item.sectionBreak && <div className="mega-menu-section-gap" />}
                                     <Link
                                         to={item.path}
-                                        className="mega-menu-item"
+                                        className="mega-menu-item-card"
                                         onClick={closeMenu}
                                     >
                                         <span className="mega-menu-chevron">›</span>
@@ -307,12 +324,12 @@ export default function MegaMenu({ activeMenu, closeMenu }) {
                             ))}
                         </div>
 
-                        {/* OPTIONAL BOTTOM CARD (e.g. Cutting sticker for component checklist) */}
+                        {/* BOTTOM CARD (Cutting sticker for component checklist) */}
                         {column.bottomCard && (!menuSearch.trim() || column.bottomCard.label.toLowerCase().includes(menuSearch.toLowerCase())) && (
-                            <div className="mega-menu-bottom-card">
+                            <div className="mega-menu-bottom-wrapper">
                                 <Link
                                     to={column.bottomCard.path}
-                                    className="mega-menu-item"
+                                    className="mega-menu-item-card mega-menu-bottom-card"
                                     onClick={closeMenu}
                                 >
                                     <span className="mega-menu-chevron">›</span>

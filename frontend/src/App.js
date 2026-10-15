@@ -149,6 +149,9 @@ function App() {
                 <Route path="/stock-transfer" element={<StoreTransfers />} />
                 <Route path="/gate-pass-delivery" element={<GatePassDeliveries />} />
                 <Route path="/item-requisition" element={<ItemRequisitions />} />
+                <Route path="/item-requisitions" element={<ItemRequisitions />} />
+                <Route path="/mm/item-requisition" element={<ItemRequisitions />} />
+                <Route path="/mm/item-requisitions" element={<ItemRequisitions />} />
                 <Route path="/gate-pass-grn" element={<GatePassGRN />} />
                 <Route path="/stock-transfer-dc" element={<StockTransferDC />} />
                 <Route path="/stock-transfer-grn" element={<StockTransferGRN />} />

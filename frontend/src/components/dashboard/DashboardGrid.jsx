@@ -60,6 +60,55 @@ export default function DashboardGrid() {
 
         <div className="container-fluid dashboard-page">
 
+            {/* TPCS DASHBOARD HEADER MATCHING SCREENSHOT */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "18px", marginTop: "8px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+                    <div style={{
+                        width: "44px",
+                        height: "44px",
+                        background: "#5b6bf6",
+                        borderRadius: "10px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        boxShadow: "0 4px 12px rgba(91, 107, 246, 0.25)"
+                    }}>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3px", width: "18px", height: "18px" }}>
+                            <div style={{ background: "#fff", borderRadius: "2px" }}></div>
+                            <div style={{ background: "#fff", borderRadius: "2px" }}></div>
+                            <div style={{ background: "#fff", borderRadius: "2px" }}></div>
+                            <div style={{ background: "#fff", borderRadius: "2px" }}></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h1 style={{ fontSize: "23px", fontWeight: 800, color: "#1e293b", margin: 0, letterSpacing: "-0.3px" }}>Dashboard</h1>
+                        <p style={{ margin: 0, fontSize: "13px", color: "#64748b" }}>Welcome to TPCS Fashion</p>
+                    </div>
+                </div>
+
+                <div>
+                    <button
+                        type="button"
+                        style={{
+                            width: "36px",
+                            height: "36px",
+                            borderRadius: "50%",
+                            background: "#6366f1",
+                            border: "none",
+                            color: "#ffffff",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            cursor: "pointer",
+                            boxShadow: "0 2px 8px rgba(99, 102, 241, 0.3)"
+                        }}
+                        title="Search"
+                    >
+                        🔍
+                    </button>
+                </div>
+            </div>
+
             {/* ==========================================================
                KPI CARDS
             =========================================================== */}

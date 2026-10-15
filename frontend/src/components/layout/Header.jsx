@@ -1,10 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Navbar, Container } from "react-bootstrap";
-import {
-  FaBell,
-  FaUserCircle,
-  FaChevronDown,
-} from "react-icons/fa";
+import { FaBell, FaCaretDown } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
 
 import MegaMenu from "./MegaMenu";
@@ -12,78 +8,86 @@ import "../../styles/header.css";
 
 export default function Header() {
   const [activeMenu, setActiveMenu] = useState(null);
+  const [menuLeft, setMenuLeft] = useState(210);
 
   const headerRef = useRef(null);
+  const navItemRefs = useRef({});
+  const timeoutRef = useRef(null);
   const location = useLocation();
 
-  // =========================================
-  // TOGGLE TOP MENU
-  // =========================================
-
-  const toggleMenu = (menu) => {
-    setActiveMenu((previous) =>
-      previous === menu ? null : menu
-    );
+  // Compute button position
+  const computeOffset = (menuName) => {
+    const el = navItemRefs.current[menuName];
+    if (el && headerRef.current) {
+      const elRect = el.getBoundingClientRect();
+      const headerRect = headerRef.current.getBoundingClientRect();
+      setMenuLeft(Math.max(16, elRect.left - headerRect.left));
+    }
   };
 
-  // =========================================
-  // CLOSE MENU
-  // =========================================
+  // Toggle on click
+  const toggleMenu = (menu) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    if (activeMenu === menu) {
+      setActiveMenu(null);
+    } else {
+      computeOffset(menu);
+      setActiveMenu(menu);
+    }
+  };
+
+  // Hover to open
+  const handleMouseEnter = (menu) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    computeOffset(menu);
+    setActiveMenu(menu);
+  };
+
+  // Graceful close on mouse leave with small delay
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setActiveMenu(null);
+    }, 220);
+  };
+
+  const handleMenuEnter = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+  };
 
   const closeMenu = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
     setActiveMenu(null);
   };
 
-  // =========================================
-  // CLOSE MENU AFTER ROUTE CHANGE
-  // =========================================
-
+  // Close menu after route change
   useEffect(() => {
-    setActiveMenu(null);
+    closeMenu();
   }, [location.pathname]);
 
-  // =========================================
-  // CLOSE WHEN CLICKING OUTSIDE
-  // =========================================
-
+  // Close when clicking outside
   useEffect(() => {
     const handleOutsideClick = (event) => {
-      if (
-        headerRef.current &&
-        !headerRef.current.contains(event.target)
-      ) {
-        setActiveMenu(null);
+      if (headerRef.current && !headerRef.current.contains(event.target)) {
+        closeMenu();
       }
     };
-
-    document.addEventListener(
-      "mousedown",
-      handleOutsideClick
-    );
-
-    return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleOutsideClick
-      );
-    };
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, []);
 
   return (
     <header
       ref={headerRef}
       className="erp-header-wrapper"
+      onMouseLeave={handleMouseLeave}
     >
-
       {/* =====================================
-          BLUE TOP HEADER
+          BLUE TOP HEADER (TPCS FASHION REPLICA)
       ====================================== */}
-
       <Navbar className="erp-header">
         <Container fluid>
 
-          {/* ERP NAME */}
-
+          {/* TPCS FASHION BRAND LOGO */}
           <Navbar.Brand
             href="/"
             className="erp-logo d-flex align-items-center"
@@ -91,154 +95,136 @@ export default function Header() {
             style={{ textDecoration: "none" }}
           >
             <svg
-              width="26"
-              height="26"
+              width="28"
+              height="28"
               viewBox="0 0 100 100"
-              style={{ marginRight: "8px", fill: "none", stroke: "#60a5fa", strokeWidth: "5" }}
+              style={{ marginRight: "7px", fill: "none", stroke: "#38bdf8", strokeWidth: "4.5" }}
             >
               <ellipse cx="50" cy="50" rx="42" ry="16" transform="rotate(30 50 50)" />
               <ellipse cx="50" cy="50" rx="42" ry="16" transform="rotate(-30 50 50)" />
               <ellipse cx="50" cy="50" rx="42" ry="16" transform="rotate(90 50 50)" />
-              <circle cx="50" cy="50" r="5" fill="#ffffff" stroke="none" />
-              <circle cx="16" cy="30" r="4" fill="#93c5fd" stroke="none" />
-              <circle cx="84" cy="70" r="4" fill="#93c5fd" stroke="none" />
-              <circle cx="50" cy="8" r="4" fill="#93c5fd" stroke="none" />
+              <circle cx="50" cy="50" r="4.5" fill="#38bdf8" stroke="none" />
+              <circle cx="15" cy="30" r="3.5" fill="#38bdf8" stroke="none" />
+              <circle cx="85" cy="70" r="3.5" fill="#38bdf8" stroke="none" />
+              <circle cx="50" cy="8" r="3.5" fill="#38bdf8" stroke="none" />
             </svg>
-            <span style={{ fontWeight: 800, letterSpacing: "-0.5px", color: "#ffffff", fontSize: "20px" }}>TPCS</span>
-            <span style={{ fontWeight: 400, color: "#ffffff", fontSize: "20px" }}>Fashion</span>
+            <span style={{ fontWeight: 900, fontStyle: "italic", letterSpacing: "-0.5px", color: "#38bdf8", fontSize: "21px" }}>TPCS</span>
+            <span style={{ fontWeight: 400, color: "#ffffff", fontSize: "21px", marginLeft: "1px" }}>Fashion</span>
           </Navbar.Brand>
 
-
-          {/* TOP NAVIGATION */}
-
+          {/* TOP NAVIGATION TABS */}
           <div className="erp-nav-menu">
 
             {/* SM */}
-
             <button
+              ref={(el) => (navItemRefs.current["SM"] = el)}
               type="button"
-              className={`erp-nav-item ${
-                activeMenu === "SM"
-                  ? "erp-nav-active"
-                  : ""
-              }`}
+              className={`erp-nav-item ${activeMenu === "SM" ? "erp-nav-active" : ""}`}
               onClick={() => toggleMenu("SM")}
+              onMouseEnter={() => handleMouseEnter("SM")}
             >
               <span>SM</span>
-              <FaChevronDown />
+              <FaCaretDown style={{ fontSize: "11px", marginLeft: "3px" }} />
             </button>
-
 
             {/* MM */}
-
             <button
+              ref={(el) => (navItemRefs.current["MM"] = el)}
               type="button"
-              className={`erp-nav-item ${
-                activeMenu === "MM"
-                  ? "erp-nav-active"
-                  : ""
-              }`}
+              className={`erp-nav-item ${activeMenu === "MM" ? "erp-nav-active" : ""}`}
               onClick={() => toggleMenu("MM")}
+              onMouseEnter={() => handleMouseEnter("MM")}
             >
               <span>MM</span>
-              <FaChevronDown />
+              <FaCaretDown style={{ fontSize: "11px", marginLeft: "3px" }} />
             </button>
 
-
-            {/* PM */}
-
+            {/* PM (PRODUCTION MANAGEMENT) */}
             <button
+              ref={(el) => (navItemRefs.current["PM"] = el)}
               type="button"
-              className={`erp-nav-item ${
-                activeMenu === "PM"
-                  ? "erp-nav-active"
-                  : ""
-              }`}
+              className={`erp-nav-item ${activeMenu === "PM" ? "erp-nav-active" : ""}`}
               onClick={() => toggleMenu("PM")}
+              onMouseEnter={() => handleMouseEnter("PM")}
             >
               <span>PM</span>
-              <FaChevronDown />
+              <FaCaretDown style={{ fontSize: "11px", marginLeft: "3px" }} />
             </button>
 
             {/* EXPORTS */}
-
             <button
+              ref={(el) => (navItemRefs.current["EXPORTS"] = el)}
               type="button"
-              className="erp-nav-item"
+              className={`erp-nav-item ${activeMenu === "EXPORTS" ? "erp-nav-active" : ""}`}
               onClick={() => toggleMenu("EXPORTS")}
+              onMouseEnter={() => handleMouseEnter("EXPORTS")}
             >
               <span>EXPORTS</span>
-              <FaChevronDown />
+              <FaCaretDown style={{ fontSize: "11px", marginLeft: "3px" }} />
             </button>
 
             {/* FM */}
-
             <button
+              ref={(el) => (navItemRefs.current["FM"] = el)}
               type="button"
-              className="erp-nav-item"
+              className={`erp-nav-item ${activeMenu === "FM" ? "erp-nav-active" : ""}`}
               onClick={() => toggleMenu("FM")}
+              onMouseEnter={() => handleMouseEnter("FM")}
             >
               <span>FM</span>
-              <FaChevronDown />
+              <FaCaretDown style={{ fontSize: "11px", marginLeft: "3px" }} />
             </button>
 
             {/* ADMIN */}
-
             <button
+              ref={(el) => (navItemRefs.current["ADMIN"] = el)}
               type="button"
-              className={`erp-nav-item ${
-                activeMenu === "ADMIN"
-                  ? "erp-nav-active"
-                  : ""
-              }`}
+              className={`erp-nav-item ${activeMenu === "ADMIN" ? "erp-nav-active" : ""}`}
               onClick={() => toggleMenu("ADMIN")}
+              onMouseEnter={() => handleMouseEnter("ADMIN")}
             >
               <span>ADMIN</span>
-              <FaChevronDown />
+              <FaCaretDown style={{ fontSize: "11px", marginLeft: "3px" }} />
             </button>
 
             {/* NEW */}
-
             <button
+              ref={(el) => (navItemRefs.current["NEW"] = el)}
               type="button"
-              className="erp-nav-item"
+              className={`erp-nav-item ${activeMenu === "NEW" ? "erp-nav-active" : ""}`}
               onClick={() => toggleMenu("NEW")}
+              onMouseEnter={() => handleMouseEnter("NEW")}
             >
               <span>NEW</span>
-              <FaChevronDown />
+              <FaCaretDown style={{ fontSize: "11px", marginLeft: "3px" }} />
             </button>
 
             {/* RECENT */}
-
             <button
+              ref={(el) => (navItemRefs.current["RECENT"] = el)}
               type="button"
-              className="erp-nav-item"
+              className={`erp-nav-item ${activeMenu === "RECENT" ? "erp-nav-active" : ""}`}
               onClick={() => toggleMenu("RECENT")}
+              onMouseEnter={() => handleMouseEnter("RECENT")}
             >
               <span>RECENT</span>
-              <FaChevronDown />
+              <FaCaretDown style={{ fontSize: "11px", marginLeft: "3px" }} />
             </button>
 
             {/* REPORTS */}
-
             <button
+              ref={(el) => (navItemRefs.current["REPORTS"] = el)}
               type="button"
-              className={`erp-nav-item ${
-                activeMenu === "REPORTS"
-                  ? "erp-nav-active"
-                  : ""
-              }`}
+              className={`erp-nav-item ${activeMenu === "REPORTS" ? "erp-nav-active" : ""}`}
               onClick={() => toggleMenu("REPORTS")}
+              onMouseEnter={() => handleMouseEnter("REPORTS")}
             >
               <span>REPORTS</span>
-              <FaChevronDown />
             </button>
 
           </div>
 
-
-          {/* RIGHT SIDE ICONS & BRANCH */}
-
+          {/* RIGHT SIDE BADGES & USER AVATAR */}
           <div className="erp-header-icons d-flex align-items-center">
 
             <div className="d-none d-md-flex flex-column text-end me-3 text-white">
@@ -266,14 +252,17 @@ export default function Header() {
               title="Profile"
               onClick={closeMenu}
               style={{
-                width: "30px",
-                height: "30px",
+                width: "28px",
+                height: "28px",
                 borderRadius: "50%",
                 background: "rgba(255, 255, 255, 0.2)",
                 border: "1px solid rgba(255, 255, 255, 0.4)",
                 color: "#ffffff",
                 fontWeight: "bold",
-                fontSize: "13px"
+                fontSize: "12px",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center"
               }}
             >
               9
@@ -285,13 +274,15 @@ export default function Header() {
       </Navbar>
 
       {/* =====================================
-          MEGA MENU
+          MEGA MENU DROPDOWN (CONNECTED UNDER ACTIVE TAB)
       ====================================== */}
-
       {activeMenu && (
         <MegaMenu
           activeMenu={activeMenu}
           closeMenu={closeMenu}
+          leftOffset={menuLeft}
+          onMouseEnter={handleMenuEnter}
+          onMouseLeave={handleMouseLeave}
         />
       )}
 

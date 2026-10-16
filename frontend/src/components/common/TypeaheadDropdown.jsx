@@ -44,6 +44,7 @@ export default function TypeaheadDropdown({
   const containerRef = useRef(null);
   const inputRef = useRef(null);
   const menuRef = useRef(null);
+  const selectingRef = useRef(false);
 
   // Normalize options to [{ label: string, value: any, code?: string, raw: any }]
   const normalizedOptions = useMemo(() => {
@@ -59,7 +60,7 @@ export default function TypeaheadDropdown({
           value: opt.value !== undefined ? opt.value : (opt.id || opt.ItemID || opt.SupplierID || opt.ColourID || opt.label),
           code: opt.code || opt.ItemCode || opt.SupplierCode || opt.ColourCode || "",
           subtext: opt.subtext || opt.category || opt.Category || "",
-          raw: opt
+          raw: opt.raw !== undefined ? opt.raw : opt
         };
       }
       return { label: "", value: "", raw: opt };
@@ -146,17 +147,19 @@ export default function TypeaheadDropdown({
   };
 
   const handleSelectOption = (opt) => {
+    selectingRef.current = true;
+    const itemData = opt.raw !== undefined ? opt.raw : opt;
     if (onChange) {
-      onChange(opt.label, opt.raw || opt);
+      onChange(opt.label, itemData);
     }
     if (onSelect) {
-      onSelect(opt.raw || opt, opt.label);
+      onSelect(itemData, opt.label);
     }
     setIsOpen(false);
     setActiveIndex(-1);
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
+    setTimeout(() => {
+      selectingRef.current = false;
+    }, 200);
   };
 
   const handleInputChange = (e) => {
@@ -196,10 +199,16 @@ export default function TypeaheadDropdown({
         <Form.Control
           ref={inputRef}
           size={size}
-          value={value}
+          value={value || ""}
           onChange={handleInputChange}
-          onFocus={() => setIsOpen(true)}
-          onClick={() => setIsOpen(true)}
+          onFocus={() => {
+            if (selectingRef.current) return;
+            setIsOpen(true);
+          }}
+          onClick={() => {
+            if (selectingRef.current) return;
+            setIsOpen(true);
+          }}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           disabled={disabled}
@@ -254,10 +263,14 @@ export default function TypeaheadDropdown({
           {filteredOptions.length > 0 ? (
             filteredOptions.map((opt, idx) => (
               <li
-                key={`${opt.value}_${idx}`}
+                key={`${opt.value || opt.label}_${idx}`}
                 className={`typeahead-item ${idx === activeIndex ? "active" : ""}`}
                 onMouseDown={(e) => {
                   e.preventDefault(); // prevents blur before click
+                  handleSelectOption(opt);
+                }}
+                onClick={(e) => {
+                  e.preventDefault();
                   handleSelectOption(opt);
                 }}
                 onMouseEnter={() => setActiveIndex(idx)}

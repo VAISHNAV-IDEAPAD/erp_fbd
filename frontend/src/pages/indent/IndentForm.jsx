@@ -105,22 +105,24 @@ export default function IndentForm({ onNavigateView }) {
     // GRID LINE HELPERS
     // -------------------------------------------------------------------------
     const handleAddLine = () => {
-        const nextId = gridLines.length > 0 ? Math.max(...gridLines.map(l => l.id)) + 1 : 1;
-        setGridLines([
-            ...gridLines,
-            {
-                id: nextId,
-                ioRef: "",
-                ioDesc: "",
-                itemId: "",
-                itemCode: "",
-                itemName: "",
-                supplier: "",
-                colour: "",
-                sizeRange: "",
-                qty: ""
-            }
-        ]);
+        setGridLines(prev => {
+            const nextId = prev.length > 0 ? Math.max(...prev.map(l => l.id)) + 1 : 1;
+            return [
+                ...prev,
+                {
+                    id: nextId,
+                    ioRef: "",
+                    ioDesc: "",
+                    itemId: "",
+                    itemCode: "",
+                    itemName: "",
+                    supplier: "",
+                    colour: "",
+                    sizeRange: "",
+                    qty: ""
+                }
+            ];
+        });
     };
 
     const handleDeleteSelectedRows = () => {
@@ -128,7 +130,7 @@ export default function IndentForm({ onNavigateView }) {
             alert("Please check the box on the row(s) you wish to delete.");
             return;
         }
-        setGridLines(gridLines.filter(l => !selectedRows.has(l.id)));
+        setGridLines(prev => prev.filter(l => !selectedRows.has(l.id)));
         setSelectedRows(new Set());
     };
 
@@ -147,26 +149,41 @@ export default function IndentForm({ onNavigateView }) {
         }
     };
 
-    const updateLine = (id, field, value) => {
-        setGridLines(gridLines.map(l => {
+    const updateLine = (id, fieldOrUpdates, value) => {
+        setGridLines(prev => prev.map(l => {
             if (l.id === id) {
-                const updated = { ...l, [field]: value };
-                // If itemCode changed, auto-populate itemName, color, uom
-                if (field === "itemCode") {
-                    const found = itemsList.find(i => i.ItemCode === value || i.ItemName === value);
-                    if (found) {
-                        updated.itemId = found.ItemID;
-                        updated.itemCode = found.ItemCode;
-                        updated.itemName = found.ItemName;
-                        if (found.Color && !updated.colour) updated.colour = found.Color;
-                        if (found.Size && !updated.sizeRange) updated.sizeRange = found.Size;
+                let updated = { ...l };
+                if (typeof fieldOrUpdates === "object" && fieldOrUpdates !== null) {
+                    updated = { ...updated, ...fieldOrUpdates };
+                } else {
+                    updated[fieldOrUpdates] = value;
+                }
+
+                // If single itemCode or itemName changed, try auto-populating if itemId not explicitly set
+                if (typeof fieldOrUpdates === "string" && (fieldOrUpdates === "itemCode" || fieldOrUpdates === "itemName")) {
+                    const searchVal = String(value || "").trim().toLowerCase();
+                    if (searchVal) {
+                        const found = itemsList.find(i => 
+                            (i.ItemCode && i.ItemCode.toLowerCase() === searchVal) || 
+                            (i.ItemName && i.ItemName.toLowerCase() === searchVal)
+                        );
+                        if (found) {
+                            updated.itemId = found.ItemID;
+                            updated.itemCode = found.ItemCode;
+                            updated.itemName = found.ItemName;
+                            if (found.Color && !updated.colour) updated.colour = found.Color;
+                            if (found.Size && !updated.sizeRange) updated.sizeRange = found.Size;
+                        }
                     }
                 }
+
                 // If ioRef changed, auto-populate description
-                if (field === "ioRef") {
-                    const foundIO = ioList.find(io => io.IONo === value);
-                    if (foundIO) {
-                        updated.ioDesc = `${foundIO.Customer || ""} - ${foundIO.Season || ""}`;
+                if ((typeof fieldOrUpdates === "string" && fieldOrUpdates === "ioRef") || 
+                    (typeof fieldOrUpdates === "object" && fieldOrUpdates && fieldOrUpdates.ioRef)) {
+                    const ioVal = typeof fieldOrUpdates === "object" ? fieldOrUpdates.ioRef : value;
+                    const foundIO = ioList.find(io => io.IONo === ioVal);
+                    if (foundIO && !updated.ioDesc) {
+                        updated.ioDesc = `${foundIO.Customer || ""} - ${foundIO.Season || ""}`.trim();
                     }
                 }
                 return updated;
@@ -477,11 +494,14 @@ export default function IndentForm({ onNavigateView }) {
                                                 <TypeaheadDropdown
                                                     value={line.ioRef}
                                                     onChange={(val, ioObj) => {
-                                                        updateLine(line.id, "ioRef", val);
-                                                        if (ioObj) {
-                                                            const raw = ioObj.raw || ioObj;
-                                                            updateLine(line.id, "ioDesc", `${raw.Customer || ""} - ${raw.Season || ""}`.trim());
-                                                        }
+                                                        const raw = (ioObj && (ioObj.raw || ioObj)) || {};
+                                                        const desc = raw.Customer || raw.Season 
+                                                            ? `${raw.Customer || ""} - ${raw.Season || ""}`.trim() 
+                                                            : (val ? line.ioDesc : "");
+                                                        updateLine(line.id, {
+                                                            ioRef: val,
+                                                            ioDesc: desc
+                                                        });
                                                     }}
                                                     options={ioList.map(io => ({
                                                         label: io.IONo,
@@ -501,8 +521,10 @@ export default function IndentForm({ onNavigateView }) {
                                                 title="Select IO"
                                                 onClick={() => {
                                                     if (ioList.length > 0) {
-                                                        updateLine(line.id, "ioRef", ioList[0].IONo);
-                                                        updateLine(line.id, "ioDesc", `${ioList[0].Customer || ""} - ${ioList[0].Season || ""}`.trim());
+                                                        updateLine(line.id, {
+                                                            ioRef: ioList[0].IONo,
+                                                            ioDesc: `${ioList[0].Customer || ""} - ${ioList[0].Season || ""}`.trim()
+                                                        });
                                                     }
                                                 }}
                                             >
@@ -517,21 +539,31 @@ export default function IndentForm({ onNavigateView }) {
                                     {/* Item */}
                                     <td>
                                         <TypeaheadDropdown
-                                            value={line.itemName || line.itemCode}
+                                            value={line.itemName || line.itemCode || ""}
                                             onChange={(val, itemObj) => {
                                                 if (itemObj) {
-                                                    const code = itemObj.ItemCode || itemObj.code || val;
-                                                    const name = itemObj.ItemName || itemObj.label || val;
-                                                    const id = itemObj.ItemID || itemObj.value;
-                                                    updateLine(line.id, "itemCode", code);
-                                                    updateLine(line.id, "itemName", name);
-                                                    updateLine(line.id, "itemId", id);
                                                     const raw = itemObj.raw || itemObj;
-                                                    if (raw.Color && !line.colour) updateLine(line.id, "colour", raw.Color);
-                                                    if (raw.Size && !line.sizeRange) updateLine(line.id, "sizeRange", raw.Size);
+                                                    const code = raw.ItemCode || itemObj.code || itemObj.ItemCode || val;
+                                                    const name = raw.ItemName || itemObj.label || itemObj.ItemName || val;
+                                                    const id = raw.ItemID || itemObj.value || itemObj.ItemID || "";
+                                                    const updates = {
+                                                        itemCode: code,
+                                                        itemName: name,
+                                                        itemId: id
+                                                    };
+                                                    if (raw.Color && !line.colour) {
+                                                        updates.colour = raw.Color;
+                                                    }
+                                                    if (raw.Size && !line.sizeRange) {
+                                                        updates.sizeRange = raw.Size;
+                                                    }
+                                                    updateLine(line.id, updates);
                                                 } else {
-                                                    updateLine(line.id, "itemName", val);
-                                                    updateLine(line.id, "itemCode", val);
+                                                    updateLine(line.id, {
+                                                        itemName: val,
+                                                        itemCode: val,
+                                                        itemId: ""
+                                                    });
                                                 }
                                             }}
                                             options={itemsList.map(it => ({

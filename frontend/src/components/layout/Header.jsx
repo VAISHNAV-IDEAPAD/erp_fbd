@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Navbar, Container } from "react-bootstrap";
 import { FaBell, FaCaretDown } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 import MegaMenu from "./MegaMenu";
 import "../../styles/header.css";
@@ -14,6 +15,25 @@ export default function Header() {
   const navItemRefs = useRef({});
   const timeoutRef = useRef(null);
   const location = useLocation();
+
+  const [companyName, setCompanyName] = useState("");
+
+  // Load the active company shown beside the notification bell
+  useEffect(() => {
+    let cancelled = false;
+    axios
+      .get(`${process.env.REACT_APP_API_URL || "/api"}/companies`)
+      .then((res) => {
+        const list = res.data?.data || res.data || [];
+        if (!Array.isArray(list) || cancelled) return;
+        const active = list.find((c) => c.Status === "Active") || list[0];
+        if (active) setCompanyName(active.CompanyName || active.CompanyCode || "");
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Compute button position
   const computeOffset = (menuName) => {
@@ -231,6 +251,24 @@ export default function Header() {
               <span className="fw-bold" style={{ fontSize: "0.82rem", lineHeight: 1.2 }}>Plot No. 30</span>
               <span style={{ fontSize: "0.68rem", opacity: 0.85 }}>FY 01-Apr-2026 - 31-Mar-2027</span>
             </div>
+
+            {companyName && (
+              <span
+                className="fw-bold text-white me-3 d-none d-md-inline-block"
+                title="Company"
+                style={{
+                  fontSize: "0.85rem",
+                  padding: "2px 10px",
+                  borderRadius: "4px",
+                  background: "rgba(255, 255, 255, 0.18)",
+                  border: "1px solid rgba(255, 255, 255, 0.35)",
+                  textTransform: "uppercase",
+                  whiteSpace: "nowrap"
+                }}
+              >
+                {companyName}
+              </span>
+            )}
 
             <div className="position-relative me-2">
               <button

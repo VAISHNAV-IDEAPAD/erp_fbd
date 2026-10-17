@@ -7,9 +7,11 @@ router.get("/search", controller.search);
 router.get("/dashboard", controller.dashboardSummary);
 
 router.get("/", controller.getAll);
+router.get("/next-number", controller.getNextIndentNo);
 router.get("/:id", controller.getById);
 
 router.post("/", controller.create);
+router.post("/create", controller.create);
 router.put("/:id", controller.update);
 router.delete("/:id", controller.delete);
 

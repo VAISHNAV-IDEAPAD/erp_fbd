@@ -20,7 +20,7 @@ export default function IndentForm({ onNavigateView }) {
     const [materialSource, setMaterialSource] = useState("All");
     const [indentPrefix, setIndentPrefix] = useState("IND/AAPL/9B/26-27/");
     const [indentNumber, setIndentNumber] = useState("1191");
-    const [indentDate, setIndentDate] = useState("2026-10-09");
+    const [indentDate, setIndentDate] = useState(() => new Date().toISOString().split("T")[0]);
     const [indentType, setIndentType] = useState("For Stock");
     const [department, setDepartment] = useState("Raw Material Store 9B");
     const [branch, setBranch] = useState("Plot No. 9B");
@@ -59,10 +59,22 @@ export default function IndentForm({ onNavigateView }) {
     const [alertMsg, setAlertMsg] = useState(null);
 
     // -------------------------------------------------------------------------
-    // LOAD MASTERS
+    // LOAD MASTERS & NEXT INDENT NUMBER
     // -------------------------------------------------------------------------
+    const fetchNextNumber = async (prefix = indentPrefix) => {
+        try {
+            const res = await axios.get("/api/indents/next-number", { params: { prefix } });
+            if (res.data && res.data.success && res.data.nextNumber) {
+                setIndentNumber(String(res.data.nextNumber));
+            }
+        } catch (e) {
+            console.error("Failed to fetch next indent number:", e);
+        }
+    };
+
     useEffect(() => {
         loadMasters();
+        fetchNextNumber(indentPrefix);
     }, []);
 
     const loadMasters = async () => {
@@ -267,11 +279,29 @@ export default function IndentForm({ onNavigateView }) {
 
             const res = await axios.post("/api/indents", payload);
             if (res.data && res.data.success) {
-                alert(`Indent ${fullIndentNo} saved successfully!`);
+                const savedNo = res.data.IndentNo || fullIndentNo;
+                alert(`Indent ${savedNo} saved successfully!`);
+                await fetchNextNumber(indentPrefix);
+                setGridLines([
+                    {
+                        id: 1,
+                        ioRef: "",
+                        ioDesc: "",
+                        itemId: "",
+                        itemCode: "",
+                        itemName: "",
+                        supplier: "",
+                        colour: "",
+                        sizeRange: "",
+                        qty: ""
+                    }
+                ]);
+                setRemarks("");
+                setOtherReference("");
                 if (onNavigateView) {
                     onNavigateView();
                 } else {
-                    window.location.href = "/stock-indent";
+                    window.location.href = "/indents";
                 }
             } else {
                 setAlertMsg({ type: "danger", text: res.data?.message || "Failed to save indent." });
@@ -322,7 +352,11 @@ export default function IndentForm({ onNavigateView }) {
                             <select 
                                 className="ind-prefix-select"
                                 value={indentPrefix}
-                                onChange={(e) => setIndentPrefix(e.target.value)}
+                                onChange={(e) => {
+                                    const nextP = e.target.value;
+                                    setIndentPrefix(nextP);
+                                    fetchNextNumber(nextP);
+                                }}
                             >
                                 <option value="Prefix">Prefix</option>
                                 <option value="IND/AAPL/9B/26-27/">IND/AAPL/9B/26-27/</option>
@@ -338,8 +372,10 @@ export default function IndentForm({ onNavigateView }) {
                             <button 
                                 type="button" 
                                 className="ind-gear-btn" 
-                                title="Prefix Settings"
-                                onClick={() => alert("Indent prefix configured to active financial year series.")}
+                                title="Refresh / Auto-assign Next Number"
+                                onClick={async () => {
+                                    await fetchNextNumber(indentPrefix);
+                                }}
                             >
                                 <FaCog />
                             </button>
@@ -720,7 +756,7 @@ export default function IndentForm({ onNavigateView }) {
                     className="ind-btn-view"
                     onClick={() => {
                         if (onNavigateView) onNavigateView();
-                        else window.location.href = "/stock-indent";
+                        else window.location.href = "/indents";
                     }}
                 >
                     <FaEye size={11} /> View

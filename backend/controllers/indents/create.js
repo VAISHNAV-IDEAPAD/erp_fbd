@@ -153,11 +153,37 @@ function createIndent(body, res) {
             });
         }
 
-        const finalIndentNo = body.IndentNo || indentNo;
+        const candidateNo = (body.IndentNo || indentNo).trim();
 
-        db.serialize(() => {
+        const ensureUniqueIndentNo = (candidate, callback) => {
+            db.get("SELECT IndentID FROM Indents WHERE IndentNo = ?", [candidate], (err, row) => {
+                if (err) return callback(err);
+                if (!row) {
+                    return callback(null, candidate);
+                }
+                const match = String(candidate).match(/^(.*?)(\d+)$/);
+                if (match) {
+                    const prefixPart = match[1];
+                    const numPart = parseInt(match[2], 10) + 1;
+                    return ensureUniqueIndentNo(`${prefixPart}${numPart}`, callback);
+                } else {
+                    return ensureUniqueIndentNo(`${candidate}-1`, callback);
+                }
+            });
+        };
 
-            db.run("BEGIN TRANSACTION");
+        ensureUniqueIndentNo(candidateNo, (uniqueErr, finalIndentNo) => {
+
+            if (uniqueErr) {
+                return res.status(500).json({
+                    success: false,
+                    message: uniqueErr.message
+                });
+            }
+
+            db.serialize(() => {
+
+                db.run("BEGIN TRANSACTION");
 
             const headerSql = `
                 INSERT INTO Indents
@@ -283,6 +309,8 @@ function createIndent(body, res) {
             );
 
         });
+
+    });
 
     });
 

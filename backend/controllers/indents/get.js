@@ -173,21 +173,57 @@ exports.getById = (req, res) => {
             }
 
             res.json({
-
                 success: true,
-
                 data: {
-
                     header,
-
                     details
-
                 }
-
             });
-
         });
-
     });
+};
 
+// ======================================================
+// GET NEXT INDENT NUMBER
+// ======================================================
+
+exports.getNextIndentNo = (req, res) => {
+    const prefix = req.query.prefix || "IND/AAPL/9B/26-27/";
+
+    db.all(
+        "SELECT IndentNo FROM Indents ORDER BY IndentID DESC",
+        [],
+        (err, rows) => {
+            if (err) {
+                return res.status(500).json({
+                    success: false,
+                    message: err.message
+                });
+            }
+
+            let maxNum = 1190;
+            if (rows && rows.length > 0) {
+                for (const row of rows) {
+                    if (row && row.IndentNo) {
+                        const m = String(row.IndentNo).match(/(\d+)$/);
+                        if (m) {
+                            const val = parseInt(m[1], 10);
+                            if (!isNaN(val) && val > maxNum) {
+                                maxNum = val;
+                            }
+                        }
+                    }
+                }
+            }
+
+            const nextNum = maxNum + 1;
+
+            res.json({
+                success: true,
+                prefix: prefix,
+                nextNumber: String(nextNum),
+                fullIndentNo: `${prefix}${nextNum}`
+            });
+        }
+    );
 };

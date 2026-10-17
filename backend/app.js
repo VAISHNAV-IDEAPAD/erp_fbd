@@ -31,6 +31,7 @@ require("./database/itemIssueTables");
 require("./database/stockConversionTables");
 require("./database/conversionGRNTables");
 require("./database/itemRequisitionTables");
+require("./database/purchaseReturnTables");
 
 // ======================================================
 // ROUTES
@@ -76,6 +77,7 @@ app.use("/api/stock-issues", require("./routes/stockIssues"));
 app.use("/api/stockissues", require("./routes/stockIssues"));
 app.use("/api/stock-adjustments", require("./routes/stockAdjustments"));
 app.use("/api/floor-returns", require("./routes/floorReturns"));
+app.use("/api/purchase-returns", require("./routes/purchaseReturns"));
 app.use("/api/stock-conversions", require("./routes/stockConversions"));
 app.use("/api/stock-conversion", require("./routes/stockConversions"));
 app.use("/api/conversion-grns", require("./routes/conversionGRNs"));

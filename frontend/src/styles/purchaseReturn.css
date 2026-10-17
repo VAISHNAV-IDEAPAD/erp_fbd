@@ -1,0 +1,40 @@
+/* Purchase Return page extras (builds on indentsList.css) */
+.prt-filter-panel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 11px;
+}
+
+.prt-cancelled td { color: #999; text-decoration: line-through; }
+.prt-cancelled td:first-child { text-decoration: none; }
+
+.prt-form-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px 14px;
+}
+
+.prt-form-grid .prt-span-all { grid-column: 1 / -1; }
+
+.prt-view-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px 20px;
+}
+
+.prt-items-table td { vertical-align: middle; }
+
+.prt-remove-btn {
+    border: 1px solid #d9534f;
+    background: #fff;
+    color: #d9534f;
+    width: 22px;
+    height: 22px;
+    line-height: 1;
+    padding: 0;
+    cursor: pointer;
+}
+
+.prt-remove-btn:disabled { opacity: 0.35; cursor: not-allowed; }

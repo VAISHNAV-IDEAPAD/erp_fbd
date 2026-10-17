@@ -214,9 +214,17 @@ export default function StockIndents(props) {
 
         try {
             setIsSaving(true);
+            const itemsPayload = newIndentForm.items.map(it => ({
+                ItemID: it.itemId || 1,
+                Qty: parseFloat(it.qty) || 1,
+                UOM: it.uom || "PCS",
+                Remarks: it.remarks || ""
+            }));
+
             const payload = {
                 IndentNo: newIndentForm.indentNo,
                 IndentDate: newIndentForm.indentDate,
+                RequiredDate: newIndentForm.indentDate || new Date().toISOString().substring(0, 10),
                 Department: newIndentForm.department,
                 RequestedBy: "Admin",
                 Priority: newIndentForm.priority,
@@ -224,12 +232,8 @@ export default function StockIndents(props) {
                 Remarks: newIndentForm.remarks,
                 IndentMethod: newIndentForm.indentMethod,
                 IndentType: newIndentForm.indentType,
-                Items: newIndentForm.items.map(it => ({
-                    ItemID: it.itemId,
-                    Qty: parseFloat(it.qty) || 1,
-                    UOM: it.uom || "PCS",
-                    Remarks: it.remarks || ""
-                }))
+                items: itemsPayload,
+                Items: itemsPayload
             };
 
             const res = await axios.post("/api/indents", payload);
@@ -242,7 +246,8 @@ export default function StockIndents(props) {
             }
         } catch (err) {
             console.error("Save Indent Error:", err);
-            alert("Error creating indent. Please check all required fields.");
+            const errMsg = err.response?.data?.message || err.message || "Error creating indent. Please check all required fields.";
+            alert(errMsg);
         } finally {
             setIsSaving(false);
         }

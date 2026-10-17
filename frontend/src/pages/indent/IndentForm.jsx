@@ -53,6 +53,7 @@ export default function IndentForm({ onNavigateView }) {
     const [coloursList, setColoursList] = useState([]);
     const [suppliersList, setSuppliersList] = useState([]);
     const [ioList, setIoList] = useState([]);
+    const [departmentsList, setDepartmentsList] = useState([]);
 
     const [isSaving, setIsSaving] = useState(false);
     const [alertMsg, setAlertMsg] = useState(null);
@@ -66,6 +67,11 @@ export default function IndentForm({ onNavigateView }) {
 
     const loadMasters = async () => {
         try {
+            // Load departments
+            const dRes = await axios.get("/api/departments");
+            if (dRes.data && dRes.data.success) {
+                setDepartmentsList(dRes.data.data || []);
+            }
             // Load all items (full catalog for instant autocomplete)
             const iRes = await axios.get("/api/items?limit=6000");
             if (iRes.data && iRes.data.success) {
@@ -100,6 +106,25 @@ export default function IndentForm({ onNavigateView }) {
         });
         return Array.from(set).sort();
     }, [itemsList]);
+
+    // Computed department options combining API values and standards
+    const departmentOptions = useMemo(() => {
+        const standard = [
+            "Raw Material Store 9B",
+            "9b Fabric Store",
+            "Leather Cutting",
+            "Fabric Store",
+            "Trims Store",
+            "Production Planning",
+            "Cutting Department",
+            "Finishing Department",
+            "Store",
+            "Cutting",
+            "Production"
+        ];
+        const apiDepts = departmentsList.map(d => d.DepartmentName).filter(Boolean);
+        return Array.from(new Set([...apiDepts, ...standard]));
+    }, [departmentsList]);
 
     // -------------------------------------------------------------------------
     // GRID LINE HELPERS
@@ -212,10 +237,21 @@ export default function IndentForm({ onNavigateView }) {
             setAlertMsg(null);
 
             const fullIndentNo = `${indentPrefix}${indentNumber}`;
+            const reqDate = indentDate || new Date().toISOString().substring(0, 10);
+
+            const itemsPayload = validLines.map(l => ({
+                ItemID: l.itemId || 1,
+                ItemCode: l.itemCode,
+                ItemName: l.itemName || l.itemCode,
+                Qty: parseFloat(l.qty) || 1,
+                UOM: "PCS",
+                Remarks: `Colour: ${l.colour || ""} | Size: ${l.sizeRange || ""} | IO: ${l.ioRef || ""}`
+            }));
 
             const payload = {
                 IndentNo: fullIndentNo,
                 IndentDate: indentDate,
+                RequiredDate: reqDate,
                 Department: department,
                 RequestedBy: "Admin",
                 Priority: "Normal",
@@ -225,14 +261,8 @@ export default function IndentForm({ onNavigateView }) {
                 IndentMethod: "Manual",
                 IndentType: indentType,
                 SupplierName: validLines[0].supplier || "",
-                Items: validLines.map(l => ({
-                    ItemID: l.itemId || 1,
-                    ItemCode: l.itemCode,
-                    ItemName: l.itemName || l.itemCode,
-                    Qty: parseFloat(l.qty) || 1,
-                    UOM: "PCS",
-                    Remarks: `Colour: ${l.colour || ""} | Size: ${l.sizeRange || ""} | IO: ${l.ioRef || ""}`
-                }))
+                items: itemsPayload,
+                Items: itemsPayload
             };
 
             const res = await axios.post("/api/indents", payload);
@@ -248,7 +278,8 @@ export default function IndentForm({ onNavigateView }) {
             }
         } catch (err) {
             console.error("Save Indent Error:", err);
-            setAlertMsg({ type: "danger", text: "Error saving indent. Please verify all required fields." });
+            const errMsg = err.response?.data?.message || err.message || "Error saving indent. Please verify all required fields.";
+            setAlertMsg({ type: "danger", text: errMsg });
         } finally {
             setIsSaving(false);
         }
@@ -322,16 +353,7 @@ export default function IndentForm({ onNavigateView }) {
                             placeholder="Type & Select Department"
                             value={department}
                             onChange={(val) => setDepartment(val)}
-                            options={[
-                                "Raw Material Store 9B",
-                                "9b Fabric Store",
-                                "Leather Cutting",
-                                "Fabric Store",
-                                "Trims Store",
-                                "Production Planning",
-                                "Cutting Department",
-                                "Finishing Department"
-                            ]}
+                            options={departmentOptions}
                             dropdownWidth="100%"
                         />
                     </div>

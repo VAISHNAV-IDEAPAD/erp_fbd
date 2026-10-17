@@ -22,11 +22,10 @@ function generateIndentNo(callback) {
 
             if (row && row.IndentNo) {
 
-                const last = parseInt(
-                    row.IndentNo.replace("IND", "")
-                );
-
-                next = last + 1;
+                const match = String(row.IndentNo).match(/(\d+)$/);
+                if (match) {
+                    next = parseInt(match[1], 10) + 1;
+                }
 
             }
 
@@ -52,18 +51,20 @@ function validateIndent(body) {
     if (!body.EmployeeID)
         return "Employee is required.";
 
-    if (!body.RequiredDate)
+    if (!body.RequiredDate && !body.IndentDate)
         return "Required Date is required.";
 
-    if (!Array.isArray(body.items))
+    const items = body.items || body.Items;
+
+    if (!Array.isArray(items))
         return "Items are required.";
 
-    if (body.items.length === 0)
+    if (items.length === 0)
         return "Please add at least one item.";
 
-    for (const item of body.items) {
+    for (const item of items) {
 
-        if (!item.ItemID)
+        if (!item.ItemID && !item.ItemCode && !item.ItemName)
             return "Invalid Item.";
 
         if (Number(item.Qty) <= 0)

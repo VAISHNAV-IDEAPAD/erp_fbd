@@ -25,6 +25,13 @@ CREATE TABLE IF NOT EXISTS Employees (
         console.error("❌ Employees table error:", err.message);
     } else {
         console.log("✅ Employees table ready");
+        db.run(`
+            INSERT OR IGNORE INTO Employees
+            (EmployeeCode, EmployeeName, DepartmentID)
+            VALUES
+            ('EMP000', 'Admin', 1),
+            ('EMP001', 'Vaishnav', 1)
+        `);
     }
 
 });

@@ -97,7 +97,15 @@ db.run(`
             ('PUR','Purchase'),
             ('MERCH','Merchandising'),
             ('ADMIN','Administration'),
-            ('HR','Human Resources')
+            ('HR','Human Resources'),
+            ('RMS9B','Raw Material Store 9B'),
+            ('FS9B','9b Fabric Store'),
+            ('LCUT','Leather Cutting'),
+            ('FST','Fabric Store'),
+            ('TRMS','Trims Store'),
+            ('PPLAN','Production Planning'),
+            ('CDPT','Cutting Department'),
+            ('FDPT','Finishing Department')
         `);
 
     }

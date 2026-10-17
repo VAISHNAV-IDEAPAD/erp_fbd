@@ -20,214 +20,14 @@ import "../../../styles/floorReturns.css";
 
 const API_URL = process.env.REACT_APP_API_URL || "/api";
 
-// Default screenshot seed data for instantaneous fallback rendering
-const INITIAL_FLOOR_RETURNS = [
-    {
-        ReturnID: 1,
-        FRMNo: "FR/AAPL9B/2627/153",
-        ReturnDate: "12-10-2026",
-        UpdatedBy: "",
-        UpdatedOn: "",
-        SupplierName: "",
-        Stores: "SEMI FINISH STORE 18",
-        Currency: "INR",
-        ExchangeRate: 1.0,
-        Remark: "",
-        InternalMemo: "",
-        TotalQty: 93.0,
-        RowCount: 1,
-        details: [
-            { ItemCode: "SFS-101", ItemName: "Semi Finish Upper Panels", Color: "NATURAL", Quantity: 93.0, UOM: "PCS", Remarks: "Excess from batch 18" }
-        ]
-    },
-    {
-        ReturnID: 2,
-        FRMNo: "FR/AAPL9B/2627/152",
-        ReturnDate: "12-10-2026",
-        UpdatedBy: "",
-        UpdatedOn: "",
-        SupplierName: "",
-        Stores: "SEMI FINISH STORE 9B",
-        Currency: "INR",
-        ExchangeRate: 1.0,
-        Remark: "",
-        InternalMemo: "",
-        TotalQty: 160.0,
-        RowCount: 1,
-        details: [
-            { ItemCode: "SFS-102", ItemName: "Cut Lining Pieces", Color: "BLACK", Quantity: 160.0, UOM: "PCS", Remarks: "Floor Return Line 2" }
-        ]
-    },
-    {
-        ReturnID: 3,
-        FRMNo: "FR/AAPL9B/2627/151",
-        ReturnDate: "12-10-2026",
-        UpdatedBy: "Nikhil Singh",
-        UpdatedOn: "Oct 12 2026 11:21AM",
-        SupplierName: "",
-        Stores: "SEMI FINISH STORE 9B",
-        Currency: "INR",
-        ExchangeRate: 1.0,
-        Remark: "",
-        InternalMemo: "",
-        TotalQty: 639.0,
-        RowCount: 2,
-        details: [
-            { ItemCode: "SFS-105", ItemName: "Reinforcement Strips 25mm", Color: "WHITE", Quantity: 400.0, UOM: "MTR", Remarks: "Batch return" },
-            { ItemCode: "SFS-106", ItemName: "Padded Tongue Inserts", Color: "TAN", Quantity: 239.0, UOM: "PCS", Remarks: "Surplus" }
-        ]
-    },
-    {
-        ReturnID: 4,
-        FRMNo: "FR/AAPL9B/2627/150",
-        ReturnDate: "10-10-2026",
-        UpdatedBy: "",
-        UpdatedOn: "",
-        SupplierName: "",
-        Stores: "RAW MATERIAL STORE 9B",
-        Currency: "INR",
-        ExchangeRate: 1.0,
-        Remark: "MT-21983",
-        InternalMemo: "",
-        TotalQty: 31.5,
-        RowCount: 1,
-        details: [
-            { ItemCode: "LTH-1093", ItemName: "COW CULATTAS SINGLE LEATHER", Color: "BLACK", Quantity: 31.5, UOM: "SQFT", Remarks: "MT-21983 return" }
-        ]
-    },
-    {
-        ReturnID: 5,
-        FRMNo: "FR/AAPL9B/2627/149",
-        ReturnDate: "10-10-2026",
-        UpdatedBy: "",
-        UpdatedOn: "",
-        SupplierName: "",
-        Stores: "RAW MATERIAL STORE 9B",
-        Currency: "INR",
-        ExchangeRate: 1.0,
-        Remark: "MT-21983",
-        InternalMemo: "",
-        TotalQty: 93.5,
-        RowCount: 1,
-        details: [
-            { ItemCode: "LTH-1112", ItemName: "COW ECO VEG SIDE CRUST LEATHER", Color: "TAN", Quantity: 93.5, UOM: "SQFT", Remarks: "MT-21983 return" }
-        ]
-    },
-    {
-        ReturnID: 6,
-        FRMNo: "FR/AAPL9B/2627/148",
-        ReturnDate: "10-10-2026",
-        UpdatedBy: "",
-        UpdatedOn: "",
-        SupplierName: "",
-        Stores: "RAW MATERIAL STORE 9B",
-        Currency: "INR",
-        ExchangeRate: 1.0,
-        Remark: "MT-21983",
-        InternalMemo: "",
-        TotalQty: 596.5,
-        RowCount: 1,
-        details: [
-            { ItemCode: "RNF-1085", ItemName: "HIGH DENSITY TOPLINER 0.4MM", Color: "WHITE", Quantity: 596.5, UOM: "MTR", Remarks: "MT-21983 return" }
-        ]
-    },
-    {
-        ReturnID: 7,
-        FRMNo: "FR/AAPL9B/2627/147",
-        ReturnDate: "10-10-2026",
-        UpdatedBy: "",
-        UpdatedOn: "",
-        SupplierName: "",
-        Stores: "RAW MATERIAL STORE 9B",
-        Currency: "INR",
-        ExchangeRate: 1.0,
-        Remark: "",
-        InternalMemo: "",
-        TotalQty: 63.7,
-        RowCount: 1,
-        details: [
-            { ItemCode: "LTH-1263", ItemName: "COW PLOSE SUEDE LEATHER", Color: "COGNAC", Quantity: 63.7, UOM: "SQFT", Remarks: "Floor leftover" }
-        ]
-    },
-    {
-        ReturnID: 8,
-        FRMNo: "FR/AAPL9B/2627/146",
-        ReturnDate: "10-10-2026",
-        UpdatedBy: "",
-        UpdatedOn: "",
-        SupplierName: "",
-        Stores: "RAW MATERIAL STORE 9B",
-        Currency: "INR",
-        ExchangeRate: 1.0,
-        Remark: "",
-        InternalMemo: "",
-        TotalQty: 33.6,
-        RowCount: 1,
-        details: [
-            { ItemCode: "NONWO5064", ItemName: "TALIN 0.3MM WHITE", Color: "WHITE", Quantity: 33.6, UOM: "MTR", Remarks: "Cutting floor return" }
-        ]
-    },
-    {
-        ReturnID: 9,
-        FRMNo: "FR/AAPL9B/2627/145",
-        ReturnDate: "10-10-2026",
-        UpdatedBy: "",
-        UpdatedOn: "",
-        SupplierName: "",
-        Stores: "RAW MATERIAL STORE 9B",
-        Currency: "INR",
-        ExchangeRate: 1.0,
-        Remark: "",
-        InternalMemo: "",
-        TotalQty: 480.0,
-        RowCount: 1,
-        details: [
-            { ItemCode: "HDW-2236", ItemName: "JAM RIVET SINGLE HEAD 7MM", Color: "SILVER", Quantity: 480.0, UOM: "SET", Remarks: "Assembly line excess" }
-        ]
-    },
-    {
-        ReturnID: 10,
-        FRMNo: "FR/AAPL9B/2627/144",
-        ReturnDate: "08-10-2026",
-        UpdatedBy: "Nikhil Singh",
-        UpdatedOn: "Oct 08 2026 03:15PM",
-        SupplierName: "",
-        Stores: "RAW MATERIAL STORE 9B",
-        Currency: "INR",
-        ExchangeRate: 1.0,
-        Remark: "MT-21980",
-        InternalMemo: "",
-        TotalQty: 125.0,
-        RowCount: 1,
-        details: [
-            { ItemCode: "PKG-2200", ItemName: "CARD PAPER 350G 31X43 INCH", Color: "NATURAL", Quantity: 125.0, UOM: "SHEET", Remarks: "Packing return" }
-        ]
-    },
-    {
-        ReturnID: 11,
-        FRMNo: "FR/AAPL9B/2627/143",
-        ReturnDate: "06-10-2026",
-        UpdatedBy: "",
-        UpdatedOn: "",
-        SupplierName: "",
-        Stores: "SEMI FINISH STORE 18",
-        Currency: "INR",
-        ExchangeRate: 1.0,
-        Remark: "",
-        InternalMemo: "",
-        TotalQty: 210.0,
-        RowCount: 1,
-        details: [
-            { ItemCode: "SFS-108", ItemName: "Stitched Gusset Pieces", Color: "BLACK", Quantity: 210.0, UOM: "PCS", Remarks: "Return from stitching unit" }
-        ]
-    }
-];
+// Floor returns are loaded from the API; no sample data is bundled.
+const INITIAL_FLOOR_RETURNS = [];
 
 export default function FloorReturns() {
     const [returns, setReturns] = useState(INITIAL_FLOOR_RETURNS);
     const [loading, setLoading] = useState(false);
     const [searchSupplier, setSearchSupplier] = useState("");
-    const [selectedRowId, setSelectedRowId] = useState(4); // Default highlighted matching screenshot row 4
+    const [selectedRowId, setSelectedRowId] = useState(null);
     const [openActionId, setOpenActionId] = useState(null);
     const [showFilterBar, setShowFilterBar] = useState(false);
     const [viewMode, setViewMode] = useState("normal"); // normal or compact
@@ -246,7 +46,7 @@ export default function FloorReturns() {
 
     // New Floor Return form state
     const [newForm, setNewForm] = useState({
-        FRMNo: `FR/AAPL9B/2627/${154 + (returns.length > 11 ? returns.length - 11 : 0)}`,
+        FRMNo: "FR/AAPL9B/2627/1",
         ReturnDate: "12-10-2026",
         Stores: "RAW MATERIAL STORE 9B",
         SupplierName: "",
@@ -270,6 +70,18 @@ export default function FloorReturns() {
         loadSuppliers();
     }, []);
 
+    // Suggest the next FRM number whenever the New Floor Return modal opens
+    useEffect(() => {
+        if (!showNewModal) return;
+        let max = 0;
+        returns.forEach((r) => {
+            const m = String(r.FRMNo || "").match(/(\d+)$/);
+            if (m) max = Math.max(max, parseInt(m[1], 10));
+        });
+        setNewForm((prev) => ({ ...prev, FRMNo: `FR/AAPL9B/2627/${max + 1}` }));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [showNewModal]);
+
     // Close action dropdown on click outside
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -286,7 +98,7 @@ export default function FloorReturns() {
         try {
             const res = await axios.get(`${API_URL}/floor-returns`);
             const data = res.data?.data || res.data || [];
-            if (Array.isArray(data) && data.length > 0) {
+            if (Array.isArray(data)) {
                 setReturns(data);
             }
         } catch (e) {

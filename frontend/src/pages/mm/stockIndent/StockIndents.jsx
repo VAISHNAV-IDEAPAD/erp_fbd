@@ -14,6 +14,7 @@ import {
     FaTimes, 
     FaTrash, 
     FaCheck, 
+    FaCheckCircle,
     FaBuilding 
 } from "react-icons/fa";
 import axios from "axios";
@@ -47,6 +48,9 @@ export default function StockIndents(props) {
     const [printIndent, setPrintIndent] = useState(null);
     const [showNewModal, setShowNewModal] = useState(false);
     const [historyModal, setHistoryModal] = useState(null);
+    const [approvalModal, setApprovalModal] = useState(null);
+    const [approvalLoading, setApprovalLoading] = useState(false);
+    const [approvalRemarks, setApprovalRemarks] = useState("");
 
     // -------------------------------------------------------------------------
     // STATE: NEW INDENT FORM
@@ -200,6 +204,77 @@ export default function StockIndents(props) {
             } catch (err) {
                 alert("Failed to close indent.");
             }
+        }
+    };
+
+    const handleOpenApproval = async (row) => {
+        setActiveActionRow(null);
+        setApprovalRemarks("");
+        try {
+            const res = await axios.get(`/api/indents/${row.IndentID}`);
+            if (res.data && res.data.success) {
+                setApprovalModal(res.data.data);
+            } else {
+                setApprovalModal(row);
+            }
+        } catch (err) {
+            setApprovalModal(row);
+        }
+    };
+
+    const handleConfirmApprove = async () => {
+        if (!approvalModal) return;
+        const header = approvalModal.header || approvalModal;
+        const id = header.IndentID;
+        const indentNo = header.IndentNo || id;
+
+        try {
+            setApprovalLoading(true);
+            const res = await axios.patch(`/api/indents/${id}/approve`, {
+                remarks: approvalRemarks.trim() || "Approved via Indent Approval Menu",
+                user: "Admin"
+            });
+            if (res.data && res.data.success) {
+                alert(`Indent ${indentNo} approved successfully!`);
+                setApprovalModal(null);
+                loadIndents();
+            } else {
+                alert(res.data?.message || "Failed to approve indent.");
+            }
+        } catch (err) {
+            console.error("Approval error:", err);
+            alert(err.response?.data?.message || "Error approving indent.");
+        } finally {
+            setApprovalLoading(false);
+        }
+    };
+
+    const handleConfirmReject = async () => {
+        if (!approvalModal) return;
+        const header = approvalModal.header || approvalModal;
+        const id = header.IndentID;
+        const indentNo = header.IndentNo || id;
+
+        if (!window.confirm(`Are you sure you want to reject Indent ${indentNo}?`)) return;
+
+        try {
+            setApprovalLoading(true);
+            const res = await axios.patch(`/api/indents/${id}/reject`, {
+                remarks: approvalRemarks.trim() || "Rejected via Indent Approval Menu",
+                user: "Admin"
+            });
+            if (res.data && res.data.success) {
+                alert(`Indent ${indentNo} marked as Rejected.`);
+                setApprovalModal(null);
+                loadIndents();
+            } else {
+                alert(res.data?.message || "Failed to reject indent.");
+            }
+        } catch (err) {
+            console.error("Reject error:", err);
+            alert(err.response?.data?.message || "Error rejecting indent.");
+        } finally {
+            setApprovalLoading(false);
         }
     };
 
@@ -486,6 +561,9 @@ export default function StockIndents(props) {
                                                     <div className="ind-action-item" onClick={() => handlePrint(row)}>
                                                         <FaPrint size={10} className="text-secondary" /> Print
                                                     </div>
+                                                    <div className="ind-action-item" onClick={() => handleOpenApproval(row)}>
+                                                        <FaCheckCircle size={10} className="text-success" /> Indent Approval
+                                                    </div>
                                                     <div className="ind-action-item" onClick={() => {
                                                         setActiveActionRow(null);
                                                         setHistoryModal(row);
@@ -500,12 +578,6 @@ export default function StockIndents(props) {
                                                     </div>
                                                     <div className="ind-action-item danger" onClick={() => handleCloseIndent(row)}>
                                                         <FaTimes size={10} className="text-danger" /> Close
-                                                    </div>
-                                                    <div className="ind-action-item" onClick={() => {
-                                                        setActiveActionRow(null);
-                                                        setHistoryModal(row);
-                                                    }}>
-                                                        <FaHistory size={10} className="text-muted" /> View History
                                                     </div>
                                                 </div>
                                             )}
@@ -1070,6 +1142,141 @@ export default function StockIndents(props) {
                         size="sm" 
                         variant="secondary" 
                         onClick={() => setHistoryModal(null)}
+                        style={{ fontSize: "11px" }}
+                    >
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
+            {/* =================================================================
+                MODAL 5: INDENT APPROVAL
+                ================================================================= */}
+            <Modal 
+                show={!!approvalModal} 
+                onHide={() => setApprovalModal(null)}
+                size="lg"
+                centered
+            >
+                <Modal.Header closeButton style={{ background: "#2e7d32", color: "#ffffff", padding: "8px 16px" }}>
+                    <Modal.Title style={{ fontSize: "13px", fontWeight: "700" }}>
+                        <FaCheckCircle className="me-2" /> Indent Approval: {approvalModal?.header?.IndentNo || approvalModal?.IndentNo}
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{ fontSize: "11.5px" }}>
+                    {approvalModal && (() => {
+                        const header = approvalModal.header || approvalModal;
+                        const items = approvalModal.details || approvalModal.items || [];
+                        const isApproved = header.Status === "Approved";
+                        return (
+                            <>
+                                <div className="row g-2 mb-3 pb-2 border-bottom">
+                                    <div className="col-md-3"><strong>Indent No:</strong> {header.IndentNo}</div>
+                                    <div className="col-md-3"><strong>Date:</strong> {header.IndentDate}</div>
+                                    <div className="col-md-3"><strong>Department:</strong> {header.DepartmentName || "Store"}</div>
+                                    <div className="col-md-3">
+                                        <strong>Current Status:</strong>{" "}
+                                        <Badge bg={isApproved ? "success" : "primary"}>
+                                            {header.Status || "Open"}
+                                        </Badge>
+                                    </div>
+                                    <div className="col-md-3"><strong>Type:</strong> {header.IndentType || "For Stock"}</div>
+                                    <div className="col-md-3"><strong>Priority:</strong> {header.Priority || "Normal"}</div>
+                                    <div className="col-md-3"><strong>Entered By:</strong> {header.EnteredBy || "Admin"}</div>
+                                    <div className="col-md-3"><strong>Required Date:</strong> {header.RequiredDate || "-"}</div>
+                                    {header.Remarks && (
+                                        <div className="col-12 mt-1"><strong>Remarks:</strong> {header.Remarks}</div>
+                                    )}
+                                </div>
+
+                                <h6 className="fw-bold mb-2 text-success" style={{ fontSize: "12px" }}>
+                                    Line Items for Approval ({items.length})
+                                </h6>
+                                <div className="table-responsive mb-3">
+                                    <Table bordered size="sm" className="mb-0 text-nowrap" style={{ fontSize: "11px" }}>
+                                        <thead style={{ background: "#f8fafc" }}>
+                                            <tr>
+                                                <th style={{ width: "35px" }}>#</th>
+                                                <th>Item Code</th>
+                                                <th>Description</th>
+                                                <th>Color / Variant</th>
+                                                <th>UOM</th>
+                                                <th className="text-end">Quantity</th>
+                                                <th>Item Remarks</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {items.length === 0 ? (
+                                                <tr>
+                                                    <td colSpan="7" className="text-center py-2 text-muted">
+                                                        No line items registered.
+                                                    </td>
+                                                </tr>
+                                            ) : (
+                                                items.map((it, idx) => (
+                                                    <tr key={idx}>
+                                                        <td className="text-center">{idx + 1}</td>
+                                                        <td className="font-monospace fw-semibold">{it.ItemCode || `RM-${it.ItemID}`}</td>
+                                                        <td>{it.ItemName || it.Description || "Material Item"}</td>
+                                                        <td>{it.Color || "-"}</td>
+                                                        <td>{it.UOM || "PCS"}</td>
+                                                        <td className="text-end fw-bold">{it.Qty}</td>
+                                                        <td>{it.Remarks || "-"}</td>
+                                                    </tr>
+                                                ))
+                                            )}
+                                        </tbody>
+                                    </Table>
+                                </div>
+
+                                {isApproved ? (
+                                    <Alert variant="success" className="py-2 mb-0" style={{ fontSize: "11.5px" }}>
+                                        <strong>Notice:</strong> This indent is already marked as <strong>Approved</strong>.
+                                    </Alert>
+                                ) : (
+                                    <div>
+                                        <label className="fw-bold mb-1" style={{ fontSize: "11px" }}>Approval Remarks / Notes</label>
+                                        <textarea
+                                            className="form-control form-control-sm"
+                                            rows={2}
+                                            placeholder="Enter approval comments (e.g. Approved for procurement / Verified stock)..."
+                                            value={approvalRemarks}
+                                            onChange={(e) => setApprovalRemarks(e.target.value)}
+                                            style={{ fontSize: "11.5px" }}
+                                        />
+                                    </div>
+                                )}
+                            </>
+                        );
+                    })()}
+                </Modal.Body>
+                <Modal.Footer style={{ padding: "6px 16px" }}>
+                    {approvalModal && (approvalModal.header?.Status || approvalModal.Status) !== "Approved" && (
+                        <>
+                            <Button 
+                                size="sm" 
+                                variant="success" 
+                                style={{ fontSize: "11px", fontWeight: "600", background: "#2e7d32", borderColor: "#1b5e20" }}
+                                onClick={handleConfirmApprove}
+                                disabled={approvalLoading}
+                            >
+                                {approvalLoading ? <Spinner animation="border" size="sm" /> : <><FaCheck className="me-1" /> Approve Indent</>}
+                            </Button>
+                            <Button 
+                                size="sm" 
+                                variant="outline-danger" 
+                                style={{ fontSize: "11px" }}
+                                onClick={handleConfirmReject}
+                                disabled={approvalLoading}
+                            >
+                                Reject
+                            </Button>
+                        </>
+                    )}
+                    <Button 
+                        size="sm" 
+                        variant="secondary" 
+                        onClick={() => setApprovalModal(null)}
                         style={{ fontSize: "11px" }}
                     >
                         Close

@@ -5,7 +5,7 @@ const db = require("../../config/database");
 // ======================================================
 
 exports.getAll = (req, res) => {
-    const { status, supplier, enteredBy, search, page = 1, limit = 20 } = req.query;
+    const { status, supplier, enteredBy, search, group, page = 1, limit = 20 } = req.query;
 
     let sql = `
     SELECT
@@ -43,14 +43,32 @@ exports.getAll = (req, res) => {
 
     const params = [];
 
-    if (status && status !== 'All') {
-        sql += ` AND I.Status = ?`;
-        params.push(status);
+    if (status && status !== 'All' && status !== 'ALL') {
+        const upperStatus = status.toUpperCase();
+        if (upperStatus === 'PENDING') {
+            sql += ` AND I.Status IN ('Open', 'Pending', 'Submitted', 'Draft')`;
+        } else if (upperStatus === 'APPROVED') {
+            sql += ` AND I.Status IN ('Approved', 'Partially Ordered', 'Closed')`;
+        } else if (upperStatus === 'REJECTED') {
+            sql += ` AND I.Status = 'Rejected'`;
+        } else {
+            sql += ` AND I.Status = ?`;
+            params.push(status);
+        }
     }
 
     if (supplier && supplier.trim()) {
         sql += ` AND I.SupplierName LIKE ?`;
         params.push(`%${supplier.trim()}%`);
+    }
+
+    if (group && group.trim()) {
+        sql += ` AND EXISTS (
+            SELECT 1 FROM IndentDetails GD
+            INNER JOIN Items GI ON GI.ItemID = GD.ItemID
+            WHERE GD.IndentID = I.IndentID AND GI.Category LIKE ?
+        )`;
+        params.push(`%${group.trim()}%`);
     }
 
     if (enteredBy && enteredBy.trim()) {

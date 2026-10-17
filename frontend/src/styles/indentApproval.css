@@ -1,0 +1,56 @@
+/* Indent Approval page (JenixCloud / TPCS Fashion look) */
+.iap-legend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #333;
+    margin: 6px 0 4px;
+}
+
+.iap-legend-box {
+    display: inline-block;
+    width: 13px;
+    height: 13px;
+}
+
+.iap-legend-box.pending,
+.iap-status.pending { background: #f26b5b; }
+
+.iap-legend-box.approved,
+.iap-status.approved { background: #5cb85c; }
+
+.iap-status.rejected { background: #777; }
+
+.iap-status {
+    color: #fff;
+    font-weight: 600;
+    text-align: center;
+}
+
+.iap-action-btn {
+    border: 1px solid #ccc;
+    background: #fff;
+    font-size: 11px;
+    padding: 2px 10px;
+    margin-left: 6px;
+    cursor: pointer;
+}
+
+.iap-action-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.iap-action-btn.approve { color: #3c763d; border-color: #5cb85c; }
+.iap-action-btn.reject { color: #a94442; border-color: #d9534f; }
+
+.iap-filter-panel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 11px;
+}
+
+.iap-table tbody tr { cursor: pointer; }
+.iap-table tbody tr.selected td { background: #e8f1fa; }
+.iap-table td.num { text-align: right; }
+.iap-table th.center, .iap-table td.center { text-align: center; }

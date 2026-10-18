@@ -79,7 +79,6 @@ export default function FloorReturns() {
             if (m) max = Math.max(max, parseInt(m[1], 10));
         });
         setNewForm((prev) => ({ ...prev, FRMNo: `FR/AAPL9B/2627/${max + 1}` }));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [showNewModal]);
 
     // Close action dropdown on click outside

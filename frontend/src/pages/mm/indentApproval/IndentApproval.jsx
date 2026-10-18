@@ -93,9 +93,10 @@ export default function IndentApproval() {
         });
     };
 
-    const runAction = async (action) => {
-        const targets = rows.filter(
-            (r) => selected.has(r.IndentID) && toApprovalStatus(r.Status) !== (action === "approve" ? "approved" : "rejected")
+    const runAction = async (action, sourceRows) => {
+        const candidates = sourceRows || rows.filter((r) => selected.has(r.IndentID));
+        const targets = candidates.filter(
+            (r) => toApprovalStatus(r.Status) !== (action === "approve" ? "approved" : "rejected")
         );
         if (targets.length === 0) {
             alert(`Select at least one indent that can be ${action === "approve" ? "approved" : "rejected"}.`);
@@ -198,6 +199,15 @@ export default function IndentApproval() {
                         <FaFilter size={10} /> Filter <FaChevronDown size={8} />
                     </button>
 
+                    <button
+                        type="button"
+                        className="iap-action-btn approve"
+                        title="Approve all listed pending indents"
+                        disabled={busy || !rows.some((r) => toApprovalStatus(r.Status) === "pending")}
+                        onClick={() => runAction("approve", rows)}
+                    >
+                        Approve All
+                    </button>
                     <button
                         type="button"
                         className="iap-action-btn approve"

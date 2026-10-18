@@ -18,6 +18,7 @@ export default function Reports() {
             title: "Purchase Reports",
             icon: <FaClock size={32} className="text-warning mb-2" />,
             links: [
+                { name: "Requirement to PO", path: "/requirement-to-po" },
                 { name: "Pending Purchase Orders", path: "/pending-po" },
                 { name: "Purchase Order Register", path: "/purchase-register" },
                 { name: "Supplier Ledger", path: "/supplier-ledger" }

@@ -8,8 +8,8 @@ const app = express();
 // ======================================================
 
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "25mb" }));
+app.use(express.urlencoded({ extended: true, limit: "25mb" }));
 
 // ======================================================
 // DATABASE TABLES
@@ -32,6 +32,7 @@ require("./database/stockConversionTables");
 require("./database/conversionGRNTables");
 require("./database/itemRequisitionTables");
 require("./database/purchaseReturnTables");
+require("./database/requirementToPOTables");
 
 // ======================================================
 // ROUTES
@@ -125,6 +126,10 @@ app.use("/api/reports/finished-goods-stock", require("./routes/finishedGoodsStoc
 app.use("/api/reports/finished-goods-ageing", require("./routes/finishedGoodsAgeing"));
 app.use("/api/reports/pending-po", require("./routes/pendingpo"));
 app.use("/api/reports/pending-dispatch", require("./routes/pendingDispatch"));
+app.use("/api/requirements-to-po", require("./routes/requirementsToPO"));
+app.use("/api/requirement-to-po", require("./routes/requirementsToPO"));
+app.use("/api/reports/requirements-to-po", require("./routes/requirementsToPO"));
+app.use("/api/reports/requirement-to-po", require("./routes/requirementsToPO"));
 
 // ======================================================
 // HEALTH CHECK

@@ -1,6 +1,13 @@
 const path = require("path");
 const fs = require("fs");
+const dns = require("dns");
 const dotenv = require("dotenv");
+
+try {
+    if (typeof dns.setDefaultResultOrder === "function") {
+        dns.setDefaultResultOrder("ipv4first");
+    }
+} catch (_) {}
 
 // Load environment variables from root .env.local, root .env, and backend/.env
 [

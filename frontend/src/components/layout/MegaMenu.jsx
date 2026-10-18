@@ -79,6 +79,7 @@ export default function MegaMenu({
                 { label: "Purchase Requisition", path: "/purchase-requisition" },
                 { label: "Purchase Order", path: "/purchase-orders" },
                 { label: "Pending PO", path: "/pending-po" },
+                { label: "Requirement to PO", path: "/requirement-to-po" },
                 { label: "Purchase Return", path: "/purchase-return" }
             ]
         },
@@ -112,6 +113,7 @@ export default function MegaMenu({
             title: "MRP",
             items: [
                 { label: "Material Planning", path: "/material-planning" },
+                { label: "Requirement to PO", path: "/requirement-to-po" },
                 { label: "Stock Conversion", path: "/stock-conversion" },
                 { label: "MRP Report", path: "/mrp-report" }
             ]
@@ -199,6 +201,7 @@ export default function MegaMenu({
         {
             title: "PURCHASE REPORTS",
             items: [
+                { label: "Requirement to PO", path: "/requirement-to-po" },
                 { label: "Pending PO", path: "/pending-po" },
                 { label: "Purchase Report", path: "/purchase-report" },
                 { label: "GRN Report", path: "/grn-report" }

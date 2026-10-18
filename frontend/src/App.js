@@ -109,6 +109,7 @@ import StockLedger from "./pages/reports/stockLedger/StockLedger";
 import InventoryReports from "./pages/reports/inventoryReports/InventoryReports";
 import MaterialConsumption from "./pages/reports/materialConsumption/MaterialConsumption";
 import FinanceReports from "./pages/reports/financeReports/FinanceReports";
+import RequirementToPO from "./pages/reports/requirementToPO/RequirementToPO";
 
 function App() {
     return (
@@ -299,6 +300,12 @@ function App() {
                 <Route path="/admin/profile" element={<Profile />} />
 
                 {/* REPORTS */}
+                <Route path="/requirement-to-po" element={<RequirementToPO />} />
+                <Route path="/requirements-to-po" element={<RequirementToPO />} />
+                <Route path="/reports/requirement-to-po" element={<RequirementToPO />} />
+                <Route path="/reports/requirements-to-po" element={<RequirementToPO />} />
+                <Route path="/mm/requirement-to-po" element={<RequirementToPO />} />
+                <Route path="/purchase/requirement-to-po" element={<RequirementToPO />} />
                 <Route path="/stock-ledger" element={<StockLedger />} />
                 <Route path="/stock-summary" element={<InventoryReports />} />
                 <Route path="/low-stock" element={<InventoryReports />} />

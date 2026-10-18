@@ -9,7 +9,7 @@ exports.getFinishedGoodsAgeing = (req, res) => {
     const sql = `
     SELECT
 
-        PR.ReceiptID,
+        PR.ProductionReceiptID AS ReceiptID,
         PR.ReceiptNo,
         PR.ReceiptDate,
 
@@ -19,10 +19,10 @@ exports.getFinishedGoodsAgeing = (req, res) => {
         I.ItemCode,
         I.ItemName,
 
-        PRD.ProducedQty AS ReceivedQty,
-        PRD.RejectedQty,
-        PRD.Rate,
-        PRD.Amount,
+        COALESCE(PRD.Quantity, PR.ProducedQty, 0) AS ReceivedQty,
+        0 AS RejectedQty,
+        COALESCE(I.Rate, 0) AS Rate,
+        COALESCE(PRD.Quantity, PR.ProducedQty, 0) * COALESCE(I.Rate, 0) AS Amount,
 
         CAST(
             julianday('now') - julianday(PR.ReceiptDate)
@@ -48,19 +48,16 @@ exports.getFinishedGoodsAgeing = (req, res) => {
     FROM ProductionReceipts PR
 
     LEFT JOIN ProductionReceiptDetails PRD
-        ON PR.ReceiptID = PRD.ReceiptID
+        ON PR.ProductionReceiptID = PRD.ProductionReceiptID
 
     LEFT JOIN Items I
         ON PRD.ItemID = I.ItemID
 
     LEFT JOIN ProductionOrders PO
-        ON PR.ProductionID = PO.ProductionID
-
-    LEFT JOIN BOMs B
-        ON PO.BOMID = B.BOMID
+        ON PR.ProductionOrderID = PO.ProductionOrderID
 
     LEFT JOIN Styles S
-        ON B.StyleID = S.StyleID
+        ON PO.StyleID = S.StyleID
 
     ORDER BY PR.ReceiptDate DESC;
     `;

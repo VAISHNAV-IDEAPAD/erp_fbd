@@ -119,61 +119,59 @@ function initializeSeedData() {
     db.get("SELECT COUNT(*) as count FROM ItemRequisitions", (err, row) => {
         if (!err && row && row.count === 0) {
             console.log("Seeding ItemRequisitions table with initial TPCS records...");
-            const stmt = db.prepare(`
-                INSERT INTO ItemRequisitions (
-                    ReqNo, IssueNo, ReqDate, Associate, Warehouse, Remark, InternalMemo,
-                    Department, Transporter, ReqBy, EntryOn, Status, EntryBy, UpdatedBy,
-                    TotalQty, RowCount
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `);
-
-            const detailStmt = db.prepare(`
-                INSERT INTO ItemRequisitionDetails (
-                    RequisitionID, ItemCode, ItemName, Color, Quantity, UOM, RequiredDate, Remarks
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            `);
-
+            let remaining = SEED_ITEM_REQUISITIONS.length;
             SEED_ITEM_REQUISITIONS.forEach(req => {
-                stmt.run(
-                    req.ReqNo,
-                    req.IssueNo || "",
-                    req.ReqDate,
-                    req.Associate || "",
-                    req.Warehouse || "",
-                    req.Remark || "",
-                    req.InternalMemo || "",
-                    req.Department || "",
-                    req.Transporter || "",
-                    req.ReqBy || "",
-                    req.EntryOn || "",
-                    req.Status || "Pending",
-                    req.EntryBy || "Admin",
-                    req.UpdatedBy || "",
-                    req.TotalQty || 0,
-                    req.RowCount || (req.details ? req.details.length : 1),
+                db.run(
+                    `INSERT INTO ItemRequisitions (
+                        ReqNo, IssueNo, ReqDate, Associate, Warehouse, Remark, InternalMemo,
+                        Department, Transporter, ReqBy, EntryOn, Status, EntryBy, UpdatedBy,
+                        TotalQty, RowCount
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                    [
+                        req.ReqNo,
+                        req.IssueNo || "",
+                        req.ReqDate,
+                        req.Associate || "",
+                        req.Warehouse || "",
+                        req.Remark || "",
+                        req.InternalMemo || "",
+                        req.Department || "",
+                        req.Transporter || "",
+                        req.ReqBy || "",
+                        req.EntryOn || "",
+                        req.Status || "Pending",
+                        req.EntryBy || "Admin",
+                        req.UpdatedBy || "",
+                        req.TotalQty || 0,
+                        req.RowCount || (req.details ? req.details.length : 1)
+                    ],
                     function (err) {
                         if (!err && req.details && req.details.length > 0) {
                             const reqId = this.lastID;
                             req.details.forEach(d => {
-                                detailStmt.run(
-                                    reqId,
-                                    d.ItemCode || "",
-                                    d.ItemName || "",
-                                    d.Color || "",
-                                    d.Quantity || 0,
-                                    d.UOM || "PCS",
-                                    d.RequiredDate || "",
-                                    d.Remarks || ""
+                                db.run(
+                                    `INSERT INTO ItemRequisitionDetails (
+                                        RequisitionID, ItemCode, ItemName, Color, Quantity, UOM, RequiredDate, Remarks
+                                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+                                    [
+                                        reqId,
+                                        d.ItemCode || "",
+                                        d.ItemName || "",
+                                        d.Color || "",
+                                        d.Quantity || 0,
+                                        d.UOM || "PCS",
+                                        d.RequiredDate || "",
+                                        d.Remarks || ""
+                                    ]
                                 );
                             });
+                        }
+                        if (--remaining === 0) {
+                            console.log("✓ Seeded ItemRequisitions successfully.");
                         }
                     }
                 );
             });
-
-            stmt.finalize();
-            detailStmt.finalize();
-            console.log("✓ Seeded ItemRequisitions successfully.");
         }
     });
 }

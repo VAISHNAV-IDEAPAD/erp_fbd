@@ -7,16 +7,16 @@ exports.getWIPReport = (req, res) => {
 
     const sql = `
         SELECT
-            po.ProductionID,
+            po.ProductionOrderID AS ProductionID,
             po.ProductionNo,
 
             s.StyleCode,
             s.StyleName,
 
-            po.OrderQty,
+            po.PlannedQty AS OrderQty,
             po.ProducedQty,
 
-            (po.OrderQty -
+            (COALESCE(po.PlannedQty, 0) -
              IFNULL(po.ProducedQty,0))
                 AS WIPQty,
 
@@ -26,11 +26,8 @@ exports.getWIPReport = (req, res) => {
 
         FROM ProductionOrders po
 
-        LEFT JOIN BOMs b
-            ON po.BOMID = b.BOMID
-
         LEFT JOIN Styles s
-            ON b.StyleID = s.StyleID
+            ON po.StyleID = s.StyleID
 
         ORDER BY po.ProductionNo
     `;

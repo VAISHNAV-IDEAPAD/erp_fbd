@@ -7,6 +7,8 @@
     "start": "node backend/index.js"
   },
   "dependencies": {
+    "@neon/config": "^0.0.0",
+    "@neon/env": "^0.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.4.2",
     "express": "^5.1.0",

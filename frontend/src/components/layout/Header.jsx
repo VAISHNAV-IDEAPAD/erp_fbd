@@ -248,7 +248,7 @@ export default function Header() {
           <div className="erp-header-icons d-flex align-items-center">
 
             <div className="d-none d-md-flex flex-column text-end me-3 text-white">
-              <span className="fw-bold" style={{ fontSize: "0.82rem", lineHeight: 1.2 }}>Plot No. 30</span>
+              <span className="fw-bold" style={{ fontSize: "0.82rem", lineHeight: 1.2 }}>Plot No. 9B</span>
               <span style={{ fontSize: "0.68rem", opacity: 0.85 }}>FY 01-Apr-2026 - 31-Mar-2027</span>
             </div>
 

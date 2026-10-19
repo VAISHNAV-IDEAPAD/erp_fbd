@@ -109,6 +109,7 @@ import InventoryReports from "./pages/reports/inventoryReports/InventoryReports"
 import MaterialConsumption from "./pages/reports/materialConsumption/MaterialConsumption";
 import FinanceReports from "./pages/reports/financeReports/FinanceReports";
 import RequirementToPO from "./pages/reports/requirementToPO/RequirementToPO";
+import CommercialInvoice from "./pages/exports/CommercialInvoice";
 
 function App() {
     return (
@@ -248,6 +249,12 @@ function App() {
                 <Route path="/internal-order-master/:id" element={<InternalOrderMaster />} />
                 <Route path="/internal-orders/:id" element={<InternalOrderMaster />} />
                 <Route path="/internal-orders/new" element={<InternalOrderMaster />} />
+
+                {/* EXPORTS */}
+                <Route path="/commercial-invoice" element={<CommercialInvoice />} />
+                <Route path="/commercial-invoices" element={<CommercialInvoice />} />
+                <Route path="/exports/commercial-invoice" element={<CommercialInvoice />} />
+                <Route path="/commercial-invoice/new" element={<CommercialInvoice initialMode="form" />} />
 
                 {/* ADMIN & MASTERS */}
                 <Route path="/company-master" element={<CompanyMasters />} />

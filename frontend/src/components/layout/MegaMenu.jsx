@@ -185,6 +185,18 @@ export default function MegaMenu({
     ];
 
     // =========================================
+    // EXPORTS MENU (EXACT MATCH FOR TPCS FASHION SCREENSHOT)
+    // =========================================
+    const exportsMenu = [
+        {
+            title: "TRANSACTION",
+            items: [
+                { label: "Commercial Invoice", path: "/commercial-invoice" }
+            ]
+        }
+    ];
+
+    // =========================================
     // REPORTS MENU
     // =========================================
     const reportsMenu = [
@@ -235,6 +247,9 @@ export default function MegaMenu({
             break;
         case "PM":
             columns = pmMenu;
+            break;
+        case "EXPORTS":
+            columns = exportsMenu;
             break;
         case "ADMIN":
             columns = adminMenu;

@@ -32,6 +32,7 @@ require("./database/stockConversionTables");
 require("./database/itemRequisitionTables");
 require("./database/purchaseReturnTables");
 require("./database/requirementToPOTables");
+require("./database/commercialInvoiceTables");
 
 // ======================================================
 // ROUTES
@@ -93,6 +94,8 @@ app.use("/api/sales-orders", require("./routes/salesOrders"));
 app.use("/api/internal-orders", require("./routes/internalOrders"));
 app.use("/api/dispatches", require("./routes/dispatches"));
 app.use("/api/sales-invoices", require("./routes/salesInvoices"));
+app.use("/api/commercial-invoices", require("./routes/commercialInvoices"));
+app.use("/api/commercial-invoice", require("./routes/commercialInvoices"));
 app.use("/api/customer-payments", require("./routes/customerPayments"));
 app.use("/api/customer-outstanding", require("./routes/customerOutstanding"));
 app.use("/api/approvals", require("./routes/approvals"));

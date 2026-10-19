@@ -1697,6 +1697,33 @@ module.exports = {
       "otherchargesjson": "OtherChargesJSON",
       "status": "Status",
       "createdat": "CreatedAt"
+    },
+    "gateentries": {
+      "gateentryid": "GateEntryID",
+      "gateentryprefix": "GateEntryPrefix",
+      "gateentryno": "GateEntryNo",
+      "gateentrydate": "GateEntryDate",
+      "gateentryintime": "GateEntryInTime",
+      "supplierdcdate": "SupplierDCDate",
+      "supplierdcno": "SupplierDCNo",
+      "invoicedate": "InvoiceDate",
+      "invoiceno": "InvoiceNo",
+      "suppliername": "SupplierName",
+      "weight": "Weight",
+      "boxes": "Boxes",
+      "receivedby": "ReceivedBy",
+      "transportdetails": "TransportDetails",
+      "transporterdocrefno": "TransporterDocRefNo",
+      "itemdetails": "ItemDetails",
+      "remarks": "Remarks",
+      "poreference": "POReference",
+      "qtyunitdetails": "QtyUnitDetails",
+      "amount": "Amount",
+      "grnno": "GRNNo",
+      "grndate": "GRNDate",
+      "enteredby": "EnteredBy",
+      "status": "Status",
+      "createdat": "CreatedAt"
     }
   },
   "pkMap": {
@@ -1778,7 +1805,8 @@ module.exports = {
     "tech_sheets": "tech_sheet_id",
     "requirementtopo": "RequirementID",
     "commercialinvoices": "CommercialInvoiceID",
-    "rejectionreturns": "RejectionReturnID"
+    "rejectionreturns": "RejectionReturnID",
+    "gateentries": "GateEntryID"
   },
   "numericCols": [
     "historyid",
@@ -1930,6 +1958,8 @@ module.exports = {
     "excessissvalue",
     "commercialinvoiceid",
     "invoiceseq",
-    "rejectionreturnid"
+    "rejectionreturnid",
+    "gateentryid",
+    "boxes"
   ]
 };

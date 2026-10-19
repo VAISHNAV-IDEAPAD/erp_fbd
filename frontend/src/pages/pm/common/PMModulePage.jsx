@@ -1,13 +1,12 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { FaSyncAlt, FaBars, FaCog, FaFilter, FaPlus, FaCheck, FaArrowLeft } from "react-icons/fa";
+import { FaSyncAlt, FaBars, FaCog, FaFilter, FaPlus } from "react-icons/fa";
 import "../../../styles/conversionGRN.css";
 
 export default function PMModulePage({ title, category, sampleRows = [] }) {
     const defaultRows = sampleRows.length > 0 ? sampleRows : [
-        { id: 1, docNo: `${title.substring(0, 3).toUpperCase()}/30/2627/001`, date: "12-10-2026", status: "Active", qty: "120 PCS", remarks: "Standard production batch" },
-        { id: 2, docNo: `${title.substring(0, 3).toUpperCase()}/30/2627/002`, date: "10-10-2026", status: "Completed", qty: "350 PCS", remarks: "Verified by QC line 2" },
-        { id: 3, docNo: `${title.substring(0, 3).toUpperCase()}/30/2627/003`, date: "08-10-2026", status: "Pending", qty: "85 PCS", remarks: "Scheduled for next shift" }
+        { id: 1, docNo: `${title.substring(0, 3).toUpperCase()}/9B/2627/001`, date: "12-10-2026", status: "Active", qty: "120 PCS", remarks: "Standard production batch" },
+        { id: 2, docNo: `${title.substring(0, 3).toUpperCase()}/9B/2627/002`, date: "10-10-2026", status: "Completed", qty: "350 PCS", remarks: "Verified by QC line 2" },
+        { id: 3, docNo: `${title.substring(0, 3).toUpperCase()}/9B/2627/003`, date: "08-10-2026", status: "Pending", qty: "85 PCS", remarks: "Scheduled for next shift" }
     ];
 
     return (
@@ -21,14 +20,9 @@ export default function PMModulePage({ title, category, sampleRows = [] }) {
                 </div>
 
                 <div className="cgrn-right-actions">
-                    <Link to="/conversion-grn" style={{ textDecoration: "none" }}>
-                        <button type="button" className="cgrn-btn-bulk">
-                            <span>Conversion GRN</span>
-                        </button>
-                    </Link>
                     <button type="button" className="cgrn-btn-new">
                         <FaPlus style={{ fontSize: "11px" }} />
-                        <span>+ New {title}</span>
+                        <span>New {title}</span>
                     </button>
                 </div>
             </div>
@@ -79,7 +73,7 @@ export default function PMModulePage({ title, category, sampleRows = [] }) {
                                 </td>
                                 <td style={{ fontWeight: 600, color: "#1a5695" }}>{row.docNo}</td>
                                 <td>{row.date}</td>
-                                <td>Plot No. 30</td>
+                                <td>Plot No. 9B</td>
                                 <td style={{ fontWeight: 600 }}>{row.qty}</td>
                                 <td>
                                     <span className={`cgrn-status-badge ${row.status === "Completed" ? "cgrn-status-completed" : "cgrn-status-approved"}`}>

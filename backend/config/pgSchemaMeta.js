@@ -1671,6 +1671,32 @@ module.exports = {
       "itemsjson": "ItemsJSON",
       "status": "Status",
       "createdat": "CreatedAt"
+    },
+    "rejectionreturns": {
+      "rejectionreturnid": "RejectionReturnID",
+      "returnno": "ReturnNo",
+      "rejectionno": "RejectionNo",
+      "returndate": "ReturnDate",
+      "suppliername": "SupplierName",
+      "currency": "Currency",
+      "exchangerate": "ExchangeRate",
+      "remark": "Remark",
+      "internalmemo": "InternalMemo",
+      "enteredby": "EnteredBy",
+      "enteredon": "EnteredOn",
+      "updatedby": "UpdatedBy",
+      "updatedon": "UpdatedOn",
+      "totalqty": "TotalQty",
+      "noofrows": "NoOfRows",
+      "subtotal": "SubTotal",
+      "totalamount": "TotalAmount",
+      "grnnos": "GRNNos",
+      "groups": "Groups",
+      "itemsfilter": "ItemsFilter",
+      "itemsjson": "ItemsJSON",
+      "otherchargesjson": "OtherChargesJSON",
+      "status": "Status",
+      "createdat": "CreatedAt"
     }
   },
   "pkMap": {
@@ -1751,7 +1777,8 @@ module.exports = {
     "tech_sheet_quality": "id",
     "tech_sheets": "tech_sheet_id",
     "requirementtopo": "RequirementID",
-    "commercialinvoices": "CommercialInvoiceID"
+    "commercialinvoices": "CommercialInvoiceID",
+    "rejectionreturns": "RejectionReturnID"
   },
   "numericCols": [
     "historyid",
@@ -1902,6 +1929,7 @@ module.exports = {
     "excessiss",
     "excessissvalue",
     "commercialinvoiceid",
-    "invoiceseq"
+    "invoiceseq",
+    "rejectionreturnid"
   ]
 };

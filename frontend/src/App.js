@@ -59,7 +59,6 @@ import WorkInProgress from "./pages/pm/workInProgress/WorkInProgress";
 import Styles from "./pages/pm/styles/Styles";
 import OperationMaster from "./pages/pm/operationMaster/OperationMaster";
 import ProductionDashboard from "./pages/pm/productionDashboard/ProductionDashboard";
-import ConversionGRN from "./pages/pm/subcontract/ConversionGRN";
 import PMModulePage from "./pages/pm/common/PMModulePage";
 
 // =======================================
@@ -191,10 +190,7 @@ function App() {
                 <Route path="/styles" element={<Styles />} />
                 <Route path="/production-dashboard" element={<ProductionDashboard />} />
 
-                {/* SUBCONTRACT & CONVERSION GRN (TPCS FASHION MATCH) */}
-                <Route path="/conversion-grn" element={<ConversionGRN />} />
-                <Route path="/subcontract-conversion-grn" element={<ConversionGRN />} />
-                <Route path="/pm/subcontract-material-conversion-grn" element={<ConversionGRN />} />
+                {/* SUBCONTRACT MODULES */}
                 <Route path="/pm/subcontract-order-dc" element={<PMModulePage title="Subcontract Order / DC" category="Subcontract" />} />
                 <Route path="/pm/subcontract-grn" element={<PMModulePage title="Subcontract GRN" category="Subcontract" />} />
                 <Route path="/pm/subcontract-material-conversion-dc" element={<PMModulePage title="Subcontract Material Conversion DC" category="Subcontract" />} />

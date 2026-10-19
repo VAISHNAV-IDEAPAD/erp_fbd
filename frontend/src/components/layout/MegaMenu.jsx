@@ -40,7 +40,6 @@ export default function MegaMenu({
                 { label: "Subcontract Order/DC", path: "/pm/subcontract-order-dc" },
                 { label: "Subcontract GRN", path: "/pm/subcontract-grn" },
                 { label: "Subcontract Material Conversion DC", path: "/pm/subcontract-material-conversion-dc" },
-                { label: "Subcontract Material Conversion GRN", path: "/conversion-grn" },
                 { label: "Subcontract Order Approval", path: "/pm/subcontract-order-approval" },
                 { label: "Subcontract Conversion Approval", path: "/pm/subcontract-conversion-approval", sectionBreak: true },
                 { label: "Subcontract PO", path: "/pm/subcontract-po" },

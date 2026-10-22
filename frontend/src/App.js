@@ -237,6 +237,9 @@ function App() {
                 {/* SM (SALES MANAGEMENT) */}
                 <Route path="/customers" element={<Customers />} />
                 <Route path="/sales-orders" element={<SalesOrders />} />
+                <Route path="/sales-order" element={<SalesOrders />} />
+                <Route path="/sm/sales-order" element={<SalesOrders />} />
+                <Route path="/sm/sales-orders" element={<SalesOrders />} />
                 <Route path="/sales-invoices" element={<SalesInvoices />} />
                 <Route path="/dispatch" element={<Dispatch />} />
                 <Route path="/customer-outstanding" element={<CustomerOutstanding />} />

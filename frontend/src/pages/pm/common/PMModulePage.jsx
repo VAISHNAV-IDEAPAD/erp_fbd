@@ -1,13 +1,21 @@
 import React from "react";
 import { FaSyncAlt, FaBars, FaCog, FaFilter, FaPlus } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import "../../../styles/conversionGRN.css";
 
 export default function PMModulePage({ title, category, sampleRows = [] }) {
+    const navigate = useNavigate();
     const defaultRows = sampleRows.length > 0 ? sampleRows : [
         { id: 1, docNo: `${title.substring(0, 3).toUpperCase()}/9B/2627/001`, date: "12-10-2026", status: "Active", qty: "120 PCS", remarks: "Standard production batch" },
         { id: 2, docNo: `${title.substring(0, 3).toUpperCase()}/9B/2627/002`, date: "10-10-2026", status: "Completed", qty: "350 PCS", remarks: "Verified by QC line 2" },
         { id: 3, docNo: `${title.substring(0, 3).toUpperCase()}/9B/2627/003`, date: "08-10-2026", status: "Pending", qty: "85 PCS", remarks: "Scheduled for next shift" }
     ];
+
+    const handleNewClick = () => {
+        if (title.toLowerCase().includes("subcontract order")) {
+            navigate("/pm/subcontract-order-dc/new");
+        }
+    };
 
     return (
         <div className="cgrn-page">
@@ -20,7 +28,7 @@ export default function PMModulePage({ title, category, sampleRows = [] }) {
                 </div>
 
                 <div className="cgrn-right-actions">
-                    <button type="button" className="cgrn-btn-new">
+                    <button type="button" className="cgrn-btn-new" onClick={handleNewClick}>
                         <FaPlus style={{ fontSize: "11px" }} />
                         <span>New {title}</span>
                     </button>

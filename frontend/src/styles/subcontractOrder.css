@@ -1,0 +1,582 @@
+/* ==========================================================================
+   TPCS FASHION / JENIXCLOUD — SUBCONTRACT ORDER (LIST & NEW ORDER FORM)
+   ========================================================================== */
+
+.sco-page {
+    background: #ffffff;
+    min-height: calc(100vh - 60px);
+    padding: 14px 20px 40px 20px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: #333333;
+}
+
+/* Page Header */
+.sco-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.sco-title {
+    color: #337ab7;
+    font-size: 20px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.sco-badge-unit {
+    font-size: 11.5px;
+    color: #64748b;
+    margin-left: 10px;
+    font-weight: normal;
+}
+
+.sco-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Primary buttons */
+.sco-btn-primary {
+    background: #337ab7;
+    color: #ffffff;
+    border: 1px solid #2e6da4;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 3px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sco-btn-primary:hover {
+    background: #286090;
+    border-color: #204d74;
+}
+
+.sco-btn-secondary {
+    background: #ffffff;
+    color: #333333;
+    border: 1px solid #cccccc;
+    padding: 5px 12px;
+    font-size: 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.sco-btn-secondary:hover {
+    background: #f5f5f5;
+}
+
+/* ==========================================================================
+   TOP FORM FIELDS GRID (4-ROW COMPOUND FORM)
+   ========================================================================== */
+
+.sco-form-top-grid {
+    display: grid;
+    grid-template-columns: 280px 320px 320px;
+    gap: 12px 30px;
+    margin-bottom: 20px;
+}
+
+.sco-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sco-field-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #333333;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.sco-req {
+    color: #e11d48;
+    font-size: 13px;
+    margin-left: 2px;
+}
+
+.sco-input {
+    height: 28px;
+    border: 1px solid #dcdcdc;
+    border-radius: 2px;
+    padding: 3px 8px;
+    font-size: 12px;
+    color: #333333;
+    background: #ffffff;
+    outline: none;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.sco-input:focus {
+    border-color: #66afe9;
+    box-shadow: 0 0 4px rgba(102, 175, 233, 0.4);
+}
+
+.sco-textarea {
+    border: 1px solid #dcdcdc;
+    border-radius: 2px;
+    padding: 5px 8px;
+    font-size: 12px;
+    color: #333333;
+    background: #ffffff;
+    outline: none;
+    box-sizing: border-box;
+    width: 100%;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.sco-textarea:focus {
+    border-color: #66afe9;
+    box-shadow: 0 0 4px rgba(102, 175, 233, 0.4);
+}
+
+/* Compound Order No Control */
+.sco-order-compound {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.sco-order-prefix-select {
+    height: 28px;
+    border: 1px solid #dcdcdc;
+    border-radius: 2px;
+    padding: 2px 6px;
+    font-size: 12px;
+    background: #ffffff;
+    color: #333333;
+    outline: none;
+    cursor: pointer;
+}
+
+.sco-order-num-input {
+    width: 70px;
+    height: 28px;
+    border: 1px solid #dcdcdc;
+    border-radius: 2px;
+    padding: 3px 8px;
+    font-size: 12px;
+    color: #333333;
+    background: #ffffff;
+    outline: none;
+    text-align: right;
+}
+
+.sco-btn-gear {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #dcdcdc;
+    background: #ffffff;
+    color: #337ab7;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.sco-btn-gear:hover {
+    background: #f0f4f9;
+}
+
+/* Date input with calendar icon */
+.sco-date-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.sco-date-input {
+    height: 28px;
+    border: 1px solid #dcdcdc;
+    border-radius: 2px;
+    padding: 3px 28px 3px 8px;
+    font-size: 12px;
+    color: #333333;
+    background: #ffffff;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.sco-date-icon-btn {
+    position: absolute;
+    right: 4px;
+    background: transparent;
+    border: none;
+    color: #666666;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 4px;
+}
+
+/* Default Branch Checkbox */
+.sco-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    color: #555555;
+    margin-top: 4px;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* ==========================================================================
+   PRIMARY TABLE: ITEMS / OPERATIONS GRID
+   ========================================================================== */
+
+.sco-table-wrapper {
+    position: relative;
+    border: 1px solid #dcdcdc;
+    background: #ffffff;
+    margin-bottom: 6px;
+    overflow-x: auto;
+}
+
+.sco-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1150px;
+}
+
+.sco-table thead th {
+    background: #337ab7;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 8px;
+    border-right: 1px solid #4a8ec6;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.sco-table thead th:last-child {
+    border-right: none;
+}
+
+.sco-table tbody td {
+    padding: 4px 6px;
+    font-size: 12px;
+    border-right: 1px solid #eaeaea;
+    border-bottom: 1px solid #eaeaea;
+    vertical-align: middle;
+}
+
+.sco-table tbody tr:hover td {
+    background: #f8fafc;
+}
+
+.sco-tbl-input {
+    width: 100%;
+    height: 26px;
+    border: 1px solid #cbd5e1;
+    border-radius: 2px;
+    padding: 2px 6px;
+    font-size: 11.5px;
+    color: #333333;
+    background: #ffffff;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.sco-tbl-input:focus {
+    border-color: #66afe9;
+}
+
+.sco-io-compound {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.sco-io-btn {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #337ab7;
+    border-radius: 2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    flex-shrink: 0;
+}
+
+.sco-io-btn:hover {
+    background: #f0f4f9;
+}
+
+/* Scroll controls bar */
+.sco-scroll-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px 8px;
+    background: #f1f5f9;
+    border: 1px solid #dcdcdc;
+    border-top: none;
+    margin-bottom: 10px;
+}
+
+.sco-scroll-arrow {
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-size: 11px;
+    cursor: pointer;
+    padding: 2px 6px;
+}
+
+.sco-scroll-arrow:hover {
+    color: #337ab7;
+}
+
+.sco-scroll-track {
+    flex-grow: 1;
+    height: 6px;
+    background: #cbd5e1;
+    border-radius: 3px;
+    margin: 0 10px;
+}
+
+/* Add Line Link */
+.sco-add-line-link {
+    color: #337ab7;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    margin-bottom: 16px;
+    user-select: none;
+}
+
+.sco-add-line-link:hover {
+    color: #23527c;
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   SECONDARY TABLE: ACCOUNTS & TAXES GRID
+   ========================================================================== */
+
+.sco-accounts-table-wrapper {
+    border: 1px solid #dcdcdc;
+    background: #ffffff;
+    margin-bottom: 20px;
+    overflow-x: auto;
+}
+
+.sco-accounts-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+}
+
+.sco-accounts-table thead th {
+    background: #337ab7;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 8px;
+    border-right: 1px solid #4a8ec6;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.sco-accounts-table tbody td {
+    padding: 4px 6px;
+    font-size: 12px;
+    border-right: 1px solid #eaeaea;
+    border-bottom: 1px solid #eaeaea;
+    vertical-align: middle;
+}
+
+.sco-tbl-select {
+    width: 100%;
+    height: 26px;
+    border: 1px solid #cbd5e1;
+    border-radius: 2px;
+    padding: 2px 4px;
+    font-size: 11.5px;
+    color: #333333;
+    background: #ffffff;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.sco-tax-readonly {
+    background: #f8fafc;
+    color: #475569;
+    height: 26px;
+    border: 1px solid #e2e8f0;
+    border-radius: 2px;
+    padding: 2px 6px;
+    font-size: 11.5px;
+    display: flex;
+    align-items: center;
+}
+
+/* ==========================================================================
+   INSTRUCTIONS & TERMS SECTION
+   ========================================================================== */
+
+.sco-section-title {
+    color: #337ab7;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 16px 0 12px 0;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.sco-instructions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 220px;
+    gap: 16px 30px;
+    margin-bottom: 20px;
+}
+
+.sco-summary-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.sco-summary-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: #334155;
+}
+
+.sco-summary-line.total {
+    border-top: 2px solid #cbd5e1;
+    padding-top: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    color: #1e293b;
+}
+
+/* Attachment button */
+.sco-btn-add-files {
+    background: #337ab7;
+    color: #ffffff;
+    border: 1px solid #2e6da4;
+    border-radius: 2px;
+    padding: 5px 12px;
+    font-size: 11.5px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.sco-btn-add-files:hover {
+    background: #286090;
+}
+
+.sco-file-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.sco-file-chip {
+    background: #e2e8f0;
+    border-radius: 3px;
+    padding: 2px 8px;
+    font-size: 11px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #334155;
+}
+
+/* Terms and Conditions Expandable link */
+.sco-terms-link {
+    color: #337ab7;
+    font-size: 12.5px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 14px;
+}
+
+.sco-terms-link:hover {
+    text-decoration: underline;
+}
+
+/* Bottom Actions Bar */
+.sco-bottom-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 28px;
+    padding-top: 16px;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* ==========================================================================
+   LIST VIEW STYLES
+   ========================================================================== */
+
+.sco-list-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.sco-list-table th {
+    background: #337ab7;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px 10px;
+    border-right: 1px solid #4a8ec6;
+    text-align: left;
+}
+
+.sco-list-table td {
+    padding: 6px 10px;
+    font-size: 12px;
+    border-bottom: 1px solid #eaeaea;
+    border-right: 1px solid #eaeaea;
+}

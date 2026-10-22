@@ -120,16 +120,9 @@ export default function MegaMenu({
     ];
 
     // =========================================
-    // SM MENU (STYLE & SALES MANAGEMENT)
+    // SM MENU (EXACT MATCH FOR V-CONNECT INC. SCREENSHOT)
     // =========================================
     const smMenu = [
-        {
-            title: "STYLE MANAGEMENT",
-            items: [
-                { label: "Style Master", path: "/style-master" },
-                { label: "Tech Sheet", path: "/tech-sheets" }
-            ]
-        },
         {
             title: "SAMPLES",
             items: [
@@ -146,6 +139,7 @@ export default function MegaMenu({
                 { label: "Item Issue", path: "/stock-issues" },
                 { label: "Sales Invoice", path: "/sales-invoices" },
                 { label: "IO RMR Recalculate", path: "/sm/io-rmr-recalculate" },
+                { label: "Sales Order From PDF", path: "/sm/sales-order-from-pdf" },
                 { label: "Projection Order", path: "/sm/projection-order" }
             ]
         },

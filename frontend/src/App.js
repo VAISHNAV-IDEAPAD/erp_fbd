@@ -82,6 +82,7 @@ import InternalOrder from "./pages/sm/internalOrder/InternalOrder";
 import InternalOrderMaster from "./pages/sm/internalOrder/InternalOrderMaster";
 import TaskDelayAnalysis from "./pages/sm/tna/TaskDelayAnalysis";
 import IoRmrRecalculate from "./pages/sm/rmr/IoRmrRecalculate";
+import SalesOrderPdfImport from "./pages/sm/salesOrderPdf/SalesOrderPdfImport";
 
 // =======================================
 // ADMIN & MASTER MODULES
@@ -267,6 +268,12 @@ function App() {
                 <Route path="/io-rmr-recalculate" element={<IoRmrRecalculate />} />
                 <Route path="/rmr-recalculate" element={<IoRmrRecalculate />} />
                 <Route path="/rmr" element={<IoRmrRecalculate />} />
+
+                {/* SALES ORDER FROM PDF */}
+                <Route path="/sm/sales-order-from-pdf" element={<SalesOrderPdfImport />} />
+                <Route path="/sales-order-from-pdf" element={<SalesOrderPdfImport />} />
+                <Route path="/sales-order-pdf" element={<SalesOrderPdfImport />} />
+                <Route path="/sales-orders/pdf-import" element={<SalesOrderPdfImport />} />
 
                 {/* EXPORTS */}
                 <Route path="/commercial-invoice" element={<CommercialInvoice />} />

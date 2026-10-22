@@ -5,7 +5,7 @@ import axios from "axios";
 import ItemRequisitions from "../mm/itemRequisition/ItemRequisitions";
 
 export default function PurchaseRequisition() {
-    const [activeTab, setActiveTab] = useState("item-requisition"); // default to new TPCS interface
+    const [activeTab, setActiveTab] = useState("item-requisition"); // default to new V-Connect interface
     const [requisitions, setRequisitions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
@@ -74,7 +74,7 @@ export default function PurchaseRequisition() {
                     }}
                     onClick={() => setActiveTab("item-requisition")}
                 >
-                    Item Requisiton Note (TPCS Fashion)
+                    Item Requisiton Note (V-CONNECT INC.)
                 </button>
                 <button
                     type="button"
@@ -95,7 +95,7 @@ export default function PurchaseRequisition() {
                 </button>
             </div>
 
-            {/* TAB 1: NEW TPCS FASHION ITEM REQUISITION NOTE */}
+            {/* TAB 1: NEW V-CONNECT INC. ITEM REQUISITION NOTE */}
             {activeTab === "item-requisition" && (
                 <ItemRequisitions />
             )}

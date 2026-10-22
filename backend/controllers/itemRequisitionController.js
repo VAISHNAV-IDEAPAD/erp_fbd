@@ -1,7 +1,7 @@
 const db = require("../config/database");
 
 // ======================================================
-// INITIAL SAMPLE SEED DATA MATCHING TPCS FASHION ERP
+// INITIAL SAMPLE SEED DATA MATCHING V-CONNECT INC. ERP
 // ======================================================
 const SEED_ITEM_REQUISITIONS = [
     {
@@ -118,7 +118,7 @@ const SEED_ITEM_REQUISITIONS = [
 function initializeSeedData() {
     db.get("SELECT COUNT(*) as count FROM ItemRequisitions", (err, row) => {
         if (!err && row && row.count === 0) {
-            console.log("Seeding ItemRequisitions table with initial TPCS records...");
+            console.log("Seeding ItemRequisitions table with initial V-Connect records...");
             let remaining = SEED_ITEM_REQUISITIONS.length;
             SEED_ITEM_REQUISITIONS.forEach(req => {
                 db.run(

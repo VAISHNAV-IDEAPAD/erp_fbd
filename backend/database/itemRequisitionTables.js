@@ -2,7 +2,7 @@ const db = require("../config/database");
 
 // ======================================================
 // ITEM REQUISITIONS & ITEM REQUISITION DETAILS TABLES
-// Matches TPCS Fashion ERP - Item Requisition Note
+// Matches V-CONNECT INC. ERP - Item Requisition Note
 // ======================================================
 
 db.serialize(() => {

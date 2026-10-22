@@ -1,6 +1,6 @@
 /* ==========================================================================
-   TPCS FASHION - STOCK CONVERSION STYLES
-   Exact Replica of JenixCloud / TPCS Fashion Stock Conversion Interface
+   V-CONNECT INC. - STOCK CONVERSION STYLES
+   Exact Replica of JenixCloud / V-CONNECT INC. Stock Conversion Interface
    ========================================================================== */
 
 .stock-conversion-page {
@@ -244,7 +244,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   TABLE CONTAINER & TPCS HEADER STYLE
+   TABLE CONTAINER & V-Connect HEADER STYLE
    -------------------------------------------------------------------------- */
 .sc-table-container {
     background: #ffffff;
@@ -261,7 +261,7 @@
     white-space: nowrap;
 }
 
-/* Distinctive TPCS Blue Table Header */
+/* Distinctive V-Connect Blue Table Header */
 .sc-table thead tr {
     background-color: #2172ba;
     color: #ffffff;

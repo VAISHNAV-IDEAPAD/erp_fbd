@@ -389,7 +389,7 @@ export default function ItemRequisitions() {
                 </head>
                 <body>
                     <div class="print-header">
-                        <div class="company-name">TPCS FASHION LIMITED</div>
+                        <div class="company-name">V-CONNECT INC.</div>
                         <div class="company-sub">Plot No. 9B | Financial Year 2026 - 2027</div>
                         <div class="doc-title">Item Requisition Note</div>
                     </div>
@@ -528,7 +528,7 @@ export default function ItemRequisitions() {
                         type="button"
                         className="ir-tool-btn"
                         title="Settings"
-                        onClick={() => alert("Columns configured per TPCS Fashion Item Requisition standard.")}
+                        onClick={() => alert("Columns configured per V-CONNECT INC. Item Requisition standard.")}
                     >
                         <FaCog />
                     </button>

@@ -102,12 +102,12 @@ export default function Header() {
       onMouseLeave={handleMouseLeave}
     >
       {/* =====================================
-          BLUE TOP HEADER (TPCS FASHION REPLICA)
+          BLUE TOP HEADER (V-CONNECT INC. REPLICA)
       ====================================== */}
       <Navbar className="erp-header">
         <Container fluid>
 
-          {/* TPCS FASHION BRAND LOGO */}
+          {/* V-CONNECT INC. BRAND LOGO */}
           <Navbar.Brand
             href="/"
             className="erp-logo d-flex align-items-center"
@@ -128,8 +128,8 @@ export default function Header() {
               <circle cx="85" cy="70" r="3.5" fill="#38bdf8" stroke="none" />
               <circle cx="50" cy="8" r="3.5" fill="#38bdf8" stroke="none" />
             </svg>
-            <span style={{ fontWeight: 900, fontStyle: "italic", letterSpacing: "-0.5px", color: "#38bdf8", fontSize: "21px" }}>TPCS</span>
-            <span style={{ fontWeight: 400, color: "#ffffff", fontSize: "21px", marginLeft: "1px" }}>Fashion</span>
+            <span style={{ fontWeight: 900, fontStyle: "italic", letterSpacing: "-0.5px", color: "#38bdf8", fontSize: "21px" }}>V-Connect</span>
+            <span style={{ fontWeight: 400, color: "#ffffff", fontSize: "21px", marginLeft: "1px" }}>Inc.</span>
           </Navbar.Brand>
 
           {/* TOP NAVIGATION TABS */}

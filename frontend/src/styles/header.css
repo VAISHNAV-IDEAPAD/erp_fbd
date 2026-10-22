@@ -1,5 +1,5 @@
 /* =====================================================
-   TPCS FASHION ERP HEADER
+   V-CONNECT INC. ERP HEADER
 ===================================================== */
 
 .erp-header-wrapper {
@@ -9,14 +9,14 @@
 }
 
 /* =====================================================
-   BLUE TOP NAVBAR (MATCHING TPCS FASHION)
+   BLUE TOP NAVBAR (MATCHING V-CONNECT INC.)
 ===================================================== */
 
 .erp-header {
   width: 100%;
   height: 60px;
   padding: 0 24px !important;
-  background: #004fb6 !important; /* Authentic TPCS Blue */
+  background: #004fb6 !important; /* Authentic V-Connect Blue */
   border: none !important;
   box-shadow: none !important;
 }
@@ -28,7 +28,7 @@
 }
 
 /* =====================================================
-   TPCS BRAND LOGO
+   V-Connect BRAND LOGO
 ===================================================== */
 
 .erp-logo {
@@ -126,7 +126,7 @@
 }
 
 /* =====================================================
-   MEGA MENU - TPCS FASHION EXACT REPLICA
+   MEGA MENU - V-CONNECT INC. EXACT REPLICA
 ===================================================== */
 
 .mega-menu-container {

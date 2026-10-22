@@ -19,7 +19,7 @@ import "../../styles/itemIssue.css";
 
 const API_URL = process.env.REACT_APP_API_URL || "/api";
 
-// Default seed data matching TPCS Fashion ERP specifications
+// Default seed data matching V-CONNECT INC. ERP specifications
 const INITIAL_ITEM_ISSUES = [
     {
         IssueID: 1,
@@ -502,7 +502,7 @@ export default function ItemIssue() {
                 </head>
                 <body>
                     <div class="header">
-                        <h2>TPCS FASHION - ITEM ISSUE VOUCHER</h2>
+                        <h2>V-CONNECT INC. - ITEM ISSUE VOUCHER</h2>
                         <small>Plot No. 9B | FY 01-Apr-2026 - 31-Mar-2027</small>
                     </div>
                     <div class="info-grid">

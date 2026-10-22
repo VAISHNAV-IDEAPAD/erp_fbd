@@ -4,7 +4,7 @@ import { FaPlus, FaTimes } from "react-icons/fa";
 import "../../styles/typeaheadDropdown.css";
 
 /**
- * Typeahead / Autocomplete Searchable Dropdown matching JenixCloud / TPCS Fashion ERP
+ * Typeahead / Autocomplete Searchable Dropdown matching JenixCloud / V-CONNECT INC. ERP
  *
  * @param {string} value - Current input value
  * @param {function} onChange - Called with (textValue, selectedItemObj)

@@ -299,7 +299,7 @@ export default function StockConversion() {
                 </head>
                 <body>
                     <div class="header-box">
-                        <h2>TPCS FASHION - STOCK CONVERSION VOUCHER</h2>
+                        <h2>V-CONNECT INC. - STOCK CONVERSION VOUCHER</h2>
                         <div class="subtitle">Plot No. 30 | FY 01-Apr-2026 - 31-Mar-2027</div>
                     </div>
                     <div class="info-grid">
@@ -410,7 +410,7 @@ export default function StockConversion() {
                         type="button"
                         className="sc-tool-btn"
                         title="Settings"
-                        onClick={() => alert("Columns configured per TPCS Fashion Stock Conversion standard.")}
+                        onClick={() => alert("Columns configured per V-CONNECT INC. Stock Conversion standard.")}
                     >
                         <FaCog />
                     </button>

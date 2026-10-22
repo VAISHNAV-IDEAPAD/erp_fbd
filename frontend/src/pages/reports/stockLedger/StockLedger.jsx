@@ -30,7 +30,7 @@ const INITIAL_MATERIALS = [
     { label: "PE SHEET ENSHEILD 16*8", value: "PKG-2188", code: "PKG-2188", color: "CLEAR", category: "PACKING MATERIAL", uom: "PCS", rate: 0.87, currentStock: 139000.0 }
 ];
 
-// Default sample dataset matching JenixCloud TPCS Fashion Stock Ledger (Screenshots 3 & 4)
+// Default sample dataset matching JenixCloud V-CONNECT INC. Stock Ledger (Screenshots 3 & 4)
 const DEFAULT_LEDGER_ITEMS = [
     {
         itemHeader: "TALIN 0.3MM, Code :NONWO5064, Description : , Color :WHITE, UOM :MTR",

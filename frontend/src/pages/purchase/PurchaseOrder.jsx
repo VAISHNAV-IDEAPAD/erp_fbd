@@ -45,7 +45,7 @@ import PurchaseOrderPrintModal from "../../components/purchase/PurchaseOrderPrin
 import TypeaheadDropdown from "../../components/common/TypeaheadDropdown";
 import "../../styles/purchaseOrder.css";
 
-// Fallback & reference master data (matching JenixCloud TPCS Fashion ERP)
+// Fallback & reference master data (matching JenixCloud V-CONNECT INC. ERP)
 const DEFAULT_ITEM_GROUPS = [
   "Fabrics",
   "Leather",

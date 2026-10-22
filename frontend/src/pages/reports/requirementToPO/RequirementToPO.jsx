@@ -1058,7 +1058,7 @@ export default function RequirementToPO() {
                 </Modal.Header>
                 <Modal.Body>
                     <p className="text-muted small mb-3">
-                        Select a <strong>Requirement_to_PO.csv</strong> export file (standard 31-column TPCS Fashion
+                        Select a <strong>Requirement_to_PO.csv</strong> export file (standard 31-column V-CONNECT INC.
                         format) to import into the Requirement to PO module.
                     </p>
 

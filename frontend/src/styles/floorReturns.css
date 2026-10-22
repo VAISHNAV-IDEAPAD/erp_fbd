@@ -1,5 +1,5 @@
 /* ==========================================================================
-   TPCS FASHION FLOOR RETURN STYLES (FORM VIEW & LIST VIEW)
+   V-CONNECT INC. FLOOR RETURN STYLES (FORM VIEW & LIST VIEW)
    ========================================================================== */
 
 .floor-returns-page {
@@ -18,7 +18,7 @@
 }
 
 /* ==========================================================================
-   FORM VIEW (EXACT MATCH FOR TPCS FASHION SCREENSHOTS)
+   FORM VIEW (EXACT MATCH FOR V-CONNECT INC. SCREENSHOTS)
    ========================================================================== */
 
 .fr-form-header-stack {
@@ -305,7 +305,7 @@
     padding-right: 16px !important;
 }
 
-/* Fake TPCS horizontal scrollbar bar below items row */
+/* Fake V-Connect horizontal scrollbar bar below items row */
 .fr-scrollbar-deco {
     background: #f5f5f5;
     padding: 3px 6px;

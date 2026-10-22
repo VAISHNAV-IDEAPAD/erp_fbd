@@ -10,7 +10,7 @@ export default function MegaMenu({
     onMouseLeave
 }) {
     // =========================================
-    // PM MENU (EXACT MATCH FOR TPCS FASHION SCREENSHOT)
+    // PM MENU (EXACT MATCH FOR V-CONNECT INC. SCREENSHOT)
     // =========================================
     const pmMenu = [
         {
@@ -185,7 +185,7 @@ export default function MegaMenu({
     ];
 
     // =========================================
-    // EXPORTS MENU (EXACT MATCH FOR TPCS FASHION SCREENSHOT)
+    // EXPORTS MENU (EXACT MATCH FOR V-CONNECT INC. SCREENSHOT)
     // =========================================
     const exportsMenu = [
         {
@@ -304,7 +304,7 @@ export default function MegaMenu({
                 </div>
             </div>
 
-            {/* Columns Grid matching TPCS screenshot */}
+            {/* Columns Grid matching V-Connect screenshot */}
             <div
                 className="mega-menu-inner"
                 style={{

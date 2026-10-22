@@ -81,6 +81,7 @@ import SalesDashboard from "./pages/sm/salesDashboard/SalesDashboard";
 import InternalOrder from "./pages/sm/internalOrder/InternalOrder";
 import InternalOrderMaster from "./pages/sm/internalOrder/InternalOrderMaster";
 import TaskDelayAnalysis from "./pages/sm/tna/TaskDelayAnalysis";
+import IoRmrRecalculate from "./pages/sm/rmr/IoRmrRecalculate";
 
 // =======================================
 // ADMIN & MASTER MODULES
@@ -260,6 +261,12 @@ function App() {
                 <Route path="/task-delay-analysis" element={<TaskDelayAnalysis />} />
                 <Route path="/tna-report" element={<TaskDelayAnalysis />} />
                 <Route path="/tna" element={<TaskDelayAnalysis />} />
+
+                {/* IO RMR RECALCULATE */}
+                <Route path="/sm/io-rmr-recalculate" element={<IoRmrRecalculate />} />
+                <Route path="/io-rmr-recalculate" element={<IoRmrRecalculate />} />
+                <Route path="/rmr-recalculate" element={<IoRmrRecalculate />} />
+                <Route path="/rmr" element={<IoRmrRecalculate />} />
 
                 {/* EXPORTS */}
                 <Route path="/commercial-invoice" element={<CommercialInvoice />} />

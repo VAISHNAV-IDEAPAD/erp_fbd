@@ -1,0 +1,381 @@
+/* ==========================================================================
+   V-CONNECT INC. / TPCS FASHION — IO RMR RECALCULATE
+   ========================================================================== */
+
+.rmr-page {
+    background: #ffffff;
+    min-height: calc(100vh - 60px);
+    padding: 16px 24px 60px 24px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: #333333;
+}
+
+.rmr-title {
+    color: #337ab7;
+    font-size: 20px;
+    font-weight: 500;
+    margin: 0 0 20px 0;
+}
+
+/* 2-Column Form Layout */
+.rmr-form-container {
+    display: flex;
+    gap: 60px;
+    margin-bottom: 30px;
+    max-width: 800px;
+}
+
+.rmr-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* Field Styles */
+.rmr-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.rmr-label-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rmr-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #333333;
+    margin: 0;
+}
+
+.rmr-excel-link {
+    font-size: 11.5px;
+    color: #337ab7;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.rmr-excel-link:hover {
+    text-decoration: underline;
+}
+
+/* File Picker Row */
+.rmr-file-picker-row {
+    display: flex;
+    align-items: center;
+    height: 28px;
+    width: 100%;
+}
+
+.rmr-file-display {
+    flex: 1;
+    height: 100%;
+    border: 1px solid #dcdcdc;
+    border-right: none;
+    border-radius: 2px 0 0 2px;
+    padding: 3px 8px;
+    font-size: 12px;
+    color: #64748b;
+    background: #f8fafc;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.rmr-btn-choose-file {
+    height: 100%;
+    background: #337ab7;
+    color: #ffffff;
+    border: 1px solid #337ab7;
+    border-radius: 0 2px 2px 0;
+    padding: 0 10px;
+    font-size: 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+.rmr-btn-choose-file:hover {
+    background: #286090;
+}
+
+/* Import Button */
+.rmr-btn-import {
+    align-self: flex-start;
+    height: 28px;
+    background: #337ab7;
+    color: #ffffff;
+    border: 1px solid #337ab7;
+    border-radius: 2px;
+    padding: 0 14px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+}
+
+.rmr-btn-import:hover {
+    background: #286090;
+}
+
+/* IO No Add Input */
+.rmr-input-group {
+    display: flex;
+    align-items: center;
+    height: 28px;
+    width: 100%;
+}
+
+.rmr-input {
+    flex: 1;
+    height: 100%;
+    border: 1px solid #dcdcdc;
+    border-radius: 2px;
+    padding: 3px 8px;
+    font-size: 12px;
+    color: #333333;
+    outline: none;
+    background: #ffffff;
+}
+
+.rmr-input:focus {
+    border-color: #66afe9;
+}
+
+.rmr-input-group .rmr-input {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: none;
+}
+
+.rmr-btn-add {
+    height: 100%;
+    width: 28px;
+    border: 1px solid #dcdcdc;
+    background: #f8fafc;
+    color: #333333;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 0 2px 2px 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.rmr-btn-add:hover {
+    background: #e2e8f0;
+}
+
+/* Selected IO Dual Listbox Component */
+.rmr-listbox-container {
+    display: flex;
+    border: 1px solid #dcdcdc;
+    border-radius: 2px;
+    background: #ffffff;
+    height: 110px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.rmr-listbox-items {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 0;
+}
+
+.rmr-list-item {
+    padding: 3px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.rmr-list-item:hover {
+    background: #f0f4f9;
+}
+
+.rmr-list-item.selected {
+    background: #337ab7;
+    color: #ffffff;
+}
+
+.rmr-listbox-controls {
+    width: 48px;
+    border-left: 1px solid #dcdcdc;
+    display: flex;
+    background: #f8fafc;
+}
+
+.rmr-listbox-scroll-btns {
+    width: 24px;
+    border-right: 1px solid #dcdcdc;
+    display: flex;
+    flex-direction: column;
+}
+
+.rmr-scroll-btn {
+    flex: 1;
+    background: #ffffff;
+    border: none;
+    border-bottom: 1px solid #dcdcdc;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    font-size: 9px;
+}
+
+.rmr-scroll-btn:last-child {
+    border-bottom: none;
+}
+
+.rmr-scroll-btn:hover {
+    background: #e2e8f0;
+}
+
+.rmr-listbox-action-btns {
+    width: 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+.rmr-action-btn-ctrl {
+    flex: 1;
+    background: #ffffff;
+    border: none;
+    border-bottom: 1px solid #dcdcdc;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+}
+
+.rmr-action-btn-ctrl:last-child {
+    border-bottom: none;
+}
+
+.rmr-action-btn-ctrl:hover {
+    background: #e2e8f0;
+}
+
+.rmr-btn-delete-item {
+    color: #dc2626;
+}
+
+.rmr-btn-delete-item:hover {
+    background: #fee2e2;
+}
+
+/* Action Buttons (Clear & Recalculate) */
+.rmr-actions-row {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    max-width: 800px;
+    margin-top: 10px;
+}
+
+.rmr-btn-clear {
+    height: 30px;
+    padding: 0 18px;
+    border: 1px solid #dcdcdc;
+    border-radius: 2px;
+    background: #ffffff;
+    color: #333333;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.rmr-btn-clear:hover {
+    background: #f5f5f5;
+}
+
+.rmr-btn-recalculate {
+    height: 30px;
+    padding: 0 20px;
+    border: 1px solid #337ab7;
+    border-radius: 2px;
+    background: #337ab7;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.rmr-btn-recalculate:hover {
+    background: #286090;
+}
+
+/* Results Notification / Banner */
+.rmr-alert-success {
+    margin-top: 24px;
+    max-width: 800px;
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    color: #166534;
+    padding: 12px 16px;
+    border-radius: 4px;
+    font-size: 12.5px;
+}
+
+/* Modal */
+.rmr-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+.rmr-modal-content {
+    background: #ffffff;
+    border-radius: 4px;
+    width: 520px;
+    max-width: 90vw;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.rmr-modal-header {
+    background: #337ab7;
+    color: #ffffff;
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rmr-modal-body {
+    padding: 16px;
+}
+
+.rmr-modal-footer {
+    padding: 10px 16px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: flex-end;
+    background: #f8fafc;
+}

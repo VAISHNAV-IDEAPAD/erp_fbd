@@ -80,6 +80,7 @@ import SalesReports from "./pages/sm/salesReports/SalesReports";
 import SalesDashboard from "./pages/sm/salesDashboard/SalesDashboard";
 import InternalOrder from "./pages/sm/internalOrder/InternalOrder";
 import InternalOrderMaster from "./pages/sm/internalOrder/InternalOrderMaster";
+import TaskDelayAnalysis from "./pages/sm/tna/TaskDelayAnalysis";
 
 // =======================================
 // ADMIN & MASTER MODULES
@@ -253,6 +254,12 @@ function App() {
                 <Route path="/internal-order-master/:id" element={<InternalOrderMaster />} />
                 <Route path="/internal-orders/:id" element={<InternalOrderMaster />} />
                 <Route path="/internal-orders/new" element={<InternalOrderMaster />} />
+
+                {/* T&A (TASK DELAY ANALYSIS REPORT) */}
+                <Route path="/sm/task-delay-analysis" element={<TaskDelayAnalysis />} />
+                <Route path="/task-delay-analysis" element={<TaskDelayAnalysis />} />
+                <Route path="/tna-report" element={<TaskDelayAnalysis />} />
+                <Route path="/tna" element={<TaskDelayAnalysis />} />
 
                 {/* EXPORTS */}
                 <Route path="/commercial-invoice" element={<CommercialInvoice />} />

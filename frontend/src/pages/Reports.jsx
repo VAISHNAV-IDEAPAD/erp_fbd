@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import {
     FaChartBar,
     FaRegFileAlt,
@@ -118,7 +119,7 @@ const REPORT_CATEGORIES_DATA = [
         column: "left",
         defaultOpen: false,
         reports: [
-            { id: "r35", name: "Time & Action Calendar Milestone Tracking", description: "Critical Path Log" }
+            { id: "r35", name: "Task Delay Analysis Report", path: "/sm/task-delay-analysis", description: "Critical Path Log" }
         ]
     },
     {
@@ -278,6 +279,7 @@ const REPORT_CATEGORIES_DATA = [
 ];
 
 export default function Reports() {
+    const navigate = useNavigate();
     const [darkMode, setDarkMode] = useState(false);
     const [openCategories, setOpenCategories] = useState({ cat_general: true });
     const [selectedPill, setSelectedPill] = useState("All");
@@ -736,7 +738,13 @@ export default function Reports() {
                                         <td className="reports-col-name">
                                             <span
                                                 className="reports-item-link"
-                                                onClick={() => setActiveReportModal(report)}
+                                                onClick={() => {
+                                                    if (report.path) {
+                                                        navigate(report.path);
+                                                    } else {
+                                                        setActiveReportModal(report);
+                                                    }
+                                                }}
                                                 title={`Click to view ${report.name}`}
                                             >
                                                 <FaRegFileAlt className="reports-item-doc-icon" />

@@ -1,0 +1,271 @@
+/* ==========================================================================
+   V-CONNECT INC. / TPCS FASHION — TASK DELAY ANALYSIS REPORT (T&A)
+   ========================================================================== */
+
+.tna-page {
+    background: #ffffff;
+    min-height: calc(100vh - 60px);
+    padding: 12px 18px 40px 18px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: #333333;
+}
+
+.tna-title {
+    color: #337ab7;
+    font-size: 20px;
+    font-weight: 500;
+    margin: 0 0 14px 0;
+}
+
+/* As on date filter */
+.tna-date-filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 14px;
+    width: 220px;
+}
+
+.tna-date-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #333333;
+    margin: 0;
+}
+
+.tna-date-input-wrap {
+    display: flex;
+    align-items: center;
+    border: 1px solid #dcdcdc;
+    border-radius: 2px;
+    background: #ffffff;
+    height: 28px;
+    padding: 0 8px;
+}
+
+.tna-date-input {
+    border: none;
+    outline: none;
+    font-size: 12px;
+    color: #333333;
+    width: 100%;
+    background: transparent;
+}
+
+/* Toolbar Row */
+.tna-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.tna-icon-group {
+    display: inline-flex;
+    border: 1px solid #cccccc;
+    border-radius: 2px;
+    background: #ffffff;
+}
+
+.tna-icon-btn {
+    width: 28px;
+    height: 26px;
+    border: none;
+    border-right: 1px solid #cccccc;
+    background: #ffffff;
+    color: #337ab7;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.tna-icon-btn:last-child {
+    border-right: none;
+}
+
+.tna-icon-btn:hover {
+    background: #f5f5f5;
+}
+
+.tna-filter-btn {
+    height: 26px;
+    border: 1px solid #cccccc;
+    border-radius: 2px;
+    background: #ffffff;
+    color: #337ab7;
+    padding: 0 10px;
+    font-size: 12px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.tna-filter-btn:hover,
+.tna-filter-btn.active {
+    background: #f0f4f9;
+}
+
+/* Filter Popup */
+.tna-filter-popup {
+    position: absolute;
+    top: 32px;
+    left: 125px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+    padding: 14px 16px;
+    z-index: 1000;
+    width: 320px;
+}
+
+.tna-popup-field {
+    margin-bottom: 10px;
+}
+
+.tna-popup-label {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #334155;
+    display: block;
+    margin-bottom: 3px;
+}
+
+.tna-popup-input,
+.tna-popup-select {
+    width: 100%;
+    height: 26px;
+    border: 1px solid #cbd5e1;
+    border-radius: 2px;
+    padding: 2px 7px;
+    font-size: 11.5px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+/* Table */
+.tna-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid #dcdcdc;
+    background: #ffffff;
+}
+
+.tna-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tna-table thead th {
+    background: #337ab7;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 8px 12px;
+    border-right: 1px solid #4e8ec6;
+    vertical-align: middle;
+    user-select: none;
+}
+
+.tna-table thead th:last-child {
+    border-right: none;
+}
+
+.tna-table tbody td {
+    height: 28px;
+    padding: 4px 12px;
+    font-size: 12px;
+    color: #333333;
+    border-right: 1px solid #eaeaea;
+    border-bottom: 1px dashed #eaeaea;
+    vertical-align: middle;
+}
+
+.tna-table tbody tr:hover td {
+    background-color: #f7fafd;
+}
+
+.tna-task-link {
+    color: #337ab7;
+    cursor: pointer;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.tna-task-link:hover {
+    text-decoration: underline;
+    color: #23527c;
+}
+
+.tna-count-cell {
+    text-align: center;
+}
+
+.tna-count-val {
+    cursor: pointer;
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 3px;
+    transition: background 0.15s;
+}
+
+.tna-count-val:hover {
+    background: #e0ecfd;
+    color: #1a5695;
+    font-weight: 600;
+}
+
+.tna-count-zero {
+    color: #94a3b8;
+}
+
+/* Drilldown Modal */
+.tna-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+.tna-modal-content {
+    background: #ffffff;
+    border-radius: 6px;
+    width: 650px;
+    max-width: 90vw;
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+}
+
+.tna-modal-header {
+    background: #337ab7;
+    color: #ffffff;
+    padding: 12px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tna-modal-body {
+    padding: 16px 18px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.tna-modal-footer {
+    padding: 10px 18px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: flex-end;
+    background: #f8fafc;
+}

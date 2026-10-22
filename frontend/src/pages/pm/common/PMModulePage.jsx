@@ -2,9 +2,15 @@ import React from "react";
 import { FaSyncAlt, FaBars, FaCog, FaFilter, FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "../../../styles/conversionGRN.css";
+import SubcontractOrder from "../subcontract/SubcontractOrder";
 
 export default function PMModulePage({ title, category, sampleRows = [] }) {
     const navigate = useNavigate();
+
+    if (title && title.toLowerCase().includes("subcontract order")) {
+        return <SubcontractOrder />;
+    }
+
     const defaultRows = sampleRows.length > 0 ? sampleRows : [
         { id: 1, docNo: `${title.substring(0, 3).toUpperCase()}/9B/2627/001`, date: "12-10-2026", status: "Active", qty: "120 PCS", remarks: "Standard production batch" },
         { id: 2, docNo: `${title.substring(0, 3).toUpperCase()}/9B/2627/002`, date: "10-10-2026", status: "Completed", qty: "350 PCS", remarks: "Verified by QC line 2" },

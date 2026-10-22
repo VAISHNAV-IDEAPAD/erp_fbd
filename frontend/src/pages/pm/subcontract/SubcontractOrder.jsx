@@ -1,4 +1,5 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
     FaPlus,
     FaSyncAlt,
@@ -16,6 +17,7 @@ import {
     FaPrint,
     FaTimes
 } from "react-icons/fa";
+import "../../../styles/conversionGRN.css";
 import "../../../styles/subcontractOrder.css";
 
 const INITIAL_SUBCONTRACT_ORDERS = [
@@ -61,8 +63,21 @@ const INITIAL_SUBCONTRACT_ORDERS = [
 ];
 
 export default function SubcontractOrder({ initialMode = "list" }) {
+    const location = useLocation();
+    const navigate = useNavigate();
+
     // View mode: 'list' or 'form'
-    const [viewMode, setViewMode] = useState(initialMode);
+    const isInitialForm =
+        initialMode === "form" ||
+        (location && (location.pathname.endsWith("/new") || location.search.includes("mode=new")));
+
+    const [viewMode, setViewMode] = useState(isInitialForm ? "form" : "list");
+
+    useEffect(() => {
+        if (location && (location.pathname.endsWith("/new") || location.search.includes("mode=new") || initialMode === "form")) {
+            setViewMode("form");
+        }
+    }, [location, initialMode]);
 
     // List view state
     const [orders, setOrders] = useState(INITIAL_SUBCONTRACT_ORDERS);
@@ -353,162 +368,128 @@ export default function SubcontractOrder({ initialMode = "list" }) {
     });
 
     // =========================================================================
-    // RENDER: LIST VIEW
+    // RENDER: LIST VIEW (EXACT MATCH FOR SCREENSHOT WITH GREEN NEW BUTTON)
     // =========================================================================
     if (viewMode === "list") {
         return (
-            <div className="sco-page">
-                {/* Header */}
-                <div className="sco-header-row">
+            <div className="cgrn-page">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
                     <div>
-                        <h1 className="sco-title">
-                            Subcontract Order / DC
-                            <span className="sco-badge-unit">Plot No. 9B &bull; FY 01-Apr-2026 - 31-Mar-2027</span>
-                        </h1>
+                        <span style={{ fontSize: "11.5px", color: "#64748b", textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                            PM &bull; SUBCONTRACT
+                        </span>
+                        <h1 className="cgrn-page-title" style={{ margin: "2px 0 0 0" }}>Subcontract Order / DC</h1>
                     </div>
 
-                    <div className="sco-header-actions">
+                    <div className="cgrn-right-actions">
                         <button
                             type="button"
-                            className="sco-btn-primary"
-                            onClick={() => setViewMode("form")}
+                            className="cgrn-btn-new"
+                            onClick={() => {
+                                setViewMode("form");
+                                if (window.history && window.history.pushState) {
+                                    window.history.pushState({}, "", "/pm/subcontract-order-dc/new");
+                                }
+                            }}
                         >
-                            <FaPlus /> New Subcontract Order
+                            <FaPlus style={{ fontSize: "11px" }} />
+                            <span>New Subcontract Order / DC</span>
                         </button>
                     </div>
                 </div>
 
-                {/* Toast status */}
+                {/* Status toast message */}
                 {statusToast && (
-                    <div className="alert alert-success py-1 px-3 mb-3" style={{ fontSize: "12px" }}>
+                    <div className="alert alert-success py-1 px-3 mb-2" style={{ fontSize: "12px" }}>
                         {statusToast}
                     </div>
                 )}
 
-                {/* Toolbar */}
-                <div className="sco-list-toolbar">
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                        <div style={{ display: "inline-flex", border: "1px solid #ccc", borderRadius: "2px" }}>
-                            <button
-                                className="btn btn-sm btn-light"
-                                style={{ borderRight: "1px solid #ccc", padding: "4px 8px" }}
-                                title="Reload"
-                                onClick={() => showNotification("Refreshed records")}
-                            >
-                                <FaSyncAlt size={11} color="#337ab7" />
-                            </button>
-                            <button
-                                className="btn btn-sm btn-light"
-                                style={{ borderRight: "1px solid #ccc", padding: "4px 8px" }}
-                                title="Toggle Density"
-                            >
-                                <FaBars size={11} color="#337ab7" />
-                            </button>
-                            <button
-                                className="btn btn-sm btn-light"
-                                style={{ padding: "4px 8px" }}
-                                title="Settings"
-                                onClick={() => showNotification("Configured grid settings")}
-                            >
-                                <FaCog size={11} color="#337ab7" />
-                            </button>
-                        </div>
-
+                {/* Top Toolbar */}
+                <div className="cgrn-toolbar">
+                    <div className="cgrn-toolbar-left">
                         <button
-                            className="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1"
-                            style={{ height: "28px", fontSize: "12px" }}
+                            type="button"
+                            className="cgrn-icon-btn"
+                            title="Reload"
+                            onClick={() => showNotification("Subcontract orders reloaded")}
                         >
-                            <FaFilter size={11} /> Filter
+                            <FaSyncAlt />
                         </button>
-
-                        <input
-                            type="text"
-                            className="sco-input"
-                            style={{ width: "240px", height: "28px" }}
-                            placeholder="Search Order No / Subcontractor..."
-                            value={searchFilter}
-                            onChange={(e) => setSearchFilter(e.target.value)}
-                        />
+                        <button type="button" className="cgrn-icon-btn" title="Toggle Density">
+                            <FaBars />
+                        </button>
+                        <button
+                            type="button"
+                            className="cgrn-icon-btn"
+                            title="Settings"
+                            onClick={() => showNotification("Grid settings configured")}
+                        >
+                            <FaCog />
+                        </button>
+                        <button
+                            type="button"
+                            className="cgrn-filter-btn"
+                            onClick={() => showNotification("Filter activated")}
+                        >
+                            <FaFilter style={{ fontSize: "11px" }} />
+                            <span>Filter</span>
+                        </button>
                     </div>
-
-                    <div style={{ fontSize: "12px", color: "#64748b" }}>
-                        Showing <strong>{filteredOrders.length}</strong> orders
+                    <div>
+                        <span className="cgrn-page-badge">1</span>
                     </div>
                 </div>
 
-                {/* Table of Orders */}
-                <div className="sco-table-wrapper">
-                    <table className="sco-table sco-list-table">
+                {/* Table matching Screenshot */}
+                <div className="cgrn-table-container">
+                    <table className="cgrn-table">
                         <thead>
                             <tr>
-                                <th style={{ width: "85px", textAlign: "center" }}>Action</th>
-                                <th>Order No</th>
+                                <th style={{ width: "80px", textAlign: "center" }}>Action</th>
+                                <th>Document No</th>
                                 <th>Date</th>
-                                <th>Subcontractor</th>
-                                <th>Season</th>
-                                <th>Branch</th>
-                                <th>Ref No</th>
+                                <th>Category / Unit</th>
                                 <th>Quantity</th>
-                                <th>Total Amount</th>
                                 <th>Status</th>
                                 <th>Remarks</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredOrders.map((order) => (
-                                <tr key={order.id}>
+                            {orders.map((row) => (
+                                <tr key={row.id}>
                                     <td style={{ textAlign: "center" }}>
                                         <button
                                             type="button"
-                                            className="sco-btn-secondary"
-                                            style={{ padding: "2px 8px", fontSize: "11px" }}
+                                            className="cgrn-action-btn"
                                             onClick={() => {
-                                                setSubcontractor(order.subcontractor);
-                                                setSeason(order.season);
-                                                setBranch(order.branch);
-                                                setDate(order.date);
-                                                setRefNo(order.refNo);
+                                                setSubcontractor(row.subcontractor);
+                                                setSeason(row.season);
+                                                setBranch(row.branch);
+                                                setDate(row.date);
+                                                setRefNo(row.refNo);
                                                 setViewMode("form");
                                             }}
                                         >
-                                            View
+                                            Action
                                         </button>
                                     </td>
-                                    <td style={{ fontWeight: 600, color: "#337ab7" }}>{order.orderNo}</td>
-                                    <td>{order.date}</td>
-                                    <td style={{ fontWeight: 500 }}>{order.subcontractor}</td>
-                                    <td>{order.season}</td>
-                                    <td>{order.branch}</td>
-                                    <td>{order.refNo}</td>
-                                    <td style={{ fontWeight: 600 }}>{order.qty}</td>
-                                    <td style={{ fontWeight: 600 }}>
-                                        ₹ {Number(order.totalAmount).toLocaleString("en-IN")}
-                                    </td>
+                                    <td style={{ fontWeight: 600, color: "#1a5695" }}>{row.orderNo}</td>
+                                    <td>{row.date}</td>
+                                    <td>{row.branch}</td>
+                                    <td style={{ fontWeight: 600 }}>{row.qty}</td>
                                     <td>
                                         <span
-                                            style={{
-                                                padding: "2px 8px",
-                                                borderRadius: "3px",
-                                                fontSize: "11px",
-                                                fontWeight: 600,
-                                                background:
-                                                    order.status === "Approved"
-                                                        ? "#dcfce7"
-                                                        : order.status === "In Progress"
-                                                        ? "#fef9c3"
-                                                        : "#f1f5f9",
-                                                color:
-                                                    order.status === "Approved"
-                                                        ? "#15803d"
-                                                        : order.status === "In Progress"
-                                                        ? "#854d0e"
-                                                        : "#475569"
-                                            }}
+                                            className={`cgrn-status-badge ${
+                                                row.status === "Completed"
+                                                    ? "cgrn-status-completed"
+                                                    : "cgrn-status-approved"
+                                            }`}
                                         >
-                                            {order.status}
+                                            {row.status}
                                         </span>
                                     </td>
-                                    <td style={{ color: "#64748b", fontSize: "11.5px" }}>{order.remarks}</td>
+                                    <td style={{ color: "#64748b" }}>{row.remarks}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -536,7 +517,12 @@ export default function SubcontractOrder({ initialMode = "list" }) {
                     <button
                         type="button"
                         className="sco-btn-secondary"
-                        onClick={() => setViewMode("list")}
+                        onClick={() => {
+                            setViewMode("list");
+                            if (window.history && window.history.pushState) {
+                                window.history.pushState({}, "", "/pm/subcontract-order-dc");
+                            }
+                        }}
                     >
                         <FaArrowLeft /> Back to List
                     </button>
@@ -1171,7 +1157,12 @@ export default function SubcontractOrder({ initialMode = "list" }) {
                 <button
                     type="button"
                     className="sco-btn-secondary"
-                    onClick={() => setViewMode("list")}
+                    onClick={() => {
+                        setViewMode("list");
+                        if (window.history && window.history.pushState) {
+                            window.history.pushState({}, "", "/pm/subcontract-order-dc");
+                        }
+                    }}
                 >
                     Cancel
                 </button>

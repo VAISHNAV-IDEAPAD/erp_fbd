@@ -62,6 +62,7 @@ import ProductionDashboard from "./pages/pm/productionDashboard/ProductionDashbo
 import PMModulePage from "./pages/pm/common/PMModulePage";
 import SubcontractOrder from "./pages/pm/subcontract/SubcontractOrder";
 import SubcontractGRN from "./pages/pm/subcontract/SubcontractGRN";
+import SubcontractConversionDC from "./pages/pm/subcontract/SubcontractConversionDC";
 
 // =======================================
 // SM (STYLE MANAGEMENT)
@@ -208,8 +209,12 @@ function App() {
                 <Route path="/pm/subcontract-grn" element={<SubcontractGRN />} />
                 <Route path="/pm/subcontract-grn/new" element={<SubcontractGRN initialMode="form" />} />
                 <Route path="/subcontract-grn" element={<SubcontractGRN />} />
-                <Route path="/subcontract-grn/new" element={<SubcontractGRN initialMode="form" />} />
-                <Route path="/pm/subcontract-material-conversion-dc" element={<PMModulePage title="Subcontract Material Conversion DC" category="Subcontract" />} />
+                <Route path="/pm/subcontract-material-conversion-dc" element={<SubcontractConversionDC />} />
+                <Route path="/pm/subcontract-material-conversion-dc/new" element={<SubcontractConversionDC initialMode="form" />} />
+                <Route path="/pm/conversion-dc" element={<SubcontractConversionDC />} />
+                <Route path="/pm/conversion-dc/new" element={<SubcontractConversionDC initialMode="form" />} />
+                <Route path="/subcontract-material-conversion-dc" element={<SubcontractConversionDC />} />
+                <Route path="/conversion-dc" element={<SubcontractConversionDC />} />
                 <Route path="/pm/subcontract-order-approval" element={<PMModulePage title="Subcontract Order Approval" category="Subcontract" />} />
                 <Route path="/pm/subcontract-conversion-approval" element={<PMModulePage title="Subcontract Conversion Approval" category="Subcontract" />} />
                 <Route path="/pm/subcontract-po" element={<PMModulePage title="Subcontract PO" category="Subcontract" />} />

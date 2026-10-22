@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "../../../styles/conversionGRN.css";
 import SubcontractOrder from "../subcontract/SubcontractOrder";
 import SubcontractGRN from "../subcontract/SubcontractGRN";
+import SubcontractConversionDC from "../subcontract/SubcontractConversionDC";
 
 export default function PMModulePage({ title, category, sampleRows = [] }) {
     const navigate = useNavigate();
@@ -13,6 +14,9 @@ export default function PMModulePage({ title, category, sampleRows = [] }) {
     }
     if (title && (title.toLowerCase().includes("subcontract grn") || title.toLowerCase() === "subcontract grn")) {
         return <SubcontractGRN />;
+    }
+    if (title && title.toLowerCase().includes("conversion dc")) {
+        return <SubcontractConversionDC />;
     }
 
     const defaultRows = sampleRows.length > 0 ? sampleRows : [
@@ -26,6 +30,8 @@ export default function PMModulePage({ title, category, sampleRows = [] }) {
             navigate("/pm/subcontract-order-dc/new");
         } else if (title.toLowerCase().includes("subcontract grn")) {
             navigate("/pm/subcontract-grn/new");
+        } else if (title.toLowerCase().includes("conversion dc")) {
+            navigate("/pm/subcontract-material-conversion-dc/new");
         }
     };
 

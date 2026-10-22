@@ -1,0 +1,432 @@
+/* ==========================================================================
+   TPCS FASHION / JENIXCLOUD — SUBCONTRACT GRN (LIST & NEW FORM)
+   ========================================================================== */
+
+.scgrn-page {
+    background: #ffffff;
+    min-height: calc(100vh - 60px);
+    padding: 14px 20px 40px 20px;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: #333333;
+}
+
+/* Page Header */
+.scgrn-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.scgrn-title {
+    color: #337ab7;
+    font-size: 20px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.scgrn-badge-unit {
+    font-size: 11.5px;
+    color: #64748b;
+    margin-left: 10px;
+    font-weight: normal;
+}
+
+/* 2-Column Top Form Grid */
+.scgrn-top-grid {
+    display: grid;
+    grid-template-columns: 320px 320px;
+    gap: 10px 40px;
+    margin-bottom: 16px;
+}
+
+.scgrn-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.scgrn-field-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #333333;
+    margin: 0;
+}
+
+.scgrn-req {
+    color: #e11d48;
+    font-size: 13px;
+    margin-left: 2px;
+}
+
+.scgrn-input {
+    height: 28px;
+    border: 1px solid #dcdcdc;
+    border-radius: 2px;
+    padding: 3px 8px;
+    font-size: 12px;
+    color: #333333;
+    background: #ffffff;
+    outline: none;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.scgrn-input:focus {
+    border-color: #66afe9;
+    box-shadow: 0 0 4px rgba(102, 175, 233, 0.4);
+}
+
+.scgrn-select {
+    height: 28px;
+    border: 1px solid #dcdcdc;
+    border-radius: 2px;
+    padding: 3px 8px;
+    font-size: 12px;
+    color: #333333;
+    background: #ffffff;
+    outline: none;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.scgrn-textarea {
+    border: 1px solid #dcdcdc;
+    border-radius: 2px;
+    padding: 5px 8px;
+    font-size: 12px;
+    color: #333333;
+    background: #ffffff;
+    outline: none;
+    box-sizing: border-box;
+    width: 100%;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.scgrn-textarea:focus {
+    border-color: #66afe9;
+}
+
+/* Compound GRN No */
+.scgrn-compound-grn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.scgrn-prefix-select {
+    height: 28px;
+    border: 1px solid #dcdcdc;
+    border-radius: 2px;
+    padding: 2px 6px;
+    font-size: 12px;
+    background: #ffffff;
+    color: #333333;
+    outline: none;
+    cursor: pointer;
+}
+
+.scgrn-num-input {
+    width: 65px;
+    height: 28px;
+    border: 1px solid #dcdcdc;
+    border-radius: 2px;
+    padding: 3px 6px;
+    font-size: 12px;
+    color: #333333;
+    background: #ffffff;
+    outline: none;
+    text-align: right;
+}
+
+.scgrn-gear-btn {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #dcdcdc;
+    background: #ffffff;
+    color: #337ab7;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.scgrn-gear-btn:hover {
+    background: #f0f4f9;
+}
+
+/* Date input with calendar icon */
+.scgrn-date-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.scgrn-date-input {
+    height: 28px;
+    border: 1px solid #dcdcdc;
+    border-radius: 2px;
+    padding: 3px 26px 3px 8px;
+    font-size: 12px;
+    color: #333333;
+    background: #ffffff;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.scgrn-date-icon-btn {
+    position: absolute;
+    right: 4px;
+    background: transparent;
+    border: none;
+    color: #666666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+/* Row 9: JW Order No with Display From JW Order Button */
+.scgrn-jw-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.scgrn-btn-display-jw {
+    height: 28px;
+    padding: 0 14px;
+    background: #337ab7;
+    border: 1px solid #2e6da4;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 2px;
+    cursor: pointer;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.scgrn-btn-display-jw:hover {
+    background: #286090;
+}
+
+/* Primary Items Grid */
+.scgrn-table-wrapper {
+    border: 1px solid #dcdcdc;
+    background: #ffffff;
+    margin-bottom: 6px;
+    overflow-x: auto;
+}
+
+.scgrn-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 1250px;
+}
+
+.scgrn-table thead th {
+    background: #337ab7;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 8px;
+    border-right: 1px solid #4a8ec6;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.scgrn-table thead th:last-child {
+    border-right: none;
+}
+
+.scgrn-table tbody td {
+    padding: 4px 6px;
+    font-size: 12px;
+    border-right: 1px solid #eaeaea;
+    border-bottom: 1px solid #eaeaea;
+    vertical-align: middle;
+}
+
+.scgrn-tbl-input {
+    width: 100%;
+    height: 26px;
+    border: 1px solid #cbd5e1;
+    border-radius: 2px;
+    padding: 2px 6px;
+    font-size: 11.5px;
+    color: #333333;
+    background: #ffffff;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.scgrn-io-compound {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.scgrn-io-btn {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #337ab7;
+    border-radius: 2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    flex-shrink: 0;
+}
+
+/* Add Line Link */
+.scgrn-add-line-link {
+    color: #337ab7;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    margin-bottom: 16px;
+    user-select: none;
+}
+
+.scgrn-add-line-link:hover {
+    color: #23527c;
+    text-decoration: underline;
+}
+
+/* Section Title with Gear */
+.scgrn-section-title-gear {
+    color: #337ab7;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 16px 0 10px 0;
+}
+
+/* Instructions & Terms */
+.scgrn-instructions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 220px;
+    gap: 16px 30px;
+    margin-bottom: 20px;
+}
+
+.scgrn-summary-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.scgrn-summary-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: #334155;
+}
+
+.scgrn-summary-line.total {
+    border-top: 2px solid #cbd5e1;
+    padding-top: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    color: #1e293b;
+}
+
+/* Checkbox Label */
+.scgrn-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    color: #555555;
+    margin-top: 6px;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Bottom Action Buttons (Matching Screenshot 5) */
+.scgrn-bottom-actions-row {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    margin-top: 24px;
+    padding-top: 14px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.scgrn-btn-save {
+    background: #5cb85c;
+    border: 1px solid #4cae4c;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 14px;
+    border-radius: 3px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.scgrn-btn-save:hover {
+    background: #449d44;
+}
+
+.scgrn-btn-action-drop {
+    background: #5cb85c;
+    border: 1px solid #4cae4c;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+}
+
+.scgrn-btn-action-drop:hover {
+    background: #449d44;
+}
+
+.scgrn-btn-view {
+    background: #337ab7;
+    border: 1px solid #2e6da4;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 14px;
+    border-radius: 3px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.scgrn-btn-view:hover {
+    background: #286090;
+}

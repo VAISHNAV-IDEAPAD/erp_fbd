@@ -3,12 +3,16 @@ import { FaSyncAlt, FaBars, FaCog, FaFilter, FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "../../../styles/conversionGRN.css";
 import SubcontractOrder from "../subcontract/SubcontractOrder";
+import SubcontractGRN from "../subcontract/SubcontractGRN";
 
 export default function PMModulePage({ title, category, sampleRows = [] }) {
     const navigate = useNavigate();
 
     if (title && title.toLowerCase().includes("subcontract order")) {
         return <SubcontractOrder />;
+    }
+    if (title && (title.toLowerCase().includes("subcontract grn") || title.toLowerCase() === "subcontract grn")) {
+        return <SubcontractGRN />;
     }
 
     const defaultRows = sampleRows.length > 0 ? sampleRows : [
@@ -20,6 +24,8 @@ export default function PMModulePage({ title, category, sampleRows = [] }) {
     const handleNewClick = () => {
         if (title.toLowerCase().includes("subcontract order")) {
             navigate("/pm/subcontract-order-dc/new");
+        } else if (title.toLowerCase().includes("subcontract grn")) {
+            navigate("/pm/subcontract-grn/new");
         }
     };
 

@@ -61,6 +61,7 @@ import OperationMaster from "./pages/pm/operationMaster/OperationMaster";
 import ProductionDashboard from "./pages/pm/productionDashboard/ProductionDashboard";
 import PMModulePage from "./pages/pm/common/PMModulePage";
 import SubcontractOrder from "./pages/pm/subcontract/SubcontractOrder";
+import SubcontractGRN from "./pages/pm/subcontract/SubcontractGRN";
 
 // =======================================
 // SM (STYLE MANAGEMENT)
@@ -204,7 +205,10 @@ function App() {
                 <Route path="/pm/subcontract-order/new" element={<SubcontractOrder initialMode="form" />} />
                 <Route path="/subcontract-order" element={<SubcontractOrder />} />
                 <Route path="/subcontract-order/new" element={<SubcontractOrder initialMode="form" />} />
-                <Route path="/pm/subcontract-grn" element={<PMModulePage title="Subcontract GRN" category="Subcontract" />} />
+                <Route path="/pm/subcontract-grn" element={<SubcontractGRN />} />
+                <Route path="/pm/subcontract-grn/new" element={<SubcontractGRN initialMode="form" />} />
+                <Route path="/subcontract-grn" element={<SubcontractGRN />} />
+                <Route path="/subcontract-grn/new" element={<SubcontractGRN initialMode="form" />} />
                 <Route path="/pm/subcontract-material-conversion-dc" element={<PMModulePage title="Subcontract Material Conversion DC" category="Subcontract" />} />
                 <Route path="/pm/subcontract-order-approval" element={<PMModulePage title="Subcontract Order Approval" category="Subcontract" />} />
                 <Route path="/pm/subcontract-conversion-approval" element={<PMModulePage title="Subcontract Conversion Approval" category="Subcontract" />} />

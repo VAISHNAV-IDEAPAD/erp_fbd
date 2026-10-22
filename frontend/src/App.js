@@ -63,6 +63,7 @@ import PMModulePage from "./pages/pm/common/PMModulePage";
 import SubcontractOrder from "./pages/pm/subcontract/SubcontractOrder";
 import SubcontractGRN from "./pages/pm/subcontract/SubcontractGRN";
 import SubcontractConversionDC from "./pages/pm/subcontract/SubcontractConversionDC";
+import ConversionGRN from "./pages/pm/subcontract/ConversionGRN";
 
 // =======================================
 // SM (STYLE MANAGEMENT)
@@ -215,6 +216,10 @@ function App() {
                 <Route path="/pm/conversion-dc/new" element={<SubcontractConversionDC initialMode="form" />} />
                 <Route path="/subcontract-material-conversion-dc" element={<SubcontractConversionDC />} />
                 <Route path="/conversion-dc" element={<SubcontractConversionDC />} />
+                <Route path="/pm/conversion-grn" element={<ConversionGRN />} />
+                <Route path="/pm/conversion-grn/new" element={<ConversionGRN initialMode="form" />} />
+                <Route path="/conversion-grn" element={<ConversionGRN />} />
+                <Route path="/conversion-grn/new" element={<ConversionGRN initialMode="form" />} />
                 <Route path="/pm/subcontract-order-approval" element={<PMModulePage title="Subcontract Order Approval" category="Subcontract" />} />
                 <Route path="/pm/subcontract-conversion-approval" element={<PMModulePage title="Subcontract Conversion Approval" category="Subcontract" />} />
                 <Route path="/pm/subcontract-po" element={<PMModulePage title="Subcontract PO" category="Subcontract" />} />

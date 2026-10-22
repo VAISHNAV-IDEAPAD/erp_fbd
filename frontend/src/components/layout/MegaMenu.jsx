@@ -174,7 +174,8 @@ export default function MegaMenu({
             title: "SYSTEM",
             items: [
                 { label: "Users", path: "/users" },
-                { label: "Roles & Permissions", path: "/roles-permissions" }
+                { label: "Roles & Permissions", path: "/roles-permissions" },
+                { label: "Configure e-Mail IDs to send Auto e-Mails", path: "/admin/auto-emails" }
             ]
         }
     ];

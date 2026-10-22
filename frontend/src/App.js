@@ -108,6 +108,7 @@ import AuditLog from "./pages/admin/auditLog/AuditLog";
 import Backup from "./pages/admin/backup/Backup";
 import Settings from "./pages/admin/settings/Settings";
 import Profile from "./pages/admin/profile/Profile";
+import ConfigureAutoEmails from "./pages/admin/autoEmails/ConfigureAutoEmails";
 
 // =======================================
 // REPORTS MODULES
@@ -360,6 +361,16 @@ function App() {
                 <Route path="/admin/settings" element={<Settings />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/admin/profile" element={<Profile />} />
+
+                {/* AUTO EMAILS CONFIGURATION */}
+                <Route path="/admin/auto-emails" element={<ConfigureAutoEmails />} />
+                <Route path="/admin/auto-emails/new" element={<ConfigureAutoEmails initialMode="form" />} />
+                <Route path="/admin/configure-emails" element={<ConfigureAutoEmails />} />
+                <Route path="/admin/configure-emails/new" element={<ConfigureAutoEmails initialMode="form" />} />
+                <Route path="/configure-emails" element={<ConfigureAutoEmails />} />
+                <Route path="/configure-emails/new" element={<ConfigureAutoEmails initialMode="form" />} />
+                <Route path="/admin/configure-email-ids" element={<ConfigureAutoEmails />} />
+                <Route path="/admin/configure-email-ids/new" element={<ConfigureAutoEmails initialMode="form" />} />
 
                 {/* REPORTS */}
                 <Route path="/requirement-to-po" element={<RequirementToPO />} />

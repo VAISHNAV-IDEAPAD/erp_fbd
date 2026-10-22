@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Navbar, Container } from "react-bootstrap";
 import { FaBell, FaCaretDown } from "react-icons/fa";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import MegaMenu from "./MegaMenu";
@@ -15,6 +15,7 @@ export default function Header() {
   const navItemRefs = useRef({});
   const timeoutRef = useRef(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [companyName, setCompanyName] = useState("");
 
@@ -235,9 +236,14 @@ export default function Header() {
             <button
               ref={(el) => (navItemRefs.current["REPORTS"] = el)}
               type="button"
-              className={`erp-nav-item ${activeMenu === "REPORTS" ? "erp-nav-active" : ""}`}
-              onClick={() => toggleMenu("REPORTS")}
-              onMouseEnter={() => handleMouseEnter("REPORTS")}
+              className={`erp-nav-item ${location.pathname === "/reports" ? "erp-nav-active" : ""}`}
+              onClick={() => {
+                closeMenu();
+                navigate("/reports");
+              }}
+              onMouseEnter={() => {
+                closeMenu();
+              }}
             >
               <span>REPORTS</span>
             </button>

@@ -110,6 +110,7 @@ import MaterialConsumption from "./pages/reports/materialConsumption/MaterialCon
 import FinanceReports from "./pages/reports/financeReports/FinanceReports";
 import RequirementToPO from "./pages/reports/requirementToPO/RequirementToPO";
 import CommercialInvoice from "./pages/exports/CommercialInvoice";
+import FMModulePage from "./pages/fm/FMModulePage";
 
 function App() {
     return (
@@ -255,6 +256,13 @@ function App() {
                 <Route path="/commercial-invoices" element={<CommercialInvoice />} />
                 <Route path="/exports/commercial-invoice" element={<CommercialInvoice />} />
                 <Route path="/commercial-invoice/new" element={<CommercialInvoice initialMode="form" />} />
+
+                {/* FM (FINANCE MODULE) */}
+                <Route path="/fm/debit-note-advice" element={<FMModulePage title="Debit Note Advice" moduleCategory="FINANCE" />} />
+                <Route path="/fm/proforma-invoice" element={<FMModulePage title="Proforma Invoice" moduleCategory="EXPORTS" />} />
+                <Route path="/debit-note-advice" element={<FMModulePage title="Debit Note Advice" moduleCategory="FINANCE" />} />
+                <Route path="/proforma-invoice" element={<FMModulePage title="Proforma Invoice" moduleCategory="EXPORTS" />} />
+                <Route path="/sm/proforma-invoice" element={<FMModulePage title="Proforma Invoice" moduleCategory="EXPORTS" />} />
 
                 {/* ADMIN & MASTERS */}
                 <Route path="/company-master" element={<CompanyMasters />} />

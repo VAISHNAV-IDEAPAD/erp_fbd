@@ -185,6 +185,24 @@ export default function MegaMenu({
     ];
 
     // =========================================
+    // FM MENU (FINANCE MODULE)
+    // =========================================
+    const fmMenu = [
+        {
+            title: "FINANCE",
+            items: [
+                { label: "Debit Note Advice", path: "/fm/debit-note-advice" }
+            ]
+        },
+        {
+            title: "EXPORTS",
+            items: [
+                { label: "Proforma Invoice", path: "/fm/proforma-invoice" }
+            ]
+        }
+    ];
+
+    // =========================================
     // EXPORTS MENU (EXACT MATCH FOR V-CONNECT INC. SCREENSHOT)
     // =========================================
     const exportsMenu = [
@@ -251,6 +269,9 @@ export default function MegaMenu({
         case "EXPORTS":
             columns = exportsMenu;
             break;
+        case "FM":
+            columns = fmMenu;
+            break;
         case "ADMIN":
             columns = adminMenu;
             break;
@@ -277,9 +298,10 @@ export default function MegaMenu({
         };
     }).filter(col => !menuSearch.trim() || col.items.length > 0 || col.hasMatchCard);
 
-    // Compute left style
+    // Compute left style dynamically based on menu width
+    const menuWidth = activeMenu === "EXPORTS" ? 220 : activeMenu === "FM" ? 320 : 870;
     const containerStyle = leftOffset != null
-        ? { left: `min(${leftOffset}px, calc(100vw - 870px))` }
+        ? { left: `min(${leftOffset}px, calc(100vw - ${menuWidth + 16}px))` }
         : {};
 
     return (

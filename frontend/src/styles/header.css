@@ -159,6 +159,41 @@
   height: 26px;
 }
 
+.mega-menu-fm {
+  width: 320px !important;
+  padding: 10px 12px 12px 12px !important;
+}
+
+.mega-menu-fm .mega-menu-column {
+  min-height: auto !important;
+  padding: 0 4px !important;
+  border-right: none !important;
+}
+
+.mega-menu-fm .mega-menu-title-header {
+  background: #f1f5fb;
+  border-radius: 2px;
+  margin-bottom: 6px;
+  height: 26px;
+}
+
+.mega-menu-exports .mega-menu-accent-bar,
+.mega-menu-fm .mega-menu-accent-bar {
+  top: 0;
+  height: 100%;
+  width: 3px;
+  border-radius: 2px 0 0 2px;
+}
+
+.mega-menu-fm .mega-menu-item-card {
+  background: transparent;
+  padding: 4px 6px;
+}
+
+.mega-menu-fm .mega-menu-item-card:hover {
+  background: #f0f4f9;
+}
+
 /* Mega Menu Search Bar */
 .mega-menu-search-wrapper {
   width: 100%;

@@ -1,1686 +1,1518 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import {
-    FaPlus,
-    FaSyncAlt,
-    FaBars,
     FaCog,
-    FaFilter,
-    FaCaretDown,
-    FaEye,
-    FaEdit,
+    FaCalendarAlt,
+    FaListUl,
+    FaPlus,
     FaTrash,
+    FaSave,
+    FaEye,
+    FaCaretDown,
+    FaPaperclip,
     FaPrint,
+    FaRedo,
+    FaFileExport,
     FaTimes,
-    FaCheck,
-    FaSearch
+    FaSearch,
+    FaArrowLeft,
+    FaCheckCircle
 } from "react-icons/fa";
 import "../../styles/itemIssue.css";
 
 const API_URL = process.env.REACT_APP_API_URL || "/api";
 
-// Default seed data matching V-CONNECT INC. ERP specifications
-const INITIAL_ITEM_ISSUES = [
+// Seed/mock items for lookup
+const DEFAULT_ITEMS = [
+    { ItemCode: "LTH-1093", ItemName: "COW CULATTAS SINGLE LEATHER", GroupName: "Leather", Color: "BLACK", UOM: "SQFT", StockQty: 450, Rate: 145 },
+    { ItemCode: "LTH-1112", ItemName: "COW ECO VEG SIDE CRUST LEATHER", GroupName: "Leather", Color: "TAN", UOM: "SQFT", StockQty: 280, Rate: 160 },
+    { ItemCode: "HDW-2236", ItemName: "JAM RIVET SINGLE HEAD 7MM", GroupName: "Hardware", Color: "ANTIQUE BRASS", UOM: "SET", StockQty: 5000, Rate: 1.85 },
+    { ItemCode: "RNF-1085", ItemName: "HIGH DENSITY TOPLINER 0.4MM", GroupName: "Lining", Color: "BLACK", UOM: "MTR", StockQty: 1200, Rate: 32.5 },
+    { ItemCode: "NONWO5064", ItemName: "TALIN 0.3MM WHITE", GroupName: "Reinforcement", Color: "WHITE", UOM: "MTR", StockQty: 640, Rate: 24.0 },
+    { ItemCode: "PKG-2200", ItemName: "CARD PAPER 350G 31X43 INCH", GroupName: "Packaging", Color: "NATURAL", UOM: "SHEET", StockQty: 850, Rate: 8.5 },
+    { ItemCode: "THR-0021", ItemName: "BONDED NYLON THREAD #40", GroupName: "Thread", Color: "BLACK", UOM: "CONE", StockQty: 120, Rate: 95.0 }
+];
+
+const DEFAULT_WAREHOUSES = [
+    "RAW MATERIAL STORE 9B",
+    "SEMI FINISH STORE 9B",
+    "LEATHER WAREHOUSE PLOT 9B",
+    "ACCESSORIES GODOWN 18",
+    "MAIN FINISHED GOODS STORE"
+];
+
+const DEFAULT_SUPPLIERS = [
+    "Apex Leather Works",
+    "Balaji Trims & Fasteners",
+    "Supreme Leathercraft",
+    "K-Tex Textiles",
+    "Prime Leather Tanning",
+    "Vardhman Yarns & Threads",
+    "Shree Ganesh Fabrics"
+];
+
+const DEFAULT_DEPARTMENTS = [
+    "Production",
+    "Cutting",
+    "Stitching",
+    "Assembly",
+    "Finishing",
+    "Quality Control",
+    "Packaging"
+];
+
+const DEFAULT_REQUISITIONS = [
+    { reqNo: "REQ-2627-0104", date: "22-10-2026", dept: "Cutting", requestedBy: "Suresh Patel", totalItems: 3 },
+    { reqNo: "REQ-2627-0103", date: "21-10-2026", dept: "Stitching", requestedBy: "Ramesh Kumar", totalItems: 2 },
+    { reqNo: "REQ-2627-0102", date: "20-10-2026", dept: "Finishing", requestedBy: "Pooja Verma", totalItems: 5 }
+];
+
+const DEFAULT_JOBCARDS = [
+    { jcNo: "JC-4512", slipNo: "CS-9041", style: "Oxford Classic Boot", buyer: "Clarks UK", orderQty: 1200 },
+    { jcNo: "JC-4509", slipNo: "CS-9038", style: "Chelsea Suede Brown", buyer: "Zara Man", orderQty: 850 },
+    { jcNo: "JC-4498", slipNo: "CS-9032", style: "Derby Formal Black", buyer: "Marks & Spencer", orderQty: 500 }
+];
+
+const DEFAULT_CUTTING_PLANS = [
+    { planNo: "CP-2627-044", jcNo: "JC-4512", date: "22-10-2026", pairs: 1200 },
+    { planNo: "CP-2627-043", jcNo: "JC-4509", date: "20-10-2026", pairs: 850 },
+    { planNo: "CP-2627-042", jcNo: "JC-4498", date: "18-10-2026", pairs: 500 }
+];
+
+const INITIAL_SAVED_ISSUES = [
     {
-        IssueID: 1,
-        IssueNo: "IS/AAPL9B/2627/088",
-        IssueDate: "13-10-2026",
-        UpdatedBy: "Nikhil Singh",
-        UpdatedOn: "Oct 13 2026 04:30PM",
-        JWNo: "JW-9821",
-        ExchangeRate: 1.0,
-        Remark: "Batch 104 Cutting",
-        SupplierName: "Apex Leather Works",
-        IssuedBy: "Ramesh Kumar",
-        Stores: "RAW MATERIAL STORE 9B",
-        InternalMemo: "Bulk cutting line 1",
-        Currency: "INR",
-        ExpiryDate: "31-10-2026",
-        JCNo: "JC-4512",
-        TotalQty: 185.5,
-        RowCount: 2,
-        Status: "Completed",
-        details: [
-            { ItemCode: "LTH-1093", ItemName: "COW CULATTAS SINGLE LEATHER", Color: "BLACK", Quantity: 120.5, UOM: "SQFT", Rate: 145.0, Amount: 17472.5, Remarks: "Upper cutting" },
-            { ItemCode: "LTH-1112", ItemName: "COW ECO VEG SIDE CRUST LEATHER", Color: "TAN", Quantity: 65.0, UOM: "SQFT", Rate: 160.0, Amount: 10400.0, Remarks: "Counter reinforcement" }
+        id: 1,
+        issueNo: "ISSP/AAPL9B/2627/2003",
+        date: "22-10-2026",
+        issueTo: "Production",
+        associate: "Apex Leather Works",
+        department: "Cutting",
+        stores: "RAW MATERIAL STORE 9B",
+        issuedBy: "Nikhil Singh",
+        receivedBy: "Ramesh Kumar",
+        requisitionNo: "REQ-2627-0104",
+        jobcardNo: "JC-4512",
+        cuttingPlanNo: "CP-2627-044",
+        remark: "Batch 104 Cutting leather issue",
+        internalMemo: "Bulk cutting line 1",
+        totalQty: 185.5,
+        totalAmount: 27872.5,
+        status: "Completed",
+        items: [
+            { id: 1, issueType: "Lot Issue", ioNo: "IO-9821", group: "Leather", item: "COW CULATTAS SINGLE LEATHER", description: "Upper cutting leather", colour: "BLACK", typeSize: "A Grade", uom: "SQFT", stockQty: 450, issueQty: 120.5, rate: 145, amount: 17472.5, remarks: "Checked by QC" },
+            { id: 2, issueType: "Lot Issue", ioNo: "IO-9821", group: "Leather", item: "COW ECO VEG SIDE CRUST LEATHER", description: "Counter reinforcement", colour: "TAN", typeSize: "Standard", uom: "SQFT", stockQty: 280, issueQty: 65, rate: 160, amount: 10400, remarks: "" }
         ]
     },
     {
-        IssueID: 2,
-        IssueNo: "IS/AAPL9B/2627/087",
-        IssueDate: "13-10-2026",
-        UpdatedBy: "Admin",
-        UpdatedOn: "Oct 13 2026 02:15PM",
-        JWNo: "JW-9818",
-        ExchangeRate: 1.0,
-        Remark: "Urgent sampling line",
-        SupplierName: "Balaji Trims & Fasteners",
-        IssuedBy: "Nikhil Singh",
-        Stores: "SEMI FINISH STORE 9B",
-        InternalMemo: "Internal sample dev FY26-27",
-        Currency: "INR",
-        ExpiryDate: "28-10-2026",
-        JCNo: "JC-4509",
-        TotalQty: 450.0,
-        RowCount: 1,
-        Status: "Completed",
-        details: [
-            { ItemCode: "HDW-2236", ItemName: "JAM RIVET SINGLE HEAD 7MM", Color: "ANTIQUE BRASS", Quantity: 450.0, UOM: "SET", Rate: 1.85, Amount: 832.5, Remarks: "Riveting section" }
-        ]
-    },
-    {
-        IssueID: 3,
-        IssueNo: "IS/AAPL9B/2627/086",
-        IssueDate: "12-10-2026",
-        UpdatedBy: "",
-        UpdatedOn: "",
-        JWNo: "JW-9805",
-        ExchangeRate: 1.0,
-        Remark: "Stitching floor issue",
-        SupplierName: "Supreme Leathercraft",
-        IssuedBy: "Pooja Verma",
-        Stores: "SEMI FINISH STORE 18",
-        InternalMemo: "Regular order dispatch",
-        Currency: "INR",
-        ExpiryDate: "",
-        JCNo: "JC-4498",
-        TotalQty: 320.0,
-        RowCount: 2,
-        Status: "Completed",
-        details: [
-            { ItemCode: "SFS-105", ItemName: "Reinforcement Strips 25mm", Color: "WHITE", Quantity: 200.0, UOM: "MTR", Rate: 12.0, Amount: 2400.0, Remarks: "Collar reinforcement" },
-            { ItemCode: "SFS-106", ItemName: "Padded Tongue Inserts", Color: "NATURAL", Quantity: 120.0, UOM: "PCS", Rate: 18.5, Amount: 2220.0, Remarks: "Assembly line" }
-        ]
-    },
-    {
-        IssueID: 4,
-        IssueNo: "IS/AAPL9B/2627/085",
-        IssueDate: "12-10-2026",
-        UpdatedBy: "Nikhil Singh",
-        UpdatedOn: "Oct 12 2026 11:45AM",
-        JWNo: "",
-        ExchangeRate: 1.0,
-        Remark: "MT-21980 Lining issue",
-        SupplierName: "K-Tex Textiles",
-        IssuedBy: "Ramesh Kumar",
-        Stores: "RAW MATERIAL STORE 9B",
-        InternalMemo: "Export batch lining",
-        Currency: "INR",
-        ExpiryDate: "15-11-2026",
-        JCNo: "JC-4481",
-        TotalQty: 600.0,
-        RowCount: 1,
-        Status: "Completed",
-        details: [
-            { ItemCode: "RNF-1085", ItemName: "HIGH DENSITY TOPLINER 0.4MM", Color: "BLACK", Quantity: 600.0, UOM: "MTR", Rate: 32.5, Amount: 19500.0, Remarks: "Lining cutting" }
-        ]
-    },
-    {
-        IssueID: 5,
-        IssueNo: "IS/AAPL9B/2627/084",
-        IssueDate: "11-10-2026",
-        UpdatedBy: "",
-        UpdatedOn: "",
-        JWNo: "JW-9791",
-        ExchangeRate: 1.0,
-        Remark: "Assembly batch 19",
-        SupplierName: "Shree Ganesh Fabrics",
-        IssuedBy: "Suresh Patel",
-        Stores: "RAW MATERIAL STORE 9B",
-        InternalMemo: "Production run order #4021",
-        Currency: "INR",
-        ExpiryDate: "",
-        JCNo: "JC-4465",
-        TotalQty: 85.0,
-        RowCount: 1,
-        Status: "Completed",
-        details: [
-            { ItemCode: "NONWO5064", ItemName: "TALIN 0.3MM WHITE", Color: "WHITE", Quantity: 85.0, UOM: "MTR", Rate: 24.0, Amount: 2040.0, Remarks: "Toe puff reinforcement" }
-        ]
-    },
-    {
-        IssueID: 6,
-        IssueNo: "IS/AAPL9B/2627/083",
-        IssueDate: "10-10-2026",
-        UpdatedBy: "Admin",
-        UpdatedOn: "Oct 10 2026 05:00PM",
-        JWNo: "JW-9780",
-        ExchangeRate: 1.0,
-        Remark: "Premium upper dispatch",
-        SupplierName: "Prime Leather Tanning",
-        IssuedBy: "Nikhil Singh",
-        Stores: "RAW MATERIAL STORE 9B",
-        InternalMemo: "Sample boots prototype",
-        Currency: "INR",
-        ExpiryDate: "30-10-2026",
-        JCNo: "JC-4450",
-        TotalQty: 112.5,
-        RowCount: 1,
-        Status: "Completed",
-        details: [
-            { ItemCode: "LTH-1263", ItemName: "COW PLOSE SUEDE LEATHER", Color: "COGNAC", Quantity: 112.5, UOM: "SQFT", Rate: 175.0, Amount: 19687.5, Remarks: "High grade suede issue" }
-        ]
-    },
-    {
-        IssueID: 7,
-        IssueNo: "IS/AAPL9B/2627/082",
-        IssueDate: "10-10-2026",
-        UpdatedBy: "",
-        UpdatedOn: "",
-        JWNo: "",
-        ExchangeRate: 1.0,
-        Remark: "Packing division issue",
-        SupplierName: "Vardhman Yarns & Threads",
-        IssuedBy: "Pooja Verma",
-        Stores: "RAW MATERIAL STORE 9B",
-        InternalMemo: "Final box packaging",
-        Currency: "INR",
-        ExpiryDate: "",
-        JCNo: "JC-4432",
-        TotalQty: 250.0,
-        RowCount: 1,
-        Status: "Completed",
-        details: [
-            { ItemCode: "PKG-2200", ItemName: "CARD PAPER 350G 31X43 INCH", Color: "NATURAL", Quantity: 250.0, UOM: "SHEET", Rate: 8.5, Amount: 2125.0, Remarks: "Shoe box inserts" }
+        id: 2,
+        issueNo: "ISSP/AAPL9B/2627/2002",
+        date: "21-10-2026",
+        issueTo: "Production",
+        associate: "Balaji Trims & Fasteners",
+        department: "Assembly",
+        stores: "SEMI FINISH STORE 9B",
+        issuedBy: "Nikhil Singh",
+        receivedBy: "Pooja Verma",
+        requisitionNo: "REQ-2627-0103",
+        jobcardNo: "JC-4509",
+        cuttingPlanNo: "CP-2627-043",
+        remark: "Urgent hardware issue",
+        internalMemo: "Line 2 assembly run",
+        totalQty: 450,
+        totalAmount: 832.5,
+        status: "Completed",
+        items: [
+            { id: 1, issueType: "Lot Issue", ioNo: "IO-9818", group: "Hardware", item: "JAM RIVET SINGLE HEAD 7MM", description: "Riveting section", colour: "ANTIQUE BRASS", typeSize: "7mm", uom: "SET", stockQty: 5000, issueQty: 450, rate: 1.85, amount: 832.5, remarks: "" }
         ]
     }
 ];
 
-// All 17 table columns config
-const ALL_COLUMNS = [
-    { key: "action", label: "Action", fixed: true },
-    { key: "issueNo", label: "Issue No", fixed: true },
-    { key: "updatedBy", label: "Updated By" },
-    { key: "updatedOn", label: "Updated On" },
-    { key: "jwNo", label: "JW No." },
-    { key: "exchangeRate", label: "Exchange Rate" },
-    { key: "remark", label: "Remark" },
-    { key: "date", label: "Date" },
-    { key: "supplier", label: "Supplier" },
-    { key: "issuedBy", label: "Issued By" },
-    { key: "stores", label: "Stores" },
-    { key: "memo", label: "Memo for internal use" },
-    { key: "currency", label: "Currency" },
-    { key: "expiryDate", label: "Expiry Date" },
-    { key: "jcNo", label: "JC No" },
-    { key: "qty", label: "Qty" },
-    { key: "rowCount", label: "No. of rows" }
-];
+export default function ItemIssue({ initialMode = "form" }) {
+    // View mode: 'form' (matches screenshots) or 'list' (registers)
+    const [viewMode, setViewMode] = useState(initialMode);
 
-export default function ItemIssue() {
-    const [issues, setIssues] = useState(INITIAL_ITEM_ISSUES);
-    const [loading, setLoading] = useState(false);
-    const [searchSupplier, setSearchSupplier] = useState("");
-    const [selectedRowId, setSelectedRowId] = useState(1);
-    const [openActionId, setOpenActionId] = useState(null);
-    const [showFilterBar, setShowFilterBar] = useState(false);
-    const [showColumnChooser, setShowColumnChooser] = useState(false);
-    const [viewMode, setViewMode] = useState("normal"); // normal or compact
-
-    // Column visibility map (all true by default)
-    const [columnVisibility, setColumnVisibility] = useState(
-        ALL_COLUMNS.reduce((acc, col) => ({ ...acc, [col.key]: true }), {})
-    );
-
-    // Filter criteria state
-    const [filterStore, setFilterStore] = useState("All");
-    const [filterJWNo, setFilterJWNo] = useState("");
-    const [filterJCNo, setFilterJCNo] = useState("");
-    const [filterRemark, setFilterRemark] = useState("");
-
-    // Modals state
-    const [showNewModal, setShowNewModal] = useState(false);
-    const [showDetailModal, setShowDetailModal] = useState(false);
-    const [showEditModal, setShowEditModal] = useState(false);
-    const [activeRecord, setActiveRecord] = useState(null);
-
-    // New Item Issue form state
-    const [newForm, setNewForm] = useState({
-        IssueNo: `IS/AAPL9B/2627/${String(89 + (issues.length > 7 ? issues.length - 7 : 0)).padStart(3, "0")}`,
-        IssueDate: "13-10-2026",
-        SupplierName: "",
-        IssuedBy: "Nikhil Singh",
-        Stores: "RAW MATERIAL STORE 9B",
-        JWNo: "",
-        JCNo: "",
-        Currency: "INR",
-        ExchangeRate: "1.0",
-        ExpiryDate: "",
-        Remark: "",
-        InternalMemo: "",
-        items: [
-            { ItemCode: "LTH-1093", ItemName: "COW CULATTAS SINGLE LEATHER", Color: "BLACK", Quantity: "50", UOM: "SQFT", Rate: "145", Remarks: "Batch cutting" }
-        ]
+    // Form Header State (matches Screenshot 1)
+    const [issueTo, setIssueTo] = useState("Production");
+    const [issuePrefix, setIssuePrefix] = useState("ISSP/AAPL9B/2627/");
+    const [issueSerial, setIssueSerial] = useState("2004");
+    const [issueDate, setIssueDate] = useState(() => {
+        const d = new Date();
+        const dd = String(d.getDate()).padStart(2, "0");
+        const mm = String(d.getMonth() + 1).padStart(2, "0");
+        const yyyy = d.getFullYear();
+        return `${dd}-${mm}-${yyyy}`;
     });
 
-    // Master suppliers & items for selection
-    const [suppliersList, setSuppliersList] = useState([]);
-    const [itemsList, setItemsList] = useState([]);
+    const [associate, setAssociate] = useState("");
+    const [receivedBy, setReceivedBy] = useState("");
+    const [department, setDepartment] = useState("");
+    const [stores, setStores] = useState("");
+    const [issuedBy, setIssuedBy] = useState("Admin");
+    const [requisitionNo, setRequisitionNo] = useState("");
+    const [jobcardNo, setJobcardNo] = useState("");
+    const [cuttingPlanNo, setCuttingPlanNo] = useState("");
 
-    const actionMenuRef = useRef(null);
-    const columnMenuRef = useRef(null);
+    // Table Lines State (matches Screenshot 1 & 2)
+    const [lines, setLines] = useState([
+        {
+            id: 1,
+            selected: false,
+            issueType: "Lot Issue",
+            ioNo: "",
+            group: "",
+            item: "",
+            description: "",
+            colour: "",
+            typeSize: "",
+            uom: "PCS",
+            stockQty: 0,
+            issueQty: "",
+            rate: "",
+            amount: 0,
+            remarks: ""
+        }
+    ]);
 
-    // Load from backend on mount
+    // Footer State (matches Screenshot 2)
+    const [remark, setRemark] = useState("");
+    const [internalMemo, setInternalMemo] = useState("");
+    const [attachments, setAttachments] = useState([]);
+
+    // Action menu dropdown state
+    const [showActionMenu, setShowActionMenu] = useState(false);
+    const actionBtnRef = useRef(null);
+
+    // Saved list records
+    const [savedIssues, setSavedIssues] = useState(INITIAL_SAVED_ISSUES);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [activeRecord, setActiveRecord] = useState(null);
+
+    // Modals
+    const [activeModal, setActiveModal] = useState(null); // 'requisition' | 'jobcard' | 'plan' | 'attach' | 'settings' | 'print'
+    const [successMessage, setSuccessMessage] = useState("");
+
+    // Load registered lists from backend on mount
     useEffect(() => {
-        loadData();
-        loadSuppliers();
-        loadItems();
+        let mounted = true;
+        axios.get(`${API_URL}/item-issues`)
+            .then(res => {
+                const data = res.data?.data || res.data;
+                if (mounted && Array.isArray(data) && data.length > 0) {
+                    // Normalize backend records
+                    const mapped = data.map((d, i) => ({
+                        id: d.IssueID || d.id || i + 1,
+                        issueNo: d.IssueNo || `ISSP/AAPL9B/2627/${2000 + i}`,
+                        date: d.IssueDate || "23-10-2026",
+                        issueTo: d.IssueTo || "Production",
+                        associate: d.SupplierName || d.associate || "",
+                        department: d.Department || d.department || "Production",
+                        stores: d.Stores || d.stores || "RAW MATERIAL STORE 9B",
+                        issuedBy: d.IssuedBy || "Admin",
+                        receivedBy: d.ReceivedBy || "",
+                        requisitionNo: d.RequisitionNo || "",
+                        jobcardNo: d.JCNo || d.jobcardNo || "",
+                        cuttingPlanNo: d.CuttingPlanNo || "",
+                        remark: d.Remark || "",
+                        internalMemo: d.InternalMemo || "",
+                        totalQty: d.TotalQty || 0,
+                        totalAmount: d.TotalAmount || 0,
+                        status: d.Status || "Completed",
+                        items: d.details || []
+                    }));
+                    setSavedIssues(mapped);
+                }
+            })
+            .catch(() => {});
+        return () => { mounted = false; };
     }, []);
 
-    // Close action dropdown and column chooser on click outside
+    // Close action dropdown on outside click
     useEffect(() => {
         const handleClickOutside = (e) => {
-            if (actionMenuRef.current && !actionMenuRef.current.contains(e.target)) {
-                setOpenActionId(null);
-            }
-            if (columnMenuRef.current && !columnMenuRef.current.contains(e.target)) {
-                setShowColumnChooser(false);
+            if (actionBtnRef.current && !actionBtnRef.current.contains(e.target)) {
+                setShowActionMenu(false);
             }
         };
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    const loadData = async () => {
-        setLoading(true);
-        try {
-            const res = await axios.get(`${API_URL}/item-issues`);
-            const data = res.data?.data || res.data || [];
-            if (Array.isArray(data) && data.length > 0) {
-                setIssues(data);
-            }
-        } catch (e) {
-            console.warn("Unable to load from API, keeping initial data:", e.message);
-        } finally {
-            setLoading(false);
-        }
-    };
+    // Auto-calculate totals
+    const totalQty = lines.reduce((acc, row) => acc + (parseFloat(row.issueQty) || 0), 0);
+    const totalAmount = lines.reduce((acc, row) => acc + (parseFloat(row.amount) || 0), 0);
 
-    const loadSuppliers = async () => {
-        try {
-            const res = await axios.get(`${API_URL}/suppliers`);
-            const data = res.data?.value || res.data?.data || res.data || [];
-            if (Array.isArray(data)) {
-                setSuppliersList(data.map(s => ({
-                    label: s.SupplierName || s.supplierName,
-                    value: s.SupplierID || s.id,
-                    code: s.SupplierCode || s.supplierCode
-                })));
-            }
-        } catch (e) {}
-    };
+    // Line items change handler
+    const handleLineChange = (id, field, value) => {
+        setLines(prev => prev.map(row => {
+            if (row.id !== id) return row;
+            const updated = { ...row, [field]: value };
 
-    const loadItems = async () => {
-        try {
-            const res = await axios.get(`${API_URL}/items`);
-            const data = res.data?.data || res.data || [];
-            if (Array.isArray(data)) {
-                setItemsList(data);
-            }
-        } catch (e) {}
-    };
-
-    // Filtered records
-    const filteredIssues = useMemo(() => {
-        return issues.filter(item => {
-            // Associate / Supplier search
-            const search = searchSupplier.trim().toLowerCase();
-            if (search) {
-                const matchSupplier = String(item.SupplierName || "").toLowerCase().includes(search);
-                const matchIssueNo = String(item.IssueNo || "").toLowerCase().includes(search);
-                const matchStore = String(item.Stores || "").toLowerCase().includes(search);
-                const matchRemark = String(item.Remark || "").toLowerCase().includes(search);
-                const matchIssuedBy = String(item.IssuedBy || "").toLowerCase().includes(search);
-                if (!matchSupplier && !matchIssueNo && !matchStore && !matchRemark && !matchIssuedBy) {
-                    return false;
+            // If item changed, autofill group, colour, UOM, stockQty, rate
+            if (field === "item") {
+                const found = DEFAULT_ITEMS.find(it =>
+                    it.ItemName.toLowerCase() === String(value).toLowerCase() ||
+                    it.ItemCode.toLowerCase() === String(value).toLowerCase()
+                );
+                if (found) {
+                    updated.item = found.ItemName;
+                    updated.group = found.GroupName || updated.group;
+                    updated.colour = found.Color || updated.colour;
+                    updated.uom = found.UOM || updated.uom;
+                    updated.stockQty = found.StockQty || 0;
+                    updated.rate = found.Rate || updated.rate;
+                    if (updated.issueQty && updated.rate) {
+                        updated.amount = parseFloat((parseFloat(updated.issueQty) * parseFloat(updated.rate)).toFixed(2));
+                    }
                 }
             }
 
-            // Store filter
-            if (filterStore !== "All" && item.Stores !== filterStore) {
-                return false;
+            // If issueQty or rate changed, recompute amount
+            if (field === "issueQty" || field === "rate") {
+                const qty = field === "issueQty" ? parseFloat(value) || 0 : parseFloat(row.issueQty) || 0;
+                const rate = field === "rate" ? parseFloat(value) || 0 : parseFloat(row.rate) || 0;
+                updated.amount = parseFloat((qty * rate).toFixed(2));
             }
 
-            // JW No filter
-            if (filterJWNo && !String(item.JWNo || "").toLowerCase().includes(filterJWNo.toLowerCase())) {
-                return false;
-            }
-
-            // JC No filter
-            if (filterJCNo && !String(item.JCNo || "").toLowerCase().includes(filterJCNo.toLowerCase())) {
-                return false;
-            }
-
-            // Remark filter
-            if (filterRemark && !String(item.Remark || "").toLowerCase().includes(filterRemark.toLowerCase())) {
-                return false;
-            }
-
-            return true;
-        });
-    }, [issues, searchSupplier, filterStore, filterJWNo, filterJCNo, filterRemark]);
-
-    // Handle Item Row changes in New Modal
-    const handleAddRow = () => {
-        setNewForm(prev => ({
-            ...prev,
-            items: [
-                ...prev.items,
-                { ItemCode: "", ItemName: "", Color: "", Quantity: "", UOM: "PCS", Rate: "", Remarks: "" }
-            ]
+            return updated;
         }));
     };
 
-    const handleRemoveRow = (idx) => {
-        if (newForm.items.length <= 1) return;
-        setNewForm(prev => ({
+    // Add another row
+    const handleAddLine = () => {
+        const nextId = lines.length > 0 ? Math.max(...lines.map(l => l.id)) + 1 : 1;
+        setLines(prev => [
             ...prev,
-            items: prev.items.filter((_, i) => i !== idx)
-        }));
-    };
-
-    const handleItemChange = (idx, field, val) => {
-        setNewForm(prev => {
-            const nextItems = [...prev.items];
-            nextItems[idx] = { ...nextItems[idx], [field]: val };
-            // If item code selected, autofill ItemName if matching
-            if (field === "ItemCode" && itemsList.length > 0) {
-                const match = itemsList.find(it => it.ItemCode === val);
-                if (match) {
-                    nextItems[idx].ItemName = match.ItemName || nextItems[idx].ItemName;
-                    nextItems[idx].UOM = match.UOM || nextItems[idx].UOM;
-                }
+            {
+                id: nextId,
+                selected: false,
+                issueType: "Lot Issue",
+                ioNo: "",
+                group: "",
+                item: "",
+                description: "",
+                colour: "",
+                typeSize: "",
+                uom: "PCS",
+                stockQty: 0,
+                issueQty: "",
+                rate: "",
+                amount: 0,
+                remarks: ""
             }
-            return { ...prev, items: nextItems };
-        });
+        ]);
     };
 
-    // Save New Item Issue
-    const handleSaveNew = async (e) => {
-        e.preventDefault();
-        const totalQty = newForm.items.reduce((s, it) => s + Number(it.Quantity || 0), 0);
-        const payload = {
-            IssueNo: newForm.IssueNo,
-            IssueDate: newForm.IssueDate,
-            Stores: newForm.Stores,
-            SupplierName: newForm.SupplierName,
-            IssuedBy: newForm.IssuedBy,
-            JWNo: newForm.JWNo,
-            JCNo: newForm.JCNo,
-            Currency: newForm.Currency,
-            ExchangeRate: Number(newForm.ExchangeRate) || 1.0,
-            ExpiryDate: newForm.ExpiryDate,
-            Remark: newForm.Remark,
-            InternalMemo: newForm.InternalMemo,
-            UpdatedBy: "Nikhil Singh",
-            TotalQty: totalQty,
-            RowCount: Math.max(newForm.items.length, 1),
-            details: newForm.items
-        };
+    // Delete single line
+    const handleDeleteLine = (id) => {
+        if (lines.length <= 1) {
+            setLines([{
+                id: 1,
+                selected: false,
+                issueType: "Lot Issue",
+                ioNo: "",
+                group: "",
+                item: "",
+                description: "",
+                colour: "",
+                typeSize: "",
+                uom: "PCS",
+                stockQty: 0,
+                issueQty: "",
+                rate: "",
+                amount: 0,
+                remarks: ""
+            }]);
+            return;
+        }
+        setLines(prev => prev.filter(r => r.id !== id));
+    };
 
-        try {
-            await axios.post(`${API_URL}/item-issues`, payload);
-        } catch (err) {
-            console.warn("Backend save fallback:", err);
+    // Toggle select all lines
+    const handleSelectAll = (checked) => {
+        setLines(prev => prev.map(r => ({ ...r, selected: checked })));
+    };
+
+    // Display button action
+    const handleDisplay = () => {
+        // Load items based on selection
+        if (jobcardNo || requisitionNo) {
+            setLines(DEFAULT_ITEMS.slice(0, 3).map((it, idx) => ({
+                id: idx + 1,
+                selected: false,
+                issueType: "Lot Issue",
+                ioNo: jobcardNo ? "IO-9821" : "IO-9805",
+                group: it.GroupName,
+                item: it.ItemName,
+                description: `${it.ItemName} for ${jobcardNo || requisitionNo}`,
+                colour: it.Color,
+                typeSize: "Standard",
+                uom: it.UOM,
+                stockQty: it.StockQty,
+                issueQty: 25 + idx * 10,
+                rate: it.Rate,
+                amount: (25 + idx * 10) * it.Rate,
+                remarks: "Auto loaded via Display"
+            })));
+        } else {
+            alert("Select a Jobcard, Cutting Plan, or Requisition to populate line items, or enter line items manually.");
+        }
+    };
+
+    // Save Item Issue
+    const handleSave = async () => {
+        if (!stores.trim()) {
+            alert("Please enter or select a Store/Warehouse (marked with *).");
+            return;
         }
 
-        const now = new Date();
-        const updatedOn = now.toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }) +
-            " " + now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+        const validLines = lines.filter(l => l.item.trim() || l.issueQty);
+        if (validLines.length === 0) {
+            alert("Please add at least one Item with Issue Quantity.");
+            return;
+        }
 
+        const fullIssueNo = `${issuePrefix}${issueSerial}`;
         const newRecord = {
-            ...payload,
-            IssueID: Date.now(),
-            UpdatedOn: updatedOn
+            id: Date.now(),
+            issueNo: fullIssueNo,
+            date: issueDate,
+            issueTo,
+            associate,
+            department: department || "Production",
+            stores,
+            issuedBy,
+            receivedBy,
+            requisitionNo,
+            jobcardNo,
+            cuttingPlanNo,
+            remark,
+            internalMemo,
+            totalQty,
+            totalAmount,
+            status: "Completed",
+            items: lines
         };
 
-        setIssues(prev => [newRecord, ...prev]);
-        setShowNewModal(false);
-        alert(`Item Issue ${newForm.IssueNo} created successfully!`);
-    };
-
-    // Save Edited Item Issue
-    const handleSaveEdit = async (e) => {
-        e.preventDefault();
-        if (!activeRecord) return;
-        const totalQty = (activeRecord.details || []).reduce((s, it) => s + Number(it.Quantity || 0), 0);
-        const now = new Date();
-        const updatedOn = now.toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }) +
-            " " + now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
-
-        const updatedPayload = {
-            ...activeRecord,
-            UpdatedBy: "Nikhil Singh",
-            UpdatedOn: updatedOn,
-            TotalQty: totalQty,
-            RowCount: Math.max((activeRecord.details || []).length, 1)
-        };
-
+        // Attempt backend save
         try {
-            await axios.put(`${API_URL}/item-issues/${activeRecord.IssueID || activeRecord.IssueNo}`, updatedPayload);
+            await axios.post(`${API_URL}/item-issues`, {
+                IssueNo: fullIssueNo,
+                IssueDate: issueDate,
+                IssueTo: issueTo,
+                SupplierName: associate,
+                Department: department,
+                Stores: stores,
+                IssuedBy: issuedBy,
+                ReceivedBy: receivedBy,
+                JCNo: jobcardNo,
+                Remark: remark,
+                InternalMemo: internalMemo,
+                TotalQty: totalQty,
+                TotalAmount: totalAmount,
+                details: lines.map(l => ({
+                    ItemName: l.item,
+                    ItemCode: l.item,
+                    Color: l.colour,
+                    Quantity: parseFloat(l.issueQty) || 0,
+                    UOM: l.uom,
+                    Rate: parseFloat(l.rate) || 0,
+                    Amount: parseFloat(l.amount) || 0,
+                    Remarks: l.remarks
+                }))
+            });
         } catch (e) {
-            console.warn("Backend update fallback:", e);
+            console.warn("Backend API not reachable, saved to local state:", e.message);
         }
 
-        setIssues(prev => prev.map(item =>
-            (item.IssueID === activeRecord.IssueID || item.IssueNo === activeRecord.IssueNo)
-                ? updatedPayload
-                : item
-        ));
-        setShowEditModal(false);
-        alert(`Item Issue ${activeRecord.IssueNo} updated successfully!`);
+        setSavedIssues(prev => [newRecord, ...prev]);
+        setSuccessMessage(`Item Issue ${fullIssueNo} saved successfully!`);
+
+        // Increment serial
+        setIssueSerial(prev => String(parseInt(prev, 10) + 1));
+
+        setTimeout(() => setSuccessMessage(""), 4000);
     };
 
-    // Delete Record
-    const handleDelete = async (record) => {
-        if (!window.confirm(`Are you sure you want to delete ${record.IssueNo}?`)) return;
-        try {
-            await axios.delete(`${API_URL}/item-issues/${record.IssueID || record.IssueNo}`);
-        } catch (e) {}
-        setIssues(prev => prev.filter(r => (r.IssueID || r.IssueNo) !== (record.IssueID || record.IssueNo)));
-        setOpenActionId(null);
+    // Clear form
+    const handleResetForm = () => {
+        setAssociate("");
+        setReceivedBy("");
+        setDepartment("");
+        setStores("");
+        setRequisitionNo("");
+        setJobcardNo("");
+        setCuttingPlanNo("");
+        setRemark("");
+        setInternalMemo("");
+        setLines([
+            {
+                id: 1,
+                selected: false,
+                issueType: "Lot Issue",
+                ioNo: "",
+                group: "",
+                item: "",
+                description: "",
+                colour: "",
+                typeSize: "",
+                uom: "PCS",
+                stockQty: 0,
+                issueQty: "",
+                rate: "",
+                amount: 0,
+                remarks: ""
+            }
+        ]);
+        setShowActionMenu(false);
     };
 
-    // Print Record
-    const handlePrint = (record) => {
-        const printWindow = window.open("", "_blank");
-        if (!printWindow) return;
-        printWindow.document.write(`
-            <html>
-                <head>
-                    <title>Item Issue Voucher - ${record.IssueNo}</title>
-                    <style>
-                        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; padding: 25px; color: #333; }
-                        h2 { color: #1a5695; margin-bottom: 4px; }
-                        .header { border-bottom: 2px solid #337ab7; padding-bottom: 10px; margin-bottom: 16px; }
-                        .info-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; font-size: 13px; margin-bottom: 20px; }
-                        table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-                        th { background: #337ab7; color: white; padding: 8px; text-align: left; }
-                        td { border: 1px solid #ddd; padding: 8px; }
-                        .text-end { text-align: right; }
-                    </style>
-                </head>
-                <body>
-                    <div class="header">
-                        <h2>V-CONNECT INC. - ITEM ISSUE VOUCHER</h2>
-                        <small>Plot No. 9B | FY 01-Apr-2026 - 31-Mar-2027</small>
-                    </div>
-                    <div class="info-grid">
-                        <div><strong>Issue No:</strong> ${record.IssueNo}</div>
-                        <div><strong>Date:</strong> ${record.IssueDate}</div>
-                        <div><strong>Supplier / Associate:</strong> ${record.SupplierName || "-"}</div>
-                        <div><strong>Issued By:</strong> ${record.IssuedBy || "-"}</div>
-                        <div><strong>Stores:</strong> ${record.Stores || "-"}</div>
-                        <div><strong>JW No:</strong> ${record.JWNo || "-"}</div>
-                        <div><strong>JC No:</strong> ${record.JCNo || "-"}</div>
-                        <div><strong>Currency:</strong> ${record.Currency || "INR"} (${Number(record.ExchangeRate || 1.0).toFixed(1)})</div>
-                        <div><strong>Expiry Date:</strong> ${record.ExpiryDate || "-"}</div>
-                        <div><strong>Remark:</strong> ${record.Remark || "-"}</div>
-                        <div><strong>Internal Memo:</strong> ${record.InternalMemo || "-"}</div>
-                        <div><strong>Total Qty:</strong> ${record.TotalQty}</div>
-                    </div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Item Code</th>
-                                <th>Item Name</th>
-                                <th>Color</th>
-                                <th class="text-end">Qty</th>
-                                <th>UOM</th>
-                                <th class="text-end">Rate</th>
-                                <th class="text-end">Amount</th>
-                                <th>Remarks</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${(record.details || []).map((d, i) => `
-                                <tr>
-                                    <td>${i + 1}</td>
-                                    <td>${d.ItemCode || "-"}</td>
-                                    <td>${d.ItemName || "-"}</td>
-                                    <td>${d.Color || "-"}</td>
-                                    <td class="text-end">${d.Quantity}</td>
-                                    <td>${d.UOM || "PCS"}</td>
-                                    <td class="text-end">${d.Rate ? Number(d.Rate).toFixed(2) : "-"}</td>
-                                    <td class="text-end">${d.Amount ? Number(d.Amount).toFixed(2) : "-"}</td>
-                                    <td>${d.Remarks || "-"}</td>
-                                </tr>
-                            `).join("")}
-                        </tbody>
-                    </table>
-                    <div style="margin-top: 50px; display: flex; justify-content: space-between; font-size: 13px;">
-                        <div>Issued By: ________________</div>
-                        <div>Received By: ________________</div>
-                        <div>Authorized By: ________________</div>
-                    </div>
-                </body>
-            </html>
-        `);
-        printWindow.document.close();
-        printWindow.focus();
-        setTimeout(() => printWindow.print(), 300);
-        setOpenActionId(null);
-    };
-
-    // Number of empty rows to render to match the spreadsheet look in screenshot
-    const emptyRowsCount = Math.max(0, 15 - filteredIssues.length);
+    // Filtered list records for list view
+    const filteredIssues = savedIssues.filter(item => {
+        const q = searchTerm.toLowerCase();
+        return (
+            item.issueNo.toLowerCase().includes(q) ||
+            item.associate.toLowerCase().includes(q) ||
+            item.stores.toLowerCase().includes(q) ||
+            item.department.toLowerCase().includes(q) ||
+            item.date.toLowerCase().includes(q)
+        );
+    });
 
     return (
-        <div className="item-issue-page">
-            {/* PAGE TITLE */}
-            <h1 className="ii-page-title">Item Issue</h1>
+        <div className="tpcs-item-issue-container">
 
-            {/* TOP CRITERIA / ASSOCIATE SEARCH & NEW BUTTON ROW */}
-            <div className="ii-top-row">
-                <div className="ii-search-group">
-                    <label className="ii-search-label">Associate</label>
-                    <input
-                        type="text"
-                        className="ii-search-input"
-                        placeholder="Supplier Search..."
-                        value={searchSupplier}
-                        onChange={(e) => setSearchSupplier(e.target.value)}
-                    />
+            {/* Success notification banner */}
+            {successMessage && (
+                <div style={{
+                    background: "#ecfdf5",
+                    border: "1px solid #10b981",
+                    color: "#065f46",
+                    padding: "8px 16px",
+                    borderRadius: "4px",
+                    marginBottom: "14px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    fontSize: "13px",
+                    fontWeight: 600
+                }}>
+                    <FaCheckCircle style={{ color: "#10b981" }} />
+                    <span>{successMessage}</span>
                 </div>
+            )}
 
-                <button
-                    type="button"
-                    className="ii-btn-new"
-                    onClick={() => {
-                        setNewForm(prev => ({
-                            ...prev,
-                            IssueNo: `IS/AAPL9B/2627/${String(89 + issues.length).padStart(3, "0")}`,
-                            IssueDate: "13-10-2026"
-                        }));
-                        setShowNewModal(true);
-                    }}
-                >
-                    <FaPlus /> New Item Issue
-                </button>
-            </div>
+            {/* ==========================================================
+               MODE: FORM VIEW (EXACT REPLICA OF SCREENSHOT 1 & 2)
+            =========================================================== */}
+            {viewMode === "form" && (
+                <div>
+                    {/* Header: Title in blue */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                        <h1 className="tpcs-ii-title">Item Issue</h1>
 
-            {/* ACTION TOOLBAR ROW */}
-            <div className="ii-toolbar-row">
-                <div className="ii-toolbar-actions">
-                    {/* Refresh */}
-                    <button
-                        type="button"
-                        className="ii-tool-btn"
-                        title="Reload"
-                        onClick={loadData}
-                    >
-                        <FaSyncAlt className={loading ? "spin" : ""} />
-                    </button>
-
-                    {/* Density / View Toggle */}
-                    <button
-                        type="button"
-                        className="ii-tool-btn"
-                        title="Toggle Density"
-                        onClick={() => setViewMode(prev => prev === "normal" ? "compact" : "normal")}
-                    >
-                        <FaBars />
-                    </button>
-
-                    {/* Column Settings */}
-                    <button
-                        type="button"
-                        className="ii-tool-btn"
-                        title="Table Columns Settings"
-                        onClick={() => setShowColumnChooser(prev => !prev)}
-                    >
-                        <FaCog />
-                    </button>
-
-                    {/* Column chooser popup */}
-                    {showColumnChooser && (
-                        <div className="ii-column-dropdown" ref={columnMenuRef}>
-                            <div className="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
-                                <strong style={{ fontSize: "12px" }}>Select Columns</strong>
-                                <button
-                                    type="button"
-                                    className="btn btn-sm btn-link p-0 text-decoration-none"
-                                    style={{ fontSize: "11px" }}
-                                    onClick={() => setColumnVisibility(ALL_COLUMNS.reduce((acc, col) => ({ ...acc, [col.key]: true }), {}))}
-                                >
-                                    Reset
-                                </button>
-                            </div>
-                            {ALL_COLUMNS.map(col => (
-                                <label key={col.key} className="ii-col-checkbox-label">
-                                    <input
-                                        type="checkbox"
-                                        checked={columnVisibility[col.key] !== false}
-                                        disabled={col.fixed}
-                                        onChange={(e) => setColumnVisibility(prev => ({
-                                            ...prev,
-                                            [col.key]: e.target.checked
-                                        }))}
-                                    />
-                                    <span>{col.label}</span>
-                                </label>
-                            ))}
-                        </div>
-                    )}
-
-                    {/* Filter Toggle */}
-                    <button
-                        type="button"
-                        className={`ii-tool-btn ii-tool-btn-filter ${showFilterBar ? "active" : ""}`}
-                        onClick={() => setShowFilterBar(prev => !prev)}
-                    >
-                        <FaFilter /> Filter <FaCaretDown />
-                    </button>
-                </div>
-
-                <div className="ii-page-badge" title="Page 1">
-                    1
-                </div>
-            </div>
-
-            {/* EXPANDABLE FILTER CARD */}
-            {showFilterBar && (
-                <div className="ii-filter-card">
-                    <div className="ii-filter-item">
-                        <label className="ii-filter-label">Stores</label>
-                        <select
-                            className="ii-filter-select"
-                            value={filterStore}
-                            onChange={(e) => setFilterStore(e.target.value)}
+                        <button
+                            type="button"
+                            className="tpcs-ii-btn-view"
+                            onClick={() => setViewMode("list")}
+                            title="Switch to Item Issue Register"
                         >
-                            <option value="All">All Stores</option>
-                            <option value="RAW MATERIAL STORE 9B">RAW MATERIAL STORE 9B</option>
-                            <option value="SEMI FINISH STORE 9B">SEMI FINISH STORE 9B</option>
-                            <option value="SEMI FINISH STORE 18">SEMI FINISH STORE 18</option>
-                            <option value="FINISHED GOODS STORE">FINISHED GOODS STORE</option>
+                            <FaEye /> <span>View Register</span>
+                        </button>
+                    </div>
+
+                    {/* Issue To Row matching Screenshot 1 */}
+                    <div className="tpcs-ii-issue-to-row">
+                        <label className="tpcs-ii-label">Issue To</label>
+                        <select
+                            className="tpcs-ii-select"
+                            value={issueTo}
+                            onChange={(e) => setIssueTo(e.target.value)}
+                        >
+                            <option value="Production">Production</option>
+                            <option value="General">General</option>
+                            <option value="Jobwork">Jobwork</option>
+                            <option value="Department">Department</option>
+                            <option value="Sample Development">Sample Development</option>
                         </select>
                     </div>
 
-                    <div className="ii-filter-item">
-                        <label className="ii-filter-label">JW No.</label>
-                        <input
-                            type="text"
-                            className="ii-filter-select"
-                            placeholder="e.g. JW-9821"
-                            value={filterJWNo}
-                            onChange={(e) => setFilterJWNo(e.target.value)}
-                        />
-                    </div>
-
-                    <div className="ii-filter-item">
-                        <label className="ii-filter-label">JC No.</label>
-                        <input
-                            type="text"
-                            className="ii-filter-select"
-                            placeholder="e.g. JC-4512"
-                            value={filterJCNo}
-                            onChange={(e) => setFilterJCNo(e.target.value)}
-                        />
-                    </div>
-
-                    <div className="ii-filter-item">
-                        <label className="ii-filter-label">Remark Filter</label>
-                        <input
-                            type="text"
-                            className="ii-filter-select"
-                            placeholder="e.g. Cutting"
-                            value={filterRemark}
-                            onChange={(e) => setFilterRemark(e.target.value)}
-                        />
-                    </div>
-
-                    <button
-                        type="button"
-                        className="ii-filter-btn-reset"
-                        onClick={() => {
-                            setFilterStore("All");
-                            setFilterJWNo("");
-                            setFilterJCNo("");
-                            setFilterRemark("");
-                            setSearchSupplier("");
-                        }}
-                    >
-                        Reset
-                    </button>
-
-                    <button
-                        type="button"
-                        className="ii-filter-btn-apply"
-                        onClick={() => setShowFilterBar(false)}
-                    >
-                        Apply Filter
-                    </button>
-                </div>
-            )}
-
-            {/* DATA TABLE MATCHING SCREENSHOT */}
-            <div className="ii-table-container">
-                <table className={`ii-table ${viewMode === "compact" ? "table-sm" : ""}`}>
-                    <thead>
-                        <tr>
-                            {columnVisibility.action !== false && (
-                                <th style={{ width: "90px" }} className="text-center">Action</th>
-                            )}
-                            {columnVisibility.issueNo !== false && (
-                                <th style={{ width: "165px" }}>Issue No</th>
-                            )}
-                            {columnVisibility.updatedBy !== false && (
-                                <th style={{ width: "115px" }}>Updated By</th>
-                            )}
-                            {columnVisibility.updatedOn !== false && (
-                                <th style={{ width: "135px" }}>Updated On</th>
-                            )}
-                            {columnVisibility.jwNo !== false && (
-                                <th style={{ width: "95px" }}>JW No.</th>
-                            )}
-                            {columnVisibility.exchangeRate !== false && (
-                                <th style={{ width: "105px" }} className="text-end">Exchange Rate</th>
-                            )}
-                            {columnVisibility.remark !== false && (
-                                <th style={{ width: "130px" }}>Remark</th>
-                            )}
-                            {columnVisibility.date !== false && (
-                                <th style={{ width: "95px" }}>Date</th>
-                            )}
-                            {columnVisibility.supplier !== false && (
-                                <th style={{ width: "140px" }}>Supplier</th>
-                            )}
-                            {columnVisibility.issuedBy !== false && (
-                                <th style={{ width: "115px" }}>Issued By</th>
-                            )}
-                            {columnVisibility.stores !== false && (
-                                <th style={{ width: "175px" }}>Stores</th>
-                            )}
-                            {columnVisibility.memo !== false && (
-                                <th style={{ width: "155px" }}>Memo for internal use</th>
-                            )}
-                            {columnVisibility.currency !== false && (
-                                <th style={{ width: "75px" }}>Currency</th>
-                            )}
-                            {columnVisibility.expiryDate !== false && (
-                                <th style={{ width: "100px" }}>Expiry Date</th>
-                            )}
-                            {columnVisibility.jcNo !== false && (
-                                <th style={{ width: "95px" }}>JC No</th>
-                            )}
-                            {columnVisibility.qty !== false && (
-                                <th style={{ width: "85px" }} className="text-end">Qty</th>
-                            )}
-                            {columnVisibility.rowCount !== false && (
-                                <th style={{ width: "85px" }} className="text-end">No. of rows</th>
-                            )}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredIssues.map((row, index) => {
-                            const rowKey = row.IssueID || row.IssueNo || index;
-                            const isSelected = selectedRowId === rowKey || selectedRowId === row.IssueID;
-
-                            return (
-                                <tr
-                                    key={rowKey}
-                                    className={isSelected ? "selected-row" : ""}
-                                    onClick={() => setSelectedRowId(rowKey)}
+                    {/* 4-Columns Grid matching Screenshot 1 */}
+                    <div className="tpcs-ii-grid">
+                        {/* COLUMN 1 */}
+                        <div className="tpcs-ii-field-group">
+                            <label className="tpcs-ii-label">IssueNo</label>
+                            <div className="tpcs-ii-issueno-group">
+                                <select
+                                    className="tpcs-ii-issueno-prefix"
+                                    value={issuePrefix}
+                                    onChange={(e) => setIssuePrefix(e.target.value)}
                                 >
-                                    {/* ACTION DROPDOWN */}
-                                    {columnVisibility.action !== false && (
-                                        <td className="text-center" onClick={(e) => e.stopPropagation()}>
-                                            <div className="ii-action-btn-wrap" ref={openActionId === rowKey ? actionMenuRef : null}>
+                                    <option value="ISSP/AAPL9B/2627/">ISSP/AAPL9B/2627/</option>
+                                    <option value="ISSG/AAPL9B/2627/">ISSG/AAPL9B/2627/</option>
+                                    <option value="ISJ/AAPL9B/2627/">ISJ/AAPL9B/2627/</option>
+                                </select>
+                                <input
+                                    type="text"
+                                    className="tpcs-ii-issueno-num"
+                                    value={issueSerial}
+                                    onChange={(e) => setIssueSerial(e.target.value)}
+                                />
+                                <button
+                                    type="button"
+                                    className="tpcs-ii-addon-btn btn-gear"
+                                    title="Prefix & Numbering Settings"
+                                    onClick={() => setActiveModal("settings")}
+                                >
+                                    <FaCog />
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* COLUMN 2 */}
+                        <div className="tpcs-ii-field-group">
+                            <label className="tpcs-ii-label">Associate</label>
+                            <input
+                                type="text"
+                                className="tpcs-ii-input"
+                                placeholder="Type and select Supplier"
+                                value={associate}
+                                onChange={(e) => setAssociate(e.target.value)}
+                                list="suppliers-datalist"
+                            />
+                            <datalist id="suppliers-datalist">
+                                {DEFAULT_SUPPLIERS.map(s => <option key={s} value={s} />)}
+                            </datalist>
+                        </div>
+
+                        {/* COLUMN 3 */}
+                        <div className="tpcs-ii-field-group">
+                            <label className="tpcs-ii-label">Received By</label>
+                            <input
+                                type="text"
+                                className="tpcs-ii-input"
+                                placeholder="Enter Received By"
+                                value={receivedBy}
+                                onChange={(e) => setReceivedBy(e.target.value)}
+                            />
+                        </div>
+
+                        {/* COLUMN 4 */}
+                        <div className="tpcs-ii-field-group">
+                            <label className="tpcs-ii-label">Department</label>
+                            <input
+                                type="text"
+                                className="tpcs-ii-input"
+                                placeholder="Type and select Department"
+                                value={department}
+                                onChange={(e) => setDepartment(e.target.value)}
+                                list="depts-datalist"
+                            />
+                            <datalist id="depts-datalist">
+                                {DEFAULT_DEPARTMENTS.map(d => <option key={d} value={d} />)}
+                            </datalist>
+                        </div>
+
+                        {/* ROW 2 - COL 1: Date */}
+                        <div className="tpcs-ii-field-group">
+                            <label className="tpcs-ii-label">
+                                Date <span className="tpcs-ii-req">*</span>
+                            </label>
+                            <div className="tpcs-ii-input-group">
+                                <input
+                                    type="text"
+                                    className="tpcs-ii-input"
+                                    value={issueDate}
+                                    onChange={(e) => setIssueDate(e.target.value)}
+                                />
+                                <button
+                                    type="button"
+                                    className="tpcs-ii-addon-btn"
+                                    title="Select Date"
+                                    onClick={() => {
+                                        const d = prompt("Enter Date (DD-MM-YYYY):", issueDate);
+                                        if (d) setIssueDate(d);
+                                    }}
+                                >
+                                    <FaCalendarAlt />
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* ROW 2 - COL 2: Stores */}
+                        <div className="tpcs-ii-field-group">
+                            <label className="tpcs-ii-label">
+                                Stores <span className="tpcs-ii-req">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                className="tpcs-ii-input"
+                                placeholder="Type and select Warehouse"
+                                value={stores}
+                                onChange={(e) => setStores(e.target.value)}
+                                list="stores-datalist"
+                            />
+                            <datalist id="stores-datalist">
+                                {DEFAULT_WAREHOUSES.map(w => <option key={w} value={w} />)}
+                            </datalist>
+                        </div>
+
+                        {/* ROW 2 - COL 3: Issued By */}
+                        <div className="tpcs-ii-field-group">
+                            <label className="tpcs-ii-label">Issued By</label>
+                            <input
+                                type="text"
+                                className="tpcs-ii-input"
+                                placeholder="Enter Issued By"
+                                value={issuedBy}
+                                onChange={(e) => setIssuedBy(e.target.value)}
+                            />
+                        </div>
+
+                        {/* ROW 2 - COL 4: Requisition No */}
+                        <div className="tpcs-ii-field-group">
+                            <label className="tpcs-ii-label">Requisition No</label>
+                            <div className="tpcs-ii-input-group">
+                                <input
+                                    type="text"
+                                    className="tpcs-ii-input"
+                                    placeholder="Select Requisition No"
+                                    value={requisitionNo}
+                                    onChange={(e) => setRequisitionNo(e.target.value)}
+                                />
+                                <button
+                                    type="button"
+                                    className="tpcs-ii-addon-btn"
+                                    title="Select Requisition No"
+                                    onClick={() => setActiveModal("requisition")}
+                                >
+                                    <FaListUl />
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* ROW 3 - COL 1: Cutting Slip, Jobcard No */}
+                        <div className="tpcs-ii-field-group">
+                            <label className="tpcs-ii-label">Cutting Slip,Jobcard No</label>
+                            <div className="tpcs-ii-input-group">
+                                <input
+                                    type="text"
+                                    className="tpcs-ii-input"
+                                    placeholder="Select Cutting Slip,Jobcard No"
+                                    value={jobcardNo}
+                                    onChange={(e) => setJobcardNo(e.target.value)}
+                                />
+                                <button
+                                    type="button"
+                                    className="tpcs-ii-addon-btn"
+                                    title="Select Cutting Slip / Jobcard"
+                                    onClick={() => setActiveModal("jobcard")}
+                                >
+                                    <FaListUl />
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* ROW 3 - COL 2: Cutting Plan No */}
+                        <div className="tpcs-ii-field-group">
+                            <label className="tpcs-ii-label">Cutting Plan No</label>
+                            <div className="tpcs-ii-input-group">
+                                <input
+                                    type="text"
+                                    className="tpcs-ii-input"
+                                    placeholder="Select Cutting Plan No"
+                                    value={cuttingPlanNo}
+                                    onChange={(e) => setCuttingPlanNo(e.target.value)}
+                                />
+                                <button
+                                    type="button"
+                                    className="tpcs-ii-addon-btn"
+                                    title="Select Cutting Plan No"
+                                    onClick={() => setActiveModal("plan")}
+                                >
+                                    <FaListUl />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Display Button matching Screenshot 1 */}
+                    <div className="tpcs-ii-display-row">
+                        <button
+                            type="button"
+                            className="tpcs-ii-btn-display"
+                            onClick={handleDisplay}
+                        >
+                            Display
+                        </button>
+                    </div>
+
+                    {/* ==========================================================
+                       LINE ITEMS TABLE (MATCHING SCREENSHOT 1 & 2)
+                    =========================================================== */}
+                    <div className="tpcs-ii-table-container">
+                        <table className="tpcs-ii-table">
+                            <thead>
+                                <tr>
+                                    <th style={{ width: "32px", textAlign: "center" }}>
+                                        <input
+                                            type="checkbox"
+                                            onChange={(e) => handleSelectAll(e.target.checked)}
+                                        />
+                                    </th>
+                                    <th style={{ width: "120px" }}>Issue Type</th>
+                                    <th style={{ width: "180px" }}>IO No.</th>
+                                    <th style={{ width: "140px" }}>Group</th>
+                                    <th style={{ width: "200px" }}>Item <span className="tpcs-ii-req">*</span></th>
+                                    <th style={{ width: "180px" }}>Description</th>
+                                    <th style={{ width: "130px" }}>Colour</th>
+                                    <th style={{ width: "110px" }}>Type & Size</th>
+                                    <th style={{ width: "80px" }}>UOM</th>
+                                    <th style={{ width: "90px" }}>Stock Qty</th>
+                                    <th style={{ width: "100px" }}>Issue Qty <span className="tpcs-ii-req">*</span></th>
+                                    <th style={{ width: "90px" }}>Rate</th>
+                                    <th style={{ width: "100px" }}>Amount</th>
+                                    <th style={{ width: "130px" }}>Remarks</th>
+                                    <th style={{ width: "50px", textAlign: "center" }}>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {lines.map((row) => (
+                                    <tr key={row.id}>
+                                        <td style={{ textAlign: "center" }}>
+                                            <input
+                                                type="checkbox"
+                                                checked={row.selected || false}
+                                                onChange={(e) => handleLineChange(row.id, "selected", e.target.checked)}
+                                            />
+                                        </td>
+                                        <td>
+                                            <select
+                                                className="tpcs-ii-tbl-select"
+                                                value={row.issueType}
+                                                onChange={(e) => handleLineChange(row.id, "issueType", e.target.value)}
+                                            >
+                                                <option value="Lot Issue">Lot Issue</option>
+                                                <option value="General Issue">General Issue</option>
+                                                <option value="Direct Issue">Direct Issue</option>
+                                                <option value="Sample Issue">Sample Issue</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <div className="tpcs-ii-tbl-io-group">
+                                                <input
+                                                    type="text"
+                                                    className="tpcs-ii-tbl-input"
+                                                    placeholder="Enter IO No"
+                                                    value={row.ioNo}
+                                                    onChange={(e) => handleLineChange(row.id, "ioNo", e.target.value)}
+                                                />
                                                 <button
                                                     type="button"
-                                                    className="ii-action-btn"
-                                                    onClick={() => setOpenActionId(openActionId === rowKey ? null : rowKey)}
+                                                    className="tpcs-ii-addon-btn"
+                                                    style={{ height: "27px", padding: "0 6px" }}
+                                                    onClick={() => {
+                                                        const io = prompt("Enter IO No:", row.ioNo || "IO-9821");
+                                                        if (io) handleLineChange(row.id, "ioNo", io);
+                                                    }}
                                                 >
-                                                    Action <FaCaretDown />
+                                                    <FaListUl style={{ fontSize: "10px" }} />
                                                 </button>
-
-                                                {openActionId === rowKey && (
-                                                    <div className="ii-action-menu">
-                                                        <button
-                                                            type="button"
-                                                            className="ii-action-item"
-                                                            onClick={() => {
-                                                                setActiveRecord(row);
-                                                                setShowDetailModal(true);
-                                                                setOpenActionId(null);
-                                                            }}
-                                                        >
-                                                            <FaEye className="text-primary" /> View Details
-                                                        </button>
-
-                                                        <button
-                                                            type="button"
-                                                            className="ii-action-item"
-                                                            onClick={() => {
-                                                                setActiveRecord({
-                                                                    ...row,
-                                                                    details: row.details ? [...row.details] : []
-                                                                });
-                                                                setShowEditModal(true);
-                                                                setOpenActionId(null);
-                                                            }}
-                                                        >
-                                                            <FaEdit className="text-secondary" /> Edit
-                                                        </button>
-
-                                                        <button
-                                                            type="button"
-                                                            className="ii-action-item"
-                                                            onClick={() => handlePrint(row)}
-                                                        >
-                                                            <FaPrint className="text-success" /> Print Issue
-                                                        </button>
-
-                                                        <div style={{ height: "1px", background: "#e2e8f0", margin: "3px 0" }} />
-
-                                                        <button
-                                                            type="button"
-                                                            className="ii-action-item danger text-danger"
-                                                            onClick={() => handleDelete(row)}
-                                                        >
-                                                            <FaTrash /> Delete
-                                                        </button>
-                                                    </div>
-                                                )}
+                                                <div className="tpcs-ii-tbl-code-box"></div>
                                             </div>
                                         </td>
-                                    )}
-
-                                    {/* ISSUE NO */}
-                                    {columnVisibility.issueNo !== false && (
                                         <td>
-                                            <span
-                                                className="ii-doc-no"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setActiveRecord(row);
-                                                    setShowDetailModal(true);
-                                                }}
-                                            >
-                                                {row.IssueNo}
-                                            </span>
+                                            <input
+                                                type="text"
+                                                className="tpcs-ii-tbl-input"
+                                                placeholder="Type and Select Group"
+                                                value={row.group}
+                                                onChange={(e) => handleLineChange(row.id, "group", e.target.value)}
+                                            />
                                         </td>
-                                    )}
-
-                                    {/* UPDATED BY */}
-                                    {columnVisibility.updatedBy !== false && (
                                         <td>
-                                            {row.UpdatedBy ? (
-                                                <span className="ii-updated-by">{row.UpdatedBy}</span>
-                                            ) : ""}
+                                            <input
+                                                type="text"
+                                                className="tpcs-ii-tbl-input"
+                                                placeholder="Type and select Item"
+                                                value={row.item}
+                                                onChange={(e) => handleLineChange(row.id, "item", e.target.value)}
+                                                list={`items-datalist-${row.id}`}
+                                            />
+                                            <datalist id={`items-datalist-${row.id}`}>
+                                                {DEFAULT_ITEMS.map(it => (
+                                                    <option key={it.ItemCode} value={it.ItemName}>
+                                                        {it.ItemCode} - {it.GroupName} ({it.UOM})
+                                                    </option>
+                                                ))}
+                                            </datalist>
                                         </td>
-                                    )}
-
-                                    {/* UPDATED ON */}
-                                    {columnVisibility.updatedOn !== false && (
                                         <td>
-                                            {row.UpdatedOn ? (
-                                                <div className="ii-updated-on">
-                                                    {row.UpdatedOn}
-                                                </div>
-                                            ) : ""}
+                                            <textarea
+                                                className="tpcs-ii-tbl-desc"
+                                                placeholder="Description"
+                                                value={row.description}
+                                                onChange={(e) => handleLineChange(row.id, "description", e.target.value)}
+                                            />
                                         </td>
-                                    )}
-
-                                    {/* JW NO */}
-                                    {columnVisibility.jwNo !== false && (
-                                        <td>{row.JWNo || ""}</td>
-                                    )}
-
-                                    {/* EXCHANGE RATE */}
-                                    {columnVisibility.exchangeRate !== false && (
-                                        <td className="text-end">
-                                            {Number(row.ExchangeRate || 1.0).toFixed(1)}
+                                        <td>
+                                            <input
+                                                type="text"
+                                                className="tpcs-ii-tbl-input"
+                                                placeholder="Type and select Colour"
+                                                value={row.colour}
+                                                onChange={(e) => handleLineChange(row.id, "colour", e.target.value)}
+                                            />
                                         </td>
-                                    )}
-
-                                    {/* REMARK */}
-                                    {columnVisibility.remark !== false && (
-                                        <td>{row.Remark || ""}</td>
-                                    )}
-
-                                    {/* DATE */}
-                                    {columnVisibility.date !== false && (
-                                        <td>{row.IssueDate || ""}</td>
-                                    )}
-
-                                    {/* SUPPLIER */}
-                                    {columnVisibility.supplier !== false && (
-                                        <td>{row.SupplierName || ""}</td>
-                                    )}
-
-                                    {/* ISSUED BY */}
-                                    {columnVisibility.issuedBy !== false && (
-                                        <td>{row.IssuedBy || ""}</td>
-                                    )}
-
-                                    {/* STORES */}
-                                    {columnVisibility.stores !== false && (
-                                        <td>{row.Stores || ""}</td>
-                                    )}
-
-                                    {/* MEMO FOR INTERNAL USE */}
-                                    {columnVisibility.memo !== false && (
-                                        <td>{row.InternalMemo || ""}</td>
-                                    )}
-
-                                    {/* CURRENCY */}
-                                    {columnVisibility.currency !== false && (
-                                        <td>{row.Currency || "INR"}</td>
-                                    )}
-
-                                    {/* EXPIRY DATE */}
-                                    {columnVisibility.expiryDate !== false && (
-                                        <td>{row.ExpiryDate || ""}</td>
-                                    )}
-
-                                    {/* JC NO */}
-                                    {columnVisibility.jcNo !== false && (
-                                        <td>{row.JCNo || ""}</td>
-                                    )}
-
-                                    {/* QTY */}
-                                    {columnVisibility.qty !== false && (
-                                        <td className="text-end">
-                                            {Number(row.TotalQty || 0).toFixed(1)}
+                                        <td>
+                                            <input
+                                                type="text"
+                                                className="tpcs-ii-tbl-input"
+                                                placeholder="Type & Size"
+                                                value={row.typeSize}
+                                                onChange={(e) => handleLineChange(row.id, "typeSize", e.target.value)}
+                                            />
                                         </td>
-                                    )}
-
-                                    {/* NO. OF ROWS */}
-                                    {columnVisibility.rowCount !== false && (
-                                        <td className="text-end">
-                                            {row.RowCount || 1}
-                                        </td>
-                                    )}
-                                </tr>
-                            );
-                        })}
-
-                        {/* EMPTY SPREADSHEET GRID ROWS (Matches screenshot's authentic ERP grid lines) */}
-                        {Array.from({ length: emptyRowsCount }).map((_, idx) => (
-                            <tr key={`empty-${idx}`} className="empty-grid-row">
-                                {ALL_COLUMNS.filter(c => columnVisibility[c.key] !== false).map(c => (
-                                    <td key={c.key}>&nbsp;</td>
-                                ))}
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-
-            {/* =============================================================
-                MODAL: NEW ITEM ISSUE
-            ============================================================= */}
-            {showNewModal && (
-                <div className="ii-modal-backdrop" onClick={() => setShowNewModal(false)}>
-                    <div className="ii-modal-card" onClick={(e) => e.stopPropagation()}>
-                        <div className="ii-modal-header">
-                            <h5 className="ii-modal-title">New Item Issue</h5>
-                            <button
-                                type="button"
-                                className="ii-modal-close-btn"
-                                onClick={() => setShowNewModal(false)}
-                            >
-                                <FaTimes />
-                            </button>
-                        </div>
-
-                        <form onSubmit={handleSaveNew}>
-                            <div className="ii-modal-body">
-                                {/* Header Fields */}
-                                <div className="ii-form-row">
-                                    <div className="ii-form-col">
-                                        <label className="ii-form-label">Issue No *</label>
-                                        <input
-                                            type="text"
-                                            className="ii-form-control"
-                                            value={newForm.IssueNo}
-                                            onChange={(e) => setNewForm({ ...newForm, IssueNo: e.target.value })}
-                                            required
-                                        />
-                                    </div>
-
-                                    <div className="ii-form-col">
-                                        <label className="ii-form-label">Issue Date *</label>
-                                        <input
-                                            type="text"
-                                            className="ii-form-control"
-                                            value={newForm.IssueDate}
-                                            onChange={(e) => setNewForm({ ...newForm, IssueDate: e.target.value })}
-                                            required
-                                        />
-                                    </div>
-
-                                    <div className="ii-form-col">
-                                        <label className="ii-form-label">Associate / Supplier</label>
-                                        <input
-                                            type="text"
-                                            className="ii-form-control"
-                                            placeholder="Enter supplier or select..."
-                                            list="suppliersListDatalist"
-                                            value={newForm.SupplierName}
-                                            onChange={(e) => setNewForm({ ...newForm, SupplierName: e.target.value })}
-                                        />
-                                        <datalist id="suppliersListDatalist">
-                                            {suppliersList.map(s => (
-                                                <option key={s.value} value={s.label} />
-                                            ))}
-                                        </datalist>
-                                    </div>
-
-                                    <div className="ii-form-col">
-                                        <label className="ii-form-label">Issued By</label>
-                                        <input
-                                            type="text"
-                                            className="ii-form-control"
-                                            value={newForm.IssuedBy}
-                                            onChange={(e) => setNewForm({ ...newForm, IssuedBy: e.target.value })}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="ii-form-row">
-                                    <div className="ii-form-col">
-                                        <label className="ii-form-label">Stores</label>
-                                        <select
-                                            className="ii-form-control"
-                                            value={newForm.Stores}
-                                            onChange={(e) => setNewForm({ ...newForm, Stores: e.target.value })}
-                                        >
-                                            <option value="RAW MATERIAL STORE 9B">RAW MATERIAL STORE 9B</option>
-                                            <option value="SEMI FINISH STORE 9B">SEMI FINISH STORE 9B</option>
-                                            <option value="SEMI FINISH STORE 18">SEMI FINISH STORE 18</option>
-                                            <option value="FINISHED GOODS STORE">FINISHED GOODS STORE</option>
-                                        </select>
-                                    </div>
-
-                                    <div className="ii-form-col">
-                                        <label className="ii-form-label">JW No. (Job Work)</label>
-                                        <input
-                                            type="text"
-                                            className="ii-form-control"
-                                            placeholder="e.g. JW-9821"
-                                            value={newForm.JWNo}
-                                            onChange={(e) => setNewForm({ ...newForm, JWNo: e.target.value })}
-                                        />
-                                    </div>
-
-                                    <div className="ii-form-col">
-                                        <label className="ii-form-label">JC No. (Job Card)</label>
-                                        <input
-                                            type="text"
-                                            className="ii-form-control"
-                                            placeholder="e.g. JC-4512"
-                                            value={newForm.JCNo}
-                                            onChange={(e) => setNewForm({ ...newForm, JCNo: e.target.value })}
-                                        />
-                                    </div>
-
-                                    <div className="ii-form-col">
-                                        <label className="ii-form-label">Currency & Ex. Rate</label>
-                                        <div className="d-flex gap-2">
+                                        <td>
                                             <select
-                                                className="ii-form-control"
-                                                style={{ width: "90px" }}
-                                                value={newForm.Currency}
-                                                onChange={(e) => setNewForm({ ...newForm, Currency: e.target.value })}
+                                                className="tpcs-ii-tbl-select"
+                                                value={row.uom}
+                                                onChange={(e) => handleLineChange(row.id, "uom", e.target.value)}
                                             >
-                                                <option value="INR">INR</option>
-                                                <option value="USD">USD</option>
-                                                <option value="EUR">EUR</option>
+                                                <option value="PCS">PCS</option>
+                                                <option value="SQFT">SQFT</option>
+                                                <option value="MTR">MTR</option>
+                                                <option value="SET">SET</option>
+                                                <option value="SHEET">SHEET</option>
+                                                <option value="CONE">CONE</option>
+                                                <option value="KGS">KGS</option>
                                             </select>
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                className="tpcs-ii-tbl-input"
+                                                value={row.stockQty || 0}
+                                                readOnly
+                                                style={{ background: "#f8fafc", textAlign: "right" }}
+                                            />
+                                        </td>
+                                        <td>
                                             <input
                                                 type="number"
-                                                step="0.1"
-                                                className="ii-form-control"
-                                                placeholder="1.0"
-                                                value={newForm.ExchangeRate}
-                                                onChange={(e) => setNewForm({ ...newForm, ExchangeRate: e.target.value })}
+                                                className="tpcs-ii-tbl-input"
+                                                placeholder="0.00"
+                                                value={row.issueQty}
+                                                onChange={(e) => handleLineChange(row.id, "issueQty", e.target.value)}
+                                                style={{ textAlign: "right", fontWeight: 600 }}
                                             />
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="number"
+                                                className="tpcs-ii-tbl-input"
+                                                placeholder="0.00"
+                                                value={row.rate}
+                                                onChange={(e) => handleLineChange(row.id, "rate", e.target.value)}
+                                                style={{ textAlign: "right" }}
+                                            />
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                className="tpcs-ii-tbl-input"
+                                                value={row.amount ? row.amount.toLocaleString("en-IN", { minimumFractionDigits: 2 }) : "0.00"}
+                                                readOnly
+                                                style={{ background: "#f8fafc", textAlign: "right", fontWeight: 600 }}
+                                            />
+                                        </td>
+                                        <td>
+                                            <input
+                                                type="text"
+                                                className="tpcs-ii-tbl-input"
+                                                placeholder="Line Remark"
+                                                value={row.remarks}
+                                                onChange={(e) => handleLineChange(row.id, "remarks", e.target.value)}
+                                            />
+                                        </td>
+                                        <td style={{ textAlign: "center" }}>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleDeleteLine(row.id)}
+                                                style={{
+                                                    background: "transparent",
+                                                    border: "none",
+                                                    color: "#ef4444",
+                                                    cursor: "pointer",
+                                                    padding: "2px"
+                                                }}
+                                                title="Remove line"
+                                            >
+                                                <FaTrash style={{ fontSize: "11px" }} />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* + Add Another Line link matching Screenshot 1 & 2 */}
+                    <button
+                        type="button"
+                        className="tpcs-ii-add-line-btn"
+                        onClick={handleAddLine}
+                    >
+                        <FaPlus style={{ fontSize: "11px" }} /> <span>Add Another Line</span>
+                    </button>
+
+                    {/* ==========================================================
+                       FOOTER SECTION (MATCHING SCREENSHOT 2)
+                    =========================================================== */}
+                    <div className="tpcs-ii-footer-grid">
+                        {/* LEFT: Remark + Attachments */}
+                        <div>
+                            <label className="tpcs-ii-label">Remark</label>
+                            <textarea
+                                className="tpcs-ii-textarea"
+                                placeholder="Enter Remark"
+                                value={remark}
+                                onChange={(e) => setRemark(e.target.value)}
+                            />
+
+                            <div>
+                                <button
+                                    type="button"
+                                    className="tpcs-ii-btn-attach"
+                                    onClick={() => setActiveModal("attach")}
+                                >
+                                    <FaPaperclip />
+                                    <span>+ Attachments... {attachments.length > 0 && `(${attachments.length})`}</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* MIDDLE: Memo for internal use */}
+                        <div>
+                            <label className="tpcs-ii-label">Memo for internal use</label>
+                            <textarea
+                                className="tpcs-ii-textarea"
+                                placeholder="Enter Internal Memo"
+                                value={internalMemo}
+                                onChange={(e) => setInternalMemo(e.target.value)}
+                            />
+                        </div>
+
+                        {/* RIGHT: Total + Action Buttons */}
+                        <div className="tpcs-ii-footer-right">
+                            <div className="tpcs-ii-total-display">
+                                <span>Total :</span>
+                                <span className="tpcs-ii-total-num">
+                                    {totalQty > 0 ? totalQty.toLocaleString() : "0"}
+                                </span>
+                            </div>
+
+                            <div className="tpcs-ii-actions-row" ref={actionBtnRef}>
+                                {/* Save Button */}
+                                <button
+                                    type="button"
+                                    className="tpcs-ii-btn-save"
+                                    onClick={handleSave}
+                                >
+                                    <FaSave /> <span>Save</span>
+                                </button>
+
+                                {/* Action Dropdown Button */}
+                                <button
+                                    type="button"
+                                    className="tpcs-ii-btn-action"
+                                    onClick={() => setShowActionMenu(prev => !prev)}
+                                >
+                                    <FaCog /> <span>Action</span> <FaCaretDown />
+                                </button>
+
+                                {/* Action Menu */}
+                                {showActionMenu && (
+                                    <div className="tpcs-ii-action-menu">
+                                        <div
+                                            className="tpcs-ii-menu-item"
+                                            onClick={() => {
+                                                setShowActionMenu(false);
+                                                setActiveModal("print");
+                                            }}
+                                        >
+                                            <FaPrint /> <span>Print Issue Note</span>
+                                        </div>
+                                        <div
+                                            className="tpcs-ii-menu-item"
+                                            onClick={handleResetForm}
+                                        >
+                                            <FaRedo /> <span>Reset Form</span>
+                                        </div>
+                                        <div
+                                            className="tpcs-ii-menu-item"
+                                            onClick={() => {
+                                                setShowActionMenu(false);
+                                                alert("Exporting line items to Excel...");
+                                            }}
+                                        >
+                                            <FaFileExport /> <span>Export to Excel</span>
                                         </div>
                                     </div>
-                                </div>
+                                )}
 
-                                <div className="ii-form-row">
-                                    <div className="ii-form-col">
-                                        <label className="ii-form-label">Expiry Date</label>
-                                        <input
-                                            type="text"
-                                            className="ii-form-control"
-                                            placeholder="DD-MM-YYYY"
-                                            value={newForm.ExpiryDate}
-                                            onChange={(e) => setNewForm({ ...newForm, ExpiryDate: e.target.value })}
-                                        />
-                                    </div>
-
-                                    <div className="ii-form-col">
-                                        <label className="ii-form-label">Remark</label>
-                                        <input
-                                            type="text"
-                                            className="ii-form-control"
-                                            placeholder="e.g. Batch cutting issue"
-                                            value={newForm.Remark}
-                                            onChange={(e) => setNewForm({ ...newForm, Remark: e.target.value })}
-                                        />
-                                    </div>
-
-                                    <div className="ii-form-col" style={{ gridColumn: "span 2" }}>
-                                        <label className="ii-form-label">Memo for internal use</label>
-                                        <input
-                                            type="text"
-                                            className="ii-form-control"
-                                            placeholder="Internal department instructions"
-                                            value={newForm.InternalMemo}
-                                            onChange={(e) => setNewForm({ ...newForm, InternalMemo: e.target.value })}
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Items Section */}
-                                <div className="d-flex justify-content-between align-items-center mt-3 mb-1">
-                                    <strong style={{ color: "#1a5695", fontSize: "13px" }}>Line Items</strong>
-                                    <button
-                                        type="button"
-                                        className="ii-btn-add-row"
-                                        onClick={handleAddRow}
-                                    >
-                                        <FaPlus /> Add Item Row
-                                    </button>
-                                </div>
-
-                                <div className="table-responsive">
-                                    <table className="ii-items-table">
-                                        <thead>
-                                            <tr>
-                                                <th style={{ width: "35px" }}>#</th>
-                                                <th style={{ width: "160px" }}>Item Code</th>
-                                                <th>Item Name</th>
-                                                <th style={{ width: "120px" }}>Color / Spec</th>
-                                                <th style={{ width: "85px" }}>Qty *</th>
-                                                <th style={{ width: "80px" }}>UOM</th>
-                                                <th style={{ width: "85px" }}>Rate</th>
-                                                <th>Remarks</th>
-                                                <th style={{ width: "40px" }} className="text-center"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {newForm.items.map((item, idx) => (
-                                                <tr key={idx}>
-                                                    <td>{idx + 1}</td>
-                                                    <td>
-                                                        <input
-                                                            type="text"
-                                                            placeholder="Code"
-                                                            value={item.ItemCode}
-                                                            onChange={(e) => handleItemChange(idx, "ItemCode", e.target.value)}
-                                                            required
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <input
-                                                            type="text"
-                                                            placeholder="Description"
-                                                            value={item.ItemName}
-                                                            onChange={(e) => handleItemChange(idx, "ItemName", e.target.value)}
-                                                            required
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <input
-                                                            type="text"
-                                                            placeholder="Color"
-                                                            value={item.Color}
-                                                            onChange={(e) => handleItemChange(idx, "Color", e.target.value)}
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <input
-                                                            type="number"
-                                                            step="0.1"
-                                                            min="0.1"
-                                                            placeholder="0"
-                                                            value={item.Quantity}
-                                                            onChange={(e) => handleItemChange(idx, "Quantity", e.target.value)}
-                                                            required
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <select
-                                                            value={item.UOM}
-                                                            onChange={(e) => handleItemChange(idx, "UOM", e.target.value)}
-                                                        >
-                                                            <option value="PCS">PCS</option>
-                                                            <option value="SQFT">SQFT</option>
-                                                            <option value="MTR">MTR</option>
-                                                            <option value="SET">SET</option>
-                                                            <option value="SHEET">SHEET</option>
-                                                            <option value="KGS">KGS</option>
-                                                        </select>
-                                                    </td>
-                                                    <td>
-                                                        <input
-                                                            type="number"
-                                                            step="0.01"
-                                                            placeholder="0.00"
-                                                            value={item.Rate}
-                                                            onChange={(e) => handleItemChange(idx, "Rate", e.target.value)}
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <input
-                                                            type="text"
-                                                            placeholder="Line notes"
-                                                            value={item.Remarks}
-                                                            onChange={(e) => handleItemChange(idx, "Remarks", e.target.value)}
-                                                        />
-                                                    </td>
-                                                    <td className="text-center">
-                                                        {newForm.items.length > 1 && (
-                                                            <button
-                                                                type="button"
-                                                                className="ii-btn-del-row"
-                                                                onClick={() => handleRemoveRow(idx)}
-                                                                title="Delete row"
-                                                            >
-                                                                <FaTrash />
-                                                            </button>
-                                                        )}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <div className="ii-modal-footer">
+                                {/* View Button (switches to list view) */}
                                 <button
                                     type="button"
-                                    className="btn btn-sm btn-outline-secondary"
-                                    onClick={() => setShowNewModal(false)}
+                                    className="tpcs-ii-btn-view"
+                                    onClick={() => setViewMode("list")}
                                 >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="btn btn-sm btn-success px-3"
-                                >
-                                    <FaCheck className="me-1" /> Save Item Issue
+                                    <FaEye /> <span>View</span>
                                 </button>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             )}
 
-            {/* =============================================================
-                MODAL: VIEW DETAILS
-            ============================================================= */}
-            {showDetailModal && activeRecord && (
-                <div className="ii-modal-backdrop" onClick={() => setShowDetailModal(false)}>
-                    <div className="ii-modal-card" onClick={(e) => e.stopPropagation()}>
-                        <div className="ii-modal-header">
-                            <h5 className="ii-modal-title">Item Issue Details - {activeRecord.IssueNo}</h5>
-                            <button
-                                type="button"
-                                className="ii-modal-close-btn"
-                                onClick={() => setShowDetailModal(false)}
-                            >
-                                <FaTimes />
-                            </button>
+            {/* ==========================================================
+               MODE: REGISTER / LIST VIEW (ACCESSIBLE VIA EYE VIEW BUTTON)
+            =========================================================== */}
+            {viewMode === "list" && (
+                <div>
+                    <div className="tpcs-ii-list-header">
+                        <div>
+                            <h1 className="tpcs-ii-title" style={{ margin: 0 }}>Item Issue Register</h1>
+                            <p style={{ margin: "2px 0 0 0", fontSize: "12.5px", color: "#64748b" }}>
+                                All item issues dispatched to production and jobwork
+                            </p>
                         </div>
 
-                        <div className="ii-modal-body">
-                            <div className="row g-2 mb-3 p-3 bg-light rounded border">
-                                <div className="col-md-3"><strong>Issue No:</strong> {activeRecord.IssueNo}</div>
-                                <div className="col-md-3"><strong>Date:</strong> {activeRecord.IssueDate}</div>
-                                <div className="col-md-3"><strong>Associate / Supplier:</strong> {activeRecord.SupplierName || "-"}</div>
-                                <div className="col-md-3"><strong>Issued By:</strong> {activeRecord.IssuedBy || "-"}</div>
-                                <div className="col-md-3"><strong>Stores:</strong> {activeRecord.Stores || "-"}</div>
-                                <div className="col-md-3"><strong>JW No.:</strong> {activeRecord.JWNo || "-"}</div>
-                                <div className="col-md-3"><strong>JC No.:</strong> {activeRecord.JCNo || "-"}</div>
-                                <div className="col-md-3"><strong>Currency:</strong> {activeRecord.Currency || "INR"} ({Number(activeRecord.ExchangeRate || 1.0).toFixed(1)})</div>
-                                <div className="col-md-3"><strong>Expiry Date:</strong> {activeRecord.ExpiryDate || "-"}</div>
-                                <div className="col-md-3"><strong>Total Quantity:</strong> <span className="badge bg-primary">{activeRecord.TotalQty}</span></div>
-                                <div className="col-md-6"><strong>Remark:</strong> {activeRecord.Remark || "-"}</div>
-                                <div className="col-md-12"><strong>Memo for internal use:</strong> {activeRecord.InternalMemo || "-"}</div>
+                        <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                            <div className="tpcs-ii-list-search">
+                                <input
+                                    type="text"
+                                    className="tpcs-ii-list-input"
+                                    placeholder="Search Issue No, Associate, Store..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                />
                             </div>
 
-                            <h6 className="fw-bold text-primary mt-3 mb-2">Issued Line Items ({activeRecord.RowCount || (activeRecord.details || []).length} rows)</h6>
-                            <div className="table-responsive">
-                                <table className="table table-bordered table-sm mb-0">
-                                    <thead className="table-light">
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Item Code</th>
-                                            <th>Item Name</th>
-                                            <th>Color</th>
-                                            <th className="text-end">Quantity</th>
-                                            <th>UOM</th>
-                                            <th className="text-end">Rate</th>
-                                            <th className="text-end">Amount</th>
-                                            <th>Remarks</th>
+                            <button
+                                type="button"
+                                className="tpcs-ii-btn-save"
+                                onClick={() => setViewMode("form")}
+                            >
+                                <FaPlus /> <span>+ New Issue</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="tpcs-ii-table-container">
+                        <table className="tpcs-ii-table">
+                            <thead>
+                                <tr>
+                                    <th style={{ width: "90px" }}>Actions</th>
+                                    <th>Issue No</th>
+                                    <th>Date</th>
+                                    <th>Issue To</th>
+                                    <th>Associate / Supplier</th>
+                                    <th>Department</th>
+                                    <th>Stores</th>
+                                    <th>Issued By</th>
+                                    <th>Requisition No</th>
+                                    <th style={{ textAlign: "right" }}>Total Qty</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {filteredIssues.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={11} style={{ textAlign: "center", padding: "30px", color: "#64748b" }}>
+                                            No Item Issue records found. Click <strong>+ New Issue</strong> to create one.
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    filteredIssues.map((item) => (
+                                        <tr key={item.id}>
+                                            <td>
+                                                <div style={{ display: "flex", gap: "6px" }}>
+                                                    <button
+                                                        type="button"
+                                                        title="View Details"
+                                                        onClick={() => {
+                                                            setActiveRecord(item);
+                                                            setActiveModal("details");
+                                                        }}
+                                                        style={{ background: "#e0f2fe", border: "1px solid #bae6fd", color: "#0284c7", borderRadius: "3px", padding: "3px 6px", cursor: "pointer" }}
+                                                    >
+                                                        <FaEye style={{ fontSize: "11px" }} />
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        title="Print Issue Slip"
+                                                        onClick={() => {
+                                                            setActiveRecord(item);
+                                                            setActiveModal("print");
+                                                        }}
+                                                        style={{ background: "#f1f5f9", border: "1px solid #cbd5e1", color: "#334155", borderRadius: "3px", padding: "3px 6px", cursor: "pointer" }}
+                                                    >
+                                                        <FaPrint style={{ fontSize: "11px" }} />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td style={{ fontWeight: 700, color: "#1976d2" }}>{item.issueNo}</td>
+                                            <td>{item.date}</td>
+                                            <td><span style={{ background: "#e0f2fe", color: "#0369a1", padding: "2px 6px", borderRadius: "3px", fontSize: "11px", fontWeight: 600 }}>{item.issueTo}</span></td>
+                                            <td>{item.associate || "-"}</td>
+                                            <td>{item.department || "-"}</td>
+                                            <td>{item.stores}</td>
+                                            <td>{item.issuedBy}</td>
+                                            <td>{item.requisitionNo || "-"}</td>
+                                            <td style={{ textAlign: "right", fontWeight: 700 }}>{item.totalQty.toLocaleString()}</td>
+                                            <td>
+                                                <span style={{
+                                                    background: item.status === "Completed" ? "#dcfce7" : "#fef3c7",
+                                                    color: item.status === "Completed" ? "#15803d" : "#b45309",
+                                                    padding: "2px 8px",
+                                                    borderRadius: "9999px",
+                                                    fontSize: "11px",
+                                                    fontWeight: 600
+                                                }}>
+                                                    {item.status}
+                                                </span>
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        {(activeRecord.details || []).length === 0 ? (
-                                            <tr>
-                                                <td colSpan="9" className="text-center text-muted py-3">No detail records available</td>
-                                            </tr>
-                                        ) : (
-                                            activeRecord.details.map((d, i) => (
-                                                <tr key={i}>
-                                                    <td>{i + 1}</td>
-                                                    <td><strong>{d.ItemCode || "-"}</strong></td>
-                                                    <td>{d.ItemName || "-"}</td>
-                                                    <td>{d.Color || "-"}</td>
-                                                    <td className="text-end fw-bold text-primary">{d.Quantity}</td>
-                                                    <td>{d.UOM || "PCS"}</td>
-                                                    <td className="text-end">{d.Rate ? Number(d.Rate).toFixed(2) : "-"}</td>
-                                                    <td className="text-end">{d.Amount ? Number(d.Amount).toFixed(2) : "-"}</td>
-                                                    <td>{d.Remarks || "-"}</td>
-                                                </tr>
-                                            ))
-                                        )}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            )}
 
-                        <div className="ii-modal-footer">
-                            <button
-                                type="button"
-                                className="btn btn-sm btn-outline-success"
-                                onClick={() => handlePrint(activeRecord)}
-                            >
-                                <FaPrint className="me-1" /> Print Voucher
-                            </button>
-                            <button
-                                type="button"
-                                className="btn btn-sm btn-secondary"
-                                onClick={() => setShowDetailModal(false)}
-                            >
-                                Close
-                            </button>
+            {/* ==========================================================
+               MODALS (REQUISITION, JOBCARD, PLAN, ATTACHMENTS, PRINT)
+            =========================================================== */}
+
+            {/* Requisition Lookup Modal */}
+            {activeModal === "requisition" && (
+                <div className="tpcs-ii-modal-backdrop" onClick={() => setActiveModal(null)}>
+                    <div className="tpcs-ii-modal-content" onClick={e => e.stopPropagation()}>
+                        <div className="tpcs-ii-modal-header">
+                            <h3 className="tpcs-ii-modal-title">Select Requisition No</h3>
+                            <button className="tpcs-ii-modal-close" onClick={() => setActiveModal(null)}><FaTimes /></button>
+                        </div>
+                        <div className="tpcs-ii-modal-body">
+                            <table className="tpcs-ii-table">
+                                <thead>
+                                    <tr>
+                                        <th>Requisition No</th>
+                                        <th>Date</th>
+                                        <th>Department</th>
+                                        <th>Requested By</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {DEFAULT_REQUISITIONS.map(r => (
+                                        <tr key={r.reqNo}>
+                                            <td style={{ fontWeight: 700, color: "#1976d2" }}>{r.reqNo}</td>
+                                            <td>{r.date}</td>
+                                            <td>{r.dept}</td>
+                                            <td>{r.requestedBy}</td>
+                                            <td>
+                                                <button
+                                                    type="button"
+                                                    className="tpcs-ii-btn-save"
+                                                    style={{ padding: "3px 10px", fontSize: "11.5px" }}
+                                                    onClick={() => {
+                                                        setRequisitionNo(r.reqNo);
+                                                        setDepartment(r.dept);
+                                                        setActiveModal(null);
+                                                    }}
+                                                >
+                                                    Select
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* =============================================================
-                MODAL: EDIT ITEM ISSUE
-            ============================================================= */}
-            {showEditModal && activeRecord && (
-                <div className="ii-modal-backdrop" onClick={() => setShowEditModal(false)}>
-                    <div className="ii-modal-card" onClick={(e) => e.stopPropagation()}>
-                        <div className="ii-modal-header">
-                            <h5 className="ii-modal-title">Edit Item Issue - {activeRecord.IssueNo}</h5>
-                            <button
-                                type="button"
-                                className="ii-modal-close-btn"
-                                onClick={() => setShowEditModal(false)}
-                            >
-                                <FaTimes />
-                            </button>
+            {/* Jobcard Lookup Modal */}
+            {activeModal === "jobcard" && (
+                <div className="tpcs-ii-modal-backdrop" onClick={() => setActiveModal(null)}>
+                    <div className="tpcs-ii-modal-content" onClick={e => e.stopPropagation()}>
+                        <div className="tpcs-ii-modal-header">
+                            <h3 className="tpcs-ii-modal-title">Select Cutting Slip / Jobcard</h3>
+                            <button className="tpcs-ii-modal-close" onClick={() => setActiveModal(null)}><FaTimes /></button>
                         </div>
-
-                        <form onSubmit={handleSaveEdit}>
-                            <div className="ii-modal-body">
-                                <div className="ii-form-row">
-                                    <div className="ii-form-col">
-                                        <label className="ii-form-label">Issue No</label>
-                                        <input
-                                            type="text"
-                                            className="ii-form-control"
-                                            value={activeRecord.IssueNo}
-                                            readOnly
-                                        />
-                                    </div>
-
-                                    <div className="ii-form-col">
-                                        <label className="ii-form-label">Issue Date</label>
-                                        <input
-                                            type="text"
-                                            className="ii-form-control"
-                                            value={activeRecord.IssueDate || ""}
-                                            onChange={(e) => setActiveRecord({ ...activeRecord, IssueDate: e.target.value })}
-                                        />
-                                    </div>
-
-                                    <div className="ii-form-col">
-                                        <label className="ii-form-label">Associate / Supplier</label>
-                                        <input
-                                            type="text"
-                                            className="ii-form-control"
-                                            value={activeRecord.SupplierName || ""}
-                                            onChange={(e) => setActiveRecord({ ...activeRecord, SupplierName: e.target.value })}
-                                        />
-                                    </div>
-
-                                    <div className="ii-form-col">
-                                        <label className="ii-form-label">Issued By</label>
-                                        <input
-                                            type="text"
-                                            className="ii-form-control"
-                                            value={activeRecord.IssuedBy || ""}
-                                            onChange={(e) => setActiveRecord({ ...activeRecord, IssuedBy: e.target.value })}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="ii-form-row">
-                                    <div className="ii-form-col">
-                                        <label className="ii-form-label">Stores</label>
-                                        <select
-                                            className="ii-form-control"
-                                            value={activeRecord.Stores || ""}
-                                            onChange={(e) => setActiveRecord({ ...activeRecord, Stores: e.target.value })}
-                                        >
-                                            <option value="RAW MATERIAL STORE 9B">RAW MATERIAL STORE 9B</option>
-                                            <option value="SEMI FINISH STORE 9B">SEMI FINISH STORE 9B</option>
-                                            <option value="SEMI FINISH STORE 18">SEMI FINISH STORE 18</option>
-                                            <option value="FINISHED GOODS STORE">FINISHED GOODS STORE</option>
-                                        </select>
-                                    </div>
-
-                                    <div className="ii-form-col">
-                                        <label className="ii-form-label">JW No.</label>
-                                        <input
-                                            type="text"
-                                            className="ii-form-control"
-                                            value={activeRecord.JWNo || ""}
-                                            onChange={(e) => setActiveRecord({ ...activeRecord, JWNo: e.target.value })}
-                                        />
-                                    </div>
-
-                                    <div className="ii-form-col">
-                                        <label className="ii-form-label">JC No.</label>
-                                        <input
-                                            type="text"
-                                            className="ii-form-control"
-                                            value={activeRecord.JCNo || ""}
-                                            onChange={(e) => setActiveRecord({ ...activeRecord, JCNo: e.target.value })}
-                                        />
-                                    </div>
-
-                                    <div className="ii-form-col">
-                                        <label className="ii-form-label">Remark</label>
-                                        <input
-                                            type="text"
-                                            className="ii-form-control"
-                                            value={activeRecord.Remark || ""}
-                                            onChange={(e) => setActiveRecord({ ...activeRecord, Remark: e.target.value })}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="ii-form-row">
-                                    <div className="ii-form-col" style={{ gridColumn: "span 2" }}>
-                                        <label className="ii-form-label">Memo for internal use</label>
-                                        <input
-                                            type="text"
-                                            className="ii-form-control"
-                                            value={activeRecord.InternalMemo || ""}
-                                            onChange={(e) => setActiveRecord({ ...activeRecord, InternalMemo: e.target.value })}
-                                        />
-                                    </div>
-
-                                    <div className="ii-form-col">
-                                        <label className="ii-form-label">Expiry Date</label>
-                                        <input
-                                            type="text"
-                                            className="ii-form-control"
-                                            value={activeRecord.ExpiryDate || ""}
-                                            onChange={(e) => setActiveRecord({ ...activeRecord, ExpiryDate: e.target.value })}
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Line items editing */}
-                                <div className="d-flex justify-content-between align-items-center mt-3 mb-1">
-                                    <strong style={{ color: "#1a5695", fontSize: "13px" }}>Line Items</strong>
-                                    <button
-                                        type="button"
-                                        className="ii-btn-add-row"
-                                        onClick={() => {
-                                            const items = activeRecord.details || [];
-                                            setActiveRecord({
-                                                ...activeRecord,
-                                                details: [
-                                                    ...items,
-                                                    { ItemCode: "", ItemName: "", Color: "", Quantity: 1, UOM: "PCS", Rate: 0, Remarks: "" }
-                                                ]
-                                            });
-                                        }}
-                                    >
-                                        <FaPlus /> Add Item Row
-                                    </button>
-                                </div>
-
-                                <div className="table-responsive">
-                                    <table className="ii-items-table">
-                                        <thead>
-                                            <tr>
-                                                <th style={{ width: "35px" }}>#</th>
-                                                <th style={{ width: "160px" }}>Item Code</th>
-                                                <th>Item Name</th>
-                                                <th style={{ width: "120px" }}>Color</th>
-                                                <th style={{ width: "85px" }}>Qty</th>
-                                                <th style={{ width: "80px" }}>UOM</th>
-                                                <th>Remarks</th>
-                                                <th style={{ width: "40px" }} className="text-center"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {(activeRecord.details || []).map((d, i) => (
-                                                <tr key={i}>
-                                                    <td>{i + 1}</td>
-                                                    <td>
-                                                        <input
-                                                            type="text"
-                                                            value={d.ItemCode || ""}
-                                                            onChange={(e) => {
-                                                                const copy = [...activeRecord.details];
-                                                                copy[i].ItemCode = e.target.value;
-                                                                setActiveRecord({ ...activeRecord, details: copy });
-                                                            }}
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <input
-                                                            type="text"
-                                                            value={d.ItemName || ""}
-                                                            onChange={(e) => {
-                                                                const copy = [...activeRecord.details];
-                                                                copy[i].ItemName = e.target.value;
-                                                                setActiveRecord({ ...activeRecord, details: copy });
-                                                            }}
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <input
-                                                            type="text"
-                                                            value={d.Color || ""}
-                                                            onChange={(e) => {
-                                                                const copy = [...activeRecord.details];
-                                                                copy[i].Color = e.target.value;
-                                                                setActiveRecord({ ...activeRecord, details: copy });
-                                                            }}
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <input
-                                                            type="number"
-                                                            step="0.1"
-                                                            value={d.Quantity || ""}
-                                                            onChange={(e) => {
-                                                                const copy = [...activeRecord.details];
-                                                                copy[i].Quantity = e.target.value;
-                                                                setActiveRecord({ ...activeRecord, details: copy });
-                                                            }}
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <input
-                                                            type="text"
-                                                            value={d.UOM || "PCS"}
-                                                            onChange={(e) => {
-                                                                const copy = [...activeRecord.details];
-                                                                copy[i].UOM = e.target.value;
-                                                                setActiveRecord({ ...activeRecord, details: copy });
-                                                            }}
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <input
-                                                            type="text"
-                                                            value={d.Remarks || ""}
-                                                            onChange={(e) => {
-                                                                const copy = [...activeRecord.details];
-                                                                copy[i].Remarks = e.target.value;
-                                                                setActiveRecord({ ...activeRecord, details: copy });
-                                                            }}
-                                                        />
-                                                    </td>
-                                                    <td className="text-center">
-                                                        <button
-                                                            type="button"
-                                                            className="ii-btn-del-row"
-                                                            onClick={() => {
-                                                                const copy = activeRecord.details.filter((_, idx) => idx !== i);
-                                                                setActiveRecord({ ...activeRecord, details: copy });
-                                                            }}
-                                                        >
-                                                            <FaTrash />
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-
-                            <div className="ii-modal-footer">
-                                <button
-                                    type="button"
-                                    className="btn btn-sm btn-outline-secondary"
-                                    onClick={() => setShowEditModal(false)}
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="btn btn-sm btn-primary px-3"
-                                >
-                                    Update Issue
-                                </button>
-                            </div>
-                        </form>
+                        <div className="tpcs-ii-modal-body">
+                            <table className="tpcs-ii-table">
+                                <thead>
+                                    <tr>
+                                        <th>Jobcard No</th>
+                                        <th>Cutting Slip</th>
+                                        <th>Style</th>
+                                        <th>Buyer</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {DEFAULT_JOBCARDS.map(j => (
+                                        <tr key={j.jcNo}>
+                                            <td style={{ fontWeight: 700, color: "#1976d2" }}>{j.jcNo}</td>
+                                            <td>{j.slipNo}</td>
+                                            <td>{j.style}</td>
+                                            <td>{j.buyer}</td>
+                                            <td>
+                                                <button
+                                                    type="button"
+                                                    className="tpcs-ii-btn-save"
+                                                    style={{ padding: "3px 10px", fontSize: "11.5px" }}
+                                                    onClick={() => {
+                                                        setJobcardNo(j.jcNo);
+                                                        setActiveModal(null);
+                                                    }}
+                                                >
+                                                    Select
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             )}
+
+            {/* Cutting Plan Lookup Modal */}
+            {activeModal === "plan" && (
+                <div className="tpcs-ii-modal-backdrop" onClick={() => setActiveModal(null)}>
+                    <div className="tpcs-ii-modal-content" onClick={e => e.stopPropagation()}>
+                        <div className="tpcs-ii-modal-header">
+                            <h3 className="tpcs-ii-modal-title">Select Cutting Plan No</h3>
+                            <button className="tpcs-ii-modal-close" onClick={() => setActiveModal(null)}><FaTimes /></button>
+                        </div>
+                        <div className="tpcs-ii-modal-body">
+                            <table className="tpcs-ii-table">
+                                <thead>
+                                    <tr>
+                                        <th>Cutting Plan No</th>
+                                        <th>Jobcard No</th>
+                                        <th>Date</th>
+                                        <th>Pairs</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {DEFAULT_CUTTING_PLANS.map(p => (
+                                        <tr key={p.planNo}>
+                                            <td style={{ fontWeight: 700, color: "#1976d2" }}>{p.planNo}</td>
+                                            <td>{p.jcNo}</td>
+                                            <td>{p.date}</td>
+                                            <td>{p.pairs}</td>
+                                            <td>
+                                                <button
+                                                    type="button"
+                                                    className="tpcs-ii-btn-save"
+                                                    style={{ padding: "3px 10px", fontSize: "11.5px" }}
+                                                    onClick={() => {
+                                                        setCuttingPlanNo(p.planNo);
+                                                        if (!jobcardNo) setJobcardNo(p.jcNo);
+                                                        setActiveModal(null);
+                                                    }}
+                                                >
+                                                    Select
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Attachments Modal */}
+            {activeModal === "attach" && (
+                <div className="tpcs-ii-modal-backdrop" onClick={() => setActiveModal(null)}>
+                    <div className="tpcs-ii-modal-content" onClick={e => e.stopPropagation()}>
+                        <div className="tpcs-ii-modal-header">
+                            <h3 className="tpcs-ii-modal-title">Attachments for Item Issue</h3>
+                            <button className="tpcs-ii-modal-close" onClick={() => setActiveModal(null)}><FaTimes /></button>
+                        </div>
+                        <div className="tpcs-ii-modal-body">
+                            <div style={{
+                                border: "2px dashed #cbd5e1",
+                                padding: "24px",
+                                textAlign: "center",
+                                borderRadius: "6px",
+                                marginBottom: "16px"
+                            }}>
+                                <p style={{ margin: "0 0 10px 0", color: "#64748b", fontSize: "13px" }}>
+                                    Drag and drop documents, spec sheets, or inspection photos here
+                                </p>
+                                <input
+                                    type="file"
+                                    multiple
+                                    onChange={(e) => {
+                                        if (e.target.files) {
+                                            const fileNames = Array.from(e.target.files).map(f => f.name);
+                                            setAttachments(prev => [...prev, ...fileNames]);
+                                        }
+                                    }}
+                                />
+                            </div>
+
+                            {attachments.length > 0 && (
+                                <div>
+                                    <h4 style={{ fontSize: "13px", fontWeight: 700, marginBottom: "8px" }}>Attached Files:</h4>
+                                    <ul style={{ listStyle: "none", padding: 0 }}>
+                                        {attachments.map((file, i) => (
+                                            <li key={i} style={{ display: "flex", justifyContent: "space-between", padding: "6px 10px", background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "3px", marginBottom: "4px", fontSize: "12px" }}>
+                                                <span>📎 {file}</span>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setAttachments(prev => prev.filter((_, idx) => idx !== i))}
+                                                    style={{ background: "transparent", border: "none", color: "#ef4444", cursor: "pointer" }}
+                                                >
+                                                    <FaTimes />
+                                                </button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
+                        <div className="tpcs-ii-modal-footer">
+                            <button type="button" className="tpcs-ii-btn-save" onClick={() => setActiveModal(null)}>Done</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Print Modal */}
+            {activeModal === "print" && (
+                <div className="tpcs-ii-modal-backdrop" onClick={() => setActiveModal(null)}>
+                    <div className="tpcs-ii-modal-content" style={{ width: "800px" }} onClick={e => e.stopPropagation()}>
+                        <div className="tpcs-ii-modal-header">
+                            <h3 className="tpcs-ii-modal-title">Item Issue Voucher Print Preview</h3>
+                            <button className="tpcs-ii-modal-close" onClick={() => setActiveModal(null)}><FaTimes /></button>
+                        </div>
+                        <div className="tpcs-ii-modal-body" style={{ background: "#ffffff", padding: "24px" }}>
+                            <div style={{ textAlign: "center", borderBottom: "2px solid #0f172a", paddingBottom: "12px", marginBottom: "16px" }}>
+                                <h2 style={{ margin: 0, fontSize: "20px", fontWeight: 800 }}>TPCS FASHION ERP</h2>
+                                <h3 style={{ margin: "4px 0", fontSize: "16px", color: "#1976d2" }}>ITEM ISSUE VOUCHER</h3>
+                                <p style={{ margin: 0, fontSize: "12px", color: "#64748b" }}>Plot No. 9B | FY 01-Apr-2026 - 31-Mar-2027</p>
+                            </div>
+
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", fontSize: "12px", marginBottom: "16px" }}>
+                                <div><strong>Issue No:</strong> {activeRecord ? activeRecord.issueNo : `${issuePrefix}${issueSerial}`}</div>
+                                <div><strong>Date:</strong> {activeRecord ? activeRecord.date : issueDate}</div>
+                                <div><strong>Issue To:</strong> {activeRecord ? activeRecord.issueTo : issueTo}</div>
+                                <div><strong>Stores:</strong> {activeRecord ? activeRecord.stores : stores}</div>
+                                <div><strong>Associate/Supplier:</strong> {activeRecord ? activeRecord.associate : associate || "-"}</div>
+                                <div><strong>Department:</strong> {activeRecord ? activeRecord.department : department || "-"}</div>
+                            </div>
+
+                            <table className="tpcs-ii-table" style={{ width: "100%", marginBottom: "20px" }}>
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Item Name</th>
+                                        <th>Colour</th>
+                                        <th>UOM</th>
+                                        <th style={{ textAlign: "right" }}>Qty</th>
+                                        <th style={{ textAlign: "right" }}>Rate</th>
+                                        <th style={{ textAlign: "right" }}>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {(activeRecord ? activeRecord.items : lines).map((r, i) => (
+                                        <tr key={i}>
+                                            <td>{i + 1}</td>
+                                            <td>{r.item || r.ItemName}</td>
+                                            <td>{r.colour || r.Color || "-"}</td>
+                                            <td>{r.uom || r.UOM}</td>
+                                            <td style={{ textAlign: "right", fontWeight: 700 }}>{r.issueQty || r.Quantity}</td>
+                                            <td style={{ textAlign: "right" }}>{r.rate || r.Rate || 0}</td>
+                                            <td style={{ textAlign: "right" }}>{r.amount || r.Amount || 0}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+
+                            <div style={{ display: "flex", justifyContent: "space-between", marginTop: "40px", fontSize: "12px" }}>
+                                <div>
+                                    <div style={{ borderTop: "1px solid #94a3b8", width: "160px", textAlign: "center", paddingTop: "4px" }}>
+                                        Prepared By ({issuedBy})
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style={{ borderTop: "1px solid #94a3b8", width: "160px", textAlign: "center", paddingTop: "4px" }}>
+                                        Received By ({receivedBy || "________________"})
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style={{ borderTop: "1px solid #94a3b8", width: "160px", textAlign: "center", paddingTop: "4px" }}>
+                                        Authorized Signatory
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="tpcs-ii-modal-footer">
+                            <button type="button" className="tpcs-ii-btn-save" onClick={() => window.print()}>
+                                <FaPrint /> <span>Print</span>
+                            </button>
+                            <button type="button" className="tpcs-ii-btn-view" onClick={() => setActiveModal(null)}>Close</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Sequence Settings Modal */}
+            {activeModal === "settings" && (
+                <div className="tpcs-ii-modal-backdrop" onClick={() => setActiveModal(null)}>
+                    <div className="tpcs-ii-modal-content" onClick={e => e.stopPropagation()}>
+                        <div className="tpcs-ii-modal-header">
+                            <h3 className="tpcs-ii-modal-title">Item Issue Numbering Format</h3>
+                            <button className="tpcs-ii-modal-close" onClick={() => setActiveModal(null)}><FaTimes /></button>
+                        </div>
+                        <div className="tpcs-ii-modal-body">
+                            <div style={{ marginBottom: "12px" }}>
+                                <label className="tpcs-ii-label">Series Prefix</label>
+                                <input
+                                    type="text"
+                                    className="tpcs-ii-input"
+                                    value={issuePrefix}
+                                    onChange={(e) => setIssuePrefix(e.target.value)}
+                                />
+                            </div>
+                            <div>
+                                <label className="tpcs-ii-label">Next Serial Number</label>
+                                <input
+                                    type="text"
+                                    className="tpcs-ii-input"
+                                    value={issueSerial}
+                                    onChange={(e) => setIssueSerial(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                        <div className="tpcs-ii-modal-footer">
+                            <button type="button" className="tpcs-ii-btn-save" onClick={() => setActiveModal(null)}>Save Settings</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 }

@@ -1,19 +1,6 @@
-import "../../styles/search.css";
+import React from "react";
+import ScreenSearchBar from "./ScreenSearchBar";
 
-export default function SearchBar(){
-
-    return(
-
-        <div className="searchBar">
-
-            <input
-
-                placeholder="Search Menu..."
-
-            />
-
-        </div>
-
-    )
-
+export default function SearchBar(props) {
+  return <ScreenSearchBar {...props} />;
 }

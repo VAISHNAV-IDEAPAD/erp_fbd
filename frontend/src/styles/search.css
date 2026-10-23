@@ -1,27 +1,408 @@
-.searchBar{
+/* ==========================================================
+   SCREEN SEARCH BAR STYLES (MATCHING TPCS FASHION SCREENSHOT)
+   ========================================================== */
 
-    background:white;
-
-    padding:12px;
-
-    border-bottom:1px solid #ddd;
-
+.screen-search-wrapper {
+  position: relative;
+  display: inline-block;
 }
 
-.searchBar input{
+.screen-search-box {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #dbe2ea;
+  border-radius: 9999px;
+  height: 40px;
+  width: 310px;
+  max-width: 100%;
+  padding: 3px 4px 3px 18px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  transition: all 0.2s ease-in-out;
+}
 
-    width:100%;
+.screen-search-box:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
+}
 
-    height:42px;
+.screen-search-box.has-focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.16);
+  background: #ffffff;
+}
 
-    border-radius:25px;
+.screen-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 13.5px;
+  color: #1e293b;
+  padding: 0;
+  width: 100%;
+}
 
-    border:1px solid #ddd;
+.screen-search-input::placeholder {
+  color: #94a3b8;
+  font-size: 13.5px;
+  font-weight: 400;
+}
 
-    padding-left:20px;
+.screen-search-clear-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  margin-right: 4px;
+  padding: 0;
+  line-height: 1;
+  transition: background 0.15s, color 0.15s;
+}
 
-    font-size:15px;
+.screen-search-clear-btn:hover {
+  background: #f1f5f9;
+  color: #475569;
+}
 
-    outline:none;
+.screen-search-submit-btn {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: 50%;
+  background: #6366f1;
+  border: none;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.35);
+  transition: all 0.15s ease-in-out;
+  padding: 0;
+}
 
+.screen-search-submit-btn:hover {
+  background: #4f46e5;
+  box-shadow: 0 4px 10px rgba(79, 70, 229, 0.45);
+  transform: scale(1.03);
+}
+
+.screen-search-submit-btn:active {
+  transform: scale(0.96);
+}
+
+/* ==========================================================
+   DROPDOWN AUTOCOMPLETE MENU
+   ========================================================== */
+
+.screen-search-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 390px;
+  max-width: 92vw;
+  max-height: 440px;
+  overflow-y: auto;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.16), 0 6px 14px -2px rgba(15, 23, 42, 0.08);
+  z-index: 1060;
+  padding: 6px 0;
+  animation: searchSlideDown 0.16s ease-out;
+}
+
+@keyframes searchSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.screen-search-header {
+  padding: 8px 14px 6px 14px;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #64748b;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.screen-search-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 14px;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 0.12s ease;
+  border-left: 3px solid transparent;
+}
+
+.screen-search-item:hover,
+.screen-search-item.is-selected {
+  background-color: #f8fafc;
+  border-left-color: #6366f1;
+}
+
+.screen-search-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  min-width: 44px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.screen-badge-pm {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.screen-badge-mm {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.screen-badge-sm {
+  background: #d1fae5;
+  color: #047857;
+}
+
+.screen-badge-admin {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.screen-badge-exports {
+  background: #cffafe;
+  color: #0e7490;
+}
+
+.screen-badge-fm {
+  background: #fae8ff;
+  color: #86198f;
+}
+
+.screen-badge-reports {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.screen-badge-default {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.screen-search-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.screen-search-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.screen-search-title mark {
+  background: #fef08a;
+  color: #1e293b;
+  padding: 0 1px;
+  border-radius: 2px;
+}
+
+.screen-search-category {
+  font-size: 11.5px;
+  color: #64748b;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.screen-search-chevron {
+  color: #cbd5e1;
+  font-size: 14px;
+  margin-left: 6px;
+  flex-shrink: 0;
+  transition: transform 0.12s;
+}
+
+.screen-search-item:hover .screen-search-chevron,
+.screen-search-item.is-selected .screen-search-chevron {
+  color: #6366f1;
+  transform: translateX(2px);
+}
+
+.screen-search-empty {
+  padding: 24px 16px;
+  text-align: center;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.screen-search-empty-icon {
+  font-size: 26px;
+  margin-bottom: 8px;
+  opacity: 0.6;
+}
+
+.screen-search-footer {
+  padding: 7px 14px;
+  font-size: 11px;
+  color: #94a3b8;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  background: #fafafa;
+  border-radius: 0 0 12px 12px;
+}
+
+/* ==========================================================
+   WORKSPACE HERO CARD (MATCHING SCREENSHOT)
+   ========================================================== */
+
+.workspace-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e5e9f0;
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04);
+  padding: 64px 28px 56px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 24px;
+  min-height: 380px;
+  transition: all 0.2s ease;
+}
+
+.workspace-icon-box {
+  width: 52px;
+  height: 52px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.workspace-squares-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  width: 32px;
+  height: 32px;
+}
+
+.workspace-square-tile {
+  background: #cbd5e1;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.workspace-card:hover .workspace-square-tile {
+  background: #94a3b8;
+}
+
+.workspace-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.3px;
+}
+
+.workspace-subtitle {
+  font-size: 14.5px;
+  color: #64748b;
+  margin: 0 0 28px 0;
+  max-width: 540px;
+}
+
+.workspace-quick-launch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  max-width: 720px;
+}
+
+.workspace-chip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 9999px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.workspace-chip-btn:hover {
+  background: #eef2ff;
+  border-color: #c7d2fe;
+  color: #4338ca;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.15);
+}
+
+.workspace-tabs-bar {
+  display: flex;
+  gap: 6px;
+  background: #f1f5f9;
+  padding: 4px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  width: fit-content;
+}
+
+.workspace-tab-btn {
+  padding: 6px 16px;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.workspace-tab-btn.is-active {
+  background: #ffffff;
+  color: #1e293b;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }

@@ -157,7 +157,9 @@ function App() {
                 <Route path="/stock-issues" element={<ItemIssue />} />
                 <Route path="/floor-return" element={<FloorReturns />} />
                 <Route path="/store-transfer" element={<StoreTransfers />} />
+                <Route path="/store-transfer/new" element={<StoreTransfers initialMode="form" />} />
                 <Route path="/stock-transfer" element={<StoreTransfers />} />
+                <Route path="/stock-transfer/new" element={<StoreTransfers initialMode="form" />} />
                 <Route path="/gate-pass-delivery" element={<GatePassDeliveries />} />
                 <Route path="/item-requisition" element={<ItemRequisitions />} />
                 <Route path="/item-requisitions" element={<ItemRequisitions />} />

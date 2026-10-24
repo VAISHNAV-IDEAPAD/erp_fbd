@@ -125,24 +125,10 @@ export default function DashboardGrid() {
             </div>
 
             {/* ==========================================================
-               WORKSPACE VIEW (EXACT MATCH FOR SCREENSHOT)
+               WORKSPACE QUICK ACCESS VIEW
             =========================================================== */}
             {viewMode === "workspace" && (
                 <div className="workspace-card">
-                    <div className="workspace-icon-box">
-                        <div className="workspace-squares-grid">
-                            <div className="workspace-square-tile"></div>
-                            <div className="workspace-square-tile"></div>
-                            <div className="workspace-square-tile"></div>
-                            <div className="workspace-square-tile"></div>
-                        </div>
-                    </div>
-
-                    <h2 className="workspace-title">Welcome to your workspace</h2>
-                    <p className="workspace-subtitle">
-                        Use the search box above or the top menu to open a screen.
-                    </p>
-
                     {/* Quick Access Screen Chips */}
                     <div className="workspace-quick-launch">
                         {popularScreens.map((screen) => (

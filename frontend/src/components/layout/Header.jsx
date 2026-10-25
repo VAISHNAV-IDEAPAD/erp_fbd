@@ -208,29 +208,6 @@ export default function Header() {
               <FaCaretDown style={{ fontSize: "11px", marginLeft: "3px" }} />
             </button>
 
-            {/* NEW */}
-            <button
-              ref={(el) => (navItemRefs.current["NEW"] = el)}
-              type="button"
-              className={`erp-nav-item ${activeMenu === "NEW" ? "erp-nav-active" : ""}`}
-              onClick={() => toggleMenu("NEW")}
-              onMouseEnter={() => handleMouseEnter("NEW")}
-            >
-              <span>NEW</span>
-              <FaCaretDown style={{ fontSize: "11px", marginLeft: "3px" }} />
-            </button>
-
-            {/* RECENT */}
-            <button
-              ref={(el) => (navItemRefs.current["RECENT"] = el)}
-              type="button"
-              className={`erp-nav-item ${activeMenu === "RECENT" ? "erp-nav-active" : ""}`}
-              onClick={() => toggleMenu("RECENT")}
-              onMouseEnter={() => handleMouseEnter("RECENT")}
-            >
-              <span>RECENT</span>
-              <FaCaretDown style={{ fontSize: "11px", marginLeft: "3px" }} />
-            </button>
 
             {/* REPORTS */}
             <button

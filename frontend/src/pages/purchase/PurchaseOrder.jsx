@@ -183,7 +183,106 @@ const DEFAULT_CHARGE_ACCOUNTS = [
   "Other Charges"
 ];
 
-export default function PurchaseOrder() {
+
+const DEFAULT_SAVED_POS = [
+  {
+    POID: 1,
+    PONo: "PO/AAPL9B/2627/0042",
+    PODate: "22-10-2026",
+    SupplierName: "Apex Leather Works",
+    SupplierCode: "SUP-0012",
+    Department: "Raw Material Store",
+    EnteredBy: "Vaishnav V",
+    CreatedAt: "22-10-2026 14:30",
+    QuoteNo: "QUO-ALW-89",
+    ExchangeRate: 1.0,
+    Currency: "INR",
+    Remarks: "Bulk raw leather for season AW26",
+    InternalMemo: "Production line priority 1",
+    DeliveryDate: "05-11-2026",
+    PaymentTerms: "30 Days Credit",
+    CustomerOrderNo: "CO-2627-104",
+    TotalItems: 2,
+    TotalQty: 500,
+    TotalAmount: 72500,
+    NetAmount: 85550,
+    Status: "Approved"
+  },
+  {
+    POID: 2,
+    PONo: "PO/AAPL9B/2627/0041",
+    PODate: "21-10-2026",
+    SupplierName: "Balaji Trims & Fasteners",
+    SupplierCode: "SUP-0034",
+    Department: "Trims & Accessories",
+    EnteredBy: "Admin",
+    CreatedAt: "21-10-2026 11:15",
+    QuoteNo: "BTF/26/902",
+    ExchangeRate: 1.0,
+    Currency: "INR",
+    Remarks: "Rivets and zip runners for JC-4512",
+    InternalMemo: "Direct delivery to Unit 9B",
+    DeliveryDate: "28-10-2026",
+    PaymentTerms: "Immediate",
+    CustomerOrderNo: "CO-2627-098",
+    TotalItems: 3,
+    TotalQty: 5200,
+    TotalAmount: 18400,
+    NetAmount: 21712,
+    Status: "Open"
+  },
+  {
+    POID: 3,
+    PONo: "PO/AAPL9B/2627/0040",
+    PODate: "19-10-2026",
+    SupplierName: "K-Tex Textiles",
+    SupplierCode: "SUP-0056",
+    Department: "Lining Store",
+    EnteredBy: "Vaishnav V",
+    CreatedAt: "19-10-2026 16:45",
+    QuoteNo: "KTEX-OCT-44",
+    ExchangeRate: 1.0,
+    Currency: "INR",
+    Remarks: "Drill canvas lining cloth 10 oz",
+    InternalMemo: "QC test certificate mandatory",
+    DeliveryDate: "02-11-2026",
+    PaymentTerms: "45 Days LC",
+    CustomerOrderNo: "CO-2627-091",
+    TotalItems: 1,
+    TotalQty: 1200,
+    TotalAmount: 39000,
+    NetAmount: 46020,
+    Status: "Completed"
+  },
+  {
+    POID: 4,
+    PONo: "PO/AAPL9B/2627/0039",
+    PODate: "18-10-2026",
+    SupplierName: "Supreme Leathercraft",
+    SupplierCode: "SUP-0021",
+    Department: "Raw Material Store",
+    EnteredBy: "Suresh Patel",
+    CreatedAt: "18-10-2026 09:40",
+    QuoteNo: "SLC-9912",
+    ExchangeRate: 1.0,
+    Currency: "INR",
+    Remarks: "Upper nappa calf leather 1.2mm",
+    InternalMemo: "Clarks UK sample batch",
+    DeliveryDate: "30-10-2026",
+    PaymentTerms: "30 Days Credit",
+    CustomerOrderNo: "CO-2627-084",
+    TotalItems: 2,
+    TotalQty: 350,
+    TotalAmount: 63000,
+    NetAmount: 74340,
+    Status: "Approved"
+  }
+];
+
+export default function PurchaseOrder({ initialMode = "list" }) {
+  const [viewMode, setViewMode] = useState(initialMode || "list");
+  const [searchTerm, setSearchTerm] = useState("");
+
   // ==========================================
   // FILTERS & SELECTION STATES
   // ==========================================

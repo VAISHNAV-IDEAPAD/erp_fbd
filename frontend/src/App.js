@@ -155,6 +155,8 @@ function App() {
                 <Route path="/indents/new" element={<Indents mode="form" />} />
                 <Route path="/purchase-requisition" element={<PurchaseRequisition />} />
                 <Route path="/purchase-orders" element={<PurchaseOrder />} />
+                <Route path="/purchase-orders/new" element={<PurchaseOrder initialMode="form" />} />
+                <Route path="/purchase/orders/new" element={<PurchaseOrder initialMode="form" />} />
                 <Route path="/purchase/orders" element={<PurchaseOrder />} />
                 <Route path="/pending-po" element={<PendingPurchaseOrders />} />
                 <Route path="/purchase-return" element={<PurchaseReturns />} />

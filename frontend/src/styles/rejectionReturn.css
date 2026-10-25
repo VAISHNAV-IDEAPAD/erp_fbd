@@ -11,7 +11,8 @@
 }
 
 .rr-page-title {
-    color: #337ab7;
+    color: #1976d2;
+    font-weight: 700;
     font-size: 19px;
     font-weight: 500;
     margin: 0 0 12px 0;
@@ -231,7 +232,7 @@
 }
 
 .rr-list-table thead th {
-    background: #337ab7;
+    background: #1976d2;
     color: #ffffff;
     font-size: 12px;
     font-weight: 700;

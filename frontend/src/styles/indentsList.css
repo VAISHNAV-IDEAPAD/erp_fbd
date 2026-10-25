@@ -21,7 +21,9 @@
 
 /* Page Title */
 .ind-erp-title {
-  color: #337ab7 !important;
+  color: #1976d2 !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
   font-size: 16px !important;
   font-weight: 700 !important;
   margin-bottom: 12px !important;
@@ -147,7 +149,7 @@
 }
 
 .ind-page-btn {
-  background-color: #337ab7 !important;
+  background-color: #1976d2 !important;
   color: #ffffff !important;
   font-size: 11px !important;
   font-weight: 700 !important;

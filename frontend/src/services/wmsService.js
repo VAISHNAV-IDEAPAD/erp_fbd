@@ -84,6 +84,92 @@ const DEFAULT_ISSUES = [
     }
 ];
 
+
+const normalizeBin = (b) => ({
+    BinID: b.BinID ?? b.binid ?? Date.now(),
+    BinCode: b.BinCode ?? b.bincode ?? "",
+    WarehouseName: b.WarehouseName ?? b.warehousename ?? "RAW MATERIAL STORE 9B",
+    Zone: b.Zone ?? b.zone ?? "",
+    Rack: b.Rack ?? b.rack ?? "",
+    Shelf: b.Shelf ?? b.shelf ?? "",
+    BinType: b.BinType ?? b.bintype ?? "Roll Bin",
+    MaxCapacity: parseFloat(b.MaxCapacity ?? b.maxcapacity ?? 500) || 500,
+    CurrentQty: parseFloat(b.CurrentQty ?? b.currentqty ?? 0) || 0,
+    UOM: b.UOM ?? b.uom ?? "MTR",
+    Status: b.Status ?? b.status ?? "Available",
+    Barcode: b.Barcode ?? b.barcode ?? "",
+    Remarks: b.Remarks ?? b.remarks ?? ""
+});
+
+const normalizeRoll = (r) => ({
+    RollID: r.RollID ?? r.rollid ?? Date.now(),
+    RollSerialNo: r.RollSerialNo ?? r.rollserialno ?? "",
+    ItemCode: r.ItemCode ?? r.itemcode ?? "",
+    ItemName: r.ItemName ?? r.itemname ?? "",
+    LotNo: r.LotNo ?? r.lotno ?? "",
+    Shade: r.Shade ?? r.shade ?? "",
+    LengthQty: parseFloat(r.LengthQty ?? r.lengthqty ?? 0) || 0,
+    UOM: r.UOM ?? r.uom ?? "MTR",
+    BinCode: r.BinCode ?? r.bincode ?? "",
+    Barcode: r.Barcode ?? r.barcode ?? "",
+    Status: r.Status ?? r.status ?? "In Stock",
+    RefDocNo: r.RefDocNo ?? r.refdocno ?? "",
+    GeneratedDate: r.GeneratedDate ?? r.generateddate ?? "",
+    CreatedBy: r.CreatedBy ?? r.createdby ?? "Store Incharge"
+});
+
+const normalizeAllocation = (a) => ({
+    AllocationID: a.AllocationID ?? a.allocationid ?? Date.now(),
+    AllocationNo: a.AllocationNo ?? a.allocationno ?? "",
+    AllocationDate: a.AllocationDate ?? a.allocationdate ?? "",
+    WarehouseName: a.WarehouseName ?? a.warehousename ?? "RAW MATERIAL STORE 9B",
+    RefType: a.RefType ?? a.reftype ?? "Item Receipt (GRN)",
+    RefDocNo: a.RefDocNo ?? a.refdocno ?? "",
+    TotalQty: parseFloat(a.TotalQty ?? a.totalqty ?? 0) || 0,
+    TotalItems: parseInt(a.TotalItems ?? a.totalitems ?? 0, 10) || 0,
+    AllocatedBy: a.AllocatedBy ?? a.allocatedby ?? "Store Incharge",
+    Status: a.Status ?? a.status ?? "Completed",
+    Remarks: a.Remarks ?? a.remarks ?? "",
+    items: (a.items || []).map((it) => ({
+        AllocationItemID: it.AllocationItemID ?? it.allocationitemid ?? Date.now(),
+        AllocationNo: it.AllocationNo ?? it.allocationno ?? "",
+        ItemCode: it.ItemCode ?? it.itemcode ?? "",
+        ItemName: it.ItemName ?? it.itemname ?? "",
+        RollSerialNo: it.RollSerialNo ?? it.rollserialno ?? "",
+        BinCode: it.BinCode ?? it.bincode ?? "",
+        AllocatedQty: parseFloat(it.AllocatedQty ?? it.allocatedqty ?? 0) || 0,
+        UOM: it.UOM ?? it.uom ?? "MTR",
+        LotNo: it.LotNo ?? it.lotno ?? "",
+        Remarks: it.Remarks ?? it.remarks ?? ""
+    }))
+});
+
+const normalizeIssue = (iss) => ({
+    IssueID: iss.IssueID ?? iss.issueid ?? Date.now(),
+    IssueNo: iss.IssueNo ?? iss.issueno ?? "",
+    IssueDate: iss.IssueDate ?? iss.issuedate ?? "",
+    WarehouseName: iss.WarehouseName ?? iss.warehousename ?? "RAW MATERIAL STORE 9B",
+    IssueReason: iss.IssueReason ?? iss.issuereason ?? "Cutting Slip",
+    RefDocNo: iss.RefDocNo ?? iss.refdocno ?? "",
+    IssuedToDepartment: iss.IssuedToDepartment ?? iss.issuedtodepartment ?? "",
+    TotalQty: parseFloat(iss.TotalQty ?? iss.totalqty ?? 0) || 0,
+    TotalRows: parseInt(iss.TotalRows ?? iss.totalrows ?? 0, 10) || 0,
+    IssuedBy: iss.IssuedBy ?? iss.issuedby ?? "Store Incharge",
+    Status: iss.Status ?? iss.status ?? "Completed",
+    Remarks: iss.Remarks ?? iss.remarks ?? "",
+    items: (iss.items || []).map((it) => ({
+        IssueItemID: it.IssueItemID ?? it.issueitemid ?? Date.now(),
+        IssueNo: it.IssueNo ?? it.issueno ?? "",
+        ItemCode: it.ItemCode ?? it.itemcode ?? "",
+        ItemName: it.ItemName ?? it.itemname ?? "",
+        BinCode: it.BinCode ?? it.bincode ?? "",
+        RollSerialNo: it.RollSerialNo ?? it.rollserialno ?? "",
+        PickQty: parseFloat(it.PickQty ?? it.pickqty ?? 0) || 0,
+        UOM: it.UOM ?? it.uom ?? "MTR",
+        Remarks: it.Remarks ?? it.remarks ?? ""
+    }))
+});
+
 export const wmsService = {
     // --------------------------------------------------
     // BINS
@@ -92,7 +178,7 @@ export const wmsService = {
         try {
             const res = await axios.get(`${API_BASE}/wms/bins`, { params });
             const list = res.data?.data || res.data || [];
-            if (Array.isArray(list) && list.length > 0) return list;
+            if (Array.isArray(list) && list.length > 0) return list.map(normalizeBin);
         } catch (e) {
             console.warn("WMS Bins API offline, falling back to local state");
         }
@@ -157,7 +243,7 @@ export const wmsService = {
         try {
             const res = await axios.get(`${API_BASE}/wms/roll-serials`, { params });
             const list = res.data?.data || res.data || [];
-            if (Array.isArray(list) && list.length > 0) return list;
+            if (Array.isArray(list) && list.length > 0) return list.map(normalizeRoll);
         } catch (e) {
             console.warn("WMS RollSerials API offline, using local state");
         }
@@ -239,7 +325,7 @@ export const wmsService = {
         try {
             const res = await axios.get(`${API_BASE}/wms/allocations`);
             const list = res.data?.data || res.data || [];
-            if (Array.isArray(list) && list.length > 0) return list;
+            if (Array.isArray(list) && list.length > 0) return list.map(normalizeAllocation);
         } catch (e) {
             console.warn("WMS Allocations API offline, using local state");
         }
@@ -303,7 +389,7 @@ export const wmsService = {
         try {
             const res = await axios.get(`${API_BASE}/wms/issues`);
             const list = res.data?.data || res.data || [];
-            if (Array.isArray(list) && list.length > 0) return list;
+            if (Array.isArray(list) && list.length > 0) return list.map(normalizeIssue);
         } catch (e) {
             console.warn("WMS BinIssues API offline, using local state");
         }

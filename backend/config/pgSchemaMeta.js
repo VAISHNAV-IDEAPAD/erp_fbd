@@ -1,4 +1,3 @@
-// Auto-generated PostgreSQL schema metadata for case restoration and type safety
 module.exports = {
   "globalColMap": {
     "historyid": "HistoryID",
@@ -389,7 +388,7 @@ module.exports = {
     "polybag_type": "polybag_type",
     "polybag_size": "polybag_size",
     "hangtag": "hangtag",
-    "barcode": "barcode",
+    "barcode": "Barcode",
     "sticker": "sticker",
     "dust_bag": "dust_bag",
     "box": "box",
@@ -585,7 +584,31 @@ module.exports = {
     "declaration1": "Declaration1",
     "declaration2": "Declaration2",
     "productionpacknos": "ProductionPackNos",
-    "itemsjson": "ItemsJSON"
+    "itemsjson": "ItemsJSON",
+    "binid": "BinID",
+    "bincode": "BinCode",
+    "zone": "Zone",
+    "rack": "Rack",
+    "shelf": "Shelf",
+    "bintype": "BinType",
+    "maxcapacity": "MaxCapacity",
+    "currentqty": "CurrentQty",
+    "rollid": "RollID",
+    "rollserialno": "RollSerialNo",
+    "lotno": "LotNo",
+    "shade": "Shade",
+    "lengthqty": "LengthQty",
+    "generateddate": "GeneratedDate",
+    "allocationid": "AllocationID",
+    "allocationno": "AllocationNo",
+    "allocationdate": "AllocationDate",
+    "reftype": "RefType",
+    "refdocno": "RefDocNo",
+    "allocatedby": "AllocatedBy",
+    "allocatedqty": "AllocatedQty",
+    "issuereason": "IssueReason",
+    "issuedtodepartment": "IssuedToDepartment",
+    "pickqty": "PickQty"
   },
   "tableColMap": {
     "approvalhistory": {
@@ -1724,6 +1747,68 @@ module.exports = {
       "enteredby": "EnteredBy",
       "status": "Status",
       "createdat": "CreatedAt"
+    },
+    "wmsbins": {
+      "binid": "BinID",
+      "bincode": "BinCode",
+      "warehousename": "WarehouseName",
+      "zone": "Zone",
+      "rack": "Rack",
+      "shelf": "Shelf",
+      "bintype": "BinType",
+      "maxcapacity": "MaxCapacity",
+      "currentqty": "CurrentQty",
+      "uom": "UOM",
+      "status": "Status",
+      "barcode": "Barcode",
+      "remarks": "Remarks",
+      "createdat": "CreatedAt"
+    },
+    "wmsrollserials": {
+      "rollid": "RollID",
+      "rollserialno": "RollSerialNo",
+      "itemcode": "ItemCode",
+      "itemname": "ItemName",
+      "lotno": "LotNo",
+      "shade": "Shade",
+      "lengthqty": "LengthQty",
+      "uom": "UOM",
+      "bincode": "BinCode",
+      "barcode": "Barcode",
+      "status": "Status",
+      "refdocno": "RefDocNo",
+      "generateddate": "GeneratedDate",
+      "createdby": "CreatedBy",
+      "createdat": "CreatedAt"
+    },
+    "wmsallocations": {
+      "allocationid": "AllocationID",
+      "allocationno": "AllocationNo",
+      "allocationdate": "AllocationDate",
+      "warehousename": "WarehouseName",
+      "reftype": "RefType",
+      "refdocno": "RefDocNo",
+      "totalqty": "TotalQty",
+      "totalitems": "TotalItems",
+      "allocatedby": "AllocatedBy",
+      "status": "Status",
+      "remarks": "Remarks",
+      "createdat": "CreatedAt"
+    },
+    "wmsbinissues": {
+      "issueid": "IssueID",
+      "issueno": "IssueNo",
+      "issuedate": "IssueDate",
+      "warehousename": "WarehouseName",
+      "issuereason": "IssueReason",
+      "refdocno": "RefDocNo",
+      "issuedtodepartment": "IssuedToDepartment",
+      "totalqty": "TotalQty",
+      "totalrows": "TotalRows",
+      "issuedby": "IssuedBy",
+      "status": "Status",
+      "remarks": "Remarks",
+      "createdat": "CreatedAt"
     }
   },
   "pkMap": {
@@ -1806,7 +1891,11 @@ module.exports = {
     "requirementtopo": "RequirementID",
     "commercialinvoices": "CommercialInvoiceID",
     "rejectionreturns": "RejectionReturnID",
-    "gateentries": "GateEntryID"
+    "gateentries": "GateEntryID",
+    "wmsbins": "BinID",
+    "wmsrollserials": "RollID",
+    "wmsallocations": "AllocationID",
+    "wmsbinissues": "IssueID"
   },
   "numericCols": [
     "historyid",

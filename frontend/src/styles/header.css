@@ -142,6 +142,10 @@
   z-index: 9999;
 }
 
+.mega-menu-mm {
+  width: min(1220px, calc(100vw - 24px)) !important;
+}
+
 .mega-menu-exports {
   width: 220px !important;
   padding: 10px 12px 12px 12px !important;

@@ -47,6 +47,19 @@ import ItemIssue from "./pages/itemissue/ItemIssue";
 import { ItemReceipts, ItemReceiptForm, ItemReceiptView } from "./pages/itemReceipt";
 
 // =======================================
+// WMS (WAREHOUSE MANAGEMENT SYSTEM)
+// =======================================
+import Bins from "./pages/mm/wms/Bins";
+import BinAllocation from "./pages/mm/wms/BinAllocation";
+import RollSerialGeneration from "./pages/mm/wms/RollSerialGeneration";
+import StockImport from "./pages/mm/wms/StockImport";
+import IssueFromBin from "./pages/mm/wms/IssueFromBin";
+import PrintBinningSlip from "./pages/mm/wms/PrintBinningSlip";
+import ScanQRCode from "./pages/mm/wms/ScanQRCode";
+import MMModuleView from "./components/common/MMModuleView";
+
+
+// =======================================
 // PM (PRODUCTION MANAGEMENT)
 // =======================================
 import ProductionOrders from "./pages/pm/productionOrders/ProductionOrders";
@@ -176,6 +189,24 @@ function App() {
                 <Route path="/material-planning" element={<MaterialPlanning />} />
                 <Route path="/stock-conversion" element={<StockConversion />} />
                 <Route path="/mrp-report" element={<MaterialPlanning />} />
+
+                {/* WMS (WAREHOUSE MANAGEMENT SYSTEM) */}
+                <Route path="/wms/bins" element={<Bins />} />
+                <Route path="/wms/bin" element={<Bins />} />
+                <Route path="/master/bins" element={<Bins />} />
+                <Route path="/wms/bin-allocation" element={<BinAllocation />} />
+                <Route path="/wms/bin-allocation/new" element={<BinAllocation initialMode="form" />} />
+                <Route path="/wms/roll-serial-generation" element={<RollSerialGeneration />} />
+                <Route path="/wms/roll-serial-num-generation" element={<RollSerialGeneration />} />
+                <Route path="/wms/stock-import" element={<StockImport />} />
+                <Route path="/wms/issue-from-bin" element={<IssueFromBin />} />
+                <Route path="/wms/issue-from-bin/new" element={<IssueFromBin initialMode="form" />} />
+                <Route path="/wms/print-binning-slip" element={<PrintBinningSlip />} />
+                <Route path="/inventory/scan-qr-code" element={<ScanQRCode />} />
+                <Route path="/inventory/scan-qr" element={<ScanQRCode />} />
+                <Route path="/item-requisition-approval" element={<MMModuleView title="Item Requisition Note Approval" moduleName="ItemRequisitionApproval" />} />
+                <Route path="/stock-adjustment-receipt" element={<MMModuleView title="Stock Adjustment Receipt" moduleName="StockAdjustmentReceipt" />} />
+
 
                 {/* GRN / ITEM RECEIPT */}
                 <Route path="/grn" element={<ItemReceipts />} />

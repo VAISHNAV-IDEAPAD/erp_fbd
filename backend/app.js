@@ -35,6 +35,7 @@ require("./database/requirementToPOTables");
 require("./database/commercialInvoiceTables");
 require("./database/rejectionReturnTables");
 require("./database/gateEntryTables");
+require("./database/wmsTables");
 
 // ======================================================
 // ROUTES
@@ -50,6 +51,7 @@ app.use("/api/buyers", require("./routes/buyers"));
 app.use("/api/indents", require("./routes/indents"));
 app.use("/api/colours", require("./routes/colours"));
 app.use("/api/warehouses", require("./routes/warehouses"));
+app.use("/api/wms", require("./routes/wms"));
 
 // ======================================================
 // COMPANY MASTER

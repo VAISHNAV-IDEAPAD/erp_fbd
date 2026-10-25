@@ -1,0 +1,557 @@
+/* ==========================================================
+   WMS (WAREHOUSE MANAGEMENT SYSTEM) - TPCS FASHION STYLES
+   ========================================================== */
+
+.wms-container {
+    padding: 16px 24px;
+    background-color: #f8fafc;
+    min-height: calc(100vh - 60px);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #1e293b;
+}
+
+/* Page Header & Top Toolbar */
+.wms-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1.5px solid #e2e8f0;
+}
+
+.wms-title-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.wms-title-icon {
+    font-size: 24px;
+    color: #004fb6;
+}
+
+.wms-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+}
+
+.wms-subtitle {
+    font-size: 12px;
+    color: #64748b;
+    margin: 0;
+}
+
+.wms-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Primary and Utility Buttons */
+.wms-btn-primary {
+    background-color: #004fb6;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 7px 15px;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.wms-btn-primary:hover {
+    background-color: #003e91;
+    color: #ffffff;
+}
+
+.wms-btn-secondary {
+    background-color: #ffffff;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.wms-btn-secondary:hover {
+    background-color: #f1f5f9;
+    border-color: #94a3b8;
+}
+
+.wms-btn-success {
+    background-color: #10b981;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.wms-btn-success:hover {
+    background-color: #059669;
+    color: #ffffff;
+}
+
+/* Secondary Toolbar matching Store Transfer */
+.wms-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.wms-toolbar-left,
+.wms-toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.wms-search-input-wrap {
+    position: relative;
+    width: 280px;
+}
+
+.wms-search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+.wms-search-input {
+    width: 100%;
+    padding: 6px 12px 6px 32px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 13px;
+    outline: none;
+}
+
+.wms-search-input:focus {
+    border-color: #004fb6;
+    box-shadow: 0 0 0 2px rgba(0, 79, 182, 0.15);
+}
+
+.wms-filter-select {
+    padding: 6px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 13px;
+    background: #ffffff;
+    color: #334155;
+    outline: none;
+    cursor: pointer;
+}
+
+.wms-view-toggle {
+    display: flex;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.wms-view-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    border: none;
+    background: #ffffff;
+    color: #475569;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.wms-view-btn.active {
+    background: #004fb6;
+    color: #ffffff;
+}
+
+/* WMS Table Styling */
+.wms-table-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.wms-table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.wms-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+    text-align: left;
+}
+
+.wms-table thead tr {
+    background-color: #f1f5fb;
+    border-bottom: 2px solid #cbd5e1;
+}
+
+.wms-table th {
+    padding: 10px 12px;
+    font-weight: 700;
+    color: #004fb6;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+.wms-table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid #edf2f7;
+    color: #334155;
+    vertical-align: middle;
+}
+
+.wms-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+/* Status Badges */
+.wms-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.wms-badge-available {
+    background-color: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.wms-badge-partial {
+    background-color: #eff6ff;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+.wms-badge-full {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.wms-badge-completed {
+    background-color: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.wms-badge-pending {
+    background-color: #fffbeb;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+/* Visual Bin Heatmap / Rack Display */
+.wms-heatmap-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    padding: 16px;
+}
+
+.wms-bin-card {
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 14px;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.wms-bin-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-color: #004fb6;
+}
+
+.wms-bin-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.wms-bin-code {
+    font-size: 15px;
+    font-weight: 700;
+    color: #004fb6;
+}
+
+.wms-bin-zone {
+    font-size: 11px;
+    color: #64748b;
+    display: block;
+}
+
+.wms-bin-occupancy-bar {
+    height: 8px;
+    width: 100%;
+    background-color: #f1f5f9;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 10px 0 6px 0;
+}
+
+.wms-bin-occupancy-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.wms-bin-occupancy-fill.low { background-color: #10b981; }
+.wms-bin-occupancy-fill.medium { background-color: #3b82f6; }
+.wms-bin-occupancy-fill.high { background-color: #ef4444; }
+
+.wms-bin-card-details {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #475569;
+    margin-top: 6px;
+}
+
+/* WMS Form Styling matching TPCS Fashion form layout */
+.wms-form-card {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 20px 24px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+}
+
+.wms-form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.wms-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px 18px;
+    margin-bottom: 20px;
+}
+
+.wms-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.wms-form-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.wms-form-input,
+.wms-form-select {
+    padding: 7px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #0f172a;
+    background: #ffffff;
+    outline: none;
+}
+
+.wms-form-input:focus,
+.wms-form-select:focus {
+    border-color: #004fb6;
+    box-shadow: 0 0 0 2px rgba(0, 79, 182, 0.15);
+}
+
+.wms-form-input:disabled {
+    background-color: #f1f5f9;
+    color: #64748b;
+}
+
+/* Barcode preview */
+.wms-barcode-box {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    background: #ffffff;
+    padding: 4px 8px;
+    border: 1px dashed #cbd5e1;
+    border-radius: 4px;
+}
+
+.wms-barcode-bars {
+    font-family: 'Libre Barcode 39', 'Courier New', monospace;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: #000000;
+    user-select: none;
+}
+
+.wms-barcode-label {
+    font-size: 10px;
+    font-family: monospace;
+    color: #475569;
+}
+
+/* QR Code Scanner Interface */
+.wms-scan-card {
+    max-width: 650px;
+    margin: 20px auto;
+    background: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.wms-scanner-viewfinder {
+    width: 100%;
+    height: 240px;
+    background: #0f172a;
+    border-radius: 8px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.wms-scanner-laser {
+    position: absolute;
+    width: 80%;
+    height: 2px;
+    background: #ef4444;
+    box-shadow: 0 0 8px #ef4444;
+    animation: scanLaser 2s infinite ease-in-out;
+}
+
+@keyframes scanLaser {
+    0% { top: 15%; opacity: 0.3; }
+    50% { top: 85%; opacity: 1; }
+    100% { top: 15%; opacity: 0.3; }
+}
+
+/* Printable Slip Formats */
+.wms-print-container {
+    background: #ffffff;
+    padding: 30px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    max-width: 850px;
+    margin: 0 auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.wms-print-header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px solid #004fb6;
+    padding-bottom: 12px;
+    margin-bottom: 18px;
+}
+
+.wms-company-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #004fb6;
+}
+
+.wms-doc-title {
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #0f172a;
+    margin-top: 4px;
+}
+
+/* Printable sticker grid */
+.wms-sticker-sheet {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.wms-bin-sticker {
+    border: 2px solid #0f172a;
+    border-radius: 6px;
+    padding: 16px;
+    background: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    .wms-print-container,
+    .wms-print-container * {
+        visibility: visible;
+    }
+    .wms-print-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        border: none;
+        box-shadow: none;
+    }
+    .no-print {
+        display: none !important;
+    }
+}

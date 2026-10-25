@@ -71,57 +71,70 @@ export default function MegaMenu({
     // =========================================
     // MM MENU (MATERIAL MANAGEMENT)
     // =========================================
+    // MM MENU (EXACT MATCH FOR TPCS FASHION SCREENSHOT)
+    // =========================================
     const mmMenu = [
         {
             title: "PURCHASE",
             items: [
                 { label: "Indent", path: "/indents" },
-                { label: "Purchase Requisition", path: "/purchase-requisition" },
+                { label: "Stock Indent", path: "/stock-indent" },
+                { label: "Rejection Return", path: "/rejection-return" },
+                { label: "Indent Approval", path: "/indent-approval" },
                 { label: "Purchase Order", path: "/purchase-orders" },
-                { label: "Pending PO", path: "/pending-po" },
-                { label: "Requirement to PO", path: "/requirement-to-po" },
                 { label: "Purchase Return", path: "/purchase-return" }
             ]
         },
         {
             title: "INVENTORY",
             items: [
-                { label: "Stock Indent", path: "/stock-indent" },
-                { label: "Indent Approval", path: "/indent-approval" },
-                { label: "Item Receipt (GRN)", path: "/grn" },
+                { label: "Scan QR Code", path: "/inventory/scan-qr-code" },
+                { label: "Item Receipt", path: "/item-receipt" },
                 { label: "Gate Entry", path: "/gate-entry" },
+                { label: "Item Requisition Note", path: "/item-requisitions" },
+                { label: "Item Requisition Note Approval", path: "/item-requisition-approval", sectionBreak: true },
                 { label: "Item Issue", path: "/stock-issues" },
                 { label: "Floor Return", path: "/floor-return" },
                 { label: "Store Transfer", path: "/stock-transfer" },
-                { label: "Gate Pass Delivery", path: "/gate-pass-delivery" },
-                { label: "Item Requisition", path: "/item-requisition" },
+                { label: "Gate Pass Delivery Note", path: "/gate-pass-delivery" },
+                { label: "Item Requisition Note", path: "/item-requisitions", sectionBreak: true },
                 { label: "Gate Pass GRN", path: "/gate-pass-grn" },
                 { label: "Stock Transfer DC", path: "/stock-transfer-dc" },
                 { label: "Stock Transfer GRN", path: "/stock-transfer-grn" },
-                { label: "GRN HandOver", path: "/grn-handover" }
+                { label: "Stock Adjustment Receipt", path: "/stock-adjustment-receipt" }
             ]
         },
         {
-            title: "QUALITY CONTROL",
+            title: "QC",
             items: [
-                { label: "Incoming Material Inspection", path: "/incoming-material-inspection" },
-                { label: "Final Inspection", path: "/final-inspection" },
-                { label: "Rejection Return", path: "/rejection-return" }
+                { label: "Incoming Material Inspection", path: "/incoming-material-inspection" }
+            ]
+        },
+        {
+            title: "WMS",
+            items: [
+                { label: "Bin Allocation", path: "/wms/bin-allocation" },
+                { label: "Roll OR Serial Num. Generation", path: "/wms/roll-serial-generation" },
+                { label: "WMS Stock Import", path: "/wms/stock-import" },
+                { label: "Issue from Bin", path: "/wms/issue-from-bin" },
+                { label: "Print Binning Slip", path: "/wms/print-binning-slip", sectionBreak: true },
+                { label: "Bin", path: "/wms/bins" }
+            ]
+        },
+        {
+            title: "INVENTORY",
+            items: [
+                { label: "Stock Conversion", path: "/stock-conversion" }
             ]
         },
         {
             title: "MRP",
             items: [
-                { label: "Material Planning", path: "/material-planning" },
-                { label: "Requirement to PO", path: "/requirement-to-po" },
-                { label: "Stock Conversion", path: "/stock-conversion" },
-                { label: "MRP Report", path: "/mrp-report" }
+                { label: "Material Planning", path: "/material-planning" }
             ]
         }
     ];
 
-    // =========================================
-    // SM MENU (EXACT MATCH FOR V-CONNECT INC. SCREENSHOT)
     // =========================================
     const smMenu = [
         {
@@ -295,7 +308,7 @@ export default function MegaMenu({
     }).filter(col => !menuSearch.trim() || col.items.length > 0 || col.hasMatchCard);
 
     // Compute left style dynamically based on menu width
-    const menuWidth = activeMenu === "EXPORTS" ? 220 : activeMenu === "FM" ? 320 : 870;
+    const menuWidth = activeMenu === "EXPORTS" ? 220 : activeMenu === "FM" ? 320 : activeMenu === "MM" ? 1160 : 870;
     const containerStyle = leftOffset != null
         ? { left: `min(${leftOffset}px, calc(100vw - ${menuWidth + 16}px))` }
         : {};

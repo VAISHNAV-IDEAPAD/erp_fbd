@@ -267,6 +267,72 @@ export const ERP_SCREENS = [
   },
 
   // ==========================================
+  // ==========================================
+  // MM - WMS (WAREHOUSE MANAGEMENT SYSTEM)
+  // ==========================================
+  {
+    id: "mm-wms-bin-allocation",
+    title: "Bin Allocation",
+    module: "MM",
+    category: "WMS",
+    path: "/wms/bin-allocation",
+    keywords: ["bin allocation", "put away", "wms", "allocate bin", "storage", "location", "rack"],
+    popular: true
+  },
+  {
+    id: "mm-wms-roll-serial-generation",
+    title: "Roll OR Serial Num. Generation",
+    module: "MM",
+    category: "WMS",
+    path: "/wms/roll-serial-generation",
+    keywords: ["roll generation", "serial number", "barcode generation", "fabric roll", "leather serial", "wms", "qr"],
+    popular: true
+  },
+  {
+    id: "mm-wms-stock-import",
+    title: "WMS Stock Import",
+    module: "MM",
+    category: "WMS",
+    path: "/wms/stock-import",
+    keywords: ["wms stock import", "stock import", "bulk bin import", "excel import", "csv import", "opening stock"],
+    popular: true
+  },
+  {
+    id: "mm-wms-issue-from-bin",
+    title: "Issue from Bin",
+    module: "MM",
+    category: "WMS",
+    path: "/wms/issue-from-bin",
+    keywords: ["issue from bin", "picking", "bin pick", "pick list", "material issue", "wms"],
+    popular: true
+  },
+  {
+    id: "mm-wms-print-binning-slip",
+    title: "Print Binning Slip",
+    module: "MM",
+    category: "WMS",
+    path: "/wms/print-binning-slip",
+    keywords: ["print binning slip", "binning slip", "rack label", "barcode tag", "put away sheet"],
+    popular: true
+  },
+  {
+    id: "mm-wms-bins",
+    title: "Bin",
+    module: "MM",
+    category: "WMS",
+    path: "/wms/bins",
+    keywords: ["bin", "bin master", "warehouse bin", "rack", "shelf", "wms", "heatmap", "capacity"],
+    popular: true
+  },
+  {
+    id: "mm-inventory-scan-qr",
+    title: "Scan QR Code",
+    module: "MM",
+    category: "Inventory",
+    path: "/inventory/scan-qr-code",
+    keywords: ["scan qr code", "qr scanner", "barcode lookup", "scan bin", "scan roll"],
+    popular: true
+  },
   // MM - MATERIAL MANAGEMENT & PURCHASE
   // ==========================================
   {

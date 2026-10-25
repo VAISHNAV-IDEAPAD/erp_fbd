@@ -9,6 +9,8 @@ import {
     FaSave,
     FaEye,
     FaCaretDown,
+    FaBars,
+    FaFilter,
     FaPaperclip,
     FaPrint,
     FaRedo,
@@ -127,7 +129,7 @@ const INITIAL_SAVED_ISSUES = [
     }
 ];
 
-export default function ItemIssue({ initialMode = "form" }) {
+export default function ItemIssue({ initialMode = "list" }) {
     // View mode: 'form' (matches screenshots) or 'list' (registers)
     const [viewMode, setViewMode] = useState(initialMode);
 
@@ -1077,114 +1079,238 @@ export default function ItemIssue({ initialMode = "form" }) {
             {/* ==========================================================
                MODE: REGISTER / LIST VIEW (ACCESSIBLE VIA EYE VIEW BUTTON)
             =========================================================== */}
+            {/* ==========================================================
+               MODE: REGISTER / LIST VIEW (EXACT MATCH FOR TPCS FASHION SCREENSHOT)
+            =========================================================== */}
             {viewMode === "list" && (
-                <div>
-                    <div className="tpcs-ii-list-header">
-                        <div>
-                            <h1 className="tpcs-ii-title" style={{ margin: 0 }}>Item Issue Register</h1>
-                            <p style={{ margin: "2px 0 0 0", fontSize: "12.5px", color: "#64748b" }}>
-                                All item issues dispatched to production and jobwork
-                            </p>
+                <div style={{ backgroundColor: "#ffffff" }}>
+                    {/* Header Row: Title on top */}
+                    <div style={{ marginBottom: "6px" }}>
+                        <h2 style={{ fontSize: "20px", fontWeight: "700", color: "#1976d2", margin: "0 0 10px 0" }}>
+                            Item Issue
+                        </h2>
+                    </div>
+
+                    {/* Filter & Action Row matching Screenshot */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "8px" }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
+                            <label style={{ fontSize: "12px", color: "#334155", fontWeight: 600 }}>Associate</label>
+                            <input
+                                type="text"
+                                placeholder="Supplier Search..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                style={{
+                                    width: "220px",
+                                    height: "28px",
+                                    border: "1px solid #cbd5e1",
+                                    borderRadius: "3px",
+                                    padding: "2px 8px",
+                                    fontSize: "12px",
+                                    outline: "none"
+                                }}
+                            />
                         </div>
 
-                        <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                            <div className="tpcs-ii-list-search">
-                                <input
-                                    type="text"
-                                    className="tpcs-ii-list-input"
-                                    placeholder="Search Issue No, Associate, Store..."
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                />
-                            </div>
-
+                        <div>
                             <button
                                 type="button"
-                                className="tpcs-ii-btn-save"
                                 onClick={() => setViewMode("form")}
+                                style={{
+                                    backgroundColor: "#4caf50",
+                                    color: "#ffffff",
+                                    border: "none",
+                                    borderRadius: "3px",
+                                    padding: "6px 14px",
+                                    fontSize: "12.5px",
+                                    fontWeight: 600,
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    gap: "5px",
+                                    cursor: "pointer",
+                                    boxShadow: "0 1px 2px rgba(0,0,0,0.1)"
+                                }}
                             >
-                                <FaPlus /> <span>+ New Issue</span>
+                                <FaPlus style={{ fontSize: "11px" }} />
+                                <span>New Item Issue</span>
                             </button>
                         </div>
                     </div>
 
-                    <div className="tpcs-ii-table-container">
-                        <table className="tpcs-ii-table">
+                    {/* Secondary Toolbar: Reload, Options, Settings, Filter */}
+                    <div style={{ display: "flex", gap: "6px", alignItems: "center", marginBottom: "12px" }}>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                fetchIssues();
+                                showToast("Item issue records reloaded");
+                            }}
+                            title="Reload"
+                            style={{
+                                width: "28px",
+                                height: "28px",
+                                border: "1px solid #cbd5e1",
+                                borderRadius: "3px",
+                                background: "#ffffff",
+                                color: "#475569",
+                                display: "inline-flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                cursor: "pointer",
+                                fontSize: "12px"
+                            }}
+                        >
+                            <FaRedo />
+                        </button>
+                        <button
+                            type="button"
+                            title="View Options"
+                            style={{
+                                width: "28px",
+                                height: "28px",
+                                border: "1px solid #cbd5e1",
+                                borderRadius: "3px",
+                                background: "#ffffff",
+                                color: "#475569",
+                                display: "inline-flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                cursor: "pointer",
+                                fontSize: "12px"
+                            }}
+                        >
+                            <FaListUl />
+                        </button>
+                        <button
+                            type="button"
+                            title="Settings"
+                            style={{
+                                width: "28px",
+                                height: "28px",
+                                border: "1px solid #cbd5e1",
+                                borderRadius: "3px",
+                                background: "#ffffff",
+                                color: "#475569",
+                                display: "inline-flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                cursor: "pointer",
+                                fontSize: "12px"
+                            }}
+                        >
+                            <FaCog />
+                        </button>
+                        <button
+                            type="button"
+                            style={{
+                                height: "28px",
+                                padding: "0 10px",
+                                border: "1px solid #cbd5e1",
+                                borderRadius: "3px",
+                                background: "#ffffff",
+                                color: "#334155",
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: "5px",
+                                cursor: "pointer",
+                                fontSize: "12px"
+                            }}
+                        >
+                            <FaFilter style={{ fontSize: "10px", color: "#64748b" }} />
+                            <span>Filter</span>
+                            <FaCaretDown style={{ fontSize: "10px", color: "#64748b" }} />
+                        </button>
+                    </div>
+
+                    {/* Table matching TPCS Fashion screenshot */}
+                    <div style={{ width: "100%", overflowX: "auto", border: "1px solid #cbd5e1", borderRadius: "2px" }}>
+                        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "12px", minWidth: "1400px" }}>
                             <thead>
-                                <tr>
-                                    <th style={{ width: "90px" }}>Actions</th>
-                                    <th>Issue No</th>
-                                    <th>Date</th>
-                                    <th>Issue To</th>
-                                    <th>Associate / Supplier</th>
-                                    <th>Department</th>
-                                    <th>Stores</th>
-                                    <th>Issued By</th>
-                                    <th>Requisition No</th>
-                                    <th style={{ textAlign: "right" }}>Total Qty</th>
-                                    <th>Status</th>
+                                <tr style={{ backgroundColor: "#1976d2", color: "#ffffff", textAlign: "left" }}>
+                                    <th style={{ padding: "8px 10px", fontWeight: 700, borderRight: "1px solid rgba(255,255,255,0.2)", width: "70px", textAlign: "center" }}>Action</th>
+                                    <th style={{ padding: "8px 10px", fontWeight: 700, borderRight: "1px solid rgba(255,255,255,0.2)" }}>Issue No</th>
+                                    <th style={{ padding: "8px 10px", fontWeight: 700, borderRight: "1px solid rgba(255,255,255,0.2)" }}>Updated By</th>
+                                    <th style={{ padding: "8px 10px", fontWeight: 700, borderRight: "1px solid rgba(255,255,255,0.2)" }}>Updated On</th>
+                                    <th style={{ padding: "8px 10px", fontWeight: 700, borderRight: "1px solid rgba(255,255,255,0.2)" }}>JW No.</th>
+                                    <th style={{ padding: "8px 10px", fontWeight: 700, borderRight: "1px solid rgba(255,255,255,0.2)" }}>Exchange Rate</th>
+                                    <th style={{ padding: "8px 10px", fontWeight: 700, borderRight: "1px solid rgba(255,255,255,0.2)" }}>Remark</th>
+                                    <th style={{ padding: "8px 10px", fontWeight: 700, borderRight: "1px solid rgba(255,255,255,0.2)" }}>Date</th>
+                                    <th style={{ padding: "8px 10px", fontWeight: 700, borderRight: "1px solid rgba(255,255,255,0.2)" }}>Supplier</th>
+                                    <th style={{ padding: "8px 10px", fontWeight: 700, borderRight: "1px solid rgba(255,255,255,0.2)" }}>Issued By</th>
+                                    <th style={{ padding: "8px 10px", fontWeight: 700, borderRight: "1px solid rgba(255,255,255,0.2)" }}>Stores</th>
+                                    <th style={{ padding: "8px 10px", fontWeight: 700, borderRight: "1px solid rgba(255,255,255,0.2)" }}>Memo for internal use</th>
+                                    <th style={{ padding: "8px 10px", fontWeight: 700, borderRight: "1px solid rgba(255,255,255,0.2)" }}>Currency</th>
+                                    <th style={{ padding: "8px 10px", fontWeight: 700, borderRight: "1px solid rgba(255,255,255,0.2)" }}>Expiry Date</th>
+                                    <th style={{ padding: "8px 10px", fontWeight: 700, borderRight: "1px solid rgba(255,255,255,0.2)" }}>JC No</th>
+                                    <th style={{ padding: "8px 10px", fontWeight: 700, borderRight: "1px solid rgba(255,255,255,0.2)", textAlign: "right" }}>Qty</th>
+                                    <th style={{ padding: "8px 10px", fontWeight: 700, textAlign: "center" }}>No. of rows</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredIssues.length === 0 ? (
-                                    <tr>
-                                        <td colSpan={11} style={{ textAlign: "center", padding: "30px", color: "#64748b" }}>
-                                            No Item Issue records found. Click <strong>+ New Issue</strong> to create one.
+                                {filteredIssues.map((item) => (
+                                    <tr key={item.id} style={{ borderBottom: "1px solid #e2e8f0" }}>
+                                        <td style={{ textAlign: "center", padding: "6px 8px", borderRight: "1px solid #f1f5f9" }}>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setActiveRecord(item);
+                                                    setViewMode("form");
+                                                }}
+                                                title="View / Edit Record"
+                                                style={{
+                                                    background: "#e0f2fe",
+                                                    border: "1px solid #bae6fd",
+                                                    color: "#0284c7",
+                                                    borderRadius: "3px",
+                                                    padding: "2px 6px",
+                                                    cursor: "pointer",
+                                                    fontSize: "11px"
+                                                }}
+                                            >
+                                                <FaEye />
+                                            </button>
                                         </td>
+                                        <td style={{ padding: "6px 10px", fontWeight: 600, color: "#1976d2", borderRight: "1px solid #f1f5f9" }}>{item.issueNo}</td>
+                                        <td style={{ padding: "6px 10px", borderRight: "1px solid #f1f5f9" }}>{item.issuedBy || "Admin"}</td>
+                                        <td style={{ padding: "6px 10px", borderRight: "1px solid #f1f5f9" }}>{item.date}</td>
+                                        <td style={{ padding: "6px 10px", borderRight: "1px solid #f1f5f9" }}>-</td>
+                                        <td style={{ padding: "6px 10px", borderRight: "1px solid #f1f5f9" }}>1.00</td>
+                                        <td style={{ padding: "6px 10px", borderRight: "1px solid #f1f5f9" }}>{item.remark || "-"}</td>
+                                        <td style={{ padding: "6px 10px", borderRight: "1px solid #f1f5f9" }}>{item.date}</td>
+                                        <td style={{ padding: "6px 10px", borderRight: "1px solid #f1f5f9" }}>{item.associate || "-"}</td>
+                                        <td style={{ padding: "6px 10px", borderRight: "1px solid #f1f5f9" }}>{item.issuedBy}</td>
+                                        <td style={{ padding: "6px 10px", borderRight: "1px solid #f1f5f9" }}>{item.stores}</td>
+                                        <td style={{ padding: "6px 10px", borderRight: "1px solid #f1f5f9" }}>{item.internalMemo || "-"}</td>
+                                        <td style={{ padding: "6px 10px", borderRight: "1px solid #f1f5f9" }}>INR</td>
+                                        <td style={{ padding: "6px 10px", borderRight: "1px solid #f1f5f9" }}>-</td>
+                                        <td style={{ padding: "6px 10px", borderRight: "1px solid #f1f5f9" }}>{item.jobcardNo || "-"}</td>
+                                        <td style={{ padding: "6px 10px", textAlign: "right", fontWeight: 700, borderRight: "1px solid #f1f5f9" }}>{item.totalQty.toLocaleString()}</td>
+                                        <td style={{ padding: "6px 10px", textAlign: "center" }}>{item.items ? item.items.length : 1}</td>
                                     </tr>
-                                ) : (
-                                    filteredIssues.map((item) => (
-                                        <tr key={item.id}>
-                                            <td>
-                                                <div style={{ display: "flex", gap: "6px" }}>
-                                                    <button
-                                                        type="button"
-                                                        title="View Details"
-                                                        onClick={() => {
-                                                            setActiveRecord(item);
-                                                            setActiveModal("details");
-                                                        }}
-                                                        style={{ background: "#e0f2fe", border: "1px solid #bae6fd", color: "#0284c7", borderRadius: "3px", padding: "3px 6px", cursor: "pointer" }}
-                                                    >
-                                                        <FaEye style={{ fontSize: "11px" }} />
-                                                    </button>
-                                                    <button
-                                                        type="button"
-                                                        title="Print Issue Slip"
-                                                        onClick={() => {
-                                                            setActiveRecord(item);
-                                                            setActiveModal("print");
-                                                        }}
-                                                        style={{ background: "#f1f5f9", border: "1px solid #cbd5e1", color: "#334155", borderRadius: "3px", padding: "3px 6px", cursor: "pointer" }}
-                                                    >
-                                                        <FaPrint style={{ fontSize: "11px" }} />
-                                                    </button>
-                                                </div>
-                                            </td>
-                                            <td style={{ fontWeight: 700, color: "#1976d2" }}>{item.issueNo}</td>
-                                            <td>{item.date}</td>
-                                            <td><span style={{ background: "#e0f2fe", color: "#0369a1", padding: "2px 6px", borderRadius: "3px", fontSize: "11px", fontWeight: 600 }}>{item.issueTo}</span></td>
-                                            <td>{item.associate || "-"}</td>
-                                            <td>{item.department || "-"}</td>
-                                            <td>{item.stores}</td>
-                                            <td>{item.issuedBy}</td>
-                                            <td>{item.requisitionNo || "-"}</td>
-                                            <td style={{ textAlign: "right", fontWeight: 700 }}>{item.totalQty.toLocaleString()}</td>
-                                            <td>
-                                                <span style={{
-                                                    background: item.status === "Completed" ? "#dcfce7" : "#fef3c7",
-                                                    color: item.status === "Completed" ? "#15803d" : "#b45309",
-                                                    padding: "2px 8px",
-                                                    borderRadius: "9999px",
-                                                    fontSize: "11px",
-                                                    fontWeight: 600
-                                                }}>
-                                                    {item.status}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ))
-                                )}
+                                ))}
+
+                                {/* Gridlines padding rows matching screenshot */}
+                                {Array.from({ length: Math.max(0, 16 - filteredIssues.length) }).map((_, i) => (
+                                    <tr key={'empty-' + i} style={{ borderBottom: "1px solid #eef2f6", height: "28px" }}>
+                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
+                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
+                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
+                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
+                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
+                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
+                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
+                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
+                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
+                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
+                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
+                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
+                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
+                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
+                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
+                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
+                                        <td></td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>

@@ -57,6 +57,7 @@ import IssueFromBin from "./pages/mm/wms/IssueFromBin";
 import PrintBinningSlip from "./pages/mm/wms/PrintBinningSlip";
 import ScanQRCode from "./pages/mm/wms/ScanQRCode";
 import MMModuleView from "./components/common/MMModuleView";
+import MMHub from "./pages/mm/MMHub";
 
 
 // =======================================
@@ -161,6 +162,8 @@ function App() {
                 <Route path="/supplier-ledger" element={<SupplierLedger />} />
                 <Route path="/purchase-dashboard" element={<Purchase />} />
 
+                {/* MM HUB & OVERVIEW */}
+                <Route path="/mm" element={<MMHub />} />
                 {/* MM & INVENTORY */}
                 <Route path="/stock-indent" element={<StockIndents />} />
                 <Route path="/stock-indent/new" element={<StockIndents mode="form" />} />

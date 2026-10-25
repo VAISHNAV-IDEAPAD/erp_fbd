@@ -95,93 +95,215 @@ export default function MMModuleView({
         )
     );
 
-    return (
-        <Container fluid className="py-4">
-            <Card className="shadow-sm border-0">
-                <Card.Header className="bg-primary text-white d-flex justify-content-between align-items-center py-3">
-                    <div className="d-flex align-items-center">
-                        <FaBoxes className="me-2 fs-5" />
-                        <div>
-                            <h5 className="mb-0 fw-bold">{title}</h5>
-                            <small className="opacity-75">Material Management Workflow &middot; {moduleName}</small>
-                        </div>
-                    </div>
-                    <div>
-                        <Button variant="light" size="sm" className="me-2" onClick={loadData} disabled={loading}>
-                            <FaSyncAlt className={loading ? "fa-spin" : ""} /> Refresh
-                        </Button>
-                        <Button variant="warning" size="sm" onClick={() => setShowModal(true)}>
-                            <FaPlus /> New Entry
-                        </Button>
-                    </div>
-                </Card.Header>
-                <Card.Body>
-                    <Row className="mb-3">
-                        <Col md={4}>
-                            <div className="input-group">
-                                <span className="input-group-text bg-white"><FaSearch className="text-muted" /></span>
-                                <Form.Control
-                                    type="text"
-                                    placeholder={`Search ${title}...`}
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                />
-                            </div>
-                        </Col>
-                    </Row>
+        return (
+        <div style={{ backgroundColor: "#ffffff", padding: "18px 24px 60px 24px", minHeight: "calc(100vh - 65px)", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
+            {/* Header: Title */}
+            <div style={{ marginBottom: "6px" }}>
+                <h2 style={{ fontSize: "20px", fontWeight: "700", color: "#1976d2", margin: "0 0 10px 0" }}>
+                    {title}
+                </h2>
+            </div>
 
-                    {loading ? (
-                        <div className="text-center py-5">
-                            <Spinner animation="border" variant="primary" />
-                            <p className="mt-2 text-muted">Loading {title} records...</p>
-                        </div>
-                    ) : filtered.length === 0 ? (
-                        <div className="text-center py-5 text-muted">
-                            <FaBoxes size={48} className="mb-3 text-secondary opacity-50" />
-                            <h5>No Records Found</h5>
-                            <p>Click "New Entry" to add the first {title} document.</p>
-                        </div>
-                    ) : (
-                        <div className="table-responsive">
-                            <Table hover className="align-middle mb-0">
-                                <thead className="table-light">
-                                    <tr>
-                                        {columns.map(col => (
-                                            <th key={col.key}>{col.label}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filtered.map((item, idx) => (
-                                        <tr key={item.id || idx}>
-                                            {columns.map(col => {
-                                                const val = item[col.key];
-                                                if (col.key === "Status") {
-                                                    return (
-                                                        <td key={col.key}>
-                                                            <Badge bg={
-                                                                val === "Approved" || val === "Completed" ? "success" :
-                                                                val === "Rejected" ? "danger" :
-                                                                val === "In Progress" ? "info" : "warning"
-                                                            } text={val === "Pending" ? "dark" : ""}>
-                                                                {val || "Pending"}
-                                                            </Badge>
-                                                        </td>
-                                                    );
-                                                }
-                                                return <td key={col.key}>{val !== undefined && val !== null ? String(val) : "-"}</td>;
-                                            })}
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </Table>
-                        </div>
-                    )}
-                </Card.Body>
-            </Card>
+            {/* Top Filter and New Button matching TPCS Fashion screenshot */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "8px" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
+                    <label style={{ fontSize: "12px", color: "#334155", fontWeight: 600 }}>Associate / Search</label>
+                    <input
+                        type="text"
+                        placeholder="Search records..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{
+                            width: "220px",
+                            height: "28px",
+                            border: "1px solid #cbd5e1",
+                            borderRadius: "3px",
+                            padding: "2px 8px",
+                            fontSize: "12px",
+                            outline: "none"
+                        }}
+                    />
+                </div>
+
+                <div>
+                    <button
+                        type="button"
+                        onClick={() => setShowModal(true)}
+                        style={{
+                            backgroundColor: "#4caf50",
+                            color: "#ffffff",
+                            border: "none",
+                            borderRadius: "3px",
+                            padding: "6px 14px",
+                            fontSize: "12.5px",
+                            fontWeight: 600,
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "5px",
+                            cursor: "pointer",
+                            boxShadow: "0 1px 2px rgba(0,0,0,0.1)"
+                        }}
+                    >
+                        <FaPlus style={{ fontSize: "11px" }} />
+                        <span>New {title}</span>
+                    </button>
+                </div>
+            </div>
+
+            {/* Secondary Toolbar matching TPCS Fashion screenshot */}
+            <div style={{ display: "flex", gap: "6px", alignItems: "center", marginBottom: "12px" }}>
+                <button
+                    type="button"
+                    onClick={loadData}
+                    title="Reload"
+                    style={{
+                        width: "28px",
+                        height: "28px",
+                        border: "1px solid #cbd5e1",
+                        borderRadius: "3px",
+                        background: "#ffffff",
+                        color: "#475569",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        fontSize: "12px"
+                    }}
+                >
+                    <FaSyncAlt className={loading ? "fa-spin" : ""} />
+                </button>
+                <button
+                    type="button"
+                    title="View Options"
+                    style={{
+                        width: "28px",
+                        height: "28px",
+                        border: "1px solid #cbd5e1",
+                        borderRadius: "3px",
+                        background: "#ffffff",
+                        color: "#475569",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        fontSize: "12px"
+                    }}
+                >
+                    ☰
+                </button>
+                <button
+                    type="button"
+                    title="Settings"
+                    style={{
+                        width: "28px",
+                        height: "28px",
+                        border: "1px solid #cbd5e1",
+                        borderRadius: "3px",
+                        background: "#ffffff",
+                        color: "#475569",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        fontSize: "12px"
+                    }}
+                >
+                    ⚙
+                </button>
+                <button
+                    type="button"
+                    style={{
+                        height: "28px",
+                        padding: "0 10px",
+                        border: "1px solid #cbd5e1",
+                        borderRadius: "3px",
+                        background: "#ffffff",
+                        color: "#334155",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "5px",
+                        cursor: "pointer",
+                        fontSize: "12px"
+                    }}
+                >
+                    <span>Filter ▾</span>
+                </button>
+            </div>
+
+            {/* Table matching screenshot */}
+            <div style={{ width: "100%", overflowX: "auto", border: "1px solid #cbd5e1", borderRadius: "2px" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "12px", minWidth: "900px" }}>
+                    <thead>
+                        <tr style={{ backgroundColor: "#1976d2", color: "#ffffff", textAlign: "left" }}>
+                            <th style={{ padding: "8px 10px", fontWeight: 700, borderRight: "1px solid rgba(255,255,255,0.2)", width: "70px", textAlign: "center" }}>Action</th>
+                            {columns.map(col => (
+                                <th key={col.key} style={{ padding: "8px 10px", fontWeight: 700, borderRight: "1px solid rgba(255,255,255,0.2)" }}>{col.label}</th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filtered.map((item, idx) => (
+                            <tr key={item.id || idx} style={{ borderBottom: "1px solid #e2e8f0" }}>
+                                <td style={{ textAlign: "center", padding: "6px 8px", borderRight: "1px solid #f1f5f9" }}>
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowModal(true)}
+                                        title="View Record"
+                                        style={{
+                                            background: "#e0f2fe",
+                                            border: "1px solid #bae6fd",
+                                            color: "#0284c7",
+                                            borderRadius: "3px",
+                                            padding: "2px 6px",
+                                            cursor: "pointer",
+                                            fontSize: "11px"
+                                        }}
+                                    >
+                                        👁
+                                    </button>
+                                </td>
+                                {columns.map(col => {
+                                    const val = item[col.key];
+                                    if (col.key === "Status") {
+                                        return (
+                                            <td key={col.key} style={{ padding: "6px 10px", borderRight: "1px solid #f1f5f9" }}>
+                                                <span style={{
+                                                    background: val === "Completed" || val === "Approved" ? "#dcfce7" : "#fef3c7",
+                                                    color: val === "Completed" || val === "Approved" ? "#15803d" : "#b45309",
+                                                    padding: "2px 8px",
+                                                    borderRadius: "10px",
+                                                    fontSize: "11px",
+                                                    fontWeight: 600
+                                                }}>
+                                                    {val || "Pending"}
+                                                </span>
+                                            </td>
+                                        );
+                                    }
+                                    return (
+                                        <td key={col.key} style={{ padding: "6px 10px", borderRight: "1px solid #f1f5f9", fontWeight: col.key === "DocNo" ? 600 : 400, color: col.key === "DocNo" ? "#1976d2" : "#334155" }}>
+                                            {val !== undefined && val !== null ? String(val) : "-"}
+                                        </td>
+                                    );
+                                })}
+                            </tr>
+                        ))}
+
+                        {/* Padding empty gridlines */}
+                        {Array.from({ length: Math.max(0, 16 - filtered.length) }).map((_, i) => (
+                            <tr key={'empty-' + i} style={{ borderBottom: "1px solid #eef2f6", height: "28px" }}>
+                                <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
+                                {columns.map(col => (
+                                    <td key={col.key} style={{ borderRight: "1px solid #f1f5f9" }}></td>
+                                ))}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
 
             {/* CREATE MODAL */}
-            <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+            <Modal show={showModal} onHide={() => setShowModal(false)} centered>onHide={() => setShowModal(false)} centered>
                 <Form onSubmit={handleCreate}>
                     <Modal.Header closeButton className="bg-primary text-white">
                         <Modal.Title className="fs-6">New {title} Entry</Modal.Title>
@@ -261,6 +383,6 @@ export default function MMModuleView({
                     </Modal.Footer>
                 </Form>
             </Modal>
-        </Container>
+        </div>
     );
 }

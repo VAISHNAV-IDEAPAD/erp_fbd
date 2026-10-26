@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
     FaChartBar,
@@ -7,276 +7,35 @@ import {
     FaCog,
     FaArrowsAlt,
     FaRegEdit,
-    FaBoxOpen,
-    FaShoppingCart,
-    FaCogs,
-    FaFileAlt,
-    FaBolt,
-    FaMoneyCheckAlt,
-    FaChartLine,
-    FaFolder,
-    FaWrench,
-    FaClock,
-    FaCompass,
-    FaEdit,
     FaTimes,
     FaFilePdf,
     FaFileExcel,
     FaChevronDown,
     FaChevronUp,
-    FaArrowUp
+    FaArrowUp,
+    FaExternalLinkAlt,
+    FaPrint,
+    FaCopy,
+    FaCheckCircle,
+    FaUndo,
+    FaSyncAlt,
+    FaFolder,
+    FaCogs,
+    FaChartLine
 } from "react-icons/fa";
+import {
+    INITIAL_REPORT_CATEGORIES_DATA,
+    getReportIcon,
+    generateLiveReportData,
+    exportReportToCSV,
+    copyReportToClipboard,
+    printReportDocument
+} from "./reports/reportsDataGenerator";
 import "../styles/reports.css";
 
-// 14 CATEGORIES WITH EXACTLY 88 REPORTS
-const REPORT_CATEGORIES_DATA = [
-    // --- COLUMN 1 (LEFT) ---
-    {
-        id: "cat_general",
-        title: "",
-        displayTitle: "General Reports",
-        rawTitle: "",
-        icon: <FaRegEdit style={{ color: "#2563eb" }} />,
-        badgeBg: "#e0ecfd",
-        column: "left",
-        defaultOpen: true,
-        reports: [
-            { id: "r1", name: "Order Closing Report", description: null },
-            { id: "r2", name: "Item Requisition Note vs Issues Details", description: null },
-            { id: "r3", name: "BOM Amendment Comparison", description: null },
-            { id: "r4", name: "STDC Register With Size", description: null },
-            { id: "r5", name: "Production Planning Calendar", description: null },
-            { id: "r6", name: "Subcontract Order/DC Report", description: null },
-            { id: "r7", name: "Sample Order Register", description: "Sample Order Register" },
-            { id: "r8", name: "Product Development Pipeline Dashboard", description: null },
-            { id: "r9", name: "Product Dev Pipeline V2", description: null },
-            { id: "r10", name: "Purchase Order Register With Size2", description: null },
-            { id: "r11", name: "STYLE", description: null },
-            { id: "r12", name: "Pending Stock Transfer DC", description: null },
-            { id: "r13", name: "Indent Vs PO Vs GRN", description: null },
-            { id: "r14", name: "Subcontract Order DC vs GRN", description: null },
-            { id: "r15", name: "Subcontract Conversion DC vs GRN", description: null }
-        ]
-    },
-    {
-        id: "cat_costing",
-        title: "02. Costing",
-        rawTitle: "02. Costing",
-        icon: <FaChartLine style={{ color: "#d97706" }} />,
-        badgeBg: "#fef3c7",
-        column: "left",
-        defaultOpen: false,
-        reports: [
-            { id: "r16", name: "Pre-Costing vs Actual Costing Variance", description: "Variance Audit" },
-            { id: "r17", name: "Style Costing Summary Report", description: "Budget vs Actual" }
-        ]
-    },
-    {
-        id: "cat_purchase",
-        title: "04. Purchase",
-        rawTitle: "04. Purchase",
-        icon: <FaFolder style={{ color: "#db2777" }} />,
-        badgeBg: "#fce7f3",
-        column: "left",
-        defaultOpen: false,
-        reports: [
-            { id: "r18", name: "Requirement to PO Register", description: "PO Requirement Audit" },
-            { id: "r19", name: "Pending Purchase Order Report", description: "Pending Deliveries" },
-            { id: "r20", name: "Purchase Order Register With Item Details", description: null },
-            { id: "r21", name: "Supplier-wise Purchase Analysis", description: null },
-            { id: "r22", name: "GRN Handover vs Inspection Register", description: null },
-            { id: "r23", name: "Purchase Return & Debit Note Summary", description: null },
-            { id: "r24", name: "Rate Contract & Vendor Comparison", description: null },
-            { id: "r25", name: "PO Amendment History Report", description: null },
-            { id: "r26", name: "Material Inward vs PO Reconciliation", description: null },
-            { id: "r27", name: "Supplier Lead Time & Delivery Performance", description: null },
-            { id: "r28", name: "Cancelled / Closed PO Summary", description: null },
-            { id: "r29", name: "Raw Material PO Tracking Log", description: null }
-        ]
-    },
-    {
-        id: "cat_production",
-        title: "06. Production",
-        rawTitle: "06. Production",
-        icon: <FaWrench style={{ color: "#ea580c" }} />,
-        badgeBg: "#ffedd5",
-        column: "left",
-        defaultOpen: false,
-        reports: [
-            { id: "r30", name: "Daily Cutting Slip Generation Log", description: null },
-            { id: "r31", name: "Line Output by Size & Colour Report", description: null },
-            { id: "r32", name: "Daily Production Target vs Achievement", description: null },
-            { id: "r33", name: "Line Balancing & Operator Efficiency Report", description: null },
-            { id: "r34", name: "Hourly Production Output V2", description: null }
-        ]
-    },
-    {
-        id: "cat_ta",
-        title: "09. T & A",
-        rawTitle: "09. T & A",
-        icon: <FaClock style={{ color: "#0d9488" }} />,
-        badgeBg: "#ccfbf1",
-        column: "left",
-        defaultOpen: false,
-        reports: [
-            { id: "r35", name: "Task Delay Analysis Report", path: "/sm/task-delay-analysis", description: "Critical Path Log" }
-        ]
-    },
-    {
-        id: "cat_dashboard",
-        title: "Dashboard",
-        rawTitle: "Dashboard",
-        icon: <FaCompass style={{ color: "#ca8a04" }} />,
-        badgeBg: "#fef08a",
-        column: "left",
-        defaultOpen: false,
-        reports: [
-            { id: "r36", name: "Executive Management MIS Overview", description: "Live KPIs" }
-        ]
-    },
-    {
-        id: "cat_production_reports",
-        title: "Production.Reports",
-        rawTitle: "Production.Reports",
-        icon: <FaEdit style={{ color: "#2563eb" }} />,
-        badgeBg: "#dbeafe",
-        column: "left",
-        defaultOpen: false,
-        reports: [
-            { id: "r37", name: "Sewing Floor Productivity & Man Hours", description: "Line Man Hours" }
-        ]
-    },
-
-    // --- COLUMN 2 (RIGHT) ---
-    {
-        id: "cat_sample",
-        title: "01. Sample/ Design",
-        rawTitle: "01. Sample/ Design",
-        icon: <FaRegFileAlt style={{ color: "#059669" }} />,
-        badgeBg: "#d1fae5",
-        column: "right",
-        defaultOpen: false,
-        reports: [
-            { id: "r38", name: "Sample Status Tracking & Tech Pack Report", description: "Sample Register" }
-        ]
-    },
-    {
-        id: "cat_sales",
-        title: "03. Sales",
-        rawTitle: "03. Sales",
-        icon: <FaShoppingCart style={{ color: "#7c3aed" }} />,
-        badgeBg: "#ede9fe",
-        column: "right",
-        defaultOpen: false,
-        reports: [
-            { id: "r39", name: "Monthly Sales Register (GST)", description: "Tax Compliance" },
-            { id: "r40", name: "Customer-wise Dispatch Summary", description: null },
-            { id: "r41", name: "Sales Order Status & Execution Report", description: null },
-            { id: "r42", name: "Customer Outstanding & Aging Analysis", description: null },
-            { id: "r43", name: "Order Booked vs Shipped Report", description: null },
-            { id: "r44", name: "Sales Invoicing Register", description: null }
-        ]
-    },
-    {
-        id: "cat_inventory",
-        title: "05. Inventory",
-        rawTitle: "05. Inventory",
-        icon: <FaBoxOpen style={{ color: "#10b981" }} />,
-        badgeBg: "#d1fae5",
-        column: "right",
-        defaultOpen: false,
-        reports: [
-            { id: "r45", name: "Stock Ledger Summary", description: "Realtime Ledger" },
-            { id: "r46", name: "Current Stock by Location / Rack", description: null },
-            { id: "r47", name: "Finished Goods Stock Inventory", description: null },
-            { id: "r48", name: "Low Stock / Reorder Level Alert", description: null },
-            { id: "r49", name: "Item Receipt Register (GRN)", description: null },
-            { id: "r50", name: "Item Issue Register (Material Transfer)", description: null },
-            { id: "r51", name: "Floor Return Register", description: null },
-            { id: "r52", name: "Rejection / Defective Material Stock", description: null },
-            { id: "r53", name: "Stock Conversion DC Register", description: null },
-            { id: "r54", name: "Stock Transfer DC Register", description: null },
-            { id: "r55", name: "Stock Transfer GRN Register", description: null },
-            { id: "r56", name: "Store to Store Transfer Log", description: null },
-            { id: "r57", name: "Gate Pass Delivery Register", description: null },
-            { id: "r58", name: "Gate Pass GRN Register", description: null },
-            { id: "r59", name: "Gate Entry Tracking Register", description: null },
-            { id: "r60", name: "Batch-wise / Lot-wise Fabric Stock", description: null },
-            { id: "r61", name: "Trims & Accessories Stock Balance", description: null },
-            { id: "r62", name: "Yarn Stock Ledger & Allocation", description: null },
-            { id: "r63", name: "Non-Moving & Slow-Moving Inventory", description: null },
-            { id: "r64", name: "Physical Stock Verification Audit", description: null },
-            { id: "r65", name: "WIP Stock by Department", description: null },
-            { id: "r66", name: "WIP Cut Pieces to Stitching Stock", description: null },
-            { id: "r67", name: "Material Consumption by Style Report", description: null },
-            { id: "r68", name: "Excess Consumption Variance Ledger", description: null },
-            { id: "r69", name: "Wastage & Scrappage Stock Report", description: null },
-            { id: "r70", name: "Stock Aging Analysis (30-60-90 Days)", description: null },
-            { id: "r71", name: "Dead Stock Disposal Register", description: null },
-            { id: "r72", name: "Stock In-Transit DC Summary", description: null },
-            { id: "r73", name: "Stock Reconciliation & Adjustment Log", description: null },
-            { id: "r74", name: "Negative Stock Alert Report", description: null },
-            { id: "r75", name: "Daily Inventory In-Out Transaction Audit", description: null }
-        ]
-    },
-    {
-        id: "cat_subcontract",
-        title: "07. Subcontract",
-        rawTitle: "07. Subcontract",
-        icon: <FaCogs style={{ color: "#8b5cf6" }} />,
-        badgeBg: "#ede9fe",
-        column: "right",
-        defaultOpen: false,
-        reports: [
-            { id: "r76", name: "Subcontract Job Work DC Register", description: null },
-            { id: "r77", name: "Subcontract Material Conversion DC Log", description: null },
-            { id: "r78", name: "Subcontract GRN Inward Register", description: null },
-            { id: "r79", name: "Subcontractor Outstanding Work-in-Progress", description: null }
-        ]
-    },
-    {
-        id: "cat_material_planning",
-        title: "11. Material Planning",
-        rawTitle: "11. Material Planning",
-        icon: <FaFileAlt style={{ color: "#ef4444" }} />,
-        badgeBg: "#fee2e2",
-        column: "right",
-        defaultOpen: false,
-        reports: [
-            { id: "r80", name: "MRP Material Requirement Calculation", description: null },
-            { id: "r81", name: "BOM vs Material Planning Variance", description: null },
-            { id: "r82", name: "Fabric & Trims Allocation Sheet", description: null },
-            { id: "r83", name: "Shortage Material Alert Report", description: null },
-            { id: "r84", name: "Planned vs Actual Fabric Consumption", description: null }
-        ]
-    },
-    {
-        id: "cat_inventory_reports",
-        title: "Inventory.Reports",
-        rawTitle: "Inventory.Reports",
-        icon: <FaBolt style={{ color: "#10b981" }} />,
-        badgeBg: "#d1fae5",
-        column: "right",
-        defaultOpen: false,
-        reports: [
-            { id: "r85", name: "Bin Card Location Stock Audit", description: null },
-            { id: "r86", name: "Stock Valuation Report (FIFO / Weighted Avg)", description: null },
-            { id: "r87", name: "Store Inward vs QC Approval Log", description: null }
-        ]
-    },
-    {
-        id: "cat_subcontract_single",
-        title: "Subcontract",
-        rawTitle: "Subcontract",
-        icon: <FaMoneyCheckAlt style={{ color: "#0d9488" }} />,
-        badgeBg: "#ccfbf1",
-        column: "right",
-        defaultOpen: false,
-        reports: [
-            { id: "r88", name: "Vendor Job-Work Bill Verification Summary", description: "Billed vs Work" }
-        ]
-    }
-];
+const STORAGE_KEY_CATEGORIES = "tpcs_report_headings_config";
+const STORAGE_KEY_CUSTOM_DATA = "tpcs_reports_custom_data";
+const STORAGE_KEY_SETTINGS = "tpcs_reports_settings";
 
 export default function Reports() {
     const navigate = useNavigate();
@@ -286,13 +45,119 @@ export default function Reports() {
     const [headingSearch, setHeadingSearch] = useState("");
     const [reportSearch, setReportSearch] = useState("");
 
+    // Custom Category Configuration & Reports Data
+    const [categoriesData, setCategoriesData] = useState(() => {
+        try {
+            const savedCats = localStorage.getItem(STORAGE_KEY_CATEGORIES);
+            const savedReports = localStorage.getItem(STORAGE_KEY_CUSTOM_DATA);
+
+            let base = INITIAL_REPORT_CATEGORIES_DATA;
+
+            if (savedCats) {
+                const parsedCats = JSON.parse(savedCats);
+                base = base.map(c => {
+                    const match = parsedCats.find(pc => pc.id === c.id);
+                    return match ? { ...c, ...match } : c;
+                });
+            }
+
+            if (savedReports) {
+                const parsedReports = JSON.parse(savedReports);
+                base = base.map(cat => ({
+                    ...cat,
+                    reports: cat.reports.map(r => {
+                        const customR = parsedReports[r.id];
+                        return customR ? { ...r, ...customR } : r;
+                    })
+                }));
+            }
+
+            return base;
+        } catch (e) {
+            console.error("Error loading saved reports config:", e);
+            return INITIAL_REPORT_CATEGORIES_DATA;
+        }
+    });
+
     // Modals state
     const [configModalOpen, setConfigModalOpen] = useState(false);
     const [activeReportModal, setActiveReportModal] = useState(null);
     const [activeEditModal, setActiveEditModal] = useState(null);
     const [activeSettingsModal, setActiveSettingsModal] = useState(null);
 
-    // Toggle specific category open/close
+    // Edit Modal form fields
+    const [editFormName, setEditFormName] = useState("");
+    const [editFormDesc, setEditFormDesc] = useState("");
+
+    // Settings Modal form fields
+    const [settingsExcel, setSettingsExcel] = useState(true);
+    const [settingsPdf, setSettingsPdf] = useState(true);
+    const [settingsAdmin, setSettingsAdmin] = useState(true);
+
+    // Config Modal form categories working copy
+    const [configCategoriesDraft, setConfigCategoriesDraft] = useState([]);
+
+    // Live Report Generator Parameters inside Modal
+    const [reportBranch, setReportBranch] = useState("Plot No. 9B");
+    const [reportFY, setReportFY] = useState("FY 01-Apr-2026 – 31-Mar-2027");
+    const [reportFromDate, setReportFromDate] = useState("2026-10-01");
+    const [reportToDate, setReportToDate] = useState("2026-10-26");
+    const [activeDatePreset, setActiveDatePreset] = useState("Month");
+    const [modalTableSearch, setModalTableSearch] = useState("");
+
+    // Toast notification state
+    const [toastMessage, setToastMessage] = useState(null);
+
+    const showToast = (message, type = "success") => {
+        setToastMessage({ message, type });
+        setTimeout(() => setToastMessage(null), 3200);
+    };
+
+    // Calculate Summary Metrics
+    const metrics = useMemo(() => {
+        let totalReports = 0;
+        let documentedCount = 0;
+        let activeModules = 0;
+
+        categoriesData.forEach(cat => {
+            if (cat.enabled !== false) {
+                activeModules++;
+                totalReports += cat.reports.length;
+                cat.reports.forEach(r => {
+                    if (r.description && r.description.trim() !== "") {
+                        documentedCount++;
+                    }
+                });
+            }
+        });
+
+        return {
+            totalReports,
+            categoriesCount: categoriesData.length,
+            documentedCount,
+            activeModules
+        };
+    }, [categoriesData]);
+
+    // Handle Date Presets for Report Generator
+    const applyDatePreset = (preset) => {
+        setActiveDatePreset(preset);
+        if (preset === "Today") {
+            setReportFromDate("2026-10-26");
+            setReportToDate("2026-10-26");
+        } else if (preset === "7D") {
+            setReportFromDate("2026-10-19");
+            setReportToDate("2026-10-26");
+        } else if (preset === "Month") {
+            setReportFromDate("2026-10-01");
+            setReportToDate("2026-10-26");
+        } else if (preset === "FY") {
+            setReportFromDate("2026-04-01");
+            setReportToDate("2027-03-31");
+        }
+    };
+
+    // Toggle specific category accordion
     const toggleCategory = (catId) => {
         setOpenCategories(prev => ({
             ...prev,
@@ -301,7 +166,7 @@ export default function Reports() {
     };
 
     // Expand / Collapse All
-    const allExpanded = Object.keys(openCategories).length === REPORT_CATEGORIES_DATA.length &&
+    const allExpanded = Object.keys(openCategories).length === categoriesData.length &&
         Object.values(openCategories).every(Boolean);
 
     const toggleExpandAll = () => {
@@ -309,14 +174,16 @@ export default function Reports() {
             setOpenCategories({});
         } else {
             const next = {};
-            REPORT_CATEGORIES_DATA.forEach(c => { next[c.id] = true; });
+            categoriesData.forEach(c => { next[c.id] = true; });
             setOpenCategories(next);
         }
     };
 
     // Filter categories and reports based on search inputs & pills
     const filteredCategories = useMemo(() => {
-        return REPORT_CATEGORIES_DATA.filter(cat => {
+        return categoriesData.filter(cat => {
+            if (cat.enabled === false) return false;
+
             // Pill filter
             if (selectedPill !== "All") {
                 if (selectedPill === "" && cat.rawTitle !== "") return false;
@@ -326,11 +193,12 @@ export default function Reports() {
             // Heading search filter
             if (headingSearch.trim()) {
                 const searchLower = headingSearch.toLowerCase();
-                const titleMatches = (cat.title || "general").toLowerCase().includes(searchLower);
+                const titleMatches = (cat.title || "general").toLowerCase().includes(searchLower) ||
+                    (cat.displayTitle || "").toLowerCase().includes(searchLower);
                 if (!titleMatches) return false;
             }
 
-            // Report search filter (if searching for a report, only keep categories containing matching reports)
+            // Report search filter
             if (reportSearch.trim()) {
                 const searchLower = reportSearch.toLowerCase();
                 const hasMatchingReport = cat.reports.some(r =>
@@ -352,7 +220,7 @@ export default function Reports() {
                 )
             };
         });
-    }, [selectedPill, headingSearch, reportSearch]);
+    }, [categoriesData, selectedPill, headingSearch, reportSearch]);
 
     // Split filtered categories into left and right columns
     const leftCategories = filteredCategories.filter(c => c.column === "left");
@@ -363,7 +231,7 @@ export default function Reports() {
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
-    // List of pill items matching the screenshot
+    // List of pill items matching the reference
     const pillList = [
         { label: "All", value: "All" },
         { label: "", value: "", isBlank: true },
@@ -381,6 +249,193 @@ export default function Reports() {
         { label: "Inventory.Reports", value: "Inventory.Reports" },
         { label: "Subcontract", value: "Subcontract" }
     ];
+
+    // Open Edit Modal
+    const handleOpenEdit = (report) => {
+        setActiveEditModal(report);
+        setEditFormName(report.name || "");
+        setEditFormDesc(report.description || "");
+    };
+
+    // Save Edit Modal
+    const handleSaveEdit = () => {
+        if (!activeEditModal) return;
+        const reportId = activeEditModal.id;
+
+        setCategoriesData(prev => {
+            const next = prev.map(cat => ({
+                ...cat,
+                reports: cat.reports.map(r => {
+                    if (r.id === reportId) {
+                        return {
+                            ...r,
+                            name: editFormName.trim() || r.name,
+                            description: editFormDesc.trim() || null
+                        };
+                    }
+                    return r;
+                })
+            }));
+
+            // Persist to localStorage
+            try {
+                const existing = JSON.parse(localStorage.getItem(STORAGE_KEY_CUSTOM_DATA) || "{}");
+                existing[reportId] = {
+                    name: editFormName.trim() || activeEditModal.name,
+                    description: editFormDesc.trim() || null
+                };
+                localStorage.setItem(STORAGE_KEY_CUSTOM_DATA, JSON.stringify(existing));
+            } catch (e) {
+                console.error("Storage error:", e);
+            }
+
+            return next;
+        });
+
+        showToast(`Report '${editFormName}' updated successfully!`);
+        setActiveEditModal(null);
+    };
+
+    // Open Settings Modal
+    const handleOpenSettings = (report) => {
+        setActiveSettingsModal(report);
+        try {
+            const existing = JSON.parse(localStorage.getItem(STORAGE_KEY_SETTINGS) || "{}");
+            const conf = existing[report.id] || {};
+            setSettingsExcel(conf.excel !== false);
+            setSettingsPdf(conf.pdf !== false);
+            setSettingsAdmin(conf.admin !== false);
+        } catch (e) {
+            setSettingsExcel(true);
+            setSettingsPdf(true);
+            setSettingsAdmin(true);
+        }
+    };
+
+    // Save Settings Modal
+    const handleSaveSettings = () => {
+        if (!activeSettingsModal) return;
+        try {
+            const existing = JSON.parse(localStorage.getItem(STORAGE_KEY_SETTINGS) || "{}");
+            existing[activeSettingsModal.id] = {
+                excel: settingsExcel,
+                pdf: settingsPdf,
+                admin: settingsAdmin
+            };
+            localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(existing));
+            showToast(`Permissions & settings saved for '${activeSettingsModal.name}'!`);
+        } catch (e) {
+            console.error("Settings save error:", e);
+        }
+        setActiveSettingsModal(null);
+    };
+
+    // Open Config Modal
+    const handleOpenConfig = () => {
+        setConfigCategoriesDraft(categoriesData.map(c => ({
+            id: c.id,
+            title: c.title,
+            displayTitle: c.displayTitle || c.title || "(General Module)",
+            enabled: c.enabled !== false
+        })));
+        setConfigModalOpen(true);
+    };
+
+    // Save Config Modal
+    const handleSaveConfig = () => {
+        setCategoriesData(prev => {
+            const next = prev.map(c => {
+                const draft = configCategoriesDraft.find(d => d.id === c.id);
+                if (draft) {
+                    return {
+                        ...c,
+                        title: draft.title,
+                        displayTitle: draft.displayTitle,
+                        enabled: draft.enabled
+                    };
+                }
+                return c;
+            });
+
+            try {
+                localStorage.setItem(STORAGE_KEY_CATEGORIES, JSON.stringify(configCategoriesDraft));
+            } catch (e) {
+                console.error("Category save error:", e);
+            }
+
+            return next;
+        });
+
+        showToast("Report heading configuration updated and saved!");
+        setConfigModalOpen(false);
+    };
+
+    // Reset Config to Factory Defaults
+    const handleResetConfig = () => {
+        try {
+            localStorage.removeItem(STORAGE_KEY_CATEGORIES);
+            localStorage.removeItem(STORAGE_KEY_CUSTOM_DATA);
+            setCategoriesData(INITIAL_REPORT_CATEGORIES_DATA);
+            showToast("Restored all report titles and settings to default!");
+            setConfigModalOpen(false);
+        } catch (e) {
+            console.error("Reset error:", e);
+        }
+    };
+
+    // Generate live data for active report modal
+    const liveReportData = useMemo(() => {
+        if (!activeReportModal) return null;
+        return generateLiveReportData(activeReportModal, {
+            branch: reportBranch,
+            fy: reportFY,
+            fromDate: reportFromDate,
+            toDate: reportToDate
+        });
+    }, [activeReportModal, reportBranch, reportFY, reportFromDate, reportToDate]);
+
+    // Filter table rows inside modal by search
+    const filteredModalRows = useMemo(() => {
+        if (!liveReportData || !liveReportData.rows) return [];
+        if (!modalTableSearch.trim()) return liveReportData.rows;
+        const q = modalTableSearch.toLowerCase();
+        return liveReportData.rows.filter(row =>
+            Object.values(row).some(val => String(val).toLowerCase().includes(q))
+        );
+    }, [liveReportData, modalTableSearch]);
+
+    // Handle CSV Export
+    const handleExportCSV = () => {
+        if (!activeReportModal || !liveReportData) return;
+        const success = exportReportToCSV(activeReportModal.name, liveReportData.columns, filteredModalRows);
+        if (success) {
+            showToast(`Exported ${activeReportModal.name} to Excel (.csv)!`);
+        } else {
+            showToast("Failed to generate CSV file.", "error");
+        }
+    };
+
+    // Handle Copy Table
+    const handleCopyTable = async () => {
+        if (!liveReportData) return;
+        const success = await copyReportToClipboard(liveReportData.columns, filteredModalRows);
+        if (success) {
+            showToast("Report table copied to clipboard! Ready to paste into Excel.");
+        } else {
+            showToast("Clipboard copy failed.", "error");
+        }
+    };
+
+    // Handle Print PDF
+    const handlePrintPDF = () => {
+        if (!activeReportModal || !liveReportData) return;
+        printReportDocument(activeReportModal, {
+            branch: reportBranch,
+            fy: reportFY,
+            fromDate: reportFromDate,
+            toDate: reportToDate
+        }, liveReportData.columns, filteredModalRows, liveReportData.summary);
+    };
 
     return (
         <div className={`reports-page-wrapper ${darkMode ? "dark-mode" : ""}`}>
@@ -422,7 +477,7 @@ export default function Reports() {
                     <button
                         type="button"
                         className="reports-btn-config"
-                        onClick={() => setConfigModalOpen(true)}
+                        onClick={handleOpenConfig}
                     >
                         <FaCog style={{ fontSize: "13px" }} />
                         <span>Report Heading Config</span>
@@ -437,7 +492,7 @@ export default function Reports() {
                         <FaRegFileAlt />
                         <span>TOTAL REPORTS</span>
                     </div>
-                    <div className="reports-stat-value reports-stat-val-blue">88</div>
+                    <div className="reports-stat-value reports-stat-val-blue">{metrics.totalReports}</div>
                     <div className="reports-stat-subtitle">Across all modules</div>
                 </div>
 
@@ -446,7 +501,7 @@ export default function Reports() {
                         <FaFolder />
                         <span>CATEGORIES</span>
                     </div>
-                    <div className="reports-stat-value reports-stat-val-teal">14</div>
+                    <div className="reports-stat-value reports-stat-val-teal">{metrics.categoriesCount}</div>
                     <div className="reports-stat-subtitle">Report groups</div>
                 </div>
 
@@ -455,7 +510,7 @@ export default function Reports() {
                         <FaChartLine />
                         <span>DOCUMENTED</span>
                     </div>
-                    <div className="reports-stat-value reports-stat-val-amber">15</div>
+                    <div className="reports-stat-value reports-stat-val-amber">{metrics.documentedCount}</div>
                     <div className="reports-stat-subtitle">With description</div>
                 </div>
 
@@ -464,7 +519,7 @@ export default function Reports() {
                         <FaCogs />
                         <span>ACTIVE MODULES</span>
                     </div>
-                    <div className="reports-stat-value reports-stat-val-purple">14</div>
+                    <div className="reports-stat-value reports-stat-val-purple">{metrics.activeModules}</div>
                     <div className="reports-stat-subtitle">All enabled</div>
                 </div>
             </div>
@@ -499,9 +554,20 @@ export default function Reports() {
                             value={reportSearch}
                             onChange={(e) => setReportSearch(e.target.value)}
                         />
-                        <button type="button" className="reports-search-box-btn">
-                            <FaSearch style={{ color: "#1a73e8" }} />
-                        </button>
+                        {reportSearch ? (
+                            <button
+                                type="button"
+                                className="reports-search-box-btn"
+                                onClick={() => setReportSearch("")}
+                                title="Clear report search"
+                            >
+                                <FaTimes style={{ color: "#94a3b8" }} />
+                            </button>
+                        ) : (
+                            <button type="button" className="reports-search-box-btn">
+                                <FaSearch style={{ color: "#1a73e8" }} />
+                            </button>
+                        )}
                     </div>
                 </div>
 
@@ -544,144 +610,442 @@ export default function Reports() {
                 <FaArrowUp />
             </button>
 
-            {/* Modal: Report Heading Config */}
+            {/* Toast Notification */}
+            {toastMessage && (
+                <div className={`reports-toast ${toastMessage.type === "error" ? "reports-toast-error" : "reports-toast-success"}`}>
+                    <FaCheckCircle style={{ color: toastMessage.type === "error" ? "#ef4444" : "#10b981" }} />
+                    <span>{toastMessage.message}</span>
+                </div>
+            )}
+
+            {/* ======================================================== */}
+            {/* MODAL 1: REPORT HEADING CONFIG */}
+            {/* ======================================================== */}
             {configModalOpen && (
                 <div className="reports-modal-overlay" onClick={() => setConfigModalOpen(false)}>
-                    <div className="reports-modal-content" onClick={e => e.stopPropagation()}>
+                    <div className="reports-modal-content" style={{ width: "620px" }} onClick={e => e.stopPropagation()}>
                         <div className="reports-modal-header">
-                            <h5 style={{ margin: 0, fontWeight: 700 }}>⚙ Report Heading Configuration</h5>
+                            <h5 style={{ margin: 0, fontWeight: 700, display: "flex", alignItems: "center", gap: "8px" }}>
+                                <FaCog style={{ color: "#2563eb" }} /> Report Heading Configuration
+                            </h5>
                             <button type="button" style={{ background: "none", border: "none", cursor: "pointer", fontSize: "16px" }} onClick={() => setConfigModalOpen(false)}>
                                 <FaTimes />
                             </button>
                         </div>
                         <div className="reports-modal-body">
-                            <p style={{ fontSize: "13px", color: "#64748b" }}>Manage module titles, sort ordering, and access controls for all 14 report groups.</p>
-                            <div style={{ maxHeight: "300px", overflowY: "auto", border: "1px solid #e2e8f0", borderRadius: "6px" }}>
-                                {REPORT_CATEGORIES_DATA.map((c, i) => (
-                                    <div key={c.id} style={{ display: "flex", justifyContent: "space-between", padding: "8px 12px", borderBottom: "1px solid #f1f5f9", fontSize: "12.5px" }}>
-                                        <span style={{ fontWeight: 600 }}>{c.title || "(General Module)"}</span>
-                                        <span style={{ color: "#2563eb", fontWeight: 500 }}>{c.reports.length} reports</span>
+                            <p style={{ fontSize: "12.5px", color: "#64748b", marginBottom: "12px" }}>
+                                Customize category heading titles and toggle active visibility across all 14 report groups.
+                            </p>
+                            <div style={{ maxHeight: "360px", overflowY: "auto", border: "1px solid #e2e8f0", borderRadius: "6px" }}>
+                                {configCategoriesDraft.map((c, i) => (
+                                    <div key={c.id} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "8px 12px", borderBottom: "1px solid #f1f5f9", fontSize: "12.5px" }}>
+                                        <input
+                                            type="checkbox"
+                                            checked={c.enabled !== false}
+                                            onChange={(e) => {
+                                                const nextDraft = [...configCategoriesDraft];
+                                                nextDraft[i].enabled = e.target.checked;
+                                                setConfigCategoriesDraft(nextDraft);
+                                            }}
+                                            title="Toggle category active"
+                                        />
+                                        <div style={{ flex: 1 }}>
+                                            <input
+                                                type="text"
+                                                value={c.displayTitle || c.title || ""}
+                                                placeholder={c.title || "(General Module)"}
+                                                onChange={(e) => {
+                                                    const nextDraft = [...configCategoriesDraft];
+                                                    nextDraft[i].displayTitle = e.target.value;
+                                                    setConfigCategoriesDraft(nextDraft);
+                                                }}
+                                                style={{ width: "100%", padding: "5px 8px", fontSize: "12.5px", border: "1px solid #cbd5e1", borderRadius: "4px" }}
+                                            />
+                                        </div>
+                                        <span style={{ color: "#2563eb", fontWeight: 600, fontSize: "11.5px", minWidth: "60px", textAlign: "right" }}>
+                                            {categoriesData.find(cat => cat.id === c.id)?.reports.length || 0} reps
+                                        </span>
                                     </div>
                                 ))}
                             </div>
                         </div>
-                        <div className="reports-modal-footer">
-                            <button type="button" className="reports-btn-expand" onClick={() => setConfigModalOpen(false)}>Close</button>
-                            <button type="button" className="reports-btn-config" onClick={() => setConfigModalOpen(false)}>Save Changes</button>
+                        <div className="reports-modal-footer" style={{ display: "flex", justifyContent: "space-between" }}>
+                            <button
+                                type="button"
+                                className="reports-btn-expand"
+                                style={{ color: "#dc2626", border: "1px solid #fca5a5" }}
+                                onClick={handleResetConfig}
+                            >
+                                <FaUndo style={{ fontSize: "11px" }} /> Reset to Defaults
+                            </button>
+                            <div style={{ display: "flex", gap: "10px" }}>
+                                <button type="button" className="reports-btn-expand" onClick={() => setConfigModalOpen(false)}>Cancel</button>
+                                <button type="button" className="reports-btn-config" onClick={handleSaveConfig}>Save Changes</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* Modal: Report Generator / Viewer */}
+            {/* ======================================================== */}
+            {/* MODAL 2: INTERACTIVE LIVE REPORT GENERATOR & VIEWER */}
+            {/* ======================================================== */}
             {activeReportModal && (
                 <div className="reports-modal-overlay" onClick={() => setActiveReportModal(null)}>
-                    <div className="reports-modal-content" style={{ width: "600px" }} onClick={e => e.stopPropagation()}>
+                    <div className="reports-modal-content reports-modal-lg" onClick={e => e.stopPropagation()}>
+                        {/* Header */}
                         <div className="reports-modal-header">
                             <div>
-                                <span style={{ fontSize: "11px", color: "#64748b", textTransform: "uppercase" }}>Report Generator</span>
-                                <h5 style={{ margin: "2px 0 0 0", fontWeight: 700 }}>{activeReportModal.name}</h5>
+                                <span style={{ fontSize: "11px", color: "#64748b", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.5px" }}>
+                                    TPCS FASHION — MIS REPORT WORKBENCH
+                                </span>
+                                <h4 style={{ margin: "2px 0 0 0", fontWeight: 800, color: "#1e40af", display: "flex", alignItems: "center", gap: "8px" }}>
+                                    <FaRegFileAlt style={{ color: "#3b82f6" }} />
+                                    {activeReportModal.name}
+                                </h4>
                             </div>
-                            <button type="button" style={{ background: "none", border: "none", cursor: "pointer", fontSize: "16px" }} onClick={() => setActiveReportModal(null)}>
-                                <FaTimes />
-                            </button>
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                {activeReportModal.path && (
+                                    <button
+                                        type="button"
+                                        className="reports-btn-expand"
+                                        style={{ color: "#2563eb", borderColor: "#bfdbfe", background: "#eff6ff", fontSize: "12px", fontWeight: 600 }}
+                                        onClick={() => {
+                                            setActiveReportModal(null);
+                                            navigate(activeReportModal.path);
+                                        }}
+                                        title="Navigate to dedicated full screen module"
+                                    >
+                                        <FaExternalLinkAlt /> Open Full Module
+                                    </button>
+                                )}
+                                <button
+                                    type="button"
+                                    style={{ background: "none", border: "none", cursor: "pointer", fontSize: "18px", color: "#64748b" }}
+                                    onClick={() => setActiveReportModal(null)}
+                                >
+                                    <FaTimes />
+                                </button>
+                            </div>
                         </div>
+
+                        {/* Modal Body */}
                         <div className="reports-modal-body">
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "16px" }}>
-                                <div>
-                                    <label style={{ fontSize: "12px", fontWeight: 600, display: "block", marginBottom: "4px" }}>Branch / Unit</label>
-                                    <input type="text" readOnly value="Plot No. 9B" style={{ width: "100%", padding: "6px 10px", fontSize: "12.5px", border: "1px solid #cbd5e1", borderRadius: "4px", background: "#f8fafc" }} />
+                            {/* Controls Card */}
+                            <div className="reports-preview-controls-card">
+                                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "12px", marginBottom: "12px" }}>
+                                    <div>
+                                        <label style={{ fontSize: "11.5px", fontWeight: 700, display: "block", marginBottom: "4px", color: "#475569" }}>
+                                            BRANCH / MANUFACTURING UNIT
+                                        </label>
+                                        <select
+                                            value={reportBranch}
+                                            onChange={(e) => setReportBranch(e.target.value)}
+                                            style={{ width: "100%", padding: "6px 10px", fontSize: "12.5px", border: "1px solid #cbd5e1", borderRadius: "5px", background: "#ffffff" }}
+                                        >
+                                            <option value="Plot No. 9B">Plot No. 9B (Garment Unit)</option>
+                                            <option value="Plot No. 12B">Plot No. 12B (Weaving & Knitting)</option>
+                                            <option value="Central Warehouse">Central Logistics Warehouse</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label style={{ fontSize: "11.5px", fontWeight: 700, display: "block", marginBottom: "4px", color: "#475569" }}>
+                                            FINANCIAL YEAR
+                                        </label>
+                                        <select
+                                            value={reportFY}
+                                            onChange={(e) => setReportFY(e.target.value)}
+                                            style={{ width: "100%", padding: "6px 10px", fontSize: "12.5px", border: "1px solid #cbd5e1", borderRadius: "5px", background: "#ffffff" }}
+                                        >
+                                            <option value="FY 01-Apr-2026 – 31-Mar-2027">FY 01-Apr-2026 – 31-Mar-2027</option>
+                                            <option value="FY 01-Apr-2025 – 31-Mar-2026">FY 01-Apr-2025 – 31-Mar-2026</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label style={{ fontSize: "11.5px", fontWeight: 700, display: "block", marginBottom: "4px", color: "#475569" }}>
+                                            FROM DATE
+                                        </label>
+                                        <input
+                                            type="date"
+                                            value={reportFromDate}
+                                            onChange={(e) => { setReportFromDate(e.target.value); setActiveDatePreset("Custom"); }}
+                                            style={{ width: "100%", padding: "5px 10px", fontSize: "12.5px", border: "1px solid #cbd5e1", borderRadius: "5px" }}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label style={{ fontSize: "11.5px", fontWeight: 700, display: "block", marginBottom: "4px", color: "#475569" }}>
+                                            TO DATE
+                                        </label>
+                                        <input
+                                            type="date"
+                                            value={reportToDate}
+                                            onChange={(e) => { setReportToDate(e.target.value); setActiveDatePreset("Custom"); }}
+                                            style={{ width: "100%", padding: "5px 10px", fontSize: "12.5px", border: "1px solid #cbd5e1", borderRadius: "5px" }}
+                                        />
+                                    </div>
                                 </div>
-                                <div>
-                                    <label style={{ fontSize: "12px", fontWeight: 600, display: "block", marginBottom: "4px" }}>Financial Year</label>
-                                    <input type="text" readOnly value="FY 01-Apr-2026 – 31-Mar-2027" style={{ width: "100%", padding: "6px 10px", fontSize: "12.5px", border: "1px solid #cbd5e1", borderRadius: "4px", background: "#f8fafc" }} />
-                                </div>
-                                <div>
-                                    <label style={{ fontSize: "12px", fontWeight: 600, display: "block", marginBottom: "4px" }}>From Date</label>
-                                    <input type="date" defaultValue="2026-10-01" style={{ width: "100%", padding: "6px 10px", fontSize: "12.5px", border: "1px solid #cbd5e1", borderRadius: "4px" }} />
-                                </div>
-                                <div>
-                                    <label style={{ fontSize: "12px", fontWeight: 600, display: "block", marginBottom: "4px" }}>To Date</label>
-                                    <input type="date" defaultValue="2026-10-22" style={{ width: "100%", padding: "6px 10px", fontSize: "12.5px", border: "1px solid #cbd5e1", borderRadius: "4px" }} />
+
+                                {/* Preset Filters & Table Search */}
+                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
+                                    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                                        <span style={{ fontSize: "11.5px", fontWeight: 700, color: "#64748b" }}>Quick Range:</span>
+                                        {["Today", "7D", "Month", "FY"].map(preset => (
+                                            <button
+                                                key={preset}
+                                                type="button"
+                                                className={`reports-preset-btn ${activeDatePreset === preset ? "active" : ""}`}
+                                                onClick={() => applyDatePreset(preset)}
+                                            >
+                                                {preset}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                        <div style={{ position: "relative", width: "220px" }}>
+                                            <input
+                                                type="text"
+                                                placeholder="Filter rows in report..."
+                                                value={modalTableSearch}
+                                                onChange={(e) => setModalTableSearch(e.target.value)}
+                                                style={{ width: "100%", padding: "5px 28px 5px 8px", fontSize: "12px", border: "1px solid #cbd5e1", borderRadius: "4px" }}
+                                            />
+                                            {modalTableSearch ? (
+                                                <FaTimes
+                                                    style={{ position: "absolute", right: "8px", top: "8px", color: "#94a3b8", cursor: "pointer", fontSize: "11px" }}
+                                                    onClick={() => setModalTableSearch("")}
+                                                />
+                                            ) : (
+                                                <FaSearch style={{ position: "absolute", right: "8px", top: "8px", color: "#94a3b8", fontSize: "11px" }} />
+                                            )}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div style={{ background: "#f1f5fb", padding: "12px", borderRadius: "6px", fontSize: "12.5px", color: "#334155" }}>
-                                <strong>Selected Report:</strong> {activeReportModal.name}<br />
-                                <strong>Status:</strong> Ready to generate. All data verified against live SQL database.
+
+                            {/* Summary Metrics Banner */}
+                            {liveReportData?.summary && (
+                                <div className="reports-preview-stats">
+                                    <div className="reports-stat-pill">
+                                        <span className="reports-stat-pill-label">Total Records:</span>
+                                        <span style={{ color: "#1e40af" }}>{filteredModalRows.length} rows</span>
+                                    </div>
+                                    <div className="reports-stat-pill">
+                                        <span className="reports-stat-pill-label">Total Volume:</span>
+                                        <span style={{ color: "#0f766e" }}>{liveReportData.summary.totalQty}</span>
+                                    </div>
+                                    <div className="reports-stat-pill">
+                                        <span className="reports-stat-pill-label">Valuation:</span>
+                                        <span style={{ color: "#d97706" }}>{liveReportData.summary.totalVal}</span>
+                                    </div>
+                                    <div className="reports-stat-pill" style={{ marginLeft: "auto" }}>
+                                        <span style={{ fontSize: "11px", background: "#dcfce7", color: "#166534", padding: "2px 8px", borderRadius: "12px", fontWeight: 700 }}>
+                                            ✓ {liveReportData.summary.badge}
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Live Tabular Grid */}
+                            <div className="reports-preview-table-wrap">
+                                <table className="reports-preview-table">
+                                    <thead>
+                                        <tr>
+                                            <th style={{ width: "35px", textAlign: "center" }}>#</th>
+                                            {liveReportData?.columns.map(col => (
+                                                <th key={col}>{col}</th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {filteredModalRows.map((row, rIdx) => (
+                                            <tr key={rIdx}>
+                                                <td style={{ textAlign: "center", color: "#94a3b8", fontWeight: 600 }}>{rIdx + 1}</td>
+                                                {liveReportData?.columns.map(col => (
+                                                    <td key={col}>
+                                                        {col === "Status" ? (
+                                                            <span style={{
+                                                                display: "inline-block",
+                                                                padding: "2px 8px",
+                                                                borderRadius: "10px",
+                                                                fontSize: "11px",
+                                                                fontWeight: 600,
+                                                                background: String(row[col]).includes("Delay") || String(row[col]).includes("Over") || String(row[col]).includes("Alert") ? "#fee2e2" :
+                                                                    String(row[col]).includes("Comp") || String(row[col]).includes("Paid") || String(row[col]).includes("Suff") || String(row[col]).includes("Achiev") ? "#dcfce7" : "#e0f2fe",
+                                                                color: String(row[col]).includes("Delay") || String(row[col]).includes("Over") || String(row[col]).includes("Alert") ? "#991b1b" :
+                                                                    String(row[col]).includes("Comp") || String(row[col]).includes("Paid") || String(row[col]).includes("Suff") || String(row[col]).includes("Achiev") ? "#166534" : "#0369a1"
+                                                            }}>
+                                                                {row[col]}
+                                                            </span>
+                                                        ) : (
+                                                            row[col] !== undefined && row[col] !== null ? row[col] : "—"
+                                                        )}
+                                                    </td>
+                                                ))}
+                                            </tr>
+                                        ))}
+                                        {filteredModalRows.length === 0 && (
+                                            <tr>
+                                                <td colSpan={(liveReportData?.columns.length || 0) + 1} style={{ textAlign: "center", padding: "24px", color: "#94a3b8" }}>
+                                                    No matching records found for this filter criteria.
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                        <div className="reports-modal-footer">
-                            <button type="button" className="reports-btn-expand" onClick={() => setActiveReportModal(null)}>Cancel</button>
-                            <button type="button" className="reports-btn-expand" style={{ color: "#059669" }} onClick={() => { alert(`Exporting ${activeReportModal.name} to Excel`); setActiveReportModal(null); }}>
-                                <FaFileExcel /> Excel
-                            </button>
-                            <button type="button" className="reports-btn-config" onClick={() => { alert(`Generating ${activeReportModal.name} PDF`); setActiveReportModal(null); }}>
-                                <FaFilePdf /> View Report PDF
-                            </button>
+
+                        {/* Modal Footer Actions */}
+                        <div className="reports-modal-footer" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <div style={{ display: "flex", gap: "8px" }}>
+                                <button
+                                    type="button"
+                                    className="reports-btn-expand"
+                                    onClick={handleCopyTable}
+                                    title="Copy table data to clipboard for Excel"
+                                >
+                                    <FaCopy /> Copy Data
+                                </button>
+                            </div>
+
+                            <div style={{ display: "flex", gap: "10px" }}>
+                                <button
+                                    type="button"
+                                    className="reports-btn-expand"
+                                    onClick={() => setActiveReportModal(null)}
+                                >
+                                    Close
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className="reports-btn-expand"
+                                    style={{ color: "#059669", borderColor: "#a7f3d0", background: "#f0fdf4", fontWeight: 600 }}
+                                    onClick={handleExportCSV}
+                                    title="Download CSV Spreadsheet with UTF-8 BOM"
+                                >
+                                    <FaFileExcel /> Export Excel (.CSV)
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className="reports-btn-config"
+                                    onClick={handlePrintPDF}
+                                    title="Print or Save PDF with Company Letterhead"
+                                >
+                                    <FaPrint /> Print / Save PDF
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* Modal: Edit Report Details */}
+            {/* ======================================================== */}
+            {/* MODAL 3: EDIT REPORT DETAILS */}
+            {/* ======================================================== */}
             {activeEditModal && (
                 <div className="reports-modal-overlay" onClick={() => setActiveEditModal(null)}>
                     <div className="reports-modal-content" onClick={e => e.stopPropagation()}>
                         <div className="reports-modal-header">
-                            <h5 style={{ margin: 0, fontWeight: 700 }}>✏ Edit Report Details</h5>
+                            <h5 style={{ margin: 0, fontWeight: 700, display: "flex", alignItems: "center", gap: "8px" }}>
+                                <FaRegEdit style={{ color: "#2563eb" }} /> Edit Report Details
+                            </h5>
                             <button type="button" style={{ background: "none", border: "none", cursor: "pointer", fontSize: "16px" }} onClick={() => setActiveEditModal(null)}>
                                 <FaTimes />
                             </button>
                         </div>
                         <div className="reports-modal-body">
-                            <div style={{ marginBottom: "12px" }}>
-                                <label style={{ fontSize: "12px", fontWeight: 600, display: "block", marginBottom: "4px" }}>Report Title</label>
-                                <input type="text" defaultValue={activeEditModal.name} style={{ width: "100%", padding: "6px 10px", fontSize: "12.5px", border: "1px solid #cbd5e1", borderRadius: "4px" }} />
+                            <div style={{ marginBottom: "14px" }}>
+                                <label style={{ fontSize: "12px", fontWeight: 700, display: "block", marginBottom: "4px", color: "#475569" }}>
+                                    REPORT TITLE
+                                </label>
+                                <input
+                                    type="text"
+                                    value={editFormName}
+                                    onChange={(e) => setEditFormName(e.target.value)}
+                                    style={{ width: "100%", padding: "7px 10px", fontSize: "13px", border: "1px solid #cbd5e1", borderRadius: "4px" }}
+                                />
                             </div>
                             <div>
-                                <label style={{ fontSize: "12px", fontWeight: 600, display: "block", marginBottom: "4px" }}>Description / Tag</label>
-                                <input type="text" defaultValue={activeEditModal.description || ""} placeholder="e.g. Sample Order Register" style={{ width: "100%", padding: "6px 10px", fontSize: "12.5px", border: "1px solid #cbd5e1", borderRadius: "4px" }} />
+                                <label style={{ fontSize: "12px", fontWeight: 700, display: "block", marginBottom: "4px", color: "#475569" }}>
+                                    DESCRIPTION / TAG BADGE
+                                </label>
+                                <input
+                                    type="text"
+                                    value={editFormDesc}
+                                    onChange={(e) => setEditFormDesc(e.target.value)}
+                                    placeholder="e.g. Sample Order Register, Variance Audit, Realtime Ledger"
+                                    style={{ width: "100%", padding: "7px 10px", fontSize: "13px", border: "1px solid #cbd5e1", borderRadius: "4px" }}
+                                />
+                                <small style={{ color: "#64748b", display: "block", marginTop: "4px" }}>
+                                    Adding a description badge increments the "DOCUMENTED" count metric on the reports dashboard.
+                                </small>
                             </div>
                         </div>
                         <div className="reports-modal-footer">
                             <button type="button" className="reports-btn-expand" onClick={() => setActiveEditModal(null)}>Cancel</button>
-                            <button type="button" className="reports-btn-config" onClick={() => { alert("Report details updated!"); setActiveEditModal(null); }}>Save</button>
+                            <button type="button" className="reports-btn-config" onClick={handleSaveEdit}>Save Changes</button>
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* Modal: Settings / Permissions */}
+            {/* ======================================================== */}
+            {/* MODAL 4: SETTINGS & PERMISSIONS */}
+            {/* ======================================================== */}
             {activeSettingsModal && (
                 <div className="reports-modal-overlay" onClick={() => setActiveSettingsModal(null)}>
                     <div className="reports-modal-content" onClick={e => e.stopPropagation()}>
                         <div className="reports-modal-header">
-                            <h5 style={{ margin: 0, fontWeight: 700 }}>⚙ Report Settings & Permissions</h5>
+                            <h5 style={{ margin: 0, fontWeight: 700, display: "flex", alignItems: "center", gap: "8px" }}>
+                                <FaCog style={{ color: "#2563eb" }} /> Report Settings & Permissions
+                            </h5>
                             <button type="button" style={{ background: "none", border: "none", cursor: "pointer", fontSize: "16px" }} onClick={() => setActiveSettingsModal(null)}>
                                 <FaTimes />
                             </button>
                         </div>
                         <div className="reports-modal-body">
                             <div style={{ fontSize: "12.5px", lineHeight: "1.6" }}>
-                                <div style={{ marginBottom: "10px" }}>
-                                    <strong>Report Name:</strong> {activeSettingsModal.name}
+                                <div style={{ marginBottom: "14px", padding: "8px 12px", background: "#f8fafc", borderRadius: "6px", border: "1px solid #e2e8f0" }}>
+                                    <strong style={{ color: "#1e40af" }}>Selected Report:</strong> {activeSettingsModal.name}<br />
+                                    <span style={{ color: "#64748b", fontSize: "11.5px" }}>Target Route: <code>{activeSettingsModal.path || "/reports"}</code></span>
                                 </div>
-                                <div style={{ display: "flex", gap: "10px", flexDirection: "column" }}>
-                                    <label style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                                        <input type="checkbox" defaultChecked /> Enable Excel Export
+                                <div style={{ display: "flex", gap: "12px", flexDirection: "column" }}>
+                                    <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}>
+                                        <input
+                                            type="checkbox"
+                                            checked={settingsExcel}
+                                            onChange={(e) => setSettingsExcel(e.target.checked)}
+                                        />
+                                        <span>Enable Excel (.CSV) Data Export for Users</span>
                                     </label>
-                                    <label style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                                        <input type="checkbox" defaultChecked /> Enable PDF Direct Print
+                                    <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}>
+                                        <input
+                                            type="checkbox"
+                                            checked={settingsPdf}
+                                            onChange={(e) => setSettingsPdf(e.target.checked)}
+                                        />
+                                        <span>Enable Official Letterhead PDF Printing</span>
                                     </label>
-                                    <label style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                                        <input type="checkbox" defaultChecked /> Visible to Admin & Management Roles
+                                    <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}>
+                                        <input
+                                            type="checkbox"
+                                            checked={settingsAdmin}
+                                            onChange={(e) => setSettingsAdmin(e.target.checked)}
+                                        />
+                                        <span>Authorize Merchandising & Store Operators for Live Generation</span>
                                     </label>
                                 </div>
                             </div>
                         </div>
                         <div className="reports-modal-footer">
                             <button type="button" className="reports-btn-expand" onClick={() => setActiveSettingsModal(null)}>Close</button>
-                            <button type="button" className="reports-btn-config" onClick={() => setActiveSettingsModal(null)}>Save Settings</button>
+                            <button type="button" className="reports-btn-config" onClick={handleSaveSettings}>Save Permissions</button>
                         </div>
                     </div>
                 </div>
@@ -702,10 +1066,10 @@ export default function Reports() {
                 >
                     <div className="reports-cat-left">
                         <div className="reports-cat-icon-badge" style={{ backgroundColor: cat.badgeBg }}>
-                            {cat.icon}
+                            {getReportIcon(cat.iconName, cat.badgeColor)}
                         </div>
                         <span className="reports-cat-title">
-                            {cat.title}
+                            {cat.displayTitle || cat.title}
                         </span>
                     </div>
 
@@ -738,14 +1102,8 @@ export default function Reports() {
                                         <td className="reports-col-name">
                                             <span
                                                 className="reports-item-link"
-                                                onClick={() => {
-                                                    if (report.path) {
-                                                        navigate(report.path);
-                                                    } else {
-                                                        setActiveReportModal(report);
-                                                    }
-                                                }}
-                                                title={`Click to view ${report.name}`}
+                                                onClick={() => setActiveReportModal(report)}
+                                                title={`Click to generate and view ${report.name}`}
                                             >
                                                 <FaRegFileAlt className="reports-item-doc-icon" />
                                                 <span>{report.name}</span>
@@ -762,19 +1120,43 @@ export default function Reports() {
                                         </td>
                                         <td className="reports-action-cell">
                                             <div className="reports-action-group">
+                                                {/* One-Click Direct Module Launch */}
+                                                {report.path && (
+                                                    <button
+                                                        type="button"
+                                                        className="reports-btn-action-launch"
+                                                        title={`Open ${report.name} module screen`}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            navigate(report.path);
+                                                        }}
+                                                    >
+                                                        <FaExternalLinkAlt />
+                                                    </button>
+                                                )}
+
+                                                {/* Edit Button */}
                                                 <button
                                                     type="button"
                                                     className="reports-btn-action-icon"
-                                                    title="Edit report details"
-                                                    onClick={() => setActiveEditModal(report)}
+                                                    title="Edit report details & badge"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleOpenEdit(report);
+                                                    }}
                                                 >
                                                     <FaRegEdit />
                                                 </button>
+
+                                                {/* Settings Button */}
                                                 <button
                                                     type="button"
                                                     className="reports-btn-action-icon"
-                                                    title="Report settings"
-                                                    onClick={() => setActiveSettingsModal(report)}
+                                                    title="Report settings & permissions"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleOpenSettings(report);
+                                                    }}
                                                 >
                                                     <FaCog />
                                                 </button>

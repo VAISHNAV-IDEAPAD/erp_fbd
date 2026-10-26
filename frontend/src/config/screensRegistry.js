@@ -1,4 +1,4 @@
-// Comprehensive registry of all screens/modules in TPCS Fashion ERP
+// Comprehensive registry of all screens/modules in V-Connect Inc. ERP
 // Used by the ScreenSearchBar and Workspace Quick Launchers
 
 export const ERP_SCREENS = [

@@ -71,7 +71,7 @@ export default function MegaMenu({
     // =========================================
     // MM MENU (MATERIAL MANAGEMENT)
     // =========================================
-    // MM MENU (EXACT MATCH FOR TPCS FASHION SCREENSHOT)
+    // MM MENU (EXACT MATCH FOR V-CONNECT INC. SCREENSHOT)
     // =========================================
     const mmMenu = [
         {

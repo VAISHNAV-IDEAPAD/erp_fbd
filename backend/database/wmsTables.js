@@ -168,7 +168,7 @@ CREATE TABLE IF NOT EXISTS WMSImports (
 });
 
 // ======================================================
-// SEED INITIAL DATA FOR TPCS FASHION (PLOT NO. 9B)
+// SEED INITIAL DATA FOR V-CONNECT INC. (PLOT NO. 9B)
 // ======================================================
 
 function seedInitialBins() {

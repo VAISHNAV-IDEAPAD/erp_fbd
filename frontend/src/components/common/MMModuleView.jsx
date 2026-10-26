@@ -104,7 +104,7 @@ export default function MMModuleView({
                 </h2>
             </div>
 
-            {/* Top Filter and New Button matching TPCS Fashion screenshot */}
+            {/* Top Filter and New Button matching V-Connect Inc. screenshot */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "8px" }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
                     <label style={{ fontSize: "12px", color: "#334155", fontWeight: 600 }}>Associate / Search</label>
@@ -150,7 +150,7 @@ export default function MMModuleView({
                 </div>
             </div>
 
-            {/* Secondary Toolbar matching TPCS Fashion screenshot */}
+            {/* Secondary Toolbar matching V-Connect Inc. screenshot */}
             <div style={{ display: "flex", gap: "6px", alignItems: "center", marginBottom: "12px" }}>
                 <button
                     type="button"

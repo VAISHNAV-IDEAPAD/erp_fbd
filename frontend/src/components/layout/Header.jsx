@@ -129,8 +129,8 @@ export default function Header() {
               <circle cx="85" cy="70" r="3.5" fill="#38bdf8" stroke="none" />
               <circle cx="50" cy="8" r="3.5" fill="#38bdf8" stroke="none" />
             </svg>
-            <span style={{ fontWeight: 900, fontStyle: "italic", letterSpacing: "-0.5px", color: "#38bdf8", fontSize: "21px" }}>TPCS</span>
-            <span style={{ fontWeight: 400, color: "#ffffff", fontSize: "21px", marginLeft: "1px" }}>Fashion</span>
+            <span style={{ fontWeight: 900, fontStyle: "italic", letterSpacing: "-0.5px", color: "#38bdf8", fontSize: "21px" }}>V-Connect</span>
+            <span style={{ fontWeight: 400, color: "#ffffff", fontSize: "21px", marginLeft: "4px" }}>Inc.</span>
           </Navbar.Brand>
 
           {/* TOP NAVIGATION TABS */}

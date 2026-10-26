@@ -697,7 +697,7 @@ export default function Reports() {
                         <div className="reports-modal-header">
                             <div>
                                 <span style={{ fontSize: "11px", color: "#64748b", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.5px" }}>
-                                    TPCS FASHION — MIS REPORT WORKBENCH
+                                    V-CONNECT INC. — MIS REPORT WORKBENCH
                                 </span>
                                 <h4 style={{ margin: "2px 0 0 0", fontWeight: 800, color: "#1e40af", display: "flex", alignItems: "center", gap: "8px" }}>
                                     <FaRegFileAlt style={{ color: "#3b82f6" }} />

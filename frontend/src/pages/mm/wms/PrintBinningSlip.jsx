@@ -62,7 +62,7 @@ export default function PrintBinningSlip() {
                     <div>
                         <h1 className="wms-title">Print Binning Slip & Warehouse Labels</h1>
                         <p className="wms-subtitle">
-                            Put-away Slips, Bin Rack Barcodes & Roll QR Sticker Printing (TPCS Fashion Plot No. 9B)
+                            Put-away Slips, Bin Rack Barcodes & Roll QR Sticker Printing (V-Connect Inc. Plot No. 9B)
                         </p>
                     </div>
                 </div>
@@ -132,7 +132,7 @@ export default function PrintBinningSlip() {
                 <div className="wms-print-container">
                     <div className="wms-print-header">
                         <div>
-                            <div className="wms-company-title">TPCS FASHION (PVT) LTD</div>
+                            <div className="wms-company-title">V-CONNECT INC.</div>
                             <div style={{ fontSize: "12px", color: "#475569" }}>
                                 Plot No. 9B, Industrial Sector, Apparel & Footwear Division
                             </div>

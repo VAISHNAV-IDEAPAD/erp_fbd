@@ -48,7 +48,7 @@ export default function DashboardGrid() {
         <div className="container-fluid dashboard-page">
 
             {/* ==========================================================
-               TPCS FASHION DASHBOARD HEADER MATCHING SCREENSHOT
+               V-CONNECT INC. DASHBOARD HEADER MATCHING SCREENSHOT
             =========================================================== */}
             <div
                 style={{
@@ -82,7 +82,7 @@ export default function DashboardGrid() {
                     </div>
                     <div>
                         <h1 style={{ fontSize: "23px", fontWeight: 800, color: "#1e293b", margin: 0, letterSpacing: "-0.3px" }}>Dashboard</h1>
-                        <p style={{ margin: 0, fontSize: "13px", color: "#64748b" }}>Welcome to TPCS Fashion</p>
+                        <p style={{ margin: 0, fontSize: "13px", color: "#64748b" }}>Welcome to V-Connect Inc.</p>
                     </div>
                 </div>
 

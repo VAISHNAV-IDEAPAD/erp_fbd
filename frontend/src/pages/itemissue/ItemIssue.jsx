@@ -1080,7 +1080,7 @@ export default function ItemIssue({ initialMode = "list" }) {
                MODE: REGISTER / LIST VIEW (ACCESSIBLE VIA EYE VIEW BUTTON)
             =========================================================== */}
             {/* ==========================================================
-               MODE: REGISTER / LIST VIEW (EXACT MATCH FOR TPCS FASHION SCREENSHOT)
+               MODE: REGISTER / LIST VIEW (EXACT MATCH FOR V-CONNECT INC. SCREENSHOT)
             =========================================================== */}
             {viewMode === "list" && (
                 <div style={{ backgroundColor: "#ffffff" }}>
@@ -1222,7 +1222,7 @@ export default function ItemIssue({ initialMode = "list" }) {
                         </button>
                     </div>
 
-                    {/* Table matching TPCS Fashion screenshot */}
+                    {/* Table matching V-Connect Inc. screenshot */}
                     <div style={{ width: "100%", overflowX: "auto", border: "1px solid #cbd5e1", borderRadius: "2px" }}>
                         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "12px", minWidth: "1400px" }}>
                             <thead>
@@ -1535,7 +1535,7 @@ export default function ItemIssue({ initialMode = "list" }) {
                         </div>
                         <div className="tpcs-ii-modal-body" style={{ background: "#ffffff", padding: "24px" }}>
                             <div style={{ textAlign: "center", borderBottom: "2px solid #0f172a", paddingBottom: "12px", marginBottom: "16px" }}>
-                                <h2 style={{ margin: 0, fontSize: "20px", fontWeight: 800 }}>TPCS FASHION ERP</h2>
+                                <h2 style={{ margin: 0, fontSize: "20px", fontWeight: 800 }}>V-CONNECT INC. ERP</h2>
                                 <h3 style={{ margin: "4px 0", fontSize: "16px", color: "#1976d2" }}>ITEM ISSUE VOUCHER</h3>
                                 <p style={{ margin: 0, fontSize: "12px", color: "#64748b" }}>Plot No. 9B | FY 01-Apr-2026 - 31-Mar-2027</p>
                             </div>

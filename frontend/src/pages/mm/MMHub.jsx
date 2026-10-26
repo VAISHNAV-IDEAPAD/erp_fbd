@@ -127,7 +127,7 @@ export default function MMHub() {
                 </div>
             </div>
 
-            {/* Grid of Columns matching TPCS Fashion MegaMenu */}
+            {/* Grid of Columns matching V-Connect Inc. MegaMenu */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "20px" }}>
                 {filteredColumns.map((col) => (
                     <div

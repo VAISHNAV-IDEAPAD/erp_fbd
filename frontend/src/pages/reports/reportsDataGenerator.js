@@ -1,4 +1,4 @@
-// reportsDataGenerator.js - Enterprise Data Generator & Exporter for TPCS Fashion Reports Hub
+// reportsDataGenerator.js - Enterprise Data Generator & Exporter for V-Connect Inc. Reports Hub
 import React from "react";
 import {
     FaRegEdit,
@@ -425,7 +425,7 @@ export function exportReportToCSV(reportName, columns, rows) {
     try {
         const cleanName = (reportName || "Report").replace(/[^a-zA-Z0-9_\-]/g, "_");
         const timestamp = new Date().toISOString().slice(0, 10);
-        const filename = `TPCS_${cleanName}_${timestamp}.csv`;
+        const filename = `VCONNECT_${cleanName}_${timestamp}.csv`;
 
         const headerRow = columns.map(c => `"${String(c).replace(/"/g, '""')}"`).join(",");
         const dataRows = rows.map(r =>
@@ -465,7 +465,7 @@ export async function copyReportToClipboard(columns, rows) {
     }
 }
 
-// Print beautifully formatted report with TPCS Fashion Letterhead
+// Print beautifully formatted report with V-Connect Inc. Letterhead
 export function printReportDocument(report, filters, columns, rows, summary) {
     const reportName = report?.name || "Report";
     const branch = filters.branch || "Plot No. 9B";
@@ -492,7 +492,7 @@ export function printReportDocument(report, filters, columns, rows, summary) {
     <!DOCTYPE html>
     <html>
     <head>
-        <title>TPCS Fashion - ${reportName}</title>
+        <title>V-Connect Inc. - ${reportName}</title>
         <style>
             body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; padding: 24px; color: #1e293b; line-height: 1.4; font-size: 11px; }
             .header-bar { border-bottom: 2px solid #2563eb; padding-bottom: 12px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-start; }
@@ -518,7 +518,7 @@ export function printReportDocument(report, filters, columns, rows, summary) {
     <body>
         <div class="header-bar">
             <div>
-                <h1 class="company-name">TPCS Fashion</h1>
+                <h1 class="company-name">V-Connect Inc.</h1>
                 <p class="company-sub">Plot No. 9B, Garment Manufacturing & Exports Division</p>
                 <div class="report-title">${reportName}</div>
             </div>

@@ -1058,3 +1058,318 @@
     padding: 6px 8px;
     font-size: 11px;
 }
+
+
+/* ==========================================================================
+   REQUISITION ITEMS MODAL (EXACT REPLICA OF USER REFERENCE SCREENSHOT 2)
+   ========================================================================== */
+
+.tpcs-req-modal-content {
+    background: #ffffff;
+    border-radius: 4px;
+    width: 1050px;
+    max-width: 96vw;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.tpcs-req-modal-header {
+    padding: 12px 18px 8px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.tpcs-req-modal-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+}
+
+.tpcs-req-modal-close {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 18px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.tpcs-req-modal-close:hover {
+    color: #0f172a;
+}
+
+.tpcs-req-modal-body {
+    padding: 14px 18px;
+    overflow-y: auto;
+    max-height: 75vh;
+}
+
+.tpcs-req-instruction {
+    color: #1976d2;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+}
+
+.tpcs-req-subbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 12.5px;
+    color: #334155;
+    font-weight: 600;
+}
+
+.tpcs-req-btn-reset {
+    background: #1976d2;
+    color: #ffffff;
+    border: none;
+    border-radius: 3px;
+    padding: 3px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.tpcs-req-btn-reset:hover {
+    background: #1565c0;
+}
+
+/* Requisition Items Table matching Screenshot 2 */
+.tpcs-req-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    border: 1px solid #cbd5e1;
+}
+
+.tpcs-req-table th {
+    background-color: #1976d2;
+    color: #ffffff;
+    padding: 8px 6px;
+    font-weight: 600;
+    border: 1px solid #1565c0;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.tpcs-req-filter-row td {
+    padding: 3px 4px;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+}
+
+.tpcs-req-filter-input {
+    width: 100%;
+    height: 24px;
+    border: 1px solid #90caf9;
+    border-radius: 2px;
+    padding: 1px 4px;
+    font-size: 11px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.tpcs-req-filter-input:focus {
+    border-color: #1976d2;
+}
+
+.tpcs-req-table td {
+    padding: 6px 8px;
+    border: 1px solid #e2e8f0;
+    color: #1e293b;
+}
+
+.tpcs-req-stock-box {
+    background: #e2e8f0;
+    border: 1px solid #cbd5e1;
+    border-radius: 2px;
+    padding: 2px 6px;
+    text-align: right;
+    display: inline-block;
+    min-width: 45px;
+    box-sizing: border-box;
+    font-weight: 600;
+}
+
+.tpcs-req-issue-input {
+    width: 100%;
+    height: 26px;
+    border: 1px solid #cbd5e1;
+    border-radius: 2px;
+    padding: 2px 6px;
+    font-size: 11.5px;
+    outline: none;
+    box-sizing: border-box;
+    text-align: right;
+}
+
+.tpcs-req-issue-input:focus {
+    border-color: #1976d2;
+}
+
+.tpcs-req-modal-footer {
+    padding: 10px 18px;
+    display: flex;
+    justify-content: flex-end;
+    background: #ffffff;
+    border-top: 1px solid #e2e8f0;
+}
+
+.tpcs-req-btn-save {
+    background: #4caf50;
+    color: #ffffff;
+    border: none;
+    border-radius: 3px;
+    padding: 6px 22px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.tpcs-req-btn-save:hover {
+    background: #43a047;
+}
+
+/* ==========================================================================
+   PICKING SLIP (EXACT REPLICA OF USER REFERENCE SCREENSHOT 1)
+   ========================================================================== */
+
+.tpcs-ps-container {
+    background: #ffffff;
+    padding: 16px;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #000000;
+}
+
+.tpcs-ps-topbar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.tpcs-ps-btn-print {
+    background: #1976d2;
+    color: #ffffff;
+    border: none;
+    border-radius: 3px;
+    padding: 6px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tpcs-ps-slip-box {
+    width: 620px;
+    max-width: 100%;
+    margin: 0 auto;
+    border: 1.5px solid #000000;
+    background: #ffffff;
+    font-size: 12px;
+    box-sizing: border-box;
+}
+
+.tpcs-ps-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 12px;
+    border-bottom: 1.5px solid #000000;
+    font-weight: 800;
+    font-size: 13px;
+}
+
+.tpcs-ps-subheader {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 12px;
+    border-bottom: 1px solid #000000;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.tpcs-ps-body {
+    display: flex;
+    min-height: 120px;
+}
+
+.tpcs-ps-left-qr {
+    width: 150px;
+    min-width: 150px;
+    border-right: 1px solid #000000;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.tpcs-ps-verify-text {
+    font-size: 9px;
+    font-weight: 800;
+    margin-top: 6px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.tpcs-ps-right-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.tpcs-ps-detail-row {
+    display: flex;
+    border-bottom: 1px solid #000000;
+    min-height: 28px;
+    align-items: center;
+}
+
+.tpcs-ps-detail-row:last-child {
+    border-bottom: none;
+}
+
+.tpcs-ps-row-label {
+    width: 90px;
+    min-width: 90px;
+    padding: 4px 8px;
+    font-weight: 700;
+    font-size: 10.5px;
+    border-right: 1px solid #000000;
+    text-transform: uppercase;
+}
+
+.tpcs-ps-row-val {
+    flex: 1;
+    padding: 4px 10px;
+    font-weight: 700;
+    font-size: 11.5px;
+}
+
+.tpcs-ps-footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 12px;
+    border-top: 1px solid #000000;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.tpcs-ps-cut-divider {
+    text-align: center;
+    color: #94a3b8;
+    font-size: 11px;
+    letter-spacing: 2px;
+    margin: 16px auto;
+    width: 620px;
+    max-width: 100%;
+}

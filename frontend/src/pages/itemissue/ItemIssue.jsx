@@ -1662,54 +1662,19 @@ export default function ItemIssue({ initialMode = "form" }) {
                     </div>
 
                     {/* Issue To Stage Row (Auto-switches Prefix & Serial from No. 1 per Stage) */}
-                    <div className="tpcs-ii-issue-to-row" style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
-                        <div style={{ display: "flex", flexDirection: "column" }}>
-                            <label className="tpcs-ii-label">Issue To (Stage)</label>
-                            <select
-                                className="tpcs-ii-select"
-                                value={issueTo}
-                                onChange={(e) => handleStageChange(e.target.value)}
-                            >
-                                {Object.keys(stageSeriesMap).map(stageName => (
-                                    <option key={stageName} value={stageName}>
-                                        {stageName} ({stageSeriesMap[stageName].prefix}{stageSeriesMap[stageName].nextSerial})
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {/* Quick Stage Pills for 1-Click Stage Switching (Production, Sampling, Cutting, Stitching, etc.) */}
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: "5px", marginTop: "14px" }}>
-                            {Object.entries(stageSeriesMap).map(([stageName, cfg]) => {
-                                const isActiveStage = issueTo === stageName;
-                                return (
-                                    <button
-                                        key={stageName}
-                                        type="button"
-                                        onClick={() => handleStageChange(stageName)}
-                                        style={{
-                                            padding: "3px 9px",
-                                            fontSize: "11px",
-                                            fontWeight: isActiveStage ? 800 : 600,
-                                            borderRadius: "14px",
-                                            cursor: "pointer",
-                                            border: isActiveStage ? "1.5px solid #1976d2" : "1px solid #cbd5e1",
-                                            backgroundColor: isActiveStage ? "#eff6ff" : "#f8fafc",
-                                            color: isActiveStage ? "#1d4ed8" : "#475569",
-                                            display: "inline-flex",
-                                            alignItems: "center",
-                                            gap: "4px"
-                                        }}
-                                        title={`Switch to ${stageName} — Prefix: ${cfg.prefix} | Next No: ${cfg.nextSerial}`}
-                                    >
-                                        <span>{stageName}:</span>
-                                        <span style={{ fontFamily: "monospace", color: isActiveStage ? "#1e40af" : "#0f172a", fontWeight: 700 }}>
-                                            {cfg.prefix}{cfg.nextSerial}
-                                        </span>
-                                    </button>
-                                );
-                            })}
-                        </div>
+                    <div className="tpcs-ii-issue-to-row">
+                        <label className="tpcs-ii-label">Issue To</label>
+                        <select
+                            className="tpcs-ii-select"
+                            value={issueTo}
+                            onChange={(e) => handleStageChange(e.target.value)}
+                        >
+                            {Object.keys(stageSeriesMap).map(stageName => (
+                                <option key={stageName} value={stageName}>
+                                    {stageName}
+                                </option>
+                            ))}
+                        </select>
                     </div>
 
                     {/* 4-Columns Header Form Grid */}

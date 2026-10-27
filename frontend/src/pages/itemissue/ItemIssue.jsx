@@ -1294,6 +1294,26 @@ export default function ItemIssue({ initialMode = "form" }) {
             return updatedCat;
         }));
 
+        // Dynamically update Rack QR Bin Catalog stock & IRN pending quantities
+        setRackQrBins(prevBins => prevBins.map(bin => {
+            const issuedLine = validLines.find(
+                l => (l.location && l.location === bin.BinCode) ||
+                     (l.itemCode && l.itemCode === bin.ItemCode) ||
+                     (l.item && l.item.toLowerCase() === bin.ItemName.toLowerCase())
+            );
+            if (!issuedLine) return bin;
+            const qtyIssuedNow = parseFloat(issuedLine.issueQty) || 0;
+            const newIssued = Number(bin.IrnIssuedQty || 0) + qtyIssuedNow;
+            const newPending = Math.max(0, Number(bin.IrnWiseReqQty || 0) - newIssued);
+            const newStock = Math.max(0, Number(bin.ItemWiseStockQty || 0) - qtyIssuedNow);
+            return {
+                ...bin,
+                IrnIssuedQty: newIssued,
+                IrnPendingQty: newPending,
+                ItemWiseStockQty: newStock
+            };
+        }));
+
         // Also update the current lines' pendingQty & stockQty to reflect post-issue state
         setLines(prevLines => prevLines.map(l => {
             const qtyIssuedNow = parseFloat(l.issueQty) || 0;
@@ -1305,8 +1325,17 @@ export default function ItemIssue({ initialMode = "form" }) {
         }));
 
         setSavedIssues(prev => [newRecord, ...prev]);
-        setSuccessMessage(`Item Issue ${fullIssueNo} saved against IRN ${requisitionNo || "Direct"}! Pending IRN & Stock balances updated.`);
+        setSuccessMessage(`Item Issue ${fullIssueNo} saved against IRN ${requisitionNo || "Direct"}! Window closed and Register updated.`);
         setIssueSerial(prev => String(parseInt(prev, 10) + 1));
+
+        // Automatically close open panels/modals and close the Item Issue form window back to Register
+        setActiveModal(null);
+        setShowActionMenu(false);
+        setShow4x4Panel(false);
+        setShowPendingIrnPanel(false);
+        setViewMode("list");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
         setTimeout(() => setSuccessMessage(""), 5000);
     };
 
@@ -1553,6 +1582,27 @@ export default function ItemIssue({ initialMode = "form" }) {
                                 title="Switch to Item Issue Register"
                             >
                                 <FaEye /> <span>View Register</span>
+                            </button>
+
+                            {/* Close Item Issue Window */}
+                            <button
+                                type="button"
+                                className="tpcs-ii-btn-view"
+                                onClick={() => {
+                                    setActiveModal(null);
+                                    setShow4x4Panel(false);
+                                    setShowPendingIrnPanel(false);
+                                    setViewMode("list");
+                                }}
+                                title="Close Item Issue Window"
+                                style={{
+                                    backgroundColor: "#ef4444",
+                                    color: "#ffffff",
+                                    borderColor: "#dc2626",
+                                    fontWeight: 700
+                                }}
+                            >
+                                <FaTimes /> <span>Close</span>
                             </button>
                         </div>
                     </div>
@@ -1832,15 +1882,37 @@ export default function ItemIssue({ initialMode = "form" }) {
                             marginBottom: "16px",
                             fontFamily: '"Segoe UI", Tahoma, Arial, Helvetica, sans-serif'
                         }}>
-                            {/* Title matching Screenshot */}
-                            <h2 style={{
-                                color: "#2073a9",
-                                fontSize: "19px",
-                                fontWeight: 500,
-                                margin: "0 0 12px 0"
-                            }}>
-                                Item Requisition Note Approval
-                            </h2>
+                            {/* Title matching Screenshot + Close button */}
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                                <h2 style={{
+                                    color: "#2073a9",
+                                    fontSize: "19px",
+                                    fontWeight: 500,
+                                    margin: 0
+                                }}>
+                                    Item Requisition Note Approval
+                                </h2>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPendingIrnPanel(false)}
+                                    title="Close Pending IRN & Stock Panel"
+                                    style={{
+                                        background: "#f1f5f9",
+                                        border: "1px solid #cbd5e1",
+                                        color: "#475569",
+                                        borderRadius: "4px",
+                                        padding: "3px 9px",
+                                        fontSize: "11.5px",
+                                        fontWeight: 700,
+                                        cursor: "pointer",
+                                        display: "inline-flex",
+                                        alignItems: "center",
+                                        gap: "4px"
+                                    }}
+                                >
+                                    <FaTimes /> Close Panel
+                                </button>
+                            </div>
 
                             {/* Top Filter Row: Authorization Stage & Group/Model */}
                             <div style={{ display: "flex", alignItems: "flex-end", gap: "24px", marginBottom: "12px", flexWrap: "wrap" }}>
@@ -2508,13 +2580,35 @@ export default function ItemIssue({ initialMode = "form" }) {
                         ------------------------------------------------------- */}
                         {show4x4Panel && (
                             <div className="tpcs-ii-4x4-card">
-                                {/* Header badge */}
+                                {/* Header badge with Close (X) button */}
                                 <div className="tpcs-ii-4x4-header">
                                     <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                                         <FaQrcode />
                                         <span>4x4 Rack QR &amp; Location</span>
                                     </div>
-                                    <span className="tpcs-ii-4x4-header-pill">{activeItem4x4?.Location || activeRackBin?.BinCode || "BIN-A-01-01"}</span>
+                                    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                                        <span className="tpcs-ii-4x4-header-pill">{activeItem4x4?.Location || activeRackBin?.BinCode || "BIN-A-01-01"}</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => setShow4x4Panel(false)}
+                                            title="Close 4x4 QR & Location Window"
+                                            style={{
+                                                background: "rgba(255,255,255,0.2)",
+                                                border: "none",
+                                                color: "#ffffff",
+                                                borderRadius: "4px",
+                                                width: "22px",
+                                                height: "22px",
+                                                display: "inline-flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                cursor: "pointer",
+                                                fontSize: "12px"
+                                            }}
+                                        >
+                                            <FaTimes />
+                                        </button>
+                                    </div>
                                 </div>
 
                                 {/* TOP SECTION: QR CODE & BARCODE */}
@@ -2688,6 +2782,15 @@ export default function ItemIssue({ initialMode = "form" }) {
                                             onClick={() => setActiveModal("pickingSlip")}
                                         >
                                             <FaPrint /> Picking Slip
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="tpcs-ii-4x4-btn-action"
+                                            style={{ color: "#dc2626", borderColor: "#fca5a5", backgroundColor: "#fef2f2" }}
+                                            onClick={() => setShow4x4Panel(false)}
+                                            title="Close 4x4 QR & Location Window"
+                                        >
+                                            <FaTimes /> Close
                                         </button>
                                     </div>
                                 </div>
@@ -3102,6 +3205,28 @@ export default function ItemIssue({ initialMode = "form" }) {
                                 >
                                     <FaEye /> <span>View</span>
                                 </button>
+
+                                {/* Close Button (closes Item Issue window and returns to Register) */}
+                                <button
+                                    type="button"
+                                    className="tpcs-ii-btn-view"
+                                    onClick={() => {
+                                        setActiveModal(null);
+                                        setShowActionMenu(false);
+                                        setShow4x4Panel(false);
+                                        setShowPendingIrnPanel(false);
+                                        setViewMode("list");
+                                    }}
+                                    style={{
+                                        backgroundColor: "#ef4444",
+                                        color: "#ffffff",
+                                        borderColor: "#dc2626",
+                                        fontWeight: 700
+                                    }}
+                                    title="Close Item Issue Window"
+                                >
+                                    <FaTimes /> <span>Close</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -3142,7 +3267,11 @@ export default function ItemIssue({ initialMode = "form" }) {
                         <div>
                             <button
                                 type="button"
-                                onClick={() => setViewMode("form")}
+                                onClick={() => {
+                                    setShow4x4Panel(true);
+                                    setShowPendingIrnPanel(true);
+                                    setViewMode("form");
+                                }}
                                 style={{
                                     backgroundColor: "#4caf50",
                                     color: "#ffffff",

@@ -374,6 +374,21 @@ const INITIAL_SAVED_ISSUES = [
     }
 ];
 
+const INITIAL_STAGE_SERIES_CONFIG = {
+    "Production": { prefix: "ISSP/AAPL9B/2627/", nextSerial: 1, defaultDept: "Production" },
+    "Sampling": { prefix: "ISSS/AAPL9B/2627/", nextSerial: 1, defaultDept: "Sampling" },
+    "Sample Development": { prefix: "ISSDV/AAPL9B/2627/", nextSerial: 1, defaultDept: "Sample Development" },
+    "General": { prefix: "ISSG/AAPL9B/2627/", nextSerial: 1, defaultDept: "General" },
+    "Jobwork": { prefix: "ISSJ/AAPL9B/2627/", nextSerial: 1, defaultDept: "Jobwork" },
+    "Department": { prefix: "ISSD/AAPL9B/2627/", nextSerial: 1, defaultDept: "Packaging" },
+    "Cutting": { prefix: "ISSC/AAPL9B/2627/", nextSerial: 1, defaultDept: "Cutting" },
+    "Stitching": { prefix: "ISST/AAPL9B/2627/", nextSerial: 1, defaultDept: "Stitching" },
+    "Finishing": { prefix: "ISSF/AAPL9B/2627/", nextSerial: 1, defaultDept: "Finishing" },
+    "Packaging": { prefix: "ISPK/AAPL9B/2627/", nextSerial: 1, defaultDept: "Packaging" },
+    "R&D / Prototyping": { prefix: "ISRD/AAPL9B/2627/", nextSerial: 1, defaultDept: "R&D" },
+    "Maintenance": { prefix: "ISMT/AAPL9B/2627/", nextSerial: 1, defaultDept: "Maintenance" }
+};
+
 export default function ItemIssue({ initialMode = "form" }) {
     const location = useLocation();
     const navigate = useNavigate();
@@ -392,10 +407,38 @@ export default function ItemIssue({ initialMode = "form" }) {
     const [pendingSearchQuery, setPendingSearchQuery] = useState("");
     const [stockStatusFilter, setStockStatusFilter] = useState("ALL"); // ALL | IN_STOCK | LOW_STOCK | OUT_STOCK
 
+    // Stage-wise Prefix & Serial Counter Map (Every stage starts from No. 1)
+    const [stageSeriesMap, setStageSeriesMap] = useState(INITIAL_STAGE_SERIES_CONFIG);
+
     // Form Header State
     const [issueTo, setIssueTo] = useState("Production");
     const [issuePrefix, setIssuePrefix] = useState("ISSP/AAPL9B/2627/");
-    const [issueSerial, setIssueSerial] = useState("2004");
+    const [issueSerial, setIssueSerial] = useState("1");
+
+    // Switch stage (Production, Sampling, Sample Development, Cutting, Stitching, etc.) -> auto-set prefix & serial from No. 1
+    const handleStageChange = (newStage) => {
+        setIssueTo(newStage);
+        const cfg = stageSeriesMap[newStage];
+        if (cfg) {
+            setIssuePrefix(cfg.prefix);
+            setIssueSerial(String(cfg.nextSerial));
+            if (cfg.defaultDept) setDepartment(cfg.defaultDept);
+        }
+    };
+
+    // Switch prefix directly -> sync stage & load its serial counter starting from No. 1
+    const handlePrefixChange = (newPrefix) => {
+        setIssuePrefix(newPrefix);
+        const matchedEntry = Object.entries(stageSeriesMap).find(([, cfg]) => cfg.prefix === newPrefix);
+        if (matchedEntry) {
+            const [matchedStage, cfg] = matchedEntry;
+            setIssueTo(matchedStage);
+            setIssueSerial(String(cfg.nextSerial));
+            if (cfg.defaultDept) setDepartment(cfg.defaultDept);
+        } else {
+            setIssueSerial("1");
+        }
+    };
     const [issueDate, setIssueDate] = useState(() => {
         const d = new Date();
         const dd = String(d.getDate()).padStart(2, "0");
@@ -1325,8 +1368,19 @@ export default function ItemIssue({ initialMode = "form" }) {
         }));
 
         setSavedIssues(prev => [newRecord, ...prev]);
-        setSuccessMessage(`Item Issue ${fullIssueNo} saved against IRN ${requisitionNo || "Direct"}! Window closed and Register updated.`);
-        setIssueSerial(prev => String(parseInt(prev, 10) + 1));
+        setSuccessMessage(`Item Issue ${fullIssueNo} (${issueTo}) saved against IRN ${requisitionNo || "Direct"}! Window closed and Register updated.`);
+
+        // Increment the serial number specifically for the active stage & prefix
+        const nextNum = (parseInt(issueSerial, 10) || 1) + 1;
+        setIssueSerial(String(nextNum));
+        setStageSeriesMap(prev => ({
+            ...prev,
+            [issueTo]: {
+                ...(prev[issueTo] || { prefix: issuePrefix, defaultDept: department }),
+                prefix: issuePrefix,
+                nextSerial: nextNum
+            }
+        }));
 
         // Automatically close open panels/modals and close the Item Issue form window back to Register
         setActiveModal(null);
@@ -1607,47 +1661,99 @@ export default function ItemIssue({ initialMode = "form" }) {
                         </div>
                     </div>
 
-                    {/* Issue To Row */}
-                    <div className="tpcs-ii-issue-to-row">
-                        <label className="tpcs-ii-label">Issue To</label>
-                        <select
-                            className="tpcs-ii-select"
-                            value={issueTo}
-                            onChange={(e) => setIssueTo(e.target.value)}
-                        >
-                            <option value="Production">Production</option>
-                            <option value="General">General</option>
-                            <option value="Jobwork">Jobwork</option>
-                            <option value="Department">Department</option>
-                            <option value="Sample Development">Sample Development</option>
-                        </select>
+                    {/* Issue To Stage Row (Auto-switches Prefix & Serial from No. 1 per Stage) */}
+                    <div className="tpcs-ii-issue-to-row" style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+                        <div style={{ display: "flex", flexDirection: "column" }}>
+                            <label className="tpcs-ii-label">Issue To (Stage)</label>
+                            <select
+                                className="tpcs-ii-select"
+                                value={issueTo}
+                                onChange={(e) => handleStageChange(e.target.value)}
+                            >
+                                {Object.keys(stageSeriesMap).map(stageName => (
+                                    <option key={stageName} value={stageName}>
+                                        {stageName} ({stageSeriesMap[stageName].prefix}{stageSeriesMap[stageName].nextSerial})
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Quick Stage Pills for 1-Click Stage Switching (Production, Sampling, Cutting, Stitching, etc.) */}
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: "5px", marginTop: "14px" }}>
+                            {Object.entries(stageSeriesMap).map(([stageName, cfg]) => {
+                                const isActiveStage = issueTo === stageName;
+                                return (
+                                    <button
+                                        key={stageName}
+                                        type="button"
+                                        onClick={() => handleStageChange(stageName)}
+                                        style={{
+                                            padding: "3px 9px",
+                                            fontSize: "11px",
+                                            fontWeight: isActiveStage ? 800 : 600,
+                                            borderRadius: "14px",
+                                            cursor: "pointer",
+                                            border: isActiveStage ? "1.5px solid #1976d2" : "1px solid #cbd5e1",
+                                            backgroundColor: isActiveStage ? "#eff6ff" : "#f8fafc",
+                                            color: isActiveStage ? "#1d4ed8" : "#475569",
+                                            display: "inline-flex",
+                                            alignItems: "center",
+                                            gap: "4px"
+                                        }}
+                                        title={`Switch to ${stageName} — Prefix: ${cfg.prefix} | Next No: ${cfg.nextSerial}`}
+                                    >
+                                        <span>{stageName}:</span>
+                                        <span style={{ fontFamily: "monospace", color: isActiveStage ? "#1e40af" : "#0f172a", fontWeight: 700 }}>
+                                            {cfg.prefix}{cfg.nextSerial}
+                                        </span>
+                                    </button>
+                                );
+                            })}
+                        </div>
                     </div>
 
                     {/* 4-Columns Header Form Grid */}
                     <div className="tpcs-ii-grid">
                         {/* COLUMN 1: IssueNo */}
                         <div className="tpcs-ii-field-group">
-                            <label className="tpcs-ii-label">IssueNo</label>
+                            <label className="tpcs-ii-label">
+                                IssueNo <span style={{ fontSize: "10px", color: "#1976d2", fontWeight: 700 }}>({issueTo} Series from No. 1)</span>
+                            </label>
                             <div className="tpcs-ii-issueno-group">
                                 <select
                                     className="tpcs-ii-issueno-prefix"
                                     value={issuePrefix}
-                                    onChange={(e) => setIssuePrefix(e.target.value)}
+                                    onChange={(e) => handlePrefixChange(e.target.value)}
                                 >
-                                    <option value="ISSP/AAPL9B/2627/">ISSP/AAPL9B/2627/</option>
-                                    <option value="ISSG/AAPL9B/2627/">ISSG/AAPL9B/2627/</option>
-                                    <option value="ISJ/AAPL9B/2627/">ISJ/AAPL9B/2627/</option>
+                                    {Object.entries(stageSeriesMap).map(([stageName, cfg]) => (
+                                        <option key={stageName} value={cfg.prefix}>
+                                            {cfg.prefix} ({stageName})
+                                        </option>
+                                    ))}
                                 </select>
                                 <input
                                     type="text"
                                     className="tpcs-ii-issueno-num"
                                     value={issueSerial}
-                                    onChange={(e) => setIssueSerial(e.target.value)}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        setIssueSerial(val);
+                                        const numVal = parseInt(val, 10);
+                                        if (!isNaN(numVal) && numVal >= 1) {
+                                            setStageSeriesMap(prev => ({
+                                                ...prev,
+                                                [issueTo]: {
+                                                    ...(prev[issueTo] || { prefix: issuePrefix }),
+                                                    nextSerial: numVal
+                                                }
+                                            }));
+                                        }
+                                    }}
                                 />
                                 <button
                                     type="button"
                                     className="tpcs-ii-addon-btn btn-gear"
-                                    title="Prefix & Numbering Settings"
+                                    title="Configure Stage-Wise Prefixes & Reset Serial Numbers to 1"
                                     onClick={() => setActiveModal("settings")}
                                 >
                                     <FaCog />
@@ -3834,33 +3940,117 @@ export default function ItemIssue({ initialMode = "form" }) {
                 </div>
             )}
 
-            {/* Sequence Settings Modal */}
+            {/* Sequence Settings Modal (Stage-Wise Prefixes & Serial Numbers Starting from No. 1) */}
             {activeModal === "settings" && (
                 <div className="tpcs-ii-modal-backdrop" onClick={() => setActiveModal(null)}>
-                    <div className="tpcs-ii-modal-content" onClick={e => e.stopPropagation()}>
+                    <div className="tpcs-ii-modal-content" style={{ width: "680px", maxWidth: "95vw" }} onClick={e => e.stopPropagation()}>
                         <div className="tpcs-ii-modal-header">
-                            <h3 className="tpcs-ii-modal-title">Item Issue Numbering Format</h3>
+                            <h3 className="tpcs-ii-modal-title">Stage-Wise Item Issue Prefixes &amp; Numbering (From No. 1)</h3>
                             <button className="tpcs-ii-modal-close" onClick={() => setActiveModal(null)}><FaTimes /></button>
                         </div>
                         <div className="tpcs-ii-modal-body">
-                            <div style={{ marginBottom: "12px" }}>
-                                <label className="tpcs-ii-label">Series Prefix</label>
-                                <input
-                                    type="text"
-                                    className="tpcs-ii-input"
-                                    value={issuePrefix}
-                                    onChange={(e) => setIssuePrefix(e.target.value)}
-                                />
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+                                <span style={{ fontSize: "12px", color: "#475569", fontWeight: 600 }}>
+                                    Each stage maintains its own independent prefix and serial number starting from <strong>1</strong>.
+                                </span>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setStageSeriesMap(INITIAL_STAGE_SERIES_CONFIG);
+                                        const activeCfg = INITIAL_STAGE_SERIES_CONFIG[issueTo] || INITIAL_STAGE_SERIES_CONFIG["Production"];
+                                        setIssuePrefix(activeCfg.prefix);
+                                        setIssueSerial(String(activeCfg.nextSerial));
+                                    }}
+                                    style={{
+                                        background: "#f1f5f9",
+                                        border: "1px solid #cbd5e1",
+                                        borderRadius: "4px",
+                                        padding: "4px 10px",
+                                        fontSize: "11px",
+                                        fontWeight: 700,
+                                        color: "#1976d2",
+                                        cursor: "pointer"
+                                    }}
+                                >
+                                    <FaRedo style={{ marginRight: "4px", fontSize: "10px" }} /> Reset All Stages to No. 1
+                                </button>
                             </div>
-                            <div>
-                                <label className="tpcs-ii-label">Next Serial Number</label>
-                                <input
-                                    type="text"
-                                    className="tpcs-ii-input"
-                                    value={issueSerial}
-                                    onChange={(e) => setIssueSerial(e.target.value)}
-                                />
-                            </div>
+
+                            <table className="tpcs-ii-table" style={{ width: "100%" }}>
+                                <thead>
+                                    <tr>
+                                        <th>Stage (Issue To)</th>
+                                        <th>Series Prefix</th>
+                                        <th style={{ width: "110px", textAlign: "center" }}>Next Serial No.</th>
+                                        <th style={{ width: "170px" }}>Preview IssueNo</th>
+                                        <th style={{ width: "80px", textAlign: "center" }}>Select</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {Object.entries(stageSeriesMap).map(([stageName, cfg]) => (
+                                        <tr key={stageName} style={{ backgroundColor: issueTo === stageName ? "#eff6ff" : undefined }}>
+                                            <td style={{ fontWeight: 700, color: "#0f172a" }}>{stageName}</td>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    className="tpcs-ii-tbl-input"
+                                                    value={cfg.prefix}
+                                                    onChange={(e) => {
+                                                        const newPref = e.target.value;
+                                                        setStageSeriesMap(prev => ({
+                                                            ...prev,
+                                                            [stageName]: { ...prev[stageName], prefix: newPref }
+                                                        }));
+                                                        if (issueTo === stageName) setIssuePrefix(newPref);
+                                                    }}
+                                                    style={{ fontFamily: "monospace", fontWeight: 700 }}
+                                                />
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="number"
+                                                    min="1"
+                                                    className="tpcs-ii-tbl-input"
+                                                    value={cfg.nextSerial}
+                                                    onChange={(e) => {
+                                                        const newSer = Math.max(1, parseInt(e.target.value, 10) || 1);
+                                                        setStageSeriesMap(prev => ({
+                                                            ...prev,
+                                                            [stageName]: { ...prev[stageName], nextSerial: newSer }
+                                                        }));
+                                                        if (issueTo === stageName) setIssueSerial(String(newSer));
+                                                    }}
+                                                    style={{ textAlign: "center", fontWeight: 800, color: "#1976d2" }}
+                                                />
+                                            </td>
+                                            <td style={{ fontFamily: "monospace", fontWeight: 700, color: "#047857" }}>
+                                                {cfg.prefix}{cfg.nextSerial}
+                                            </td>
+                                            <td style={{ textAlign: "center" }}>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        handleStageChange(stageName);
+                                                        setActiveModal(null);
+                                                    }}
+                                                    style={{
+                                                        background: issueTo === stageName ? "#1976d2" : "#e2e8f0",
+                                                        color: issueTo === stageName ? "#ffffff" : "#1e293b",
+                                                        border: "none",
+                                                        borderRadius: "4px",
+                                                        padding: "3px 8px",
+                                                        fontSize: "11px",
+                                                        fontWeight: 700,
+                                                        cursor: "pointer"
+                                                    }}
+                                                >
+                                                    {issueTo === stageName ? "Active" : "Use"}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
                         <div className="tpcs-ii-modal-footer">
                             <button type="button" className="tpcs-ii-btn-save" onClick={() => setActiveModal(null)}>Save Settings</button>

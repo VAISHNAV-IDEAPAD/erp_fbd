@@ -1373,3 +1373,358 @@
     width: 620px;
     max-width: 100%;
 }
+
+
+/* ==========================================================================
+   PENDING IRN TO ISSUE & ITEM STOCK DISPLAY MODULE STYLES
+   ========================================================================== */
+
+.tpcs-pirn-section {
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.06);
+    overflow: hidden;
+}
+
+.tpcs-pirn-header {
+    background: linear-gradient(90deg, #0f172a 0%, #1e3a8a 60%, #1976d2 100%);
+    color: #ffffff;
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tpcs-pirn-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.tpcs-pirn-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    letter-spacing: 0.2px;
+}
+
+.tpcs-pirn-kpi-pill {
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    color: #ffffff;
+    padding: 2px 9px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.tpcs-pirn-kpi-pill.amber {
+    background: rgba(245, 158, 11, 0.25);
+    border-color: rgba(251, 191, 36, 0.55);
+    color: #fef3c7;
+}
+
+.tpcs-pirn-kpi-pill.green {
+    background: rgba(16, 185, 129, 0.25);
+    border-color: rgba(52, 211, 153, 0.55);
+    color: #d1fae5;
+}
+
+.tpcs-pirn-body {
+    padding: 12px 14px;
+    background: #f8fafc;
+}
+
+/* Horizontal Grid of Pending IRN Cards */
+.tpcs-pirn-cards-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(235px, 1fr));
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.tpcs-pirn-card {
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 5px;
+    padding: 9px 11px;
+    cursor: pointer;
+    transition: all 0.16s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 6px;
+    position: relative;
+}
+
+.tpcs-pirn-card:hover {
+    border-color: #1976d2;
+    box-shadow: 0 3px 10px rgba(25, 118, 210, 0.12);
+    transform: translateY(-1px);
+}
+
+.tpcs-pirn-card.active {
+    background: #eff6ff;
+    border: 2px solid #1976d2;
+    box-shadow: 0 3px 12px rgba(25, 118, 210, 0.18);
+}
+
+.tpcs-pirn-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.tpcs-pirn-no {
+    font-size: 12px;
+    font-weight: 800;
+    color: #0f172a;
+    font-family: monospace;
+    letter-spacing: 0.2px;
+}
+
+.tpcs-pirn-card.active .tpcs-pirn-no {
+    color: #1976d2;
+}
+
+.tpcs-pirn-status-badge {
+    font-size: 9.5px;
+    font-weight: 700;
+    padding: 1.5px 6px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.tpcs-pirn-status-badge.pending {
+    background: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
+}
+
+.tpcs-pirn-status-badge.partial {
+    background: #dbeafe;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+}
+
+.tpcs-pirn-status-badge.completed {
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+
+.tpcs-pirn-meta {
+    font-size: 11px;
+    color: #475569;
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+}
+
+.tpcs-pirn-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 4px 6px;
+    text-align: center;
+}
+
+.tpcs-pirn-card.active .tpcs-pirn-metrics-grid {
+    background: #ffffff;
+    border-color: #bfdbfe;
+}
+
+.tpcs-pirn-metric-lbl {
+    font-size: 9.5px;
+    color: #64748b;
+    display: block;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.tpcs-pirn-metric-val {
+    font-size: 11.5px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.tpcs-pirn-metric-val.pending-val {
+    color: #d97706;
+}
+
+.tpcs-pirn-metric-val.issued-val {
+    color: #16a34a;
+}
+
+.tpcs-pirn-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 2px;
+}
+
+.tpcs-pirn-load-btn {
+    background: #1976d2;
+    color: #ffffff;
+    border: none;
+    border-radius: 3px;
+    padding: 3px 8px;
+    font-size: 10.5px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: background 0.15s ease;
+}
+
+.tpcs-pirn-load-btn:hover {
+    background: #1565c0;
+}
+
+/* Filter & Action Subbar for Pending Items & Stock Table */
+.tpcs-pirn-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 7px 10px;
+}
+
+.tpcs-pirn-filter-pills {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.tpcs-pirn-pill-btn {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+    padding: 3.5px 9px;
+    border-radius: 14px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.tpcs-pirn-pill-btn:hover {
+    background: #e2e8f0;
+}
+
+.tpcs-pirn-pill-btn.active {
+    background: #1976d2;
+    border-color: #1976d2;
+    color: #ffffff;
+}
+
+/* Pending Items & Live Stock Table */
+.tpcs-pirn-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+}
+
+.tpcs-pirn-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11.5px;
+}
+
+.tpcs-pirn-table th {
+    background: #1e293b;
+    color: #ffffff;
+    padding: 7px 8px;
+    font-weight: 600;
+    text-align: left;
+    border-right: 1px solid rgba(255, 255, 255, 0.12);
+    white-space: nowrap;
+}
+
+.tpcs-pirn-table td {
+    padding: 6px 8px;
+    border-bottom: 1px solid #e2e8f0;
+    border-right: 1px solid #f1f5f9;
+    color: #1e293b;
+    vertical-align: middle;
+}
+
+.tpcs-pirn-table tr:hover td {
+    background-color: #f8fafc;
+}
+
+/* Stock Status Badges */
+.tpcs-stock-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2.5px 7px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.tpcs-stock-pill.in-stock {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #86efac;
+}
+
+.tpcs-stock-pill.low-stock {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+}
+
+.tpcs-stock-pill.out-stock {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fca5a5;
+}
+
+/* Pending To Issue Badge */
+.tpcs-pending-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2.5px 8px;
+    border-radius: 4px;
+    font-weight: 800;
+    font-size: 11.5px;
+    background: #fffbeb;
+    color: #b45309;
+    border: 1px solid #fcd34d;
+    white-space: nowrap;
+}
+
+.tpcs-pending-pill.cleared {
+    background: #f1f5f9;
+    color: #64748b;
+    border-color: #cbd5e1;
+}

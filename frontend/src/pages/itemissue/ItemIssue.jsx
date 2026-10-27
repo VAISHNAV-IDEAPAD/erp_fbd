@@ -18,21 +18,235 @@ import {
     FaTimes,
     FaSearch,
     FaArrowLeft,
-    FaCheckCircle
+    FaCheckCircle,
+    FaQrcode,
+    FaBarcode,
+    FaMapMarkerAlt,
+    FaWarehouse,
+    FaCheckSquare,
+    FaSquare,
+    FaBolt,
+    FaBoxes,
+    FaTags,
+    FaLayerGroup
 } from "react-icons/fa";
+import { generateQRCodeSVG, generateBarcodeSVG } from "../../utils/qrBarcodeUtil";
 import "../../styles/itemIssue.css";
 
 const API_URL = process.env.REACT_APP_API_URL || "/api";
 
-// Seed/mock items for lookup
-const DEFAULT_ITEMS = [
-    { ItemCode: "LTH-1093", ItemName: "COW CULATTAS SINGLE LEATHER", GroupName: "Leather", Color: "BLACK", UOM: "SQFT", StockQty: 450, Rate: 145 },
-    { ItemCode: "LTH-1112", ItemName: "COW ECO VEG SIDE CRUST LEATHER", GroupName: "Leather", Color: "TAN", UOM: "SQFT", StockQty: 280, Rate: 160 },
-    { ItemCode: "HDW-2236", ItemName: "JAM RIVET SINGLE HEAD 7MM", GroupName: "Hardware", Color: "ANTIQUE BRASS", UOM: "SET", StockQty: 5000, Rate: 1.85 },
-    { ItemCode: "RNF-1085", ItemName: "HIGH DENSITY TOPLINER 0.4MM", GroupName: "Lining", Color: "BLACK", UOM: "MTR", StockQty: 1200, Rate: 32.5 },
-    { ItemCode: "NONWO5064", ItemName: "TALIN 0.3MM WHITE", GroupName: "Reinforcement", Color: "WHITE", UOM: "MTR", StockQty: 640, Rate: 24.0 },
-    { ItemCode: "PKG-2200", ItemName: "CARD PAPER 350G 31X43 INCH", GroupName: "Packaging", Color: "NATURAL", UOM: "SHEET", StockQty: 850, Rate: 8.5 },
-    { ItemCode: "THR-0021", ItemName: "BONDED NYLON THREAD #40", GroupName: "Thread", Color: "BLACK", UOM: "CONE", StockQty: 120, Rate: 95.0 }
+// Comprehensive Material Catalog with Stock Wise, Requirement Wise, Balance Wise, and Location
+const DEFAULT_MATERIAL_CATALOG = [
+    {
+        ItemCode: "LTH-1093",
+        ItemName: "COW CULATTAS SINGLE LEATHER",
+        GroupName: "Leather",
+        Color: "BLACK",
+        ColorCode: "BLK-01",
+        TypeSize: "A Grade (1.2-1.4mm)",
+        UOM: "SQFT",
+        StockQty: 450,
+        ReqQty: 200,
+        IssuedQty: 50,
+        BalanceQty: 150,
+        Rate: 145.0,
+        Location: "BIN-A-01-01",
+        Warehouse: "RAW MATERIAL STORE 9B",
+        Rack: "Rack A1",
+        Shelf: "Level 1",
+        Zone: "Zone A - Leather",
+        Barcode: "BAR-RL-1001",
+        hex: "#1e293b"
+    },
+    {
+        ItemCode: "LTH-1112",
+        ItemName: "COW ECO VEG SIDE CRUST LEATHER",
+        GroupName: "Leather",
+        Color: "TAN",
+        ColorCode: "TAN-04",
+        TypeSize: "Standard (1.4-1.6mm)",
+        UOM: "SQFT",
+        StockQty: 280,
+        ReqQty: 120,
+        IssuedQty: 20,
+        BalanceQty: 100,
+        Rate: 160.0,
+        Location: "BIN-A-02-01",
+        Warehouse: "RAW MATERIAL STORE 9B",
+        Rack: "Rack A2",
+        Shelf: "Level 1",
+        Zone: "Zone A - Leather",
+        Barcode: "BAR-RL-1003",
+        hex: "#d97706"
+    },
+    {
+        ItemCode: "HDW-2236",
+        ItemName: "JAM RIVET SINGLE HEAD 7MM",
+        GroupName: "Hardware",
+        Color: "ANTIQUE BRASS",
+        ColorCode: "AB-701",
+        TypeSize: "7mm Round",
+        UOM: "SET",
+        StockQty: 5000,
+        ReqQty: 1200,
+        IssuedQty: 400,
+        BalanceQty: 800,
+        Rate: 1.85,
+        Location: "BIN-C-01-01",
+        Warehouse: "ACCESSORIES GODOWN 18",
+        Rack: "Rack C1",
+        Shelf: "Level 1",
+        Zone: "Zone C - Hardware",
+        Barcode: "BAR-BIN-C0101",
+        hex: "#b45309"
+    },
+    {
+        ItemCode: "RNF-1085",
+        ItemName: "HIGH DENSITY TOPLINER 0.4MM",
+        GroupName: "Lining",
+        Color: "BLACK",
+        ColorCode: "BLK-02",
+        TypeSize: "0.4mm Roll",
+        UOM: "MTR",
+        StockQty: 1200,
+        ReqQty: 450,
+        IssuedQty: 150,
+        BalanceQty: 300,
+        Rate: 32.5,
+        Location: "BIN-B-01-02",
+        Warehouse: "RAW MATERIAL STORE 9B",
+        Rack: "Rack B1",
+        Shelf: "Level 2",
+        Zone: "Zone B - Fabric & Lining",
+        Barcode: "BAR-RL-2003",
+        hex: "#0f172a"
+    },
+    {
+        ItemCode: "NONWO5064",
+        ItemName: "TALIN 0.3MM WHITE",
+        GroupName: "Reinforcement",
+        Color: "WHITE",
+        ColorCode: "WHT-10",
+        TypeSize: "0.3mm Sheet",
+        UOM: "MTR",
+        StockQty: 640,
+        ReqQty: 300,
+        IssuedQty: 100,
+        BalanceQty: 200,
+        Rate: 24.0,
+        Location: "BIN-B-01-01",
+        Warehouse: "RAW MATERIAL STORE 9B",
+        Rack: "Rack B1",
+        Shelf: "Level 1",
+        Zone: "Zone B - Fabric & Lining",
+        Barcode: "BAR-RL-2001",
+        hex: "#f8fafc"
+    },
+    {
+        ItemCode: "PKG-2200",
+        ItemName: "CARD PAPER 350G 31X43 INCH",
+        GroupName: "Packaging",
+        Color: "NATURAL",
+        ColorCode: "NAT-01",
+        TypeSize: "31x43 Inch",
+        UOM: "SHEET",
+        StockQty: 850,
+        ReqQty: 500,
+        IssuedQty: 200,
+        BalanceQty: 300,
+        Rate: 8.5,
+        Location: "BIN-D-01-01",
+        Warehouse: "RAW MATERIAL STORE 9B",
+        Rack: "Rack D1",
+        Shelf: "Level 1",
+        Zone: "Zone D - Thread & Trims",
+        Barcode: "BAR-BIN-D0101",
+        hex: "#e2e8f0"
+    },
+    {
+        ItemCode: "THR-0021",
+        ItemName: "BONDED NYLON THREAD #40",
+        GroupName: "Thread",
+        Color: "BLACK",
+        ColorCode: "BLK-40",
+        TypeSize: "#40 3000M",
+        UOM: "CONE",
+        StockQty: 120,
+        ReqQty: 60,
+        IssuedQty: 20,
+        BalanceQty: 40,
+        Rate: 95.0,
+        Location: "BIN-D-01-01",
+        Warehouse: "RAW MATERIAL STORE 9B",
+        Rack: "Rack D1",
+        Shelf: "Level 1",
+        Zone: "Zone D - Thread & Trims",
+        Barcode: "BAR-RL-2002",
+        hex: "#1e293b"
+    },
+    {
+        ItemCode: "LTH-1205",
+        ItemName: "NUBUCK SUEDE FINISH LEATHER",
+        GroupName: "Leather",
+        Color: "DARK BROWN",
+        ColorCode: "DBR-08",
+        TypeSize: "Premium 1.3mm",
+        UOM: "SQFT",
+        StockQty: 390,
+        ReqQty: 250,
+        IssuedQty: 80,
+        BalanceQty: 170,
+        Rate: 175.0,
+        Location: "BIN-A-01-02",
+        Warehouse: "RAW MATERIAL STORE 9B",
+        Rack: "Rack A1",
+        Shelf: "Level 2",
+        Zone: "Zone A - Leather",
+        Barcode: "BAR-RL-1004",
+        hex: "#78350f"
+    },
+    {
+        ItemCode: "FAB-3011",
+        ItemName: "COTTON TWILL LINING 120 GSM",
+        GroupName: "Lining",
+        Color: "WHITE",
+        ColorCode: "WHT-02",
+        TypeSize: "120 GSM 58 Inch",
+        UOM: "MTR",
+        StockQty: 850,
+        ReqQty: 400,
+        IssuedQty: 150,
+        BalanceQty: 250,
+        Rate: 45.0,
+        Location: "BIN-B-01-01",
+        Warehouse: "RAW MATERIAL STORE 9B",
+        Rack: "Rack B1",
+        Shelf: "Level 1",
+        Zone: "Zone B - Fabric & Lining",
+        Barcode: "BAR-RL-2001",
+        hex: "#ffffff"
+    },
+    {
+        ItemCode: "HDW-3108",
+        ItemName: "ANTIQUE BRASS EYELET 4MM",
+        GroupName: "Hardware",
+        Color: "ANTIQUE BRASS",
+        ColorCode: "AB-402",
+        TypeSize: "4mm Inner Dia",
+        UOM: "PCS",
+        StockQty: 8500,
+        ReqQty: 2400,
+        IssuedQty: 600,
+        BalanceQty: 1800,
+        Rate: 0.95,
+        Location: "BIN-C-01-01",
+        Warehouse: "ACCESSORIES GODOWN 18",
+        Rack: "Rack C1",
+        Shelf: "Level 1",
+        Zone: "Zone C - Hardware",
+        Barcode: "BAR-BIN-C0102",
+        hex: "#b45309"
+    }
 ];
 
 const DEFAULT_WAREHOUSES = [
@@ -101,8 +315,8 @@ const INITIAL_SAVED_ISSUES = [
         totalAmount: 27872.5,
         status: "Completed",
         items: [
-            { id: 1, issueType: "Lot Issue", ioNo: "IO-9821", group: "Leather", item: "COW CULATTAS SINGLE LEATHER", description: "Upper cutting leather", colour: "BLACK", typeSize: "A Grade", uom: "SQFT", stockQty: 450, issueQty: 120.5, rate: 145, amount: 17472.5, remarks: "Checked by QC" },
-            { id: 2, issueType: "Lot Issue", ioNo: "IO-9821", group: "Leather", item: "COW ECO VEG SIDE CRUST LEATHER", description: "Counter reinforcement", colour: "TAN", typeSize: "Standard", uom: "SQFT", stockQty: 280, issueQty: 65, rate: 160, amount: 10400, remarks: "" }
+            { id: 1, issueType: "Lot Issue", ioNo: "IO-9821", group: "Leather", item: "COW CULATTAS SINGLE LEATHER", description: "Upper cutting leather", colour: "BLACK", typeSize: "A Grade", uom: "SQFT", location: "BIN-A-01-01", stockQty: 450, issueQty: 120.5, rate: 145, amount: 17472.5, remarks: "Checked by QC" },
+            { id: 2, issueType: "Lot Issue", ioNo: "IO-9821", group: "Leather", item: "COW ECO VEG SIDE CRUST LEATHER", description: "Counter reinforcement", colour: "TAN", typeSize: "Standard", uom: "SQFT", location: "BIN-A-02-01", stockQty: 280, issueQty: 65, rate: 160, amount: 10400, remarks: "" }
         ]
     },
     {
@@ -124,16 +338,16 @@ const INITIAL_SAVED_ISSUES = [
         totalAmount: 832.5,
         status: "Completed",
         items: [
-            { id: 1, issueType: "Lot Issue", ioNo: "IO-9818", group: "Hardware", item: "JAM RIVET SINGLE HEAD 7MM", description: "Riveting section", colour: "ANTIQUE BRASS", typeSize: "7mm", uom: "SET", stockQty: 5000, issueQty: 450, rate: 1.85, amount: 832.5, remarks: "" }
+            { id: 1, issueType: "Lot Issue", ioNo: "IO-9818", group: "Hardware", item: "JAM RIVET SINGLE HEAD 7MM", description: "Riveting section", colour: "ANTIQUE BRASS", typeSize: "7mm", uom: "SET", location: "BIN-C-01-01", stockQty: 5000, issueQty: 450, rate: 1.85, amount: 832.5, remarks: "" }
         ]
     }
 ];
 
-export default function ItemIssue({ initialMode = "list" }) {
-    // View mode: 'form' (matches screenshots) or 'list' (registers)
+export default function ItemIssue({ initialMode = "form" }) {
+    // View mode: 'form' or 'list'
     const [viewMode, setViewMode] = useState(initialMode);
 
-    // Form Header State (matches Screenshot 1)
+    // Form Header State
     const [issueTo, setIssueTo] = useState("Production");
     const [issuePrefix, setIssuePrefix] = useState("ISSP/AAPL9B/2627/");
     const [issueSerial, setIssueSerial] = useState("2004");
@@ -148,34 +362,54 @@ export default function ItemIssue({ initialMode = "list" }) {
     const [associate, setAssociate] = useState("");
     const [receivedBy, setReceivedBy] = useState("");
     const [department, setDepartment] = useState("");
-    const [stores, setStores] = useState("");
+    const [stores, setStores] = useState("RAW MATERIAL STORE 9B");
     const [issuedBy, setIssuedBy] = useState("Admin");
     const [requisitionNo, setRequisitionNo] = useState("");
     const [jobcardNo, setJobcardNo] = useState("");
     const [cuttingPlanNo, setCuttingPlanNo] = useState("");
 
-    // Table Lines State (matches Screenshot 1 & 2)
+    // =========================================================================
+    // 4x4 QR CODE & LOCATION MODULE STATE (LEFT MIDDLE SIDE)
+    // =========================================================================
+    const [show4x4Panel, setShow4x4Panel] = useState(true);
+    const [activeItem4x4, setActiveItem4x4] = useState(DEFAULT_MATERIAL_CATALOG[0]);
+    const [scanInput, setScanInput] = useState("");
+    const [scanLaserActive, setScanLaserActive] = useState(false);
+    const [autoFillToast, setAutoFillToast] = useState("");
+
+    // =========================================================================
+    // SEARCH BY MATERIAL NAME & COLOUR (STOCK WISE, REQ WISE, BALANCE WISE)
+    // =========================================================================
+    const [searchMaterialName, setSearchMaterialName] = useState("");
+    const [searchColour, setSearchColour] = useState("");
+    const [searchGroup, setSearchGroup] = useState("");
+    const [markedItemCodes, setMarkedItemCodes] = useState([]);
+    const [searchIssueQtys, setSearchIssueQtys] = useState({});
+
+    // Table Lines State
     const [lines, setLines] = useState([
         {
             id: 1,
             selected: false,
             issueType: "Lot Issue",
-            ioNo: "",
-            group: "",
-            item: "",
-            description: "",
-            colour: "",
-            typeSize: "",
-            uom: "PCS",
-            stockQty: 0,
-            issueQty: "",
-            rate: "",
-            amount: 0,
-            remarks: ""
+            ioNo: "IO-9821",
+            group: DEFAULT_MATERIAL_CATALOG[0].GroupName,
+            item: DEFAULT_MATERIAL_CATALOG[0].ItemName,
+            itemCode: DEFAULT_MATERIAL_CATALOG[0].ItemCode,
+            description: "Upper cutting leather batch A",
+            colour: DEFAULT_MATERIAL_CATALOG[0].Color,
+            typeSize: DEFAULT_MATERIAL_CATALOG[0].TypeSize,
+            uom: DEFAULT_MATERIAL_CATALOG[0].UOM,
+            location: DEFAULT_MATERIAL_CATALOG[0].Location,
+            stockQty: DEFAULT_MATERIAL_CATALOG[0].StockQty,
+            issueQty: DEFAULT_MATERIAL_CATALOG[0].BalanceQty,
+            rate: DEFAULT_MATERIAL_CATALOG[0].Rate,
+            amount: parseFloat((DEFAULT_MATERIAL_CATALOG[0].BalanceQty * DEFAULT_MATERIAL_CATALOG[0].Rate).toFixed(2)),
+            remarks: "Standard production issue"
         }
     ]);
 
-    // Footer State (matches Screenshot 2)
+    // Footer State
     const [remark, setRemark] = useState("");
     const [internalMemo, setInternalMemo] = useState("");
     const [attachments, setAttachments] = useState([]);
@@ -190,7 +424,7 @@ export default function ItemIssue({ initialMode = "list" }) {
     const [activeRecord, setActiveRecord] = useState(null);
 
     // Modals
-    const [activeModal, setActiveModal] = useState(null); // 'requisition' | 'jobcard' | 'plan' | 'attach' | 'settings' | 'print'
+    const [activeModal, setActiveModal] = useState(null); // 'materialSearch' | 'sticker4x4' | 'requisition' | 'jobcard' | 'plan' | 'attach' | 'settings' | 'print'
     const [successMessage, setSuccessMessage] = useState("");
 
     // Load registered lists from backend on mount
@@ -200,7 +434,6 @@ export default function ItemIssue({ initialMode = "list" }) {
             .then(res => {
                 const data = res.data?.data || res.data;
                 if (mounted && Array.isArray(data) && data.length > 0) {
-                    // Normalize backend records
                     const mapped = data.map((d, i) => ({
                         id: d.IssueID || d.id || i + 1,
                         issueNo: d.IssueNo || `ISSP/AAPL9B/2627/${2000 + i}`,
@@ -243,28 +476,179 @@ export default function ItemIssue({ initialMode = "list" }) {
     const totalQty = lines.reduce((acc, row) => acc + (parseFloat(row.issueQty) || 0), 0);
     const totalAmount = lines.reduce((acc, row) => acc + (parseFloat(row.amount) || 0), 0);
 
+    // =========================================================================
+    // AUTO FILL LOGIC ON SCAN / CODE ENTRY
+    // =========================================================================
+    const handleScanAutoFill = (inputCode) => {
+        const query = (inputCode || scanInput).trim();
+        if (!query) return;
+
+        setScanLaserActive(true);
+        setTimeout(() => setScanLaserActive(false), 800);
+
+        // Find material by ItemCode, Barcode, Bin Code, or ItemName
+        const matched = DEFAULT_MATERIAL_CATALOG.find(m =>
+            m.ItemCode.toLowerCase() === query.toLowerCase() ||
+            (m.Barcode && m.Barcode.toLowerCase() === query.toLowerCase()) ||
+            (m.Location && m.Location.toLowerCase() === query.toLowerCase()) ||
+            m.ItemName.toLowerCase().includes(query.toLowerCase())
+        );
+
+        if (matched) {
+            setActiveItem4x4(matched);
+
+            // Auto-fill into lines table
+            setLines(prev => {
+                const emptyIdx = prev.findIndex(r => !r.item || r.item.trim() === "");
+                const targetIssueQty = matched.BalanceQty > 0 ? matched.BalanceQty : Math.min(matched.StockQty, 50);
+                const newRow = {
+                    id: emptyIdx !== -1 ? prev[emptyIdx].id : (prev.length > 0 ? Math.max(...prev.map(l => l.id)) + 1 : 1),
+                    selected: false,
+                    issueType: "Lot Issue",
+                    ioNo: jobcardNo ? "IO-9821" : "IO-9805",
+                    group: matched.GroupName,
+                    item: matched.ItemName,
+                    itemCode: matched.ItemCode,
+                    description: `${matched.ItemName} - Location: ${matched.Location}`,
+                    colour: matched.Color,
+                    typeSize: matched.TypeSize,
+                    uom: matched.UOM,
+                    location: matched.Location,
+                    stockQty: matched.StockQty,
+                    issueQty: targetIssueQty,
+                    rate: matched.Rate,
+                    amount: parseFloat((targetIssueQty * matched.Rate).toFixed(2)),
+                    remarks: `Auto-filled from QR/Barcode [${query}]`
+                };
+
+                if (emptyIdx !== -1) {
+                    const copy = [...prev];
+                    copy[emptyIdx] = newRow;
+                    return copy;
+                }
+                return [...prev, newRow];
+            });
+
+            setAutoFillToast(`Auto-filled: ${matched.ItemName} (${matched.Color}) from QR Code / Barcode!`);
+            setTimeout(() => setAutoFillToast(""), 4500);
+            setScanInput("");
+        } else {
+            alert(`No material found matching '${query}'. Try quick presets or the Material Search option.`);
+        }
+    };
+
+    // =========================================================================
+    // SEARCH MODAL & MARK OPTION LOGIC
+    // =========================================================================
+    const filteredSearchMaterials = DEFAULT_MATERIAL_CATALOG.filter(m => {
+        const matchName = !searchMaterialName.trim() ||
+            m.ItemName.toLowerCase().includes(searchMaterialName.toLowerCase()) ||
+            m.ItemCode.toLowerCase().includes(searchMaterialName.toLowerCase());
+
+        const matchColour = !searchColour.trim() ||
+            m.Color.toLowerCase() === searchColour.toLowerCase() ||
+            (m.ColorCode && m.ColorCode.toLowerCase().includes(searchColour.toLowerCase()));
+
+        const matchGroup = !searchGroup.trim() || m.GroupName.toLowerCase() === searchGroup.toLowerCase();
+
+        return matchName && matchColour && matchGroup;
+    });
+
+    const handleToggleMark = (itemCode) => {
+        setMarkedItemCodes(prev => {
+            const next = prev.includes(itemCode) ? prev.filter(c => c !== itemCode) : [...prev, itemCode];
+            return next;
+        });
+        // Update active 4x4 panel on row selection
+        const target = DEFAULT_MATERIAL_CATALOG.find(m => m.ItemCode === itemCode);
+        if (target) {
+            setActiveItem4x4(target);
+        }
+    };
+
+    const handleMarkAll = () => {
+        if (markedItemCodes.length === filteredSearchMaterials.length) {
+            setMarkedItemCodes([]);
+        } else {
+            setMarkedItemCodes(filteredSearchMaterials.map(m => m.ItemCode));
+        }
+    };
+
+    const handleApplyMarkedItems = () => {
+        if (markedItemCodes.length === 0) {
+            alert("Please mark at least one item to apply.");
+            return;
+        }
+
+        const markedMaterials = DEFAULT_MATERIAL_CATALOG.filter(m => markedItemCodes.includes(m.ItemCode));
+
+        setLines(prev => {
+            const existing = prev.filter(r => r.item && r.item.trim());
+            let maxId = existing.length > 0 ? Math.max(...existing.map(l => l.id)) : 0;
+
+            const newRows = markedMaterials.map(m => {
+                maxId += 1;
+                const qty = parseFloat(searchIssueQtys[m.ItemCode]) || (m.BalanceQty > 0 ? m.BalanceQty : Math.min(m.StockQty, 50));
+                return {
+                    id: maxId,
+                    selected: false,
+                    issueType: "Lot Issue",
+                    ioNo: jobcardNo ? "IO-9821" : "IO-9805",
+                    group: m.GroupName,
+                    item: m.ItemName,
+                    itemCode: m.ItemCode,
+                    description: `${m.ItemName} [Loc: ${m.Location}]`,
+                    colour: m.Color,
+                    typeSize: m.TypeSize,
+                    uom: m.UOM,
+                    location: m.Location,
+                    stockQty: m.StockQty,
+                    issueQty: qty,
+                    rate: m.Rate,
+                    amount: parseFloat((qty * m.Rate).toFixed(2)),
+                    remarks: `Marked issue (${m.ColorCode})`
+                };
+            });
+
+            return [...existing, ...newRows];
+        });
+
+        // Set the first marked item as active in 4x4 panel
+        if (markedMaterials.length > 0) {
+            setActiveItem4x4(markedMaterials[0]);
+        }
+
+        setAutoFillToast(`Added ${markedMaterials.length} marked item(s) to Item Issue!`);
+        setTimeout(() => setAutoFillToast(""), 4500);
+        setActiveModal(null);
+        setMarkedItemCodes([]);
+    };
+
     // Line items change handler
     const handleLineChange = (id, field, value) => {
         setLines(prev => prev.map(row => {
             if (row.id !== id) return row;
             const updated = { ...row, [field]: value };
 
-            // If item changed, autofill group, colour, UOM, stockQty, rate
+            // If item changed, autofill group, colour, UOM, stockQty, rate, location
             if (field === "item") {
-                const found = DEFAULT_ITEMS.find(it =>
+                const found = DEFAULT_MATERIAL_CATALOG.find(it =>
                     it.ItemName.toLowerCase() === String(value).toLowerCase() ||
                     it.ItemCode.toLowerCase() === String(value).toLowerCase()
                 );
                 if (found) {
                     updated.item = found.ItemName;
+                    updated.itemCode = found.ItemCode;
                     updated.group = found.GroupName || updated.group;
                     updated.colour = found.Color || updated.colour;
                     updated.uom = found.UOM || updated.uom;
+                    updated.location = found.Location || updated.location;
                     updated.stockQty = found.StockQty || 0;
                     updated.rate = found.Rate || updated.rate;
                     if (updated.issueQty && updated.rate) {
                         updated.amount = parseFloat((parseFloat(updated.issueQty) * parseFloat(updated.rate)).toFixed(2));
                     }
+                    setActiveItem4x4(found);
                 }
             }
 
@@ -295,6 +679,7 @@ export default function ItemIssue({ initialMode = "list" }) {
                 colour: "",
                 typeSize: "",
                 uom: "PCS",
+                location: "",
                 stockQty: 0,
                 issueQty: "",
                 rate: "",
@@ -318,6 +703,7 @@ export default function ItemIssue({ initialMode = "list" }) {
                 colour: "",
                 typeSize: "",
                 uom: "PCS",
+                location: "",
                 stockQty: 0,
                 issueQty: "",
                 rate: "",
@@ -336,27 +722,29 @@ export default function ItemIssue({ initialMode = "list" }) {
 
     // Display button action
     const handleDisplay = () => {
-        // Load items based on selection
         if (jobcardNo || requisitionNo) {
-            setLines(DEFAULT_ITEMS.slice(0, 3).map((it, idx) => ({
+            setLines(DEFAULT_MATERIAL_CATALOG.slice(0, 3).map((it, idx) => ({
                 id: idx + 1,
                 selected: false,
                 issueType: "Lot Issue",
                 ioNo: jobcardNo ? "IO-9821" : "IO-9805",
                 group: it.GroupName,
                 item: it.ItemName,
+                itemCode: it.ItemCode,
                 description: `${it.ItemName} for ${jobcardNo || requisitionNo}`,
                 colour: it.Color,
-                typeSize: "Standard",
+                typeSize: it.TypeSize,
                 uom: it.UOM,
+                location: it.Location,
                 stockQty: it.StockQty,
-                issueQty: 25 + idx * 10,
+                issueQty: it.BalanceQty || (25 + idx * 10),
                 rate: it.Rate,
-                amount: (25 + idx * 10) * it.Rate,
+                amount: (it.BalanceQty || (25 + idx * 10)) * it.Rate,
                 remarks: "Auto loaded via Display"
             })));
+            setActiveItem4x4(DEFAULT_MATERIAL_CATALOG[0]);
         } else {
-            alert("Select a Jobcard, Cutting Plan, or Requisition to populate line items, or enter line items manually.");
+            alert("Select a Jobcard, Cutting Plan, or Requisition to populate line items, or use the 4x4 QR scan & Material Search options.");
         }
     };
 
@@ -395,7 +783,6 @@ export default function ItemIssue({ initialMode = "list" }) {
             items: lines
         };
 
-        // Attempt backend save
         try {
             await axios.post(`${API_URL}/item-issues`, {
                 IssueNo: fullIssueNo,
@@ -413,10 +800,11 @@ export default function ItemIssue({ initialMode = "list" }) {
                 TotalAmount: totalAmount,
                 details: lines.map(l => ({
                     ItemName: l.item,
-                    ItemCode: l.item,
+                    ItemCode: l.itemCode || l.item,
                     Color: l.colour,
                     Quantity: parseFloat(l.issueQty) || 0,
                     UOM: l.uom,
+                    Location: l.location,
                     Rate: parseFloat(l.rate) || 0,
                     Amount: parseFloat(l.amount) || 0,
                     Remarks: l.remarks
@@ -428,10 +816,7 @@ export default function ItemIssue({ initialMode = "list" }) {
 
         setSavedIssues(prev => [newRecord, ...prev]);
         setSuccessMessage(`Item Issue ${fullIssueNo} saved successfully!`);
-
-        // Increment serial
         setIssueSerial(prev => String(parseInt(prev, 10) + 1));
-
         setTimeout(() => setSuccessMessage(""), 4000);
     };
 
@@ -440,7 +825,7 @@ export default function ItemIssue({ initialMode = "list" }) {
         setAssociate("");
         setReceivedBy("");
         setDepartment("");
-        setStores("");
+        setStores("RAW MATERIAL STORE 9B");
         setRequisitionNo("");
         setJobcardNo("");
         setCuttingPlanNo("");
@@ -458,6 +843,7 @@ export default function ItemIssue({ initialMode = "list" }) {
                 colour: "",
                 typeSize: "",
                 uom: "PCS",
+                location: "",
                 stockQty: 0,
                 issueQty: "",
                 rate: "",
@@ -503,26 +889,93 @@ export default function ItemIssue({ initialMode = "list" }) {
                 </div>
             )}
 
+            {/* Auto-fill notification banner */}
+            {autoFillToast && (
+                <div style={{
+                    background: "#eff6ff",
+                    border: "1.5px solid #3b82f6",
+                    color: "#1e40af",
+                    padding: "8px 16px",
+                    borderRadius: "4px",
+                    marginBottom: "14px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    fontSize: "13px",
+                    fontWeight: 600,
+                    animation: "fadeIn 0.2s ease"
+                }}>
+                    <FaBolt style={{ color: "#3b82f6" }} />
+                    <span>{autoFillToast}</span>
+                </div>
+            )}
+
             {/* ==========================================================
-               MODE: FORM VIEW (EXACT REPLICA OF SCREENSHOT 1 & 2)
+               MODE: FORM VIEW (ITEM ISSUE WITH 4x4 QR & LOCATION OPTION)
             =========================================================== */}
             {viewMode === "form" && (
                 <div>
-                    {/* Header: Title in blue */}
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-                        <h1 className="tpcs-ii-title">Item Issue</h1>
+                    {/* Header: Title + Option Buttons */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px", flexWrap: "wrap", gap: "8px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                            <h1 className="tpcs-ii-title" style={{ margin: 0 }}>Item Issue</h1>
+                            <span style={{
+                                background: "#e0f2fe",
+                                color: "#0369a1",
+                                padding: "2px 8px",
+                                borderRadius: "12px",
+                                fontSize: "11px",
+                                fontWeight: 700,
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: "4px"
+                            }}>
+                                <FaQrcode /> 4x4 QR & Location Module
+                            </span>
+                        </div>
 
-                        <button
-                            type="button"
-                            className="tpcs-ii-btn-view"
-                            onClick={() => setViewMode("list")}
-                            title="Switch to Item Issue Register"
-                        >
-                            <FaEye /> <span>View Register</span>
-                        </button>
+                        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                            {/* Option Button: 4x4 QR Scanner & Location Panel Toggle */}
+                            <button
+                                type="button"
+                                className={`tpcs-ii-btn-view ${show4x4Panel ? "primary" : ""}`}
+                                onClick={() => setShow4x4Panel(prev => !prev)}
+                                title="Toggle 4x4 QR & Location Panel on Left Middle"
+                                style={{
+                                    backgroundColor: show4x4Panel ? "#1976d2" : "#f1f5f9",
+                                    color: show4x4Panel ? "#ffffff" : "#334155",
+                                    borderColor: show4x4Panel ? "#1976d2" : "#cbd5e1"
+                                }}
+                            >
+                                <FaQrcode />
+                                <span>4x4 Panel: {show4x4Panel ? "ON" : "OFF"}</span>
+                            </button>
+
+                            {/* Option Button: Search from Material Name & Colour Code (Stock/Req/Balance) */}
+                            <button
+                                type="button"
+                                className="tpcs-ii-btn-save"
+                                onClick={() => setActiveModal("materialSearch")}
+                                title="Search materials stock wise, requirement wise, balance wise with Mark option"
+                                style={{ backgroundColor: "#0284c7" }}
+                            >
+                                <FaSearch />
+                                <span>Search Materials (Stock/Req/Balance)</span>
+                            </button>
+
+                            {/* Switch to Register */}
+                            <button
+                                type="button"
+                                className="tpcs-ii-btn-view"
+                                onClick={() => setViewMode("list")}
+                                title="Switch to Item Issue Register"
+                            >
+                                <FaEye /> <span>View Register</span>
+                            </button>
+                        </div>
                     </div>
 
-                    {/* Issue To Row matching Screenshot 1 */}
+                    {/* Issue To Row */}
                     <div className="tpcs-ii-issue-to-row">
                         <label className="tpcs-ii-label">Issue To</label>
                         <select
@@ -538,9 +991,9 @@ export default function ItemIssue({ initialMode = "list" }) {
                         </select>
                     </div>
 
-                    {/* 4-Columns Grid matching Screenshot 1 */}
+                    {/* 4-Columns Header Form Grid */}
                     <div className="tpcs-ii-grid">
-                        {/* COLUMN 1 */}
+                        {/* COLUMN 1: IssueNo */}
                         <div className="tpcs-ii-field-group">
                             <label className="tpcs-ii-label">IssueNo</label>
                             <div className="tpcs-ii-issueno-group">
@@ -570,7 +1023,7 @@ export default function ItemIssue({ initialMode = "list" }) {
                             </div>
                         </div>
 
-                        {/* COLUMN 2 */}
+                        {/* COLUMN 2: Associate */}
                         <div className="tpcs-ii-field-group">
                             <label className="tpcs-ii-label">Associate</label>
                             <input
@@ -586,7 +1039,7 @@ export default function ItemIssue({ initialMode = "list" }) {
                             </datalist>
                         </div>
 
-                        {/* COLUMN 3 */}
+                        {/* COLUMN 3: Received By */}
                         <div className="tpcs-ii-field-group">
                             <label className="tpcs-ii-label">Received By</label>
                             <input
@@ -598,7 +1051,7 @@ export default function ItemIssue({ initialMode = "list" }) {
                             />
                         </div>
 
-                        {/* COLUMN 4 */}
+                        {/* COLUMN 4: Department */}
                         <div className="tpcs-ii-field-group">
                             <label className="tpcs-ii-label">Department</label>
                             <input
@@ -737,8 +1190,8 @@ export default function ItemIssue({ initialMode = "list" }) {
                         </div>
                     </div>
 
-                    {/* Display Button matching Screenshot 1 */}
-                    <div className="tpcs-ii-display-row">
+                    {/* Display Button Row */}
+                    <div className="tpcs-ii-display-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <button
                             type="button"
                             className="tpcs-ii-btn-display"
@@ -746,229 +1199,425 @@ export default function ItemIssue({ initialMode = "list" }) {
                         >
                             Display
                         </button>
+
+                        <div style={{ display: "flex", gap: "8px" }}>
+                            <button
+                                type="button"
+                                className="tpcs-ii-btn-action"
+                                style={{ fontSize: "11.5px", padding: "5px 10px" }}
+                                onClick={() => setActiveModal("materialSearch")}
+                            >
+                                <FaSearch /> <span>Search & Mark Items</span>
+                            </button>
+                            <button
+                                type="button"
+                                className="tpcs-ii-btn-action"
+                                style={{ fontSize: "11.5px", padding: "5px 10px" }}
+                                onClick={() => setActiveModal("sticker4x4")}
+                            >
+                                <FaPrint /> <span>Print 4x4 Sticker</span>
+                            </button>
+                        </div>
                     </div>
 
                     {/* ==========================================================
-                       LINE ITEMS TABLE (MATCHING SCREENSHOT 1 & 2)
+                       MAIN MIDDLE SECTION: 4x4 QR & LOCATION ON LEFT + TABLE
                     =========================================================== */}
-                    <div className="tpcs-ii-table-container">
-                        <table className="tpcs-ii-table">
-                            <thead>
-                                <tr>
-                                    <th style={{ width: "32px", textAlign: "center" }}>
-                                        <input
-                                            type="checkbox"
-                                            onChange={(e) => handleSelectAll(e.target.checked)}
+                    <div className="tpcs-ii-main-layout">
+
+                        {/* ------------------------------------------------------
+                           LEFT MIDDLE SIDE: 4x4 QR CODE & LOCATION CARD
+                        ------------------------------------------------------- */}
+                        {show4x4Panel && (
+                            <div className="tpcs-ii-4x4-card">
+                                {/* Header badge */}
+                                <div className="tpcs-ii-4x4-header">
+                                    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                                        <FaQrcode />
+                                        <span>4x4 QR & Location</span>
+                                    </div>
+                                    <span className="tpcs-ii-4x4-header-pill">4x4 Standard</span>
+                                </div>
+
+                                {/* TOP SECTION: QR CODE & BARCODE */}
+                                <div className="tpcs-ii-4x4-top">
+                                    <div className="tpcs-ii-4x4-top-title">
+                                        <span>Top: QR Code & Barcode</span>
+                                        <span style={{ fontSize: "10px", color: "#64748b", fontFamily: "monospace" }}>
+                                            {activeItem4x4?.ItemCode || "CODE-4X4"}
+                                        </span>
+                                    </div>
+
+                                    {/* QR Code Container */}
+                                    <div className="tpcs-ii-qr-box">
+                                        {scanLaserActive && <div className="tpcs-ii-qr-laser-line" />}
+                                        <div
+                                            dangerouslySetInnerHTML={{
+                                                __html: generateQRCodeSVG(activeItem4x4?.ItemCode || "LTH-1093", { size: 130 })
+                                            }}
                                         />
-                                    </th>
-                                    <th style={{ width: "120px" }}>Issue Type</th>
-                                    <th style={{ width: "180px" }}>IO No.</th>
-                                    <th style={{ width: "140px" }}>Group</th>
-                                    <th style={{ width: "200px" }}>Item <span className="tpcs-ii-req">*</span></th>
-                                    <th style={{ width: "180px" }}>Description</th>
-                                    <th style={{ width: "130px" }}>Colour</th>
-                                    <th style={{ width: "110px" }}>Type & Size</th>
-                                    <th style={{ width: "80px" }}>UOM</th>
-                                    <th style={{ width: "90px" }}>Stock Qty</th>
-                                    <th style={{ width: "100px" }}>Issue Qty <span className="tpcs-ii-req">*</span></th>
-                                    <th style={{ width: "90px" }}>Rate</th>
-                                    <th style={{ width: "100px" }}>Amount</th>
-                                    <th style={{ width: "130px" }}>Remarks</th>
-                                    <th style={{ width: "50px", textAlign: "center" }}>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {lines.map((row) => (
-                                    <tr key={row.id}>
-                                        <td style={{ textAlign: "center" }}>
-                                            <input
-                                                type="checkbox"
-                                                checked={row.selected || false}
-                                                onChange={(e) => handleLineChange(row.id, "selected", e.target.checked)}
-                                            />
-                                        </td>
-                                        <td>
-                                            <select
-                                                className="tpcs-ii-tbl-select"
-                                                value={row.issueType}
-                                                onChange={(e) => handleLineChange(row.id, "issueType", e.target.value)}
-                                            >
-                                                <option value="Lot Issue">Lot Issue</option>
-                                                <option value="General Issue">General Issue</option>
-                                                <option value="Direct Issue">Direct Issue</option>
-                                                <option value="Sample Issue">Sample Issue</option>
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <div className="tpcs-ii-tbl-io-group">
-                                                <input
-                                                    type="text"
-                                                    className="tpcs-ii-tbl-input"
-                                                    placeholder="Enter IO No"
-                                                    value={row.ioNo}
-                                                    onChange={(e) => handleLineChange(row.id, "ioNo", e.target.value)}
-                                                />
-                                                <button
-                                                    type="button"
-                                                    className="tpcs-ii-addon-btn"
-                                                    style={{ height: "27px", padding: "0 6px" }}
-                                                    onClick={() => {
-                                                        const io = prompt("Enter IO No:", row.ioNo || "IO-9821");
-                                                        if (io) handleLineChange(row.id, "ioNo", io);
-                                                    }}
-                                                >
-                                                    <FaListUl style={{ fontSize: "10px" }} />
-                                                </button>
-                                                <div className="tpcs-ii-tbl-code-box"></div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="text"
-                                                className="tpcs-ii-tbl-input"
-                                                placeholder="Type and Select Group"
-                                                value={row.group}
-                                                onChange={(e) => handleLineChange(row.id, "group", e.target.value)}
-                                            />
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="text"
-                                                className="tpcs-ii-tbl-input"
-                                                placeholder="Type and select Item"
-                                                value={row.item}
-                                                onChange={(e) => handleLineChange(row.id, "item", e.target.value)}
-                                                list={`items-datalist-${row.id}`}
-                                            />
-                                            <datalist id={`items-datalist-${row.id}`}>
-                                                {DEFAULT_ITEMS.map(it => (
-                                                    <option key={it.ItemCode} value={it.ItemName}>
-                                                        {it.ItemCode} - {it.GroupName} ({it.UOM})
-                                                    </option>
-                                                ))}
-                                            </datalist>
-                                        </td>
-                                        <td>
-                                            <textarea
-                                                className="tpcs-ii-tbl-desc"
-                                                placeholder="Description"
-                                                value={row.description}
-                                                onChange={(e) => handleLineChange(row.id, "description", e.target.value)}
-                                            />
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="text"
-                                                className="tpcs-ii-tbl-input"
-                                                placeholder="Type and select Colour"
-                                                value={row.colour}
-                                                onChange={(e) => handleLineChange(row.id, "colour", e.target.value)}
-                                            />
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="text"
-                                                className="tpcs-ii-tbl-input"
-                                                placeholder="Type & Size"
-                                                value={row.typeSize}
-                                                onChange={(e) => handleLineChange(row.id, "typeSize", e.target.value)}
-                                            />
-                                        </td>
-                                        <td>
-                                            <select
-                                                className="tpcs-ii-tbl-select"
-                                                value={row.uom}
-                                                onChange={(e) => handleLineChange(row.id, "uom", e.target.value)}
-                                            >
-                                                <option value="PCS">PCS</option>
-                                                <option value="SQFT">SQFT</option>
-                                                <option value="MTR">MTR</option>
-                                                <option value="SET">SET</option>
-                                                <option value="SHEET">SHEET</option>
-                                                <option value="CONE">CONE</option>
-                                                <option value="KGS">KGS</option>
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="text"
-                                                className="tpcs-ii-tbl-input"
-                                                value={row.stockQty || 0}
-                                                readOnly
-                                                style={{ background: "#f8fafc", textAlign: "right" }}
-                                            />
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="number"
-                                                className="tpcs-ii-tbl-input"
-                                                placeholder="0.00"
-                                                value={row.issueQty}
-                                                onChange={(e) => handleLineChange(row.id, "issueQty", e.target.value)}
-                                                style={{ textAlign: "right", fontWeight: 600 }}
-                                            />
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="number"
-                                                className="tpcs-ii-tbl-input"
-                                                placeholder="0.00"
-                                                value={row.rate}
-                                                onChange={(e) => handleLineChange(row.id, "rate", e.target.value)}
-                                                style={{ textAlign: "right" }}
-                                            />
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="text"
-                                                className="tpcs-ii-tbl-input"
-                                                value={row.amount ? row.amount.toLocaleString("en-IN", { minimumFractionDigits: 2 }) : "0.00"}
-                                                readOnly
-                                                style={{ background: "#f8fafc", textAlign: "right", fontWeight: 600 }}
-                                            />
-                                        </td>
-                                        <td>
-                                            <input
-                                                type="text"
-                                                className="tpcs-ii-tbl-input"
-                                                placeholder="Line Remark"
-                                                value={row.remarks}
-                                                onChange={(e) => handleLineChange(row.id, "remarks", e.target.value)}
-                                            />
-                                        </td>
-                                        <td style={{ textAlign: "center" }}>
+                                    </div>
+
+                                    {/* Barcode representation */}
+                                    <div className="tpcs-ii-barcode-box">
+                                        <div
+                                            dangerouslySetInnerHTML={{
+                                                __html: generateBarcodeSVG(activeItem4x4?.Barcode || activeItem4x4?.ItemCode || "BAR-RL-1001", { width: 220, height: 42, showText: true })
+                                            }}
+                                        />
+                                    </div>
+
+                                    {/* Quick Scan Input with Auto Fill */}
+                                    <div className="tpcs-ii-4x4-scan-input-group">
+                                        <input
+                                            type="text"
+                                            className="tpcs-ii-4x4-scan-input"
+                                            placeholder="Scan QR/Barcode & Enter..."
+                                            value={scanInput}
+                                            onChange={(e) => setScanInput(e.target.value)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === "Enter") {
+                                                    e.preventDefault();
+                                                    handleScanAutoFill();
+                                                }
+                                            }}
+                                        />
+                                        <button
+                                            type="button"
+                                            className="tpcs-ii-4x4-btn-autofill"
+                                            onClick={() => handleScanAutoFill()}
+                                            title="Auto-fill line item from QR Code / Barcode"
+                                        >
+                                            <FaBolt /> <span>Auto Fill</span>
+                                        </button>
+                                    </div>
+
+                                    {/* Quick Scan Presets */}
+                                    <div className="tpcs-ii-4x4-presets">
+                                        <span style={{ fontSize: "10px", color: "#64748b", width: "100%", marginBottom: "2px" }}>
+                                            Quick Scan Presets:
+                                        </span>
+                                        {DEFAULT_MATERIAL_CATALOG.slice(0, 5).map(m => (
                                             <button
+                                                key={m.ItemCode}
                                                 type="button"
-                                                onClick={() => handleDeleteLine(row.id)}
-                                                style={{
-                                                    background: "transparent",
-                                                    border: "none",
-                                                    color: "#ef4444",
-                                                    cursor: "pointer",
-                                                    padding: "2px"
-                                                }}
-                                                title="Remove line"
+                                                className="tpcs-ii-preset-chip"
+                                                onClick={() => handleScanAutoFill(m.ItemCode)}
+                                                title={`Scan ${m.ItemName}`}
                                             >
-                                                <FaTrash style={{ fontSize: "11px" }} />
+                                                {m.ItemCode}
                                             </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* DOWN SECTION: LOCATION DETAILS */}
+                                <div className="tpcs-ii-4x4-down">
+                                    <div className="tpcs-ii-4x4-down-title">
+                                        <span>Down: Location Details</span>
+                                        <FaMapMarkerAlt style={{ color: "#ef4444" }} />
+                                    </div>
+
+                                    <div className="tpcs-ii-location-box">
+                                        <div className="tpcs-ii-loc-row">
+                                            <span className="tpcs-ii-loc-label">Warehouse:</span>
+                                            <span className="tpcs-ii-loc-val">{activeItem4x4?.Warehouse || stores}</span>
+                                        </div>
+                                        <div className="tpcs-ii-loc-row">
+                                            <span className="tpcs-ii-loc-label">Bin Location:</span>
+                                            <span className="tpcs-ii-loc-val" style={{ color: "#1976d2", fontWeight: 800 }}>
+                                                {activeItem4x4?.Location || "BIN-A-01-01"}
+                                            </span>
+                                        </div>
+                                        <div className="tpcs-ii-loc-row">
+                                            <span className="tpcs-ii-loc-label">Rack & Shelf:</span>
+                                            <span className="tpcs-ii-loc-val">{activeItem4x4?.Rack} ({activeItem4x4?.Shelf})</span>
+                                        </div>
+                                        <div className="tpcs-ii-loc-row">
+                                            <span className="tpcs-ii-loc-label">Zone:</span>
+                                            <span className="tpcs-ii-loc-val">{activeItem4x4?.Zone}</span>
+                                        </div>
+                                        <div className="tpcs-ii-loc-row">
+                                            <span className="tpcs-ii-loc-label">Current Stock:</span>
+                                            <span className="tpcs-ii-loc-val" style={{ color: "#16a34a" }}>
+                                                {activeItem4x4?.StockQty} {activeItem4x4?.UOM}
+                                            </span>
+                                        </div>
+                                        <div className="tpcs-ii-loc-row">
+                                            <span className="tpcs-ii-loc-label">Material & Colour:</span>
+                                            <span className="tpcs-ii-loc-val">
+                                                {activeItem4x4?.Color} ({activeItem4x4?.ColorCode})
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div className="tpcs-ii-4x4-actions">
+                                        <button
+                                            type="button"
+                                            className="tpcs-ii-4x4-btn-action primary"
+                                            onClick={() => setActiveModal("materialSearch")}
+                                        >
+                                            <FaSearch /> Search Items
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="tpcs-ii-4x4-btn-action"
+                                            onClick={() => setActiveModal("sticker4x4")}
+                                        >
+                                            <FaPrint /> Print 4x4
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* ------------------------------------------------------
+                           RIGHT SIDE: LINE ITEMS TABLE
+                        ------------------------------------------------------- */}
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                            <div className="tpcs-ii-table-container">
+                                <table className="tpcs-ii-table">
+                                    <thead>
+                                        <tr>
+                                            <th style={{ width: "32px", textAlign: "center" }}>
+                                                <input
+                                                    type="checkbox"
+                                                    onChange={(e) => handleSelectAll(e.target.checked)}
+                                                />
+                                            </th>
+                                            <th style={{ width: "110px" }}>Issue Type</th>
+                                            <th style={{ width: "140px" }}>IO No.</th>
+                                            <th style={{ width: "120px" }}>Group</th>
+                                            <th style={{ width: "200px" }}>Item <span className="tpcs-ii-req">*</span></th>
+                                            <th style={{ width: "160px" }}>Description</th>
+                                            <th style={{ width: "120px" }}>Colour</th>
+                                            <th style={{ width: "100px" }}>Type & Size</th>
+                                            <th style={{ width: "70px" }}>UOM</th>
+                                            <th style={{ width: "110px" }}>Location</th>
+                                            <th style={{ width: "85px" }}>Stock Qty</th>
+                                            <th style={{ width: "95px" }}>Issue Qty <span className="tpcs-ii-req">*</span></th>
+                                            <th style={{ width: "85px" }}>Rate</th>
+                                            <th style={{ width: "95px" }}>Amount</th>
+                                            <th style={{ width: "120px" }}>Remarks</th>
+                                            <th style={{ width: "45px", textAlign: "center" }}>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {lines.map((row) => (
+                                            <tr key={row.id}>
+                                                <td style={{ textAlign: "center" }}>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={row.selected || false}
+                                                        onChange={(e) => handleLineChange(row.id, "selected", e.target.checked)}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <select
+                                                        className="tpcs-ii-tbl-select"
+                                                        value={row.issueType}
+                                                        onChange={(e) => handleLineChange(row.id, "issueType", e.target.value)}
+                                                    >
+                                                        <option value="Lot Issue">Lot Issue</option>
+                                                        <option value="General Issue">General Issue</option>
+                                                        <option value="Direct Issue">Direct Issue</option>
+                                                        <option value="Sample Issue">Sample Issue</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <div className="tpcs-ii-tbl-io-group">
+                                                        <input
+                                                            type="text"
+                                                            className="tpcs-ii-tbl-input"
+                                                            placeholder="IO No"
+                                                            value={row.ioNo}
+                                                            onChange={(e) => handleLineChange(row.id, "ioNo", e.target.value)}
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            className="tpcs-ii-addon-btn"
+                                                            style={{ height: "27px", padding: "0 6px" }}
+                                                            onClick={() => {
+                                                                const io = prompt("Enter IO No:", row.ioNo || "IO-9821");
+                                                                if (io) handleLineChange(row.id, "ioNo", io);
+                                                            }}
+                                                        >
+                                                            <FaListUl style={{ fontSize: "10px" }} />
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        className="tpcs-ii-tbl-input"
+                                                        placeholder="Group"
+                                                        value={row.group}
+                                                        onChange={(e) => handleLineChange(row.id, "group", e.target.value)}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        className="tpcs-ii-tbl-input"
+                                                        placeholder="Type and select Item"
+                                                        value={row.item}
+                                                        onChange={(e) => handleLineChange(row.id, "item", e.target.value)}
+                                                        list={`items-datalist-${row.id}`}
+                                                    />
+                                                    <datalist id={`items-datalist-${row.id}`}>
+                                                        {DEFAULT_MATERIAL_CATALOG.map(it => (
+                                                            <option key={it.ItemCode} value={it.ItemName}>
+                                                                {it.ItemCode} - {it.GroupName} ({it.Color})
+                                                            </option>
+                                                        ))}
+                                                    </datalist>
+                                                </td>
+                                                <td>
+                                                    <textarea
+                                                        className="tpcs-ii-tbl-desc"
+                                                        placeholder="Description"
+                                                        value={row.description}
+                                                        onChange={(e) => handleLineChange(row.id, "description", e.target.value)}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        className="tpcs-ii-tbl-input"
+                                                        placeholder="Colour"
+                                                        value={row.colour}
+                                                        onChange={(e) => handleLineChange(row.id, "colour", e.target.value)}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        className="tpcs-ii-tbl-input"
+                                                        placeholder="Type & Size"
+                                                        value={row.typeSize}
+                                                        onChange={(e) => handleLineChange(row.id, "typeSize", e.target.value)}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <select
+                                                        className="tpcs-ii-tbl-select"
+                                                        value={row.uom}
+                                                        onChange={(e) => handleLineChange(row.id, "uom", e.target.value)}
+                                                    >
+                                                        <option value="PCS">PCS</option>
+                                                        <option value="SQFT">SQFT</option>
+                                                        <option value="MTR">MTR</option>
+                                                        <option value="SET">SET</option>
+                                                        <option value="SHEET">SHEET</option>
+                                                        <option value="CONE">CONE</option>
+                                                        <option value="KGS">KGS</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        className="tpcs-ii-tbl-input"
+                                                        placeholder="Bin Location"
+                                                        value={row.location || ""}
+                                                        onChange={(e) => handleLineChange(row.id, "location", e.target.value)}
+                                                        style={{ fontFamily: "monospace", fontSize: "11px", color: "#1976d2", fontWeight: 600 }}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        className="tpcs-ii-tbl-input"
+                                                        value={row.stockQty || 0}
+                                                        readOnly
+                                                        style={{ background: "#f8fafc", textAlign: "right" }}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="number"
+                                                        className="tpcs-ii-tbl-input"
+                                                        placeholder="0.00"
+                                                        value={row.issueQty}
+                                                        onChange={(e) => handleLineChange(row.id, "issueQty", e.target.value)}
+                                                        style={{ textAlign: "right", fontWeight: 700 }}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="number"
+                                                        className="tpcs-ii-tbl-input"
+                                                        placeholder="0.00"
+                                                        value={row.rate}
+                                                        onChange={(e) => handleLineChange(row.id, "rate", e.target.value)}
+                                                        style={{ textAlign: "right" }}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        className="tpcs-ii-tbl-input"
+                                                        value={row.amount ? row.amount.toLocaleString("en-IN", { minimumFractionDigits: 2 }) : "0.00"}
+                                                        readOnly
+                                                        style={{ background: "#f8fafc", textAlign: "right", fontWeight: 700 }}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        className="tpcs-ii-tbl-input"
+                                                        placeholder="Line Remark"
+                                                        value={row.remarks}
+                                                        onChange={(e) => handleLineChange(row.id, "remarks", e.target.value)}
+                                                    />
+                                                </td>
+                                                <td style={{ textAlign: "center" }}>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleDeleteLine(row.id)}
+                                                        style={{
+                                                            background: "transparent",
+                                                            border: "none",
+                                                            color: "#ef4444",
+                                                            cursor: "pointer",
+                                                            padding: "2px"
+                                                        }}
+                                                        title="Remove line"
+                                                    >
+                                                        <FaTrash style={{ fontSize: "11px" }} />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {/* Line Actions */}
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "8px" }}>
+                                <button
+                                    type="button"
+                                    className="tpcs-ii-add-line-btn"
+                                    onClick={handleAddLine}
+                                    style={{ margin: 0 }}
+                                >
+                                    <FaPlus style={{ fontSize: "11px" }} /> <span>Add Another Line</span>
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className="tpcs-ii-btn-action"
+                                    style={{ fontSize: "11.5px" }}
+                                    onClick={() => setActiveModal("materialSearch")}
+                                >
+                                    <FaSearch /> <span>Search & Mark Items (Stock / Req / Balance)</span>
+                                </button>
+                            </div>
+                        </div>
+
                     </div>
 
-                    {/* + Add Another Line link matching Screenshot 1 & 2 */}
-                    <button
-                        type="button"
-                        className="tpcs-ii-add-line-btn"
-                        onClick={handleAddLine}
-                    >
-                        <FaPlus style={{ fontSize: "11px" }} /> <span>Add Another Line</span>
-                    </button>
-
                     {/* ==========================================================
-                       FOOTER SECTION (MATCHING SCREENSHOT 2)
+                       FOOTER SECTION (REMARK, MEMO, TOTALS, ACTIONS)
                     =========================================================== */}
                     <div className="tpcs-ii-footer-grid">
                         {/* LEFT: Remark + Attachments */}
@@ -1039,6 +1688,24 @@ export default function ItemIssue({ initialMode = "list" }) {
                                             className="tpcs-ii-menu-item"
                                             onClick={() => {
                                                 setShowActionMenu(false);
+                                                setActiveModal("materialSearch");
+                                            }}
+                                        >
+                                            <FaSearch /> <span>Search & Mark Items</span>
+                                        </div>
+                                        <div
+                                            className="tpcs-ii-menu-item"
+                                            onClick={() => {
+                                                setShowActionMenu(false);
+                                                setActiveModal("sticker4x4");
+                                            }}
+                                        >
+                                            <FaQrcode /> <span>Print 4x4 QR Sticker</span>
+                                        </div>
+                                        <div
+                                            className="tpcs-ii-menu-item"
+                                            onClick={() => {
+                                                setShowActionMenu(false);
                                                 setActiveModal("print");
                                             }}
                                         >
@@ -1077,21 +1744,16 @@ export default function ItemIssue({ initialMode = "list" }) {
             )}
 
             {/* ==========================================================
-               MODE: REGISTER / LIST VIEW (ACCESSIBLE VIA EYE VIEW BUTTON)
-            =========================================================== */}
-            {/* ==========================================================
-               MODE: REGISTER / LIST VIEW (EXACT MATCH FOR V-CONNECT INC. SCREENSHOT)
+               MODE: REGISTER / LIST VIEW
             =========================================================== */}
             {viewMode === "list" && (
                 <div style={{ backgroundColor: "#ffffff" }}>
-                    {/* Header Row: Title on top */}
                     <div style={{ marginBottom: "6px" }}>
                         <h2 style={{ fontSize: "20px", fontWeight: "700", color: "#1976d2", margin: "0 0 10px 0" }}>
                             Item Issue
                         </h2>
                     </div>
 
-                    {/* Filter & Action Row matching Screenshot */}
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "8px" }}>
                         <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
                             <label style={{ fontSize: "12px", color: "#334155", fontWeight: 600 }}>Associate</label>
@@ -1137,13 +1799,12 @@ export default function ItemIssue({ initialMode = "list" }) {
                         </div>
                     </div>
 
-                    {/* Secondary Toolbar: Reload, Options, Settings, Filter */}
                     <div style={{ display: "flex", gap: "6px", alignItems: "center", marginBottom: "12px" }}>
                         <button
                             type="button"
                             onClick={() => {
-                                fetchIssues();
-                                showToast("Item issue records reloaded");
+                                setSavedIssues([...INITIAL_SAVED_ISSUES]);
+                                alert("Item issue records reloaded");
                             }}
                             title="Reload"
                             style={{
@@ -1200,29 +1861,8 @@ export default function ItemIssue({ initialMode = "list" }) {
                         >
                             <FaCog />
                         </button>
-                        <button
-                            type="button"
-                            style={{
-                                height: "28px",
-                                padding: "0 10px",
-                                border: "1px solid #cbd5e1",
-                                borderRadius: "3px",
-                                background: "#ffffff",
-                                color: "#334155",
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: "5px",
-                                cursor: "pointer",
-                                fontSize: "12px"
-                            }}
-                        >
-                            <FaFilter style={{ fontSize: "10px", color: "#64748b" }} />
-                            <span>Filter</span>
-                            <FaCaretDown style={{ fontSize: "10px", color: "#64748b" }} />
-                        </button>
                     </div>
 
-                    {/* Table matching V-Connect Inc. screenshot */}
                     <div style={{ width: "100%", overflowX: "auto", border: "1px solid #cbd5e1", borderRadius: "2px" }}>
                         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "12px", minWidth: "1400px" }}>
                             <thead>
@@ -1288,29 +1928,6 @@ export default function ItemIssue({ initialMode = "list" }) {
                                         <td style={{ padding: "6px 10px", textAlign: "center" }}>{item.items ? item.items.length : 1}</td>
                                     </tr>
                                 ))}
-
-                                {/* Gridlines padding rows matching screenshot */}
-                                {Array.from({ length: Math.max(0, 16 - filteredIssues.length) }).map((_, i) => (
-                                    <tr key={'empty-' + i} style={{ borderBottom: "1px solid #eef2f6", height: "28px" }}>
-                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
-                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
-                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
-                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
-                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
-                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
-                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
-                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
-                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
-                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
-                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
-                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
-                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
-                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
-                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
-                                        <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
-                                        <td></td>
-                                    </tr>
-                                ))}
                             </tbody>
                         </table>
                     </div>
@@ -1318,8 +1935,317 @@ export default function ItemIssue({ initialMode = "list" }) {
             )}
 
             {/* ==========================================================
-               MODALS (REQUISITION, JOBCARD, PLAN, ATTACHMENTS, PRINT)
+               MODAL: SEARCH FROM MATERIAL NAME & COLOUR CODE
+               (STOCK WISE, REQUIREMENT WISE, BALANCE WISE, MARK OPTION)
             =========================================================== */}
+            {activeModal === "materialSearch" && (
+                <div className="tpcs-ii-modal-backdrop" onClick={() => setActiveModal(null)}>
+                    <div className="tpcs-ii-modal-content tpcs-ii-search-modal" onClick={e => e.stopPropagation()}>
+                        <div className="tpcs-ii-modal-header" style={{ background: "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                <FaSearch />
+                                <h3 className="tpcs-ii-modal-title">Search Materials — Stock Wise, Requirement Wise, Balance Wise</h3>
+                            </div>
+                            <button className="tpcs-ii-modal-close" onClick={() => setActiveModal(null)}><FaTimes /></button>
+                        </div>
+
+                        <div className="tpcs-ii-modal-body">
+                            {/* Search & Filter Header Row */}
+                            <div className="tpcs-ii-search-filters">
+                                <div className="tpcs-ii-filter-field">
+                                    <label className="tpcs-ii-filter-label">Material Name / Item Code</label>
+                                    <input
+                                        type="text"
+                                        className="tpcs-ii-filter-input"
+                                        placeholder="Type material name (e.g. Leather, Rivet, Lining)..."
+                                        value={searchMaterialName}
+                                        onChange={(e) => setSearchMaterialName(e.target.value)}
+                                        autoFocus
+                                    />
+                                </div>
+
+                                <div className="tpcs-ii-filter-field">
+                                    <label className="tpcs-ii-filter-label">Colour / Colour Code</label>
+                                    <select
+                                        className="tpcs-ii-filter-input"
+                                        value={searchColour}
+                                        onChange={(e) => setSearchColour(e.target.value)}
+                                    >
+                                        <option value="">-- All Colours --</option>
+                                        <option value="BLACK">BLACK (BLK-01 / BLK-02)</option>
+                                        <option value="TAN">TAN (TAN-04)</option>
+                                        <option value="ANTIQUE BRASS">ANTIQUE BRASS (AB-701)</option>
+                                        <option value="WHITE">WHITE (WHT-10)</option>
+                                        <option value="NATURAL">NATURAL (NAT-01)</option>
+                                        <option value="DARK BROWN">DARK BROWN (DBR-08)</option>
+                                    </select>
+                                </div>
+
+                                <div className="tpcs-ii-filter-field">
+                                    <label className="tpcs-ii-filter-label">Item Group</label>
+                                    <select
+                                        className="tpcs-ii-filter-input"
+                                        value={searchGroup}
+                                        onChange={(e) => setSearchGroup(e.target.value)}
+                                    >
+                                        <option value="">-- All Groups --</option>
+                                        <option value="Leather">Leather</option>
+                                        <option value="Hardware">Hardware</option>
+                                        <option value="Lining">Lining</option>
+                                        <option value="Reinforcement">Reinforcement</option>
+                                        <option value="Packaging">Packaging</option>
+                                        <option value="Thread">Thread</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setSearchMaterialName("");
+                                            setSearchColour("");
+                                            setSearchGroup("");
+                                        }}
+                                        style={{
+                                            height: "30px",
+                                            padding: "0 10px",
+                                            fontSize: "11.5px",
+                                            background: "#f1f5f9",
+                                            border: "1px solid #cbd5e1",
+                                            borderRadius: "3px",
+                                            cursor: "pointer"
+                                        }}
+                                    >
+                                        Clear
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Info bar */}
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px", fontSize: "11.5px", color: "#475569" }}>
+                                <div>
+                                    Showing <strong>{filteredSearchMaterials.length}</strong> material(s) |
+                                    <strong style={{ color: "#0284c7", marginLeft: "4px" }}>{markedItemCodes.length}</strong> marked for issue
+                                </div>
+                                <div style={{ display: "flex", gap: "6px" }}>
+                                    <button
+                                        type="button"
+                                        onClick={handleMarkAll}
+                                        style={{ background: "#e0f2fe", border: "1px solid #bae6fd", color: "#0369a1", padding: "2px 8px", borderRadius: "3px", fontSize: "11px", fontWeight: 600, cursor: "pointer" }}
+                                    >
+                                        {markedItemCodes.length === filteredSearchMaterials.length && filteredSearchMaterials.length > 0 ? "Unmark All" : "Mark All Filtered"}
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Search Table with Stock Wise, Requirement Wise, Balance Wise */}
+                            <div style={{ maxHeight: "420px", overflowY: "auto", border: "1px solid #cbd5e1", borderRadius: "4px" }}>
+                                <table className="tpcs-ii-table" style={{ width: "100%", margin: 0 }}>
+                                    <thead style={{ position: "sticky", top: 0, zIndex: 5 }}>
+                                        <tr>
+                                            <th style={{ width: "50px", textAlign: "center" }}>Mark</th>
+                                            <th style={{ width: "95px" }}>Item Code</th>
+                                            <th style={{ width: "190px" }}>Material Name</th>
+                                            <th style={{ width: "120px" }}>Colour Code</th>
+                                            <th style={{ width: "60px" }}>UOM</th>
+                                            <th style={{ width: "95px", textAlign: "right" }}>Stock Wise</th>
+                                            <th style={{ width: "95px", textAlign: "right" }}>Req Wise</th>
+                                            <th style={{ width: "90px", textAlign: "right" }}>Issued</th>
+                                            <th style={{ width: "95px", textAlign: "right" }}>Balance Wise</th>
+                                            <th style={{ width: "100px" }}>Location</th>
+                                            <th style={{ width: "85px", textAlign: "right" }}>Issue Qty</th>
+                                            <th style={{ width: "70px", textAlign: "right" }}>Rate</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {filteredSearchMaterials.map(m => {
+                                            const isMarked = markedItemCodes.includes(m.ItemCode);
+                                            const currentIssueQty = searchIssueQtys[m.ItemCode] ?? (m.BalanceQty > 0 ? m.BalanceQty : Math.min(m.StockQty, 50));
+
+                                            return (
+                                                <tr
+                                                    key={m.ItemCode}
+                                                    className={isMarked ? "tpcs-ii-row-marked" : ""}
+                                                    style={{ cursor: "pointer" }}
+                                                    onClick={() => handleToggleMark(m.ItemCode)}
+                                                >
+                                                    {/* Mark Option Checkbox */}
+                                                    <td style={{ textAlign: "center" }} onClick={e => e.stopPropagation()}>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={isMarked}
+                                                            onChange={() => handleToggleMark(m.ItemCode)}
+                                                            style={{ cursor: "pointer", width: "15px", height: "15px" }}
+                                                        />
+                                                    </td>
+                                                    <td style={{ fontFamily: "monospace", fontWeight: 700, color: "#0369a1" }}>{m.ItemCode}</td>
+                                                    <td style={{ fontWeight: 600 }}>{m.ItemName}</td>
+                                                    <td>
+                                                        <div className="tpcs-ii-colour-swatch">
+                                                            <span className="tpcs-ii-swatch-dot" style={{ backgroundColor: m.hex || "#94a3b8" }} />
+                                                            <span>{m.Color} ({m.ColorCode})</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>{m.UOM}</td>
+                                                    <td style={{ textAlign: "right" }}>
+                                                        <span className="tpcs-ii-badge-stock">{m.StockQty}</span>
+                                                    </td>
+                                                    <td style={{ textAlign: "right" }}>
+                                                        <span className="tpcs-ii-badge-req">{m.ReqQty}</span>
+                                                    </td>
+                                                    <td style={{ textAlign: "right", color: "#64748b" }}>{m.IssuedQty}</td>
+                                                    <td style={{ textAlign: "right" }}>
+                                                        <span className="tpcs-ii-badge-balance">{m.BalanceQty}</span>
+                                                    </td>
+                                                    <td style={{ fontFamily: "monospace", fontSize: "11px", color: "#1976d2", fontWeight: 600 }}>
+                                                        {m.Location}
+                                                    </td>
+                                                    <td style={{ textAlign: "right" }} onClick={e => e.stopPropagation()}>
+                                                        <input
+                                                            type="number"
+                                                            value={currentIssueQty}
+                                                            onChange={(e) => {
+                                                                const val = e.target.value;
+                                                                setSearchIssueQtys(prev => ({ ...prev, [m.ItemCode]: val }));
+                                                            }}
+                                                            style={{
+                                                                width: "70px",
+                                                                height: "24px",
+                                                                textAlign: "right",
+                                                                padding: "1px 4px",
+                                                                fontSize: "11.5px",
+                                                                border: "1px solid #cbd5e1",
+                                                                borderRadius: "3px",
+                                                                fontWeight: 700
+                                                            }}
+                                                        />
+                                                    </td>
+                                                    <td style={{ textAlign: "right" }}>₹{m.Rate.toFixed(2)}</td>
+                                                </tr>
+                                            );
+                                        })}
+                                        {filteredSearchMaterials.length === 0 && (
+                                            <tr>
+                                                <td colSpan={12} style={{ textAlign: "center", padding: "24px", color: "#64748b" }}>
+                                                    No materials matched your search criteria. Try modifying your filter.
+                                                </td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div className="tpcs-ii-modal-footer" style={{ justifyContent: "space-between" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                <span style={{ fontSize: "12px", color: "#334155" }}>
+                                    Marked: <strong style={{ color: "#0284c7" }}>{markedItemCodes.length}</strong> items
+                                </span>
+                            </div>
+                            <div style={{ display: "flex", gap: "8px" }}>
+                                <button
+                                    type="button"
+                                    className="tpcs-ii-btn-view"
+                                    onClick={() => setActiveModal(null)}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="button"
+                                    className="tpcs-ii-btn-save"
+                                    onClick={handleApplyMarkedItems}
+                                    style={{ backgroundColor: "#0284c7" }}
+                                    disabled={markedItemCodes.length === 0}
+                                >
+                                    <FaCheckCircle /> <span>Apply Marked Items to Issue ({markedItemCodes.length})</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* ==========================================================
+               MODAL: 4x4 THERMAL LABEL STICKER PRINT PREVIEW
+            =========================================================== */}
+            {activeModal === "sticker4x4" && (
+                <div className="tpcs-ii-modal-backdrop" onClick={() => setActiveModal(null)}>
+                    <div className="tpcs-ii-modal-content" style={{ width: "460px" }} onClick={e => e.stopPropagation()}>
+                        <div className="tpcs-ii-modal-header">
+                            <h3 className="tpcs-ii-modal-title">4x4 Thermal Sticker Print Preview</h3>
+                            <button className="tpcs-ii-modal-close" onClick={() => setActiveModal(null)}><FaTimes /></button>
+                        </div>
+                        <div className="tpcs-ii-modal-body" style={{ background: "#f1f5f9", padding: "18px" }}>
+                            {/* 4x4 Thermal Sticker Format */}
+                            <div className="tpcs-ii-sticker-preview">
+                                <div className="tpcs-ii-sticker-header">
+                                    <span style={{ fontWeight: 800, fontSize: "13px" }}>V-CONNECT INC.</span>
+                                    <span style={{ fontSize: "10px", fontWeight: 700, color: "#1976d2" }}>4" x 4" LABEL</span>
+                                </div>
+
+                                {/* Top QR Code & Barcode */}
+                                <div className="tpcs-ii-sticker-top-qr">
+                                    <div
+                                        dangerouslySetInnerHTML={{
+                                            __html: generateQRCodeSVG(activeItem4x4?.ItemCode || "LTH-1093", { size: 120 })
+                                        }}
+                                    />
+                                    <div style={{ margin: "4px 0", width: "100%" }}>
+                                        <div
+                                            dangerouslySetInnerHTML={{
+                                                __html: generateBarcodeSVG(activeItem4x4?.Barcode || activeItem4x4?.ItemCode || "BAR-RL-1001", { width: 240, height: 38, showText: true })
+                                            }}
+                                        />
+                                    </div>
+                                    <div style={{ fontSize: "11px", fontWeight: 800, textAlign: "center" }}>
+                                        {activeItem4x4?.ItemName}
+                                    </div>
+                                    <div style={{ fontSize: "10px", color: "#334155" }}>
+                                        Colour: <strong>{activeItem4x4?.Color} ({activeItem4x4?.ColorCode})</strong> | UOM: <strong>{activeItem4x4?.UOM}</strong>
+                                    </div>
+                                </div>
+
+                                {/* Down Location */}
+                                <div className="tpcs-ii-sticker-down-loc">
+                                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "3px" }}>
+                                        <span>Location:</span>
+                                        <strong style={{ fontSize: "12px", color: "#1976d2" }}>{activeItem4x4?.Location}</strong>
+                                    </div>
+                                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "3px" }}>
+                                        <span>Warehouse:</span>
+                                        <strong>{activeItem4x4?.Warehouse || stores}</strong>
+                                    </div>
+                                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "3px" }}>
+                                        <span>Rack / Shelf:</span>
+                                        <span>{activeItem4x4?.Rack} / {activeItem4x4?.Shelf}</span>
+                                    </div>
+                                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                        <span>Stock Available:</span>
+                                        <strong style={{ color: "#16a34a" }}>{activeItem4x4?.StockQty} {activeItem4x4?.UOM}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="tpcs-ii-modal-footer">
+                            <button
+                                type="button"
+                                className="tpcs-ii-btn-save"
+                                onClick={() => window.print()}
+                            >
+                                <FaPrint /> <span>Print 4x4 Sticker</span>
+                            </button>
+                            <button
+                                type="button"
+                                className="tpcs-ii-btn-view"
+                                onClick={() => setActiveModal(null)}
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Requisition Lookup Modal */}
             {activeModal === "requisition" && (
@@ -1555,6 +2481,7 @@ export default function ItemIssue({ initialMode = "list" }) {
                                         <th>#</th>
                                         <th>Item Name</th>
                                         <th>Colour</th>
+                                        <th>Location</th>
                                         <th>UOM</th>
                                         <th style={{ textAlign: "right" }}>Qty</th>
                                         <th style={{ textAlign: "right" }}>Rate</th>
@@ -1567,6 +2494,7 @@ export default function ItemIssue({ initialMode = "list" }) {
                                             <td>{i + 1}</td>
                                             <td>{r.item || r.ItemName}</td>
                                             <td>{r.colour || r.Color || "-"}</td>
+                                            <td>{r.location || "BIN-A-01-01"}</td>
                                             <td>{r.uom || r.UOM}</td>
                                             <td style={{ textAlign: "right", fontWeight: 700 }}>{r.issueQty || r.Quantity}</td>
                                             <td style={{ textAlign: "right" }}>{r.rate || r.Rate || 0}</td>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
     FaCog,
@@ -22,9 +23,11 @@ import {
     FaBoxes,
     FaClipboardList,
     FaExclamationTriangle,
-    FaArrowRight
+    FaArrowRight,
+    FaExternalLinkAlt
 } from "react-icons/fa";
 import { generateQRCodeSVG, generateBarcodeSVG } from "../../utils/qrBarcodeUtil";
+import { RACK_QR_BIN_CATALOG } from "../mm/wms/PrintBinningSlip";
 import "../../styles/itemIssue.css";
 
 const API_URL = process.env.REACT_APP_API_URL || "/api";
@@ -372,11 +375,16 @@ const INITIAL_SAVED_ISSUES = [
 ];
 
 export default function ItemIssue({ initialMode = "form" }) {
+    const location = useLocation();
+    const navigate = useNavigate();
+
     // View mode: 'form' or 'list'
     const [viewMode, setViewMode] = useState(initialMode);
 
     // Stateful catalog so pending IRN quantities & stock update dynamically when issues are saved or fetched from API
     const [catalogItems, setCatalogItems] = useState(DEFAULT_MATERIAL_CATALOG);
+    const [rackQrBins, setRackQrBins] = useState(RACK_QR_BIN_CATALOG);
+    const [activeRackBin, setActiveRackBin] = useState(RACK_QR_BIN_CATALOG[0]);
 
     // Pending IRN & Stock Display Panel State
     const [showPendingIrnPanel, setShowPendingIrnPanel] = useState(true);
@@ -779,11 +787,142 @@ export default function ItemIssue({ initialMode = "form" }) {
     };
 
     // =========================================================================
-    // AUTO FILL LOGIC ON SCAN / CODE ENTRY
+    // LOCATION-WISE & RACK QR-CODE-WISE ITEM ISSUE HANDLER
+    // =========================================================================
+    const handleIssueFromRackBin = (binObj, autoAddLine = true) => {
+        if (!binObj) return;
+        setActiveRackBin(binObj);
+        setScanLaserActive(true);
+        setTimeout(() => setScanLaserActive(false), 750);
+
+        const matchedCat = catalogItems.find(
+            c => c.ItemCode === binObj.ItemCode || c.Location === binObj.BinCode
+        );
+
+        const unifiedItem = matchedCat
+            ? {
+                ...matchedCat,
+                Location: binObj.BinCode,
+                Rack: `${binObj.Rack} / ${binObj.Level}`,
+                Warehouse: binObj.Warehouse,
+                StockQty: binObj.ItemWiseStockQty
+            }
+            : {
+                ItemCode: binObj.ItemCode,
+                ItemName: binObj.ItemName,
+                IrnNo: binObj.PendingIrnNo,
+                IrnDate: binObj.IrnDate,
+                Department: binObj.Department,
+                GroupName: binObj.Category,
+                Variant: binObj.Variant,
+                Color: binObj.Color,
+                SizeRange: "Standard",
+                Size: "Std",
+                UOM: binObj.UOM,
+                StockQty: binObj.ItemWiseStockQty,
+                ReqQty: binObj.IrnWiseReqQty,
+                IssuedQty: binObj.IrnIssuedQty,
+                BalanceQty: binObj.IrnPendingQty,
+                Rate: binObj.Rate,
+                Location: binObj.BinCode,
+                Warehouse: binObj.Warehouse,
+                Rack: `${binObj.Rack} / ${binObj.Level}`,
+                Barcode: binObj.Barcode
+            };
+
+        setActiveItem4x4(unifiedItem);
+        if (binObj.PendingIrnNo) {
+            setRequisitionNo(binObj.PendingIrnNo);
+        }
+        if (binObj.Department) setDepartment(binObj.Department);
+        if (binObj.Warehouse) setStores(binObj.Warehouse);
+
+        if (autoAddLine) {
+            const qtyToIssue = binObj.IrnPendingQty > 0 ? binObj.IrnPendingQty : 1;
+            setLines(prev => {
+                const existingNonEmpty = prev.filter(r => r.item && r.item.trim() !== "");
+                const existingIdx = existingNonEmpty.findIndex(
+                    r => r.location === binObj.BinCode && r.itemCode === binObj.ItemCode
+                );
+                const newRow = {
+                    id: existingIdx !== -1
+                        ? existingNonEmpty[existingIdx].id
+                        : (existingNonEmpty.length > 0 ? Math.max(...existingNonEmpty.map(l => l.id)) + 1 : 1),
+                    selected: false,
+                    issueType: "Lot Issue",
+                    ioNo: binObj.PendingIrnNo || requisitionNo,
+                    group: binObj.Category,
+                    item: binObj.ItemName,
+                    itemCode: binObj.ItemCode,
+                    description: `${binObj.ItemName} [Rack QR: ${binObj.BinCode} | ${binObj.Zone} • ${binObj.Rack} • ${binObj.Level}]`,
+                    colour: binObj.Variant || binObj.Color,
+                    typeSize: "Std",
+                    uom: binObj.UOM,
+                    location: binObj.BinCode,
+                    reqQty: binObj.IrnWiseReqQty,
+                    pendingQty: binObj.IrnPendingQty,
+                    stockQty: binObj.ItemWiseStockQty,
+                    issueQty: qtyToIssue,
+                    rate: binObj.Rate,
+                    amount: parseFloat((qtyToIssue * binObj.Rate).toFixed(2)),
+                    remarks: `Rack QR Issue [${binObj.BinCode}] | Item Stock: ${binObj.ItemWiseStockQty} ${binObj.UOM} | IRN Req: ${binObj.IrnWiseReqQty} ${binObj.UOM}`
+                };
+
+                if (existingIdx !== -1) {
+                    const copy = [...existingNonEmpty];
+                    copy[existingIdx] = newRow;
+                    return copy;
+                }
+                return [...existingNonEmpty, newRow];
+            });
+
+            setAutoFillToast(
+                `Rack QR Linked [${binObj.BinCode}]: ${binObj.ItemName} | Item Stock: ${binObj.ItemWiseStockQty} ${binObj.UOM} | IRN (${binObj.PendingIrnNo}) Req: ${binObj.IrnWiseReqQty} ${binObj.UOM}, Pending: ${binObj.IrnPendingQty} ${binObj.UOM}`
+            );
+            setTimeout(() => setAutoFillToast(""), 5000);
+        }
+    };
+
+    // Handle direct incoming navigation from /wms/print-binning-slip (Rack QR Stickers)
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const binParam = params.get("bin") || location.state?.rackBin?.BinCode;
+        if (binParam) {
+            const matchedBin = rackQrBins.find(b => b.BinCode.toLowerCase() === binParam.toLowerCase());
+            if (matchedBin) {
+                setViewMode("form");
+                setShow4x4Panel(true);
+                setShowPendingIrnPanel(true);
+                handleIssueFromRackBin(matchedBin, true);
+            }
+        }
+    }, [location.search, location.state]);
+
+    // =========================================================================
+    // AUTO FILL LOGIC ON SCAN / CODE ENTRY (SUPPORTS RACK QR & ITEM QR)
     // =========================================================================
     const handleScanAutoFill = (inputCode) => {
-        const query = (inputCode || scanInput).trim();
-        if (!query) return;
+        const rawQuery = (inputCode || scanInput).trim();
+        if (!rawQuery) return;
+
+        // Extract BinCode if scanned from Rack QR payload format: RACKQR|BIN-A-01-01|ITEM:LTH-1001|...
+        let query = rawQuery;
+        if (rawQuery.toUpperCase().startsWith("RACKQR|")) {
+            const parts = rawQuery.split("|");
+            if (parts[1]) query = parts[1].trim();
+        }
+
+        // First check if scanned code matches a Rack QR Sticker Bin (BIN-A-01-01, etc.)
+        const matchedRackBin = rackQrBins.find(
+            b =>
+                b.BinCode.toLowerCase() === query.toLowerCase() ||
+                b.Barcode.toLowerCase() === query.toLowerCase()
+        );
+        if (matchedRackBin) {
+            handleIssueFromRackBin(matchedRackBin, true);
+            setScanInput("");
+            return;
+        }
 
         setScanLaserActive(true);
         setTimeout(() => setScanLaserActive(false), 800);
@@ -798,6 +937,8 @@ export default function ItemIssue({ initialMode = "form" }) {
 
         if (matched) {
             setActiveItem4x4(matched);
+            const binMatch = rackQrBins.find(b => b.BinCode === matched.Location || b.ItemCode === matched.ItemCode);
+            if (binMatch) setActiveRackBin(binMatch);
             if (matched.IrnNo) setRequisitionNo(matched.IrnNo);
 
             setLines(prev => {
@@ -837,7 +978,7 @@ export default function ItemIssue({ initialMode = "form" }) {
             setTimeout(() => setAutoFillToast(""), 4500);
             setScanInput("");
         } else {
-            alert(`No material or IRN found matching '${query}'.`);
+            alert(`No Rack QR Bin, material, or IRN found matching '${query}'.`);
         }
     };
 
@@ -1356,6 +1497,29 @@ export default function ItemIssue({ initialMode = "form" }) {
                             >
                                 <FaQrcode />
                                 <span>4x4 Panel: {show4x4Panel ? "ON" : "OFF"}</span>
+                            </button>
+
+                            {/* Option Button: Direct Rack QR Stickers (Location-Wise & QR-Code-Wise Item Issue) */}
+                            <button
+                                type="button"
+                                className="tpcs-ii-btn-save"
+                                onClick={() => setActiveModal("rackQrStickers")}
+                                title="Rack QR Stickers — Location-Wise & QR-Code-Wise Direct Item Issue"
+                                style={{ backgroundColor: "#047857" }}
+                            >
+                                <FaQrcode />
+                                <span>Rack QR Stickers (Location Issue)</span>
+                            </button>
+
+                            <button
+                                type="button"
+                                className="tpcs-ii-btn-view"
+                                onClick={() => navigate("/wms/print-binning-slip?format=rack-labels")}
+                                title="Open Print Binning Slip & Rack QR Stickers Page"
+                                style={{ borderColor: "#047857", color: "#047857", fontWeight: 700 }}
+                            >
+                                <FaExternalLinkAlt />
+                                <span>Print Rack QR Page</span>
                             </button>
 
                             {/* Option Button: Requisition Items (Exact Screenshot 2) */}
@@ -1981,117 +2145,354 @@ export default function ItemIssue({ initialMode = "form" }) {
                                 </table>
                             </div>
 
-                            {/* Sub-table: What is Pending & Current Stock of Item for the selected / listed IRNs */}
-                            <div style={{ marginTop: "10px" }}>
-                                <div style={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                    marginBottom: "6px",
-                                    flexWrap: "wrap",
-                                    gap: "6px"
-                                }}>
-                                    <span style={{ fontSize: "11.5px", fontWeight: 700, color: "#2073a9" }}>
-                                        Pending Items to Issue & Current Stock ({selectedIrnFilter === "ALL" ? "All Pending IRNs" : selectedIrnFilter})
-                                    </span>
-                                    <button
-                                        type="button"
-                                        className="tpcs-req-btn-save"
-                                        style={{ padding: "3px 12px", fontSize: "11px" }}
-                                        onClick={handleSaveReqItems}
-                                    >
-                                        + Load Checked Items ({tickedItemCodes.length}) to Issue Table
-                                    </button>
-                                </div>
+                            {/* Sub-section: 1) RACK QR STICKERS (LOCATION-WISE QR ISSUE) + 2) ITEM-WISE STOCK QTY APART FROM IRN-WISE ITEM REQUIRED QTY */}
+                            <div style={{ marginTop: "14px", borderTop: "2px solid #e2e8f0", paddingTop: "12px" }}>
 
-                                <div className="tpcs-pirn-table-wrap">
-                                    <table className="tpcs-pirn-table">
-                                        <thead>
-                                            <tr style={{ backgroundColor: "#2073a9" }}>
-                                                <th style={{ width: "34px", textAlign: "center", backgroundColor: "#2073a9" }}>
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={
-                                                            displayedPendingItems.length > 0 &&
-                                                            displayedPendingItems.every(m => tickedItemCodes.includes(m.ItemCode))
-                                                        }
-                                                        onChange={() => {
-                                                            const allCodes = displayedPendingItems.map(m => m.ItemCode);
-                                                            const allSelected = allCodes.every(c => tickedItemCodes.includes(c));
-                                                            if (allSelected) {
-                                                                setTickedItemCodes(prev => prev.filter(c => !allCodes.includes(c)));
-                                                            } else {
-                                                                setTickedItemCodes(prev => Array.from(new Set([...prev, ...allCodes])));
-                                                            }
+                                {/* RACK QR STICKERS STRIP (CLICK ANY BIN QR TO DIRECTLY ISSUE BY LOCATION & QR CODE) */}
+                                <div style={{
+                                    background: "#f8fafc",
+                                    border: "1px solid #cbd5e1",
+                                    borderRadius: "6px",
+                                    padding: "10px 12px",
+                                    marginBottom: "14px"
+                                }}>
+                                    <div style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        marginBottom: "8px",
+                                        flexWrap: "wrap",
+                                        gap: "8px"
+                                    }}>
+                                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                            <FaQrcode style={{ color: "#1976d2", fontSize: "15px" }} />
+                                            <span style={{ fontSize: "12.5px", fontWeight: 800, color: "#0f172a" }}>
+                                                Direct Link: Rack QR Stickers (Location-Wise &amp; QR-Code-Wise Item Issue)
+                                            </span>
+                                            <span style={{
+                                                background: "#dcfce7",
+                                                color: "#166534",
+                                                padding: "2px 8px",
+                                                borderRadius: "12px",
+                                                fontSize: "10.5px",
+                                                fontWeight: 700
+                                            }}>
+                                                Active Bin QR: {activeRackBin?.BinCode || activeItem4x4?.Location}
+                                            </span>
+                                        </div>
+                                        <div style={{ display: "flex", gap: "8px" }}>
+                                            <button
+                                                type="button"
+                                                onClick={() => setActiveModal("rackQrStickers")}
+                                                style={{
+                                                    background: "#047857",
+                                                    color: "#ffffff",
+                                                    border: "none",
+                                                    borderRadius: "4px",
+                                                    padding: "4px 10px",
+                                                    fontSize: "11px",
+                                                    fontWeight: 700,
+                                                    cursor: "pointer",
+                                                    display: "inline-flex",
+                                                    alignItems: "center",
+                                                    gap: "5px"
+                                                }}
+                                            >
+                                                <FaQrcode /> View All 9 Rack QR Stickers (4x4)
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => navigate("/wms/print-binning-slip?format=rack-labels")}
+                                                style={{
+                                                    background: "#1976d2",
+                                                    color: "#ffffff",
+                                                    border: "none",
+                                                    borderRadius: "4px",
+                                                    padding: "4px 10px",
+                                                    fontSize: "11px",
+                                                    fontWeight: 700,
+                                                    cursor: "pointer",
+                                                    display: "inline-flex",
+                                                    alignItems: "center",
+                                                    gap: "5px"
+                                                }}
+                                            >
+                                                <FaExternalLinkAlt /> Open Rack QR Stickers Module
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div style={{
+                                        display: "grid",
+                                        gridTemplateColumns: "repeat(auto-fill, minmax(195px, 1fr))",
+                                        gap: "8px"
+                                    }}>
+                                        {rackQrBins.map(bin => {
+                                            const isSelectedBin = activeRackBin?.BinCode === bin.BinCode || activeItem4x4?.Location === bin.BinCode;
+                                            return (
+                                                <div
+                                                    key={bin.BinCode}
+                                                    onClick={() => handleIssueFromRackBin(bin, true)}
+                                                    style={{
+                                                        background: isSelectedBin ? "#eff6ff" : "#ffffff",
+                                                        border: isSelectedBin ? "2px solid #1976d2" : "1px solid #cbd5e1",
+                                                        borderRadius: "6px",
+                                                        padding: "7px 9px",
+                                                        cursor: "pointer",
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        gap: "8px",
+                                                        boxShadow: isSelectedBin ? "0 2px 6px rgba(25,118,210,0.15)" : "none"
+                                                    }}
+                                                    title={`Click to Issue ${bin.ItemName} directly from Rack QR ${bin.BinCode}`}
+                                                >
+                                                    <div
+                                                        style={{ flexShrink: 0, background: "#fff", padding: "2px", border: "1px solid #e2e8f0", borderRadius: "4px" }}
+                                                        dangerouslySetInnerHTML={{
+                                                            __html: generateQRCodeSVG(`RACKQR|${bin.BinCode}|${bin.ItemCode}`, { size: 42 })
                                                         }}
                                                     />
-                                                </th>
-                                                <th style={{ backgroundColor: "#2073a9" }}>Req. No (IRN)</th>
-                                                <th style={{ backgroundColor: "#2073a9" }}>Pending Item Name & Code</th>
-                                                <th style={{ backgroundColor: "#2073a9" }}>Variant / Colour</th>
-                                                <th style={{ backgroundColor: "#2073a9" }}>Store & Bin Location</th>
-                                                <th style={{ textAlign: "right", backgroundColor: "#2073a9" }}>Req Qty</th>
-                                                <th style={{ textAlign: "right", backgroundColor: "#2073a9" }}>Already Issued</th>
-                                                <th style={{ textAlign: "right", backgroundColor: "#2073a9" }}>What is Pending (Bal)</th>
-                                                <th style={{ textAlign: "right", backgroundColor: "#2073a9" }}>Current Stock of Item</th>
-                                                <th style={{ textAlign: "center", width: "100px", backgroundColor: "#2073a9" }}>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {displayedPendingItems.map(m => {
-                                                const isTicked = tickedItemCodes.includes(m.ItemCode);
-                                                return (
-                                                    <tr
-                                                        key={m.ItemCode}
-                                                        style={{ backgroundColor: isTicked ? "#f0fdf4" : undefined }}
-                                                        onClick={() => setActiveItem4x4(m)}
-                                                    >
-                                                        <td style={{ textAlign: "center" }} onClick={e => e.stopPropagation()}>
+                                                    <div style={{ minWidth: 0, flex: 1 }}>
+                                                        <div style={{ fontSize: "11.5px", fontWeight: 800, color: "#0f172a", fontFamily: "monospace" }}>
+                                                            {bin.BinCode}
+                                                        </div>
+                                                        <div style={{ fontSize: "10.5px", fontWeight: 700, color: "#1e293b", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                                            {bin.ItemName}
+                                                        </div>
+                                                        <div style={{ display: "flex", justifyContent: "space-between", fontSize: "10px", marginTop: "2px" }}>
+                                                            <span style={{ color: bin.ItemWiseStockQty > 0 ? "#166534" : "#dc2626", fontWeight: 800 }}>
+                                                                Stock: {bin.ItemWiseStockQty} {bin.UOM}
+                                                            </span>
+                                                            <span style={{ color: "#1d4ed8", fontWeight: 800 }}>
+                                                                IRN Req: {bin.IrnWiseReqQty}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
+                                {/* TWO SEPARATE TABLES: 1) ITEM-WISE STOCK QTY (LOCATION / RACK QR WISE) APART FROM 2) IRN-WISE ITEM REQUIRED QTY */}
+                                <div style={{
+                                    display: "grid",
+                                    gridTemplateColumns: "repeat(auto-fit, minmax(460px, 1fr))",
+                                    gap: "14px",
+                                    alignItems: "start"
+                                }}>
+                                    {/* LEFT TABLE: ITEM-WISE STOCK QTY (LOCATION / RACK QR STICKER WISE — APART FROM IRN REQUIRED QTY) */}
+                                    <div style={{
+                                        border: "1.5px solid #16a34a",
+                                        borderRadius: "6px",
+                                        background: "#ffffff",
+                                        overflow: "hidden"
+                                    }}>
+                                        <div style={{
+                                            background: "#15803d",
+                                            color: "#ffffff",
+                                            padding: "7px 12px",
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "center"
+                                        }}>
+                                            <span style={{ fontSize: "12px", fontWeight: 800, display: "flex", alignItems: "center", gap: "6px" }}>
+                                                <FaBoxes /> 1. ITEM-WISE STOCK QTY (Rack Bin QR &amp; Location-Wise Stock)
+                                            </span>
+                                            <span style={{ fontSize: "10.5px", background: "rgba(255,255,255,0.2)", padding: "2px 8px", borderRadius: "10px", fontWeight: 700 }}>
+                                                Apart from IRN Required Qty
+                                            </span>
+                                        </div>
+                                        <div className="tpcs-pirn-table-wrap" style={{ maxHeight: "260px" }}>
+                                            <table className="tpcs-pirn-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th style={{ backgroundColor: "#166534" }}>Rack Bin QR</th>
+                                                        <th style={{ backgroundColor: "#166534" }}>Zone / Rack / Level</th>
+                                                        <th style={{ backgroundColor: "#166534" }}>Item Name &amp; Code</th>
+                                                        <th style={{ textAlign: "right", backgroundColor: "#14532d" }}>Item-Wise Stock Qty</th>
+                                                        <th style={{ textAlign: "center", backgroundColor: "#166534" }}>QR Issue</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {rackQrBins.map(bin => {
+                                                        const isSelected = activeRackBin?.BinCode === bin.BinCode;
+                                                        return (
+                                                            <tr
+                                                                key={bin.BinCode}
+                                                                style={{ backgroundColor: isSelected ? "#f0fdf4" : undefined, cursor: "pointer" }}
+                                                                onClick={() => handleIssueFromRackBin(bin, false)}
+                                                            >
+                                                                <td style={{ fontWeight: 800, color: "#15803d", fontFamily: "monospace" }}>
+                                                                    <FaQrcode style={{ marginRight: "4px", verticalAlign: "middle" }} />
+                                                                    {bin.BinCode}
+                                                                </td>
+                                                                <td style={{ fontSize: "11px", color: "#334155", fontWeight: 600 }}>
+                                                                    {bin.Zone} • {bin.Rack} ({bin.Level})
+                                                                </td>
+                                                                <td>
+                                                                    <div style={{ fontWeight: 700, color: "#0f172a" }}>{bin.ItemName}</div>
+                                                                    <div style={{ fontSize: "10px", color: "#64748b", fontFamily: "monospace" }}>
+                                                                        {bin.ItemCode} | {bin.Variant}
+                                                                    </div>
+                                                                </td>
+                                                                <td style={{ textAlign: "right" }}>
+                                                                    <span style={{
+                                                                        display: "inline-block",
+                                                                        padding: "2px 8px",
+                                                                        borderRadius: "10px",
+                                                                        fontWeight: 800,
+                                                                        fontSize: "11.5px",
+                                                                        background: bin.ItemWiseStockQty > 0 ? "#dcfce7" : "#fee2e2",
+                                                                        color: bin.ItemWiseStockQty > 0 ? "#166534" : "#991b1b",
+                                                                        border: bin.ItemWiseStockQty > 0 ? "1px solid #86efac" : "1px solid #fca5a5"
+                                                                    }}>
+                                                                        {bin.ItemWiseStockQty} {bin.UOM}
+                                                                    </span>
+                                                                </td>
+                                                                <td style={{ textAlign: "center" }} onClick={e => e.stopPropagation()}>
+                                                                    <button
+                                                                        type="button"
+                                                                        className="tpcs-pirn-load-btn"
+                                                                        style={{ background: "#15803d" }}
+                                                                        onClick={() => handleIssueFromRackBin(bin, true)}
+                                                                        title={`Issue ${bin.ItemName} from Rack QR ${bin.BinCode}`}
+                                                                    >
+                                                                        <FaQrcode style={{ fontSize: "9px" }} /> <span>QR Issue</span>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        );
+                                                    })}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    {/* RIGHT TABLE: IRN-WISE ITEM REQUIRED QTY & PENDING TO ISSUE (APART FROM ITEM-WISE STOCK QTY) */}
+                                    <div style={{
+                                        border: "1.5px solid #2073a9",
+                                        borderRadius: "6px",
+                                        background: "#ffffff",
+                                        overflow: "hidden"
+                                    }}>
+                                        <div style={{
+                                            background: "#2073a9",
+                                            color: "#ffffff",
+                                            padding: "7px 12px",
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            alignItems: "center",
+                                            flexWrap: "wrap",
+                                            gap: "6px"
+                                        }}>
+                                            <span style={{ fontSize: "12px", fontWeight: 800, display: "flex", alignItems: "center", gap: "6px" }}>
+                                                <FaClipboardList /> 2. IRN-WISE ITEM REQUIRED QTY &amp; PENDING ({selectedIrnFilter === "ALL" ? "All Pending IRNs" : selectedIrnFilter})
+                                            </span>
+                                            <button
+                                                type="button"
+                                                onClick={handleSaveReqItems}
+                                                style={{
+                                                    background: "#f59e0b",
+                                                    color: "#ffffff",
+                                                    border: "none",
+                                                    borderRadius: "4px",
+                                                    padding: "2px 10px",
+                                                    fontSize: "10.5px",
+                                                    fontWeight: 800,
+                                                    cursor: "pointer"
+                                                }}
+                                            >
+                                                + Load Checked ({tickedItemCodes.length})
+                                            </button>
+                                        </div>
+                                        <div className="tpcs-pirn-table-wrap" style={{ maxHeight: "260px" }}>
+                                            <table className="tpcs-pirn-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th style={{ width: "32px", textAlign: "center", backgroundColor: "#2073a9" }}>
                                                             <input
                                                                 type="checkbox"
-                                                                checked={isTicked}
-                                                                onChange={() => handleToggleReqTick(m.ItemCode)}
-                                                                style={{ cursor: "pointer" }}
+                                                                checked={
+                                                                    displayedPendingItems.length > 0 &&
+                                                                    displayedPendingItems.every(m => tickedItemCodes.includes(m.ItemCode))
+                                                                }
+                                                                onChange={() => {
+                                                                    const allCodes = displayedPendingItems.map(m => m.ItemCode);
+                                                                    const allSelected = allCodes.every(c => tickedItemCodes.includes(c));
+                                                                    if (allSelected) {
+                                                                        setTickedItemCodes(prev => prev.filter(c => !allCodes.includes(c)));
+                                                                    } else {
+                                                                        setTickedItemCodes(prev => Array.from(new Set([...prev, ...allCodes])));
+                                                                    }
+                                                                }}
                                                             />
-                                                        </td>
-                                                        <td style={{ fontWeight: 700, color: "#2073a9", fontFamily: "monospace" }}>
-                                                            {m.IrnNo}
-                                                        </td>
-                                                        <td>
-                                                            <span style={{ fontWeight: 700, color: "#0f172a" }}>{m.ItemName}</span>
-                                                            <span style={{ marginLeft: "6px", fontSize: "10.5px", color: "#64748b", fontFamily: "monospace" }}>
-                                                                ({m.ItemCode})
-                                                            </span>
-                                                        </td>
-                                                        <td>{m.Variant !== "N/A" ? m.Variant : m.Color}</td>
-                                                        <td>
-                                                            <span style={{ fontWeight: 700, color: "#2073a9", fontFamily: "monospace" }}>{m.Location}</span>
-                                                            <span style={{ marginLeft: "5px", fontSize: "10px", color: "#64748b" }}>({m.Warehouse})</span>
-                                                        </td>
-                                                        <td style={{ textAlign: "right", fontWeight: 700 }}>{m.ReqQty} {m.UOM}</td>
-                                                        <td style={{ textAlign: "right", color: "#16a34a", fontWeight: 600 }}>{m.IssuedQty} {m.UOM}</td>
-                                                        <td style={{ textAlign: "right" }}>
-                                                            <span className={`tpcs-pending-pill ${m.BalanceQty <= 0 ? "cleared" : ""}`}>
-                                                                {m.BalanceQty > 0 ? `${m.BalanceQty} ${m.UOM} Pending` : `0 ${m.UOM} (Issued)`}
-                                                            </span>
-                                                        </td>
-                                                        <td style={{ textAlign: "right" }}>
-                                                            {renderStockBadge(m.StockQty, m.BalanceQty, m.UOM)}
-                                                        </td>
-                                                        <td style={{ textAlign: "center" }} onClick={e => e.stopPropagation()}>
-                                                            <button
-                                                                type="button"
-                                                                className="tpcs-pirn-load-btn"
-                                                                onClick={() => handleIssueSinglePendingItem(m)}
-                                                            >
-                                                                <FaPlus style={{ fontSize: "9px" }} /> <span>Issue</span>
-                                                            </button>
-                                                        </td>
+                                                        </th>
+                                                        <th style={{ backgroundColor: "#2073a9" }}>Pending IRN No</th>
+                                                        <th style={{ backgroundColor: "#2073a9" }}>Item Name &amp; Rack Bin</th>
+                                                        <th style={{ textAlign: "right", backgroundColor: "#1e40af" }}>IRN-Wise Req Qty</th>
+                                                        <th style={{ textAlign: "right", backgroundColor: "#2073a9" }}>Issued</th>
+                                                        <th style={{ textAlign: "right", backgroundColor: "#b45309" }}>IRN Pending Qty</th>
+                                                        <th style={{ textAlign: "center", backgroundColor: "#2073a9" }}>Action</th>
                                                     </tr>
-                                                );
-                                            })}
-                                        </tbody>
-                                    </table>
+                                                </thead>
+                                                <tbody>
+                                                    {displayedPendingItems.map(m => {
+                                                        const isTicked = tickedItemCodes.includes(m.ItemCode);
+                                                        return (
+                                                            <tr
+                                                                key={m.ItemCode}
+                                                                style={{ backgroundColor: isTicked ? "#eff6ff" : undefined, cursor: "pointer" }}
+                                                                onClick={() => {
+                                                                    setActiveItem4x4(m);
+                                                                    const binMatch = rackQrBins.find(b => b.BinCode === m.Location || b.ItemCode === m.ItemCode);
+                                                                    if (binMatch) setActiveRackBin(binMatch);
+                                                                }}
+                                                            >
+                                                                <td style={{ textAlign: "center" }} onClick={e => e.stopPropagation()}>
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={isTicked}
+                                                                        onChange={() => handleToggleReqTick(m.ItemCode)}
+                                                                        style={{ cursor: "pointer" }}
+                                                                    />
+                                                                </td>
+                                                                <td style={{ fontWeight: 800, color: "#2073a9", fontFamily: "monospace", fontSize: "11px" }}>
+                                                                    {m.IrnNo}
+                                                                </td>
+                                                                <td>
+                                                                    <div style={{ fontWeight: 700, color: "#0f172a" }}>{m.ItemName}</div>
+                                                                    <div style={{ fontSize: "10px", color: "#047857", fontFamily: "monospace", fontWeight: 700 }}>
+                                                                        Rack QR: {m.Location} ({m.ItemCode})
+                                                                    </div>
+                                                                </td>
+                                                                <td style={{ textAlign: "right", fontWeight: 800, color: "#1e40af", fontSize: "12px" }}>
+                                                                    {m.ReqQty} {m.UOM}
+                                                                </td>
+                                                                <td style={{ textAlign: "right", color: "#16a34a", fontWeight: 700 }}>
+                                                                    {m.IssuedQty} {m.UOM}
+                                                                </td>
+                                                                <td style={{ textAlign: "right" }}>
+                                                                    <span className={`tpcs-pending-pill ${m.BalanceQty <= 0 ? "cleared" : ""}`}>
+                                                                        {m.BalanceQty > 0 ? `${m.BalanceQty} ${m.UOM}` : `0 ${m.UOM}`}
+                                                                    </span>
+                                                                </td>
+                                                                <td style={{ textAlign: "center" }} onClick={e => e.stopPropagation()}>
+                                                                    <button
+                                                                        type="button"
+                                                                        className="tpcs-pirn-load-btn"
+                                                                        onClick={() => handleIssueSinglePendingItem(m)}
+                                                                    >
+                                                                        <FaPlus style={{ fontSize: "9px" }} /> <span>Issue</span>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        );
+                                                    })}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -2111,15 +2512,15 @@ export default function ItemIssue({ initialMode = "form" }) {
                                 <div className="tpcs-ii-4x4-header">
                                     <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                                         <FaQrcode />
-                                        <span>4x4 QR & Location</span>
+                                        <span>4x4 Rack QR &amp; Location</span>
                                     </div>
-                                    <span className="tpcs-ii-4x4-header-pill">{activeItem4x4?.Warehouse || "PLOT NO. 9B"}</span>
+                                    <span className="tpcs-ii-4x4-header-pill">{activeItem4x4?.Location || activeRackBin?.BinCode || "BIN-A-01-01"}</span>
                                 </div>
 
                                 {/* TOP SECTION: QR CODE & BARCODE */}
                                 <div className="tpcs-ii-4x4-top">
                                     <div className="tpcs-ii-4x4-top-title">
-                                        <span>Top: QR Code</span>
+                                        <span>Top: Rack Bin &amp; Item QR</span>
                                         <span style={{ fontSize: "10px", color: "#1976d2", fontFamily: "monospace", fontWeight: 700 }}>
                                             {activeItem4x4?.IrnNo || requisitionNo}
                                         </span>
@@ -2130,17 +2531,22 @@ export default function ItemIssue({ initialMode = "form" }) {
                                         {scanLaserActive && <div className="tpcs-ii-qr-laser-line" />}
                                         <div
                                             dangerouslySetInnerHTML={{
-                                                __html: generateQRCodeSVG(activeItem4x4?.ItemCode || "CRD-1001", { size: 125 })
+                                                __html: generateQRCodeSVG(
+                                                    `RACKQR|${activeItem4x4?.Location || "BIN-A-01-01"}|ITEM:${activeItem4x4?.ItemCode || "CRD-1001"}|IRN:${activeItem4x4?.IrnNo || requisitionNo}`,
+                                                    { size: 122 }
+                                                )
                                             }}
                                         />
-                                        <span className="tpcs-ps-verify-text">SCAN TO VERIFY</span>
+                                        <span className="tpcs-ps-verify-text">
+                                            RACK QR: {activeItem4x4?.Location || "BIN-A-01-01"}
+                                        </span>
                                     </div>
 
                                     {/* Barcode representation */}
                                     <div className="tpcs-ii-barcode-box">
                                         <div
                                             dangerouslySetInnerHTML={{
-                                                __html: generateBarcodeSVG(activeItem4x4?.Barcode || activeItem4x4?.ItemCode || "BAR-CRD-1001", { width: 220, height: 40, showText: true })
+                                                __html: generateBarcodeSVG(activeItem4x4?.Barcode || activeItem4x4?.Location || "BIN-A-01-01", { width: 220, height: 38, showText: true })
                                             }}
                                         />
                                     </div>
@@ -2150,7 +2556,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                                         <input
                                             type="text"
                                             className="tpcs-ii-4x4-scan-input"
-                                            placeholder="Scan QR/Barcode or IRN..."
+                                            placeholder="Scan Rack QR (BIN-A-01-01) or Item..."
                                             value={scanInput}
                                             onChange={(e) => setScanInput(e.target.value)}
                                             onKeyDown={(e) => {
@@ -2164,76 +2570,106 @@ export default function ItemIssue({ initialMode = "form" }) {
                                             type="button"
                                             className="tpcs-ii-4x4-btn-autofill"
                                             onClick={() => handleScanAutoFill()}
-                                            title="Auto-fill line item from QR Code / Barcode"
+                                            title="Auto-fill line item from Rack QR Sticker / Barcode"
                                         >
                                             <FaBolt /> <span>Auto Fill</span>
                                         </button>
                                     </div>
 
-                                    {/* Quick Scan Presets */}
+                                    {/* Quick Scan Presets: Rack Bin QR Stickers */}
                                     <div className="tpcs-ii-4x4-presets">
-                                        <span style={{ fontSize: "10px", color: "#64748b", width: "100%", marginBottom: "2px" }}>
-                                            Quick Item Scan:
+                                        <span style={{ fontSize: "10px", color: "#047857", fontWeight: 700, width: "100%", marginBottom: "2px" }}>
+                                            Rack QR Stickers (1-Click Issue):
                                         </span>
-                                        {catalogItems.slice(0, 5).map(m => (
+                                        {rackQrBins.slice(0, 6).map(bin => (
                                             <button
-                                                key={m.ItemCode}
+                                                key={bin.BinCode}
                                                 type="button"
                                                 className="tpcs-ii-preset-chip"
-                                                onClick={() => handleScanAutoFill(m.ItemCode)}
-                                                title={`Scan ${m.ItemName} (Pending: ${m.BalanceQty}, Stock: ${m.StockQty})`}
+                                                style={{
+                                                    borderColor: activeRackBin?.BinCode === bin.BinCode ? "#15803d" : undefined,
+                                                    backgroundColor: activeRackBin?.BinCode === bin.BinCode ? "#dcfce7" : undefined,
+                                                    color: activeRackBin?.BinCode === bin.BinCode ? "#166534" : undefined,
+                                                    fontWeight: 700
+                                                }}
+                                                onClick={() => handleIssueFromRackBin(bin, true)}
+                                                title={`${bin.BinCode}: ${bin.ItemName} | Item Stock: ${bin.ItemWiseStockQty} ${bin.UOM} | IRN Req: ${bin.IrnWiseReqQty} ${bin.UOM}`}
                                             >
-                                                {m.ItemName.split(" ")[0]}
+                                                {bin.BinCode}
                                             </button>
                                         ))}
                                     </div>
                                 </div>
 
-                                {/* DOWN SECTION: LOCATION, PENDING IRN & STOCK DETAILS */}
+                                {/* DOWN SECTION: LOCATION, ITEM-WISE STOCK QTY APART FROM IRN-WISE REQUIRED QTY */}
                                 <div className="tpcs-ii-4x4-down">
                                     <div className="tpcs-ii-4x4-down-title">
-                                        <span>Down: Location & Pending Stock</span>
+                                        <span>Down: Location &amp; Split Stock/IRN</span>
                                         <FaMapMarkerAlt style={{ color: "#ef4444" }} />
                                     </div>
 
                                     <div className="tpcs-ii-location-box">
                                         <div className="tpcs-ii-loc-row">
-                                            <span className="tpcs-ii-loc-label">Pending IRN:</span>
-                                            <span className="tpcs-ii-loc-val" style={{ color: "#1976d2", fontFamily: "monospace" }}>
-                                                {activeItem4x4?.IrnNo || requisitionNo}
+                                            <span className="tpcs-ii-loc-label">Rack Bin QR:</span>
+                                            <span className="tpcs-ii-loc-val" style={{ color: "#047857", fontWeight: 800, fontFamily: "monospace" }}>
+                                                {activeItem4x4?.Location || "BIN-D-01-02"} ({activeItem4x4?.Rack})
                                             </span>
-                                        </div>
-                                        <div className="tpcs-ii-loc-row">
-                                            <span className="tpcs-ii-loc-label">Item Name:</span>
-                                            <span className="tpcs-ii-loc-val">{activeItem4x4?.ItemName}</span>
                                         </div>
                                         <div className="tpcs-ii-loc-row">
                                             <span className="tpcs-ii-loc-label">Warehouse:</span>
                                             <span className="tpcs-ii-loc-val">{activeItem4x4?.Warehouse || stores}</span>
                                         </div>
                                         <div className="tpcs-ii-loc-row">
-                                            <span className="tpcs-ii-loc-label">Bin Location:</span>
-                                            <span className="tpcs-ii-loc-val" style={{ color: "#1976d2", fontWeight: 800 }}>
-                                                {activeItem4x4?.Location || "BIN-D-01-02"} ({activeItem4x4?.Rack})
-                                            </span>
+                                            <span className="tpcs-ii-loc-label">Item Name:</span>
+                                            <span className="tpcs-ii-loc-val">{activeItem4x4?.ItemName}</span>
                                         </div>
                                         <div className="tpcs-ii-loc-row">
-                                            <span className="tpcs-ii-loc-label">IRN Req / Issued:</span>
-                                            <span className="tpcs-ii-loc-val">
-                                                {activeItem4x4?.ReqQty} / {activeItem4x4?.IssuedQty} {activeItem4x4?.UOM}
+                                            <span className="tpcs-ii-loc-label">Pending IRN:</span>
+                                            <span className="tpcs-ii-loc-val" style={{ color: "#1976d2", fontFamily: "monospace" }}>
+                                                {activeItem4x4?.IrnNo || requisitionNo}
                                             </span>
                                         </div>
-                                        <div className="tpcs-ii-loc-row">
-                                            <span className="tpcs-ii-loc-label">What is Pending:</span>
-                                            <span className="tpcs-ii-loc-val" style={{ color: "#b45309", fontSize: "12px" }}>
-                                                {activeItem4x4?.BalanceQty} {activeItem4x4?.UOM} Pending
-                                            </span>
-                                        </div>
-                                        <div className="tpcs-ii-loc-row">
-                                            <span className="tpcs-ii-loc-label">Stock of Item:</span>
-                                            <span className="tpcs-ii-loc-val" style={{ color: activeItem4x4?.StockQty > 0 ? "#16a34a" : "#dc2626", fontSize: "12px" }}>
-                                                {activeItem4x4?.StockQty} {activeItem4x4?.UOM} ({activeItem4x4?.StockQty > 0 ? "In Stock" : "Out of Stock"})
-                                            </span>
+
+                                        {/* SEPARATED SIDE-BY-SIDE BOXES: ITEM-WISE STOCK QTY APART FROM IRN-WISE REQUIRED QTY */}
+                                        <div style={{
+                                            display: "grid",
+                                            gridTemplateColumns: "1fr 1fr",
+                                            gap: "6px",
+                                            marginTop: "6px"
+                                        }}>
+                                            <div style={{
+                                                background: activeItem4x4?.StockQty > 0 ? "#f0fdf4" : "#fef2f2",
+                                                border: activeItem4x4?.StockQty > 0 ? "1px solid #86efac" : "1px solid #fecaca",
+                                                borderRadius: "4px",
+                                                padding: "5px 6px"
+                                            }}>
+                                                <div style={{ fontSize: "9.5px", fontWeight: 800, color: activeItem4x4?.StockQty > 0 ? "#166534" : "#991b1b" }}>
+                                                    ITEM-WISE STOCK
+                                                </div>
+                                                <div style={{ fontSize: "12.5px", fontWeight: 900, color: activeItem4x4?.StockQty > 0 ? "#15803d" : "#dc2626" }}>
+                                                    {activeItem4x4?.StockQty} {activeItem4x4?.UOM}
+                                                </div>
+                                                <div style={{ fontSize: "9px", color: "#475569" }}>
+                                                    Bin: {activeItem4x4?.Location}
+                                                </div>
+                                            </div>
+
+                                            <div style={{
+                                                background: "#eff6ff",
+                                                border: "1px solid #bfdbfe",
+                                                borderRadius: "4px",
+                                                padding: "5px 6px"
+                                            }}>
+                                                <div style={{ fontSize: "9.5px", fontWeight: 800, color: "#1e40af" }}>
+                                                    IRN-WISE REQ QTY
+                                                </div>
+                                                <div style={{ fontSize: "12.5px", fontWeight: 900, color: "#1d4ed8" }}>
+                                                    {activeItem4x4?.ReqQty} {activeItem4x4?.UOM}
+                                                </div>
+                                                <div style={{ fontSize: "9px", color: "#b45309", fontWeight: 800 }}>
+                                                    Pending: {activeItem4x4?.BalanceQty} {activeItem4x4?.UOM}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -2241,9 +2677,10 @@ export default function ItemIssue({ initialMode = "form" }) {
                                         <button
                                             type="button"
                                             className="tpcs-ii-4x4-btn-action primary"
-                                            onClick={() => setActiveModal("requisitionItems")}
+                                            style={{ backgroundColor: "#047857", borderColor: "#047857" }}
+                                            onClick={() => setActiveModal("rackQrStickers")}
                                         >
-                                            <FaSearch /> Select Items
+                                            <FaQrcode /> Rack QR Stickers
                                         </button>
                                         <button
                                             type="button"
@@ -3298,6 +3735,181 @@ export default function ItemIssue({ initialMode = "form" }) {
                         </div>
                         <div className="tpcs-ii-modal-footer">
                             <button type="button" className="tpcs-ii-btn-save" onClick={() => setActiveModal(null)}>Save Settings</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Rack QR Stickers (Location-Wise & QR-Code-Wise Item Issue) Modal */}
+            {activeModal === "rackQrStickers" && (
+                <div className="tpcs-ii-modal-backdrop" onClick={() => setActiveModal(null)}>
+                    <div
+                        className="tpcs-ii-modal-content"
+                        style={{ width: "980px", maxWidth: "96vw", maxHeight: "90vh", overflowY: "auto" }}
+                        onClick={e => e.stopPropagation()}
+                    >
+                        <div className="tpcs-ii-modal-header" style={{ background: "#0f172a", color: "#ffffff" }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                <FaQrcode style={{ fontSize: "18px", color: "#38bdf8" }} />
+                                <h3 className="tpcs-ii-modal-title" style={{ color: "#ffffff", margin: 0 }}>
+                                    Rack QR Stickers — Location-Wise &amp; QR-Code-Wise Direct Item Issue
+                                </h3>
+                            </div>
+                            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                <button
+                                    type="button"
+                                    onClick={() => navigate("/wms/print-binning-slip?format=rack-labels")}
+                                    style={{
+                                        background: "#2563eb",
+                                        color: "#ffffff",
+                                        border: "none",
+                                        borderRadius: "4px",
+                                        padding: "5px 12px",
+                                        fontSize: "11.5px",
+                                        fontWeight: 700,
+                                        cursor: "pointer",
+                                        display: "inline-flex",
+                                        alignItems: "center",
+                                        gap: "5px"
+                                    }}
+                                >
+                                    <FaExternalLinkAlt /> Open Full Rack QR Print Page
+                                </button>
+                                <button className="tpcs-ii-modal-close" style={{ color: "#ffffff" }} onClick={() => setActiveModal(null)}>
+                                    <FaTimes />
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="tpcs-ii-modal-body" style={{ padding: "18px", background: "#f8fafc" }}>
+                            <div style={{
+                                display: "grid",
+                                gridTemplateColumns: "repeat(auto-fill, minmax(290px, 1fr))",
+                                gap: "14px"
+                            }}>
+                                {rackQrBins.map(bin => {
+                                    const isSelected = activeRackBin?.BinCode === bin.BinCode;
+                                    return (
+                                        <div
+                                            key={bin.BinCode}
+                                            style={{
+                                                background: "#ffffff",
+                                                border: isSelected ? "2px solid #047857" : "2px solid #0f172a",
+                                                borderRadius: "8px",
+                                                padding: "12px",
+                                                display: "flex",
+                                                flexDirection: "column",
+                                                gap: "8px",
+                                                boxShadow: "0 2px 6px rgba(15,23,42,0.06)"
+                                            }}
+                                        >
+                                            <div style={{
+                                                background: "#0f172a",
+                                                color: "#ffffff",
+                                                padding: "4px 10px",
+                                                borderRadius: "4px",
+                                                fontSize: "10.5px",
+                                                fontWeight: 800,
+                                                display: "flex",
+                                                justifyContent: "space-between"
+                                            }}>
+                                                <span>TPCS WMS • {bin.Warehouse}</span>
+                                                <span style={{ color: "#fbbf24" }}>{bin.PendingIrnNo}</span>
+                                            </div>
+
+                                            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                                                <div
+                                                    style={{
+                                                        padding: "4px",
+                                                        border: "1px solid #cbd5e1",
+                                                        borderRadius: "6px",
+                                                        background: "#ffffff"
+                                                    }}
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: generateQRCodeSVG(`RACKQR|${bin.BinCode}|ITEM:${bin.ItemCode}|IRN:${bin.PendingIrnNo}`, { size: 78 })
+                                                    }}
+                                                />
+                                                <div style={{ flex: 1 }}>
+                                                    <div style={{ fontSize: "17px", fontWeight: 900, color: "#0f172a", fontFamily: "monospace" }}>
+                                                        {bin.BinCode}
+                                                    </div>
+                                                    <div style={{ fontSize: "11px", color: "#475569", fontWeight: 700 }}>
+                                                        {bin.Zone} • {bin.Rack} • {bin.Level}
+                                                    </div>
+                                                    <div style={{ fontSize: "12px", fontWeight: 800, color: "#1e293b", marginTop: "3px" }}>
+                                                        {bin.ItemName} ({bin.ItemCode})
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Separate Boxes: Item-Wise Stock Qty APART FROM IRN-Wise Required Qty */}
+                                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
+                                                <div style={{
+                                                    background: bin.ItemWiseStockQty > 0 ? "#f0fdf4" : "#fef2f2",
+                                                    border: bin.ItemWiseStockQty > 0 ? "1px solid #86efac" : "1px solid #fecaca",
+                                                    borderRadius: "6px",
+                                                    padding: "6px 8px"
+                                                }}>
+                                                    <div style={{ fontSize: "9.5px", fontWeight: 800, color: bin.ItemWiseStockQty > 0 ? "#166534" : "#991b1b" }}>
+                                                        ITEM-WISE STOCK QTY
+                                                    </div>
+                                                    <div style={{ fontSize: "13px", fontWeight: 900, color: bin.ItemWiseStockQty > 0 ? "#15803d" : "#dc2626" }}>
+                                                        {bin.ItemWiseStockQty} {bin.UOM}
+                                                    </div>
+                                                </div>
+
+                                                <div style={{
+                                                    background: "#eff6ff",
+                                                    border: "1px solid #bfdbfe",
+                                                    borderRadius: "6px",
+                                                    padding: "6px 8px"
+                                                }}>
+                                                    <div style={{ fontSize: "9.5px", fontWeight: 800, color: "#1e40af" }}>
+                                                        IRN-WISE REQ QTY
+                                                    </div>
+                                                    <div style={{ fontSize: "13px", fontWeight: 900, color: "#1d4ed8" }}>
+                                                        {bin.IrnWiseReqQty} {bin.UOM}
+                                                    </div>
+                                                    <div style={{ fontSize: "9.5px", fontWeight: 800, color: "#b45309" }}>
+                                                        Pending: {bin.IrnPendingQty} {bin.UOM}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    handleIssueFromRackBin(bin, true);
+                                                    setActiveModal(null);
+                                                }}
+                                                style={{
+                                                    width: "100%",
+                                                    background: "#047857",
+                                                    color: "#ffffff",
+                                                    border: "none",
+                                                    borderRadius: "6px",
+                                                    padding: "7px 10px",
+                                                    fontSize: "11.5px",
+                                                    fontWeight: 800,
+                                                    cursor: "pointer",
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    gap: "6px"
+                                                }}
+                                            >
+                                                <FaQrcode /> Issue from Rack QR ({bin.BinCode}) <FaArrowRight style={{ fontSize: "10px" }} />
+                                            </button>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        <div className="tpcs-ii-modal-footer">
+                            <button type="button" className="tpcs-ii-btn-view" onClick={() => setActiveModal(null)}>
+                                Close
+                            </button>
                         </div>
                     </div>
                 </div>

@@ -56,6 +56,7 @@ import StockImport from "./pages/mm/wms/StockImport";
 import IssueFromBin from "./pages/mm/wms/IssueFromBin";
 import PrintBinningSlip from "./pages/mm/wms/PrintBinningSlip";
 import ScanQRCode from "./pages/mm/wms/ScanQRCode";
+import ItemRequisitionApproval from "./pages/mm/itemRequisitionApproval/ItemRequisitionApproval";
 import MMModuleView from "./components/common/MMModuleView";
 import MMHub from "./pages/mm/MMHub";
 
@@ -209,7 +210,7 @@ function App() {
                 <Route path="/wms/print-binning-slip" element={<PrintBinningSlip />} />
                 <Route path="/inventory/scan-qr-code" element={<ScanQRCode />} />
                 <Route path="/inventory/scan-qr" element={<ScanQRCode />} />
-                <Route path="/item-requisition-approval" element={<MMModuleView title="Item Requisition Note Approval" moduleName="ItemRequisitionApproval" />} />
+                <Route path="/item-requisition-approval" element={<ItemRequisitionApproval />} />
                 <Route path="/stock-adjustment-receipt" element={<MMModuleView title="Stock Adjustment Receipt" moduleName="StockAdjustmentReceipt" />} />
 
 

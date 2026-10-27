@@ -1656,228 +1656,359 @@ export default function ItemIssue({ initialMode = "form" }) {
                     </div>
 
                     {/* ==========================================================
-                       PENDING IRN TO ISSUE & WHAT IS PENDING + ITEM STOCK PANEL
+                       ITEM REQUISITION NOTE APPROVAL (EXACT USER SCREENSHOT)
+                       WITH PENDING ITEMS & CURRENT STOCK OF ITEM
                     =========================================================== */}
                     {showPendingIrnPanel && (
-                        <div className="tpcs-pirn-section">
-                            <div className="tpcs-pirn-header">
-                                <div className="tpcs-pirn-header-left">
-                                    <h3 className="tpcs-pirn-title">
-                                        <FaClipboardList />
-                                        <span>Pending IRN to Issue — Pending Items & Live Stock Status</span>
-                                    </h3>
-                                    <span className="tpcs-pirn-kpi-pill amber">
-                                        Pending IRNs: {totalPendingIrnsCount}
-                                    </span>
-                                    <span className="tpcs-pirn-kpi-pill">
-                                        Pending Items: {totalPendingItemsCount} ({totalPendingUnits} Units to Issue)
-                                    </span>
-                                    <span className="tpcs-pirn-kpi-pill green">
-                                        In-Stock & Ready: {inStockReadyItemsCount} Items
-                                    </span>
-                                </div>
+                        <div style={{
+                            background: "#ffffff",
+                            border: "1px solid #dddddd",
+                            borderRadius: "3px",
+                            padding: "14px 16px",
+                            marginBottom: "16px",
+                            fontFamily: '"Segoe UI", Tahoma, Arial, Helvetica, sans-serif'
+                        }}>
+                            {/* Title matching Screenshot */}
+                            <h2 style={{
+                                color: "#2073a9",
+                                fontSize: "19px",
+                                fontWeight: 500,
+                                margin: "0 0 12px 0"
+                            }}>
+                                Item Requisition Note Approval
+                            </h2>
 
-                                <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-                                    <button
-                                        type="button"
-                                        onClick={() => setActiveModal("requisitionItems")}
+                            {/* Top Filter Row: Authorization Stage & Group/Model */}
+                            <div style={{ display: "flex", alignItems: "flex-end", gap: "24px", marginBottom: "12px", flexWrap: "wrap" }}>
+                                <div style={{ display: "flex", flexDirection: "column" }}>
+                                    <label style={{ fontSize: "11.5px", fontWeight: 700, color: "#333333", marginBottom: "3px" }}>
+                                        Authorization Stage
+                                    </label>
+                                    <select
+                                        value={stockStatusFilter}
+                                        onChange={(e) => setStockStatusFilter(e.target.value)}
                                         style={{
-                                            background: "#ffffff",
-                                            color: "#0f172a",
-                                            border: "none",
-                                            borderRadius: "3px",
-                                            padding: "4px 10px",
-                                            fontSize: "11px",
-                                            fontWeight: 700,
-                                            cursor: "pointer",
-                                            display: "inline-flex",
-                                            alignItems: "center",
-                                            gap: "5px"
+                                            width: "145px",
+                                            height: "28px",
+                                            fontSize: "11.5px",
+                                            padding: "2px 8px",
+                                            border: "1px solid #cccccc",
+                                            borderRadius: "2px",
+                                            color: "#333333",
+                                            backgroundColor: "#ffffff",
+                                            outline: "none"
                                         }}
                                     >
-                                        <FaSearch /> <span>Open Full Requisition Popup</span>
+                                        <option value="ALL">PENDING</option>
+                                        <option value="IN_STOCK">APPROVED</option>
+                                        <option value="LOW_STOCK">PARTIAL STOCK</option>
+                                        <option value="OUT_STOCK">OUT OF STOCK</option>
+                                    </select>
+                                </div>
+
+                                <div style={{ display: "flex", flexDirection: "column" }}>
+                                    <label style={{ fontSize: "11.5px", fontWeight: 700, color: "#333333", marginBottom: "3px" }}>
+                                        Group/Model
+                                    </label>
+                                    <input
+                                        type="text"
+                                        placeholder="Type and select Group/Model"
+                                        value={pendingSearchQuery}
+                                        onChange={(e) => setPendingSearchQuery(e.target.value)}
+                                        list="irn-group-model-list"
+                                        style={{
+                                            width: "245px",
+                                            height: "28px",
+                                            fontSize: "11.5px",
+                                            padding: "2px 8px",
+                                            border: "1px solid #cccccc",
+                                            borderRadius: "2px",
+                                            color: "#333333",
+                                            backgroundColor: "#ffffff",
+                                            outline: "none"
+                                        }}
+                                    />
+                                    <datalist id="irn-group-model-list">
+                                        <option value="Packaging" />
+                                        <option value="Office Stationery" />
+                                        <option value="Leather" />
+                                        <option value="Lining" />
+                                        <option value="Reinforcement" />
+                                        <option value="Hardware" />
+                                    </datalist>
+                                </div>
+                            </div>
+
+                            {/* Legend: Pending (Red) & Approved (Green) */}
+                            <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "11.5px", fontWeight: 600, color: "#333333", marginBottom: "8px" }}>
+                                <span style={{ display: "inline-block", width: "14px", height: "14px", backgroundColor: "#f26b5b" }} />
+                                <span>Pending</span>
+                                <span style={{ display: "inline-block", width: "14px", height: "14px", backgroundColor: "#5cb85c", marginLeft: "4px" }} />
+                                <span>Approved</span>
+                            </div>
+
+                            {/* Toolbar + Pagination Row matching Screenshot */}
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px", flexWrap: "wrap", gap: "8px" }}>
+                                <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setSelectedIrnFilter("ALL");
+                                            setPendingSearchQuery("");
+                                            setStockStatusFilter("ALL");
+                                        }}
+                                        title="Refresh"
+                                        style={{
+                                            width: "26px",
+                                            height: "25px",
+                                            border: "1px solid #cccccc",
+                                            borderRadius: "2px",
+                                            background: "#ffffff",
+                                            color: "#2073a9",
+                                            display: "inline-flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            cursor: "pointer",
+                                            fontSize: "11px"
+                                        }}
+                                    >
+                                        <FaRedo />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setSelectedIrnFilter("ALL")}
+                                        title="Show All Requisition Rows"
+                                        style={{
+                                            width: "26px",
+                                            height: "25px",
+                                            border: "1px solid #cccccc",
+                                            borderRadius: "2px",
+                                            background: "#ffffff",
+                                            color: "#2073a9",
+                                            display: "inline-flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            cursor: "pointer",
+                                            fontSize: "11px"
+                                        }}
+                                    >
+                                        <FaListUl />
+                                    </button>
+
+                                    <div style={{ display: "inline-flex" }}>
+                                        <button
+                                            type="button"
+                                            onClick={() => setActiveModal("requisitionItems")}
+                                            style={{
+                                                height: "25px",
+                                                padding: "0 8px",
+                                                border: "1px solid #cccccc",
+                                                borderTopRightRadius: 0,
+                                                borderBottomRightRadius: 0,
+                                                borderRadius: "2px",
+                                                background: "#ffffff",
+                                                color: "#2073a9",
+                                                fontSize: "11px",
+                                                fontWeight: 600,
+                                                display: "inline-flex",
+                                                alignItems: "center",
+                                                gap: "4px",
+                                                cursor: "pointer"
+                                            }}
+                                        >
+                                            <FaSearch style={{ fontSize: "9px" }} /> Filter
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setActiveModal("requisitionItems")}
+                                            style={{
+                                                height: "25px",
+                                                padding: "0 6px",
+                                                border: "1px solid #cccccc",
+                                                borderLeft: "none",
+                                                background: "#ffffff",
+                                                color: "#2073a9",
+                                                fontSize: "10px",
+                                                cursor: "pointer"
+                                            }}
+                                        >
+                                            <FaCaretDown />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Pagination [1] [2] [3] [4] [5] [>] [>>] matching Screenshot */}
+                                <div style={{ display: "flex", alignItems: "center" }}>
+                                    {[1, 2, 3, 4, 5].map(p => (
+                                        <button
+                                            key={p}
+                                            type="button"
+                                            style={{
+                                                width: "26px",
+                                                height: "25px",
+                                                border: "1px solid #dddddd",
+                                                borderRight: "none",
+                                                backgroundColor: p === 1 ? "#2073a9" : "#ffffff",
+                                                color: p === 1 ? "#ffffff" : "#2073a9",
+                                                fontSize: "11px",
+                                                fontWeight: p === 1 ? 700 : 500,
+                                                cursor: "pointer"
+                                            }}
+                                        >
+                                            {p}
+                                        </button>
+                                    ))}
+                                    <button
+                                        type="button"
+                                        style={{
+                                            width: "26px",
+                                            height: "25px",
+                                            border: "1px solid #dddddd",
+                                            borderRight: "none",
+                                            backgroundColor: "#ffffff",
+                                            color: "#2073a9",
+                                            fontSize: "11px",
+                                            cursor: "pointer"
+                                        }}
+                                    >
+                                        &gt;
+                                    </button>
+                                    <button
+                                        type="button"
+                                        style={{
+                                            width: "28px",
+                                            height: "25px",
+                                            border: "1px solid #dddddd",
+                                            backgroundColor: "#ffffff",
+                                            color: "#2073a9",
+                                            fontSize: "11px",
+                                            cursor: "pointer"
+                                        }}
+                                    >
+                                        &gt;&gt;
                                     </button>
                                 </div>
                             </div>
 
-                            <div className="tpcs-pirn-body">
-                                {/* 1. Horizontal Cards of Pending IRNs to Issue */}
-                                <div className="tpcs-pirn-cards-row">
-                                    {/* Card 0: All Pending IRNs */}
-                                    <div
-                                        className={`tpcs-pirn-card ${selectedIrnFilter === "ALL" ? "active" : ""}`}
-                                        onClick={() => setSelectedIrnFilter("ALL")}
+                            {/* Blue Header Table: Action | Req. No | Qty | No. of Rows | Approval Status */}
+                            <div style={{ width: "100%", overflowX: "auto" }}>
+                                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "11.5px" }}>
+                                    <thead>
+                                        <tr style={{ backgroundColor: "#2073a9", color: "#ffffff" }}>
+                                            <th style={{ width: "130px", padding: "6px 8px", border: "1px solid #1b608f", textAlign: "center", fontWeight: 600 }}>
+                                                Action
+                                            </th>
+                                            <th style={{ padding: "6px 10px", border: "1px solid #1b608f", textAlign: "center", fontWeight: 600 }}>
+                                                Req. No
+                                            </th>
+                                            <th style={{ width: "160px", padding: "6px 10px", border: "1px solid #1b608f", textAlign: "center", fontWeight: 600 }}>
+                                                Qty
+                                            </th>
+                                            <th style={{ width: "180px", padding: "6px 10px", border: "1px solid #1b608f", textAlign: "center", fontWeight: 600 }}>
+                                                No. of Rows
+                                            </th>
+                                            <th style={{ width: "220px", padding: "6px 10px", border: "1px solid #1b608f", textAlign: "center", fontWeight: 600 }}>
+                                                Approval Status
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {pendingIrnSummaries.map(irn => {
+                                            const isSelectedIrn = selectedIrnFilter === irn.irnNo;
+                                            const isPendingStatus = irn.totalPendingQty > 0;
+                                            return (
+                                                <React.Fragment key={irn.irnNo}>
+                                                    <tr
+                                                        style={{
+                                                            backgroundColor: isSelectedIrn ? "#e8f1fa" : "#ffffff",
+                                                            cursor: "pointer"
+                                                        }}
+                                                        onClick={() => {
+                                                            if (selectedIrnFilter === irn.irnNo) {
+                                                                setSelectedIrnFilter("ALL");
+                                                            } else {
+                                                                handleSelectPendingIrn(irn, false);
+                                                            }
+                                                        }}
+                                                    >
+                                                        <td
+                                                            style={{ padding: "5px 8px", border: "1px solid #dddddd", textAlign: "center" }}
+                                                            onClick={(e) => e.stopPropagation()}
+                                                        >
+                                                            <div style={{ display: "inline-flex", gap: "5px", alignItems: "center" }}>
+                                                                <button
+                                                                    type="button"
+                                                                    className="tpcs-pirn-load-btn"
+                                                                    onClick={() => handleSelectPendingIrn(irn, true)}
+                                                                    title={`Load pending items of ${irn.irnNo} into Item Issue`}
+                                                                >
+                                                                    <span>Issue IRN</span> <FaArrowRight style={{ fontSize: "9px" }} />
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                        <td style={{ padding: "5px 10px", border: "1px solid #dddddd", textAlign: "center", fontWeight: 700, color: "#2073a9" }}>
+                                                            {irn.irnNo}
+                                                            <span style={{ marginLeft: "8px", fontSize: "10.5px", color: "#64748b", fontWeight: 500 }}>
+                                                                ({irn.department} • {irn.date})
+                                                            </span>
+                                                        </td>
+                                                        <td style={{ padding: "5px 10px", border: "1px solid #dddddd", textAlign: "center", fontWeight: 700 }}>
+                                                            {irn.totalReqQty}
+                                                            <span style={{ marginLeft: "6px", color: "#b45309", fontSize: "10.5px" }}>
+                                                                (Pending: {irn.totalPendingQty})
+                                                            </span>
+                                                        </td>
+                                                        <td style={{ padding: "5px 10px", border: "1px solid #dddddd", textAlign: "center", fontWeight: 600 }}>
+                                                            {irn.totalItems}
+                                                        </td>
+                                                        <td
+                                                            style={{
+                                                                padding: "5px 10px",
+                                                                border: "1px solid #dddddd",
+                                                                textAlign: "center",
+                                                                fontWeight: 700,
+                                                                color: "#ffffff",
+                                                                backgroundColor: isPendingStatus ? "#f26b5b" : "#5cb85c"
+                                                            }}
+                                                        >
+                                                            {isPendingStatus ? "Pending" : "Approved"}
+                                                        </td>
+                                                    </tr>
+                                                </React.Fragment>
+                                            );
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {/* Sub-table: What is Pending & Current Stock of Item for the selected / listed IRNs */}
+                            <div style={{ marginTop: "10px" }}>
+                                <div style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    marginBottom: "6px",
+                                    flexWrap: "wrap",
+                                    gap: "6px"
+                                }}>
+                                    <span style={{ fontSize: "11.5px", fontWeight: 700, color: "#2073a9" }}>
+                                        Pending Items to Issue & Current Stock ({selectedIrnFilter === "ALL" ? "All Pending IRNs" : selectedIrnFilter})
+                                    </span>
+                                    <button
+                                        type="button"
+                                        className="tpcs-req-btn-save"
+                                        style={{ padding: "3px 12px", fontSize: "11px" }}
+                                        onClick={handleSaveReqItems}
                                     >
-                                        <div className="tpcs-pirn-card-top">
-                                            <span className="tpcs-pirn-no">ALL PENDING IRNs</span>
-                                            <span className="tpcs-pirn-status-badge pending">
-                                                {totalPendingIrnsCount} Active IRNs
-                                            </span>
-                                        </div>
-                                        <div className="tpcs-pirn-meta">
-                                            <span>All Departments</span>
-                                            <span>Plot No. 9B & Stores</span>
-                                        </div>
-                                        <div className="tpcs-pirn-metrics-grid">
-                                            <div>
-                                                <span className="tpcs-pirn-metric-lbl">Total Req</span>
-                                                <span className="tpcs-pirn-metric-val">
-                                                    {catalogItems.reduce((s, i) => s + Number(i.ReqQty || 0), 0)}
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <span className="tpcs-pirn-metric-lbl">Issued</span>
-                                                <span className="tpcs-pirn-metric-val issued-val">
-                                                    {catalogItems.reduce((s, i) => s + Number(i.IssuedQty || 0), 0)}
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <span className="tpcs-pirn-metric-lbl">Pending</span>
-                                                <span className="tpcs-pirn-metric-val pending-val">
-                                                    {totalPendingUnits}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div className="tpcs-pirn-card-footer">
-                                            <span style={{ fontSize: "10.5px", color: "#64748b", fontWeight: 600 }}>
-                                                {catalogItems.length} Total Requisition Lines
-                                            </span>
-                                            <button
-                                                type="button"
-                                                className="tpcs-pirn-load-btn"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setSelectedIrnFilter("ALL");
-                                                }}
-                                            >
-                                                <span>View All</span>
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    {/* Individual Pending IRN Cards */}
-                                    {pendingIrnSummaries.map(irn => (
-                                        <div
-                                            key={irn.irnNo}
-                                            className={`tpcs-pirn-card ${selectedIrnFilter === irn.irnNo ? "active" : ""}`}
-                                            onClick={() => handleSelectPendingIrn(irn, false)}
-                                        >
-                                            <div className="tpcs-pirn-card-top">
-                                                <span className="tpcs-pirn-no">{irn.irnNo}</span>
-                                                <span className={`tpcs-pirn-status-badge ${
-                                                    irn.status === "Completed" ? "completed" : irn.status === "Partial Issue" ? "partial" : "pending"
-                                                }`}>
-                                                    {irn.status}
-                                                </span>
-                                            </div>
-                                            <div className="tpcs-pirn-meta">
-                                                <span><strong>Dept:</strong> {irn.department}</span>
-                                                <span>{irn.date}</span>
-                                            </div>
-                                            <div className="tpcs-pirn-metrics-grid">
-                                                <div>
-                                                    <span className="tpcs-pirn-metric-lbl">Req Qty</span>
-                                                    <span className="tpcs-pirn-metric-val">{irn.totalReqQty}</span>
-                                                </div>
-                                                <div>
-                                                    <span className="tpcs-pirn-metric-lbl">Issued</span>
-                                                    <span className="tpcs-pirn-metric-val issued-val">{irn.totalIssuedQty}</span>
-                                                </div>
-                                                <div>
-                                                    <span className="tpcs-pirn-metric-lbl">Pending</span>
-                                                    <span className="tpcs-pirn-metric-val pending-val">{irn.totalPendingQty}</span>
-                                                </div>
-                                            </div>
-                                            <div className="tpcs-pirn-card-footer">
-                                                <span style={{ fontSize: "10.5px", color: "#475569", fontWeight: 600 }}>
-                                                    {irn.pendingItemsCount} of {irn.totalItems} items pending
-                                                </span>
-                                                <button
-                                                    type="button"
-                                                    className="tpcs-pirn-load-btn"
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        handleSelectPendingIrn(irn, true);
-                                                    }}
-                                                    title={`Load pending items from ${irn.irnNo} into Item Issue table`}
-                                                >
-                                                    <span>Issue IRN</span> <FaArrowRight style={{ fontSize: "9px" }} />
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ))}
+                                        + Load Checked Items ({tickedItemCodes.length}) to Issue Table
+                                    </button>
                                 </div>
 
-                                {/* 2. Filter & Search Toolbar for Pending Items & Stock */}
-                                <div className="tpcs-pirn-toolbar">
-                                    <div className="tpcs-pirn-filter-pills">
-                                        <span style={{ fontSize: "11.5px", fontWeight: 700, color: "#0f172a", marginRight: "4px" }}>
-                                            What is Pending & Stock Filter:
-                                        </span>
-                                        <button
-                                            type="button"
-                                            className={`tpcs-pirn-pill-btn ${stockStatusFilter === "ALL" ? "active" : ""}`}
-                                            onClick={() => setStockStatusFilter("ALL")}
-                                        >
-                                            All Items ({catalogItems.length})
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className={`tpcs-pirn-pill-btn ${stockStatusFilter === "IN_STOCK" ? "active" : ""}`}
-                                            onClick={() => setStockStatusFilter("IN_STOCK")}
-                                        >
-                                            In Stock & Ready ({catalogItems.filter(i => i.StockQty >= i.BalanceQty && i.StockQty > 0).length})
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className={`tpcs-pirn-pill-btn ${stockStatusFilter === "LOW_STOCK" ? "active" : ""}`}
-                                            onClick={() => setStockStatusFilter("LOW_STOCK")}
-                                        >
-                                            Partial / Low Stock ({catalogItems.filter(i => i.StockQty > 0 && i.StockQty < i.BalanceQty).length})
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className={`tpcs-pirn-pill-btn ${stockStatusFilter === "OUT_STOCK" ? "active" : ""}`}
-                                            onClick={() => setStockStatusFilter("OUT_STOCK")}
-                                        >
-                                            Out of Stock ({catalogItems.filter(i => i.StockQty <= 0).length})
-                                        </button>
-                                    </div>
-
-                                    <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
-                                        <input
-                                            type="text"
-                                            placeholder="Search Pending IRN, Material, Colour, Bin..."
-                                            value={pendingSearchQuery}
-                                            onChange={(e) => setPendingSearchQuery(e.target.value)}
-                                            style={{
-                                                height: "28px",
-                                                width: "240px",
-                                                border: "1px solid #cbd5e1",
-                                                borderRadius: "3px",
-                                                padding: "2px 8px",
-                                                fontSize: "11.5px",
-                                                outline: "none"
-                                            }}
-                                        />
-                                        <button
-                                            type="button"
-                                            className="tpcs-req-btn-save"
-                                            style={{ padding: "4px 12px", fontSize: "11.5px" }}
-                                            onClick={handleSaveReqItems}
-                                            title="Load all checked pending items into the Item Issue table below"
-                                        >
-                                            + Load Checked Items ({tickedItemCodes.length}) to Issue
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {/* 3. Table Displaying Pending IRN, What is Pending, and Current Stock of Each Item */}
                                 <div className="tpcs-pirn-table-wrap">
                                     <table className="tpcs-pirn-table">
                                         <thead>
-                                            <tr>
-                                                <th style={{ width: "34px", textAlign: "center" }}>
+                                            <tr style={{ backgroundColor: "#2073a9" }}>
+                                                <th style={{ width: "34px", textAlign: "center", backgroundColor: "#2073a9" }}>
                                                     <input
                                                         type="checkbox"
                                                         checked={
@@ -1893,20 +2024,17 @@ export default function ItemIssue({ initialMode = "form" }) {
                                                                 setTickedItemCodes(prev => Array.from(new Set([...prev, ...allCodes])));
                                                             }
                                                         }}
-                                                        title="Tick all visible pending items"
                                                     />
                                                 </th>
-                                                <th>Pending IRN No</th>
-                                                <th>Dept & Date</th>
-                                                <th>Pending Item Name & Code</th>
-                                                <th>Variant / Colour</th>
-                                                <th>Size</th>
-                                                <th>Store & Bin Location</th>
-                                                <th style={{ textAlign: "right" }}>IRN Req Qty</th>
-                                                <th style={{ textAlign: "right" }}>Already Issued</th>
-                                                <th style={{ textAlign: "right", background: "#0f172a" }}>What is Pending (Bal To Issue)</th>
-                                                <th style={{ textAlign: "right", background: "#0f172a" }}>Current Stock of Item</th>
-                                                <th style={{ textAlign: "center", width: "110px" }}>Quick Issue</th>
+                                                <th style={{ backgroundColor: "#2073a9" }}>Req. No (IRN)</th>
+                                                <th style={{ backgroundColor: "#2073a9" }}>Pending Item Name & Code</th>
+                                                <th style={{ backgroundColor: "#2073a9" }}>Variant / Colour</th>
+                                                <th style={{ backgroundColor: "#2073a9" }}>Store & Bin Location</th>
+                                                <th style={{ textAlign: "right", backgroundColor: "#2073a9" }}>Req Qty</th>
+                                                <th style={{ textAlign: "right", backgroundColor: "#2073a9" }}>Already Issued</th>
+                                                <th style={{ textAlign: "right", backgroundColor: "#2073a9" }}>What is Pending (Bal)</th>
+                                                <th style={{ textAlign: "right", backgroundColor: "#2073a9" }}>Current Stock of Item</th>
+                                                <th style={{ textAlign: "center", width: "100px", backgroundColor: "#2073a9" }}>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -1926,45 +2054,22 @@ export default function ItemIssue({ initialMode = "form" }) {
                                                                 style={{ cursor: "pointer" }}
                                                             />
                                                         </td>
+                                                        <td style={{ fontWeight: 700, color: "#2073a9", fontFamily: "monospace" }}>
+                                                            {m.IrnNo}
+                                                        </td>
                                                         <td>
-                                                            <span style={{
-                                                                fontFamily: "monospace",
-                                                                fontWeight: 800,
-                                                                color: "#1976d2",
-                                                                background: "#eff6ff",
-                                                                padding: "2px 6px",
-                                                                borderRadius: "3px",
-                                                                border: "1px solid #bfdbfe"
-                                                            }}>
-                                                                {m.IrnNo}
+                                                            <span style={{ fontWeight: 700, color: "#0f172a" }}>{m.ItemName}</span>
+                                                            <span style={{ marginLeft: "6px", fontSize: "10.5px", color: "#64748b", fontFamily: "monospace" }}>
+                                                                ({m.ItemCode})
                                                             </span>
                                                         </td>
+                                                        <td>{m.Variant !== "N/A" ? m.Variant : m.Color}</td>
                                                         <td>
-                                                            <div style={{ fontWeight: 600, color: "#334155" }}>{m.Department}</div>
-                                                            <div style={{ fontSize: "10px", color: "#64748b" }}>{m.IrnDate}</div>
+                                                            <span style={{ fontWeight: 700, color: "#2073a9", fontFamily: "monospace" }}>{m.Location}</span>
+                                                            <span style={{ marginLeft: "5px", fontSize: "10px", color: "#64748b" }}>({m.Warehouse})</span>
                                                         </td>
-                                                        <td>
-                                                            <div style={{ fontWeight: 700, color: "#0f172a" }}>{m.ItemName}</div>
-                                                            <div style={{ fontSize: "10.5px", color: "#64748b", fontFamily: "monospace" }}>
-                                                                Code: {m.ItemCode} | Group: {m.GroupName}
-                                                            </div>
-                                                        </td>
-                                                        <td>
-                                                            <span style={{ fontWeight: 600 }}>{m.Variant !== "N/A" ? m.Variant : m.Color}</span>
-                                                        </td>
-                                                        <td>{m.Size}</td>
-                                                        <td>
-                                                            <div style={{ fontWeight: 700, color: "#1976d2", fontFamily: "monospace" }}>
-                                                                {m.Location}
-                                                            </div>
-                                                            <div style={{ fontSize: "10px", color: "#64748b" }}>{m.Warehouse}</div>
-                                                        </td>
-                                                        <td style={{ textAlign: "right", fontWeight: 700 }}>
-                                                            {m.ReqQty} {m.UOM}
-                                                        </td>
-                                                        <td style={{ textAlign: "right", color: "#16a34a", fontWeight: 600 }}>
-                                                            {m.IssuedQty} {m.UOM}
-                                                        </td>
+                                                        <td style={{ textAlign: "right", fontWeight: 700 }}>{m.ReqQty} {m.UOM}</td>
+                                                        <td style={{ textAlign: "right", color: "#16a34a", fontWeight: 600 }}>{m.IssuedQty} {m.UOM}</td>
                                                         <td style={{ textAlign: "right" }}>
                                                             <span className={`tpcs-pending-pill ${m.BalanceQty <= 0 ? "cleared" : ""}`}>
                                                                 {m.BalanceQty > 0 ? `${m.BalanceQty} ${m.UOM} Pending` : `0 ${m.UOM} (Issued)`}
@@ -1978,21 +2083,13 @@ export default function ItemIssue({ initialMode = "form" }) {
                                                                 type="button"
                                                                 className="tpcs-pirn-load-btn"
                                                                 onClick={() => handleIssueSinglePendingItem(m)}
-                                                                title={`Add ${m.ItemName} to Item Issue Table`}
                                                             >
-                                                                <FaPlus style={{ fontSize: "9px" }} /> <span>Issue Item</span>
+                                                                <FaPlus style={{ fontSize: "9px" }} /> <span>Issue</span>
                                                             </button>
                                                         </td>
                                                     </tr>
                                                 );
                                             })}
-                                            {displayedPendingItems.length === 0 && (
-                                                <tr>
-                                                    <td colSpan={12} style={{ textAlign: "center", padding: "18px", color: "#64748b" }}>
-                                                        No pending IRN items match the current filter.
-                                                    </td>
-                                                </tr>
-                                            )}
                                         </tbody>
                                     </table>
                                 </div>

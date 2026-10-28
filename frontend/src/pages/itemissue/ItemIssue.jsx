@@ -32,7 +32,7 @@ import "../../styles/itemIssue.css";
 
 const API_URL = process.env.REACT_APP_API_URL || "/api";
 
-// Master Catalog incorporating User Reference Screenshot items & ERP Inventory with Pending IRN mapping
+// Master Catalog incorporating User Reference Screenshot items & ERP Inventory with Item-Wise Pending IRN Numbers
 const DEFAULT_MATERIAL_CATALOG = [
     {
         ItemCode: "CRD-1001",
@@ -66,7 +66,7 @@ const DEFAULT_MATERIAL_CATALOG = [
     {
         ItemCode: "SPR-2001",
         ItemName: "SPRING FILE",
-        IrnNo: "IRN/APP/9B/2627/2401",
+        IrnNo: "IRN/APP/9B/2627/2402",
         IrnDate: "27-10-2026",
         Department: "Packaging",
         Associate: "Apex Leather Works",
@@ -95,7 +95,7 @@ const DEFAULT_MATERIAL_CATALOG = [
     {
         ItemCode: "IDX-3001",
         ItemName: "INDEX FILE BIG",
-        IrnNo: "IRN/APP/9B/2627/2401",
+        IrnNo: "IRN/APP/9B/2627/2403",
         IrnDate: "27-10-2026",
         Department: "Packaging",
         Associate: "Apex Leather Works",
@@ -113,10 +113,10 @@ const DEFAULT_MATERIAL_CATALOG = [
         IssuedQty: 0,
         BalanceQty: 4,
         Rate: 45.0,
-        Location: "BIN-D-01-01",
+        Location: "BIN-D-01-03",
         Warehouse: "PLOT NO. 9B",
         Rack: "Rack D1",
-        Shelf: "Level 1",
+        Shelf: "Level 3",
         Zone: "Zone D - Stationery",
         Barcode: "BAR-IDX-3001",
         SlipId: "000000000000226"
@@ -124,7 +124,7 @@ const DEFAULT_MATERIAL_CATALOG = [
     {
         ItemCode: "LTH-1093",
         ItemName: "COW CULATTAS SINGLE LEATHER",
-        IrnNo: "REQ/AAPL9B/2627/045",
+        IrnNo: "IRN/APP/9B/2627/2404",
         IrnDate: "25-10-2026",
         Department: "Cutting",
         Associate: "Apex Leather Works",
@@ -153,7 +153,7 @@ const DEFAULT_MATERIAL_CATALOG = [
     {
         ItemCode: "LTH-1112",
         ItemName: "COW ECO VEG SIDE CRUST LEATHER",
-        IrnNo: "REQ/AAPL9B/2627/045",
+        IrnNo: "IRN/APP/9B/2627/2405",
         IrnDate: "25-10-2026",
         Department: "Cutting",
         Associate: "Apex Leather Works",
@@ -182,7 +182,7 @@ const DEFAULT_MATERIAL_CATALOG = [
     {
         ItemCode: "RNF-1085",
         ItemName: "HIGH DENSITY TOPLINER 0.4MM",
-        IrnNo: "REQ/AAPL9B/2627/042",
+        IrnNo: "IRN/APP/9B/2627/2406",
         IrnDate: "24-10-2026",
         Department: "Cutting",
         Associate: "K-Tex Textiles",
@@ -211,7 +211,7 @@ const DEFAULT_MATERIAL_CATALOG = [
     {
         ItemCode: "NONWO5064",
         ItemName: "TALIN 0.3MM WHITE",
-        IrnNo: "REQ/AAPL9B/2627/042",
+        IrnNo: "IRN/APP/9B/2627/2407",
         IrnDate: "24-10-2026",
         Department: "Cutting",
         Associate: "K-Tex Textiles",
@@ -240,7 +240,7 @@ const DEFAULT_MATERIAL_CATALOG = [
     {
         ItemCode: "HDW-2236",
         ItemName: "JAM RIVET SINGLE HEAD 7MM",
-        IrnNo: "IRN/APP/9B/2627/2402",
+        IrnNo: "IRN/APP/9B/2627/2408",
         IrnDate: "26-10-2026",
         Department: "Assembly",
         Associate: "Balaji Trims & Fasteners",
@@ -269,7 +269,7 @@ const DEFAULT_MATERIAL_CATALOG = [
     {
         ItemCode: "TRM-3012",
         ItemName: "NYLON ZIPPER #5 OPEN END 65CM",
-        IrnNo: "IRN/APP/9B/2627/2402",
+        IrnNo: "IRN/APP/9B/2627/2409",
         IrnDate: "26-10-2026",
         Department: "Stitching",
         Associate: "Balaji Trims & Fasteners",
@@ -337,7 +337,7 @@ const INITIAL_SAVED_ISSUES = [
         stores: "RAW MATERIAL STORE 9B",
         issuedBy: "Nikhil Singh",
         receivedBy: "Ramesh Kumar",
-        requisitionNo: "IRN/APP/9B/2627/2401",
+        requisitionNo: "IRN/APP/9B/2627/2404",
         jobcardNo: "JC-4512",
         cuttingPlanNo: "CP-2627-044",
         remark: "Batch 104 Cutting leather issue",
@@ -346,8 +346,8 @@ const INITIAL_SAVED_ISSUES = [
         totalAmount: 27872.5,
         status: "Completed",
         items: [
-            { id: 1, issueType: "Lot Issue", ioNo: "IRN/APP/9B/2627/2401", group: "Leather", item: "COW CULATTAS SINGLE LEATHER", description: "Upper cutting leather", colour: "BLACK", typeSize: "A Grade", uom: "SQFT", location: "BIN-A-01-01", reqQty: 200, pendingQty: 150, stockQty: 450, issueQty: 120.5, rate: 145, amount: 17472.5, remarks: "Checked by QC" },
-            { id: 2, issueType: "Lot Issue", ioNo: "IRN/APP/9B/2627/2401", group: "Leather", item: "COW ECO VEG SIDE CRUST LEATHER", description: "Counter reinforcement", colour: "TAN", typeSize: "Standard", uom: "SQFT", location: "BIN-A-02-01", reqQty: 120, pendingQty: 100, stockQty: 280, issueQty: 65, rate: 160, amount: 10400, remarks: "" }
+            { id: 1, issueType: "Lot Issue", ioNo: "IRN/APP/9B/2627/2404", group: "Leather", item: "COW CULATTAS SINGLE LEATHER", description: "Upper cutting leather", colour: "BLACK", typeSize: "A Grade", uom: "SQFT", location: "BIN-A-01-01", reqQty: 200, pendingQty: 150, stockQty: 450, issueQty: 120.5, rate: 145, amount: 17472.5, remarks: "Checked by QC" },
+            { id: 2, issueType: "Lot Issue", ioNo: "IRN/APP/9B/2627/2405", group: "Leather", item: "COW ECO VEG SIDE CRUST LEATHER", description: "Counter reinforcement", colour: "TAN", typeSize: "Standard", uom: "SQFT", location: "BIN-A-02-01", reqQty: 120, pendingQty: 100, stockQty: 280, issueQty: 65, rate: 160, amount: 10400, remarks: "" }
         ]
     },
     {
@@ -360,7 +360,7 @@ const INITIAL_SAVED_ISSUES = [
         stores: "SEMI FINISH STORE 9B",
         issuedBy: "Nikhil Singh",
         receivedBy: "Pooja Verma",
-        requisitionNo: "IRN/APP/9B/2627/2402",
+        requisitionNo: "IRN/APP/9B/2627/2408",
         jobcardNo: "JC-4509",
         cuttingPlanNo: "CP-2627-043",
         remark: "Urgent hardware issue",
@@ -369,7 +369,7 @@ const INITIAL_SAVED_ISSUES = [
         totalAmount: 832.5,
         status: "Completed",
         items: [
-            { id: 1, issueType: "Lot Issue", ioNo: "IRN/APP/9B/2627/2402", group: "Hardware", item: "JAM RIVET SINGLE HEAD 7MM", description: "Riveting section", colour: "ANTIQUE BRASS", typeSize: "7mm", uom: "SET", location: "BIN-C-01-01", reqQty: 1200, pendingQty: 800, stockQty: 5000, issueQty: 450, rate: 1.85, amount: 832.5, remarks: "" }
+            { id: 1, issueType: "Lot Issue", ioNo: "IRN/APP/9B/2627/2408", group: "Hardware", item: "JAM RIVET SINGLE HEAD 7MM", description: "Riveting section", colour: "ANTIQUE BRASS", typeSize: "7mm", uom: "SET", location: "BIN-C-01-01", reqQty: 1200, pendingQty: 800, stockQty: 5000, issueQty: 450, rate: 1.85, amount: 832.5, remarks: "" }
         ]
     }
 ];
@@ -482,6 +482,7 @@ export default function ItemIssue({ initialMode = "form" }) {
     // =========================================================================
     // REQUISITION ITEMS MODAL STATE (EXACT USER REFERENCE SCREENSHOT 2)
     // =========================================================================
+    const [reqFilterIrnNo, setReqFilterIrnNo] = useState("");
     const [reqFilterItem, setReqFilterItem] = useState("");
     const [reqFilterVariant, setReqFilterVariant] = useState("");
     const [reqFilterSizeRange, setReqFilterSizeRange] = useState("");
@@ -495,6 +496,10 @@ export default function ItemIssue({ initialMode = "form" }) {
 
     const [tickedItemCodes, setTickedItemCodes] = useState([]);
     const [rowIssueQtys, setRowIssueQtys] = useState({});
+
+    // Item-Wise Pending IRN Lookup Dropdown State for Header "Requisition No (Pending IRN)"
+    const [showIrnLookupDropdown, setShowIrnLookupDropdown] = useState(false);
+    const irnDropdownRef = useRef(null);
 
     // Table Lines State: starts with a single blank row
     const [lines, setLines] = useState([{ ...INITIAL_EMPTY_LINE }]);
@@ -574,11 +579,14 @@ export default function ItemIssue({ initialMode = "form" }) {
         return () => { mounted = false; };
     }, []);
 
-    // Close action dropdown on outside click
+    // Close action dropdown and Item-Wise IRN lookup dropdown on outside click
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (actionBtnRef.current && !actionBtnRef.current.contains(e.target)) {
                 setShowActionMenu(false);
+            }
+            if (irnDropdownRef.current && !irnDropdownRef.current.contains(e.target)) {
+                setShowIrnLookupDropdown(false);
             }
         };
         document.addEventListener("mousedown", handleClickOutside);
@@ -586,7 +594,7 @@ export default function ItemIssue({ initialMode = "form" }) {
     }, []);
 
     // =========================================================================
-    // COMPUTED PENDING IRN SUMMARIES & PENDING ITEMS WITH LIVE STOCK
+    // COMPUTED ITEM-WISE PENDING IRN SUMMARIES & PENDING ITEMS WITH LIVE STOCK
     // =========================================================================
     const pendingIrnSummaries = React.useMemo(() => {
         const map = new Map();
@@ -595,6 +603,13 @@ export default function ItemIssue({ initialMode = "form" }) {
             if (!map.has(irn)) {
                 map.set(irn, {
                     irnNo: irn,
+                    itemCode: item.ItemCode,
+                    itemName: item.ItemName,
+                    groupName: item.GroupName,
+                    variant: item.Variant || item.Color,
+                    uom: item.UOM,
+                    location: item.Location,
+                    stockQty: Number(item.StockQty || 0),
                     date: item.IrnDate || "27-10-2026",
                     department: item.Department || "Production",
                     associate: item.Associate || "Apex Leather Works",
@@ -629,6 +644,21 @@ export default function ItemIssue({ initialMode = "form" }) {
                     : "Pending"
         }));
     }, [catalogItems]);
+
+    // Filtered items for the header Item-Wise IRN Lookup Dropdown
+    const filteredHeaderIrnItems = React.useMemo(() => {
+        const q = requisitionNo.trim().toLowerCase();
+        // If requisitionNo exactly matches one item's IrnNo, still show all items in the dropdown so user can switch easily
+        const exactMatch = catalogItems.some(it => it.IrnNo && it.IrnNo.toLowerCase() === q);
+        if (!q || exactMatch) return catalogItems;
+        return catalogItems.filter(it =>
+            (it.IrnNo && it.IrnNo.toLowerCase().includes(q)) ||
+            it.ItemName.toLowerCase().includes(q) ||
+            it.ItemCode.toLowerCase().includes(q) ||
+            (it.Department && it.Department.toLowerCase().includes(q)) ||
+            (it.Location && it.Location.toLowerCase().includes(q))
+        );
+    }, [catalogItems, requisitionNo]);
 
     // Filtered items for the live "What is Pending & Stock of That Item" table
     const displayedPendingItems = React.useMemo(() => {
@@ -719,12 +749,12 @@ export default function ItemIssue({ initialMode = "form" }) {
                 };
             });
             setLines(loadedLines);
-            setAutoFillToast(`Loaded ${loadedLines.length} pending item(s) from ${irnSummary.irnNo} into Item Issue!`);
+            setAutoFillToast(`Loaded ${loadedLines[0].item} [IRN: ${irnSummary.irnNo}] into Item Issue!`);
             setTimeout(() => setAutoFillToast(""), 4500);
         }
     };
 
-    // Issue a single pending item directly from the Pending IRN table
+    // Issue a single pending item directly from the Pending IRN table or Header Item-Wise IRN Dropdown
     const handleIssueSinglePendingItem = (m) => {
         setActiveItem4x4(m);
         setRequisitionNo(m.IrnNo || requisitionNo);
@@ -732,6 +762,8 @@ export default function ItemIssue({ initialMode = "form" }) {
         if (m.Warehouse) setStores(m.Warehouse);
         if (m.Associate) setAssociate(m.Associate);
         if (m.RequestedBy) setReceivedBy(m.RequestedBy);
+        if (m.JobcardNo) setJobcardNo(m.JobcardNo);
+        setShowIrnLookupDropdown(false);
 
         const qtyToIssue = parseFloat(rowIssueQtys[m.ItemCode]) || (m.BalanceQty > 0 ? m.BalanceQty : m.ReqQty || 1);
 
@@ -760,7 +792,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                 issueQty: qtyToIssue,
                 rate: m.Rate,
                 amount: parseFloat((qtyToIssue * m.Rate).toFixed(2)),
-                remarks: `Pending IRN ${m.IrnNo} | Bal: ${m.BalanceQty} | Stock: ${m.StockQty}`
+                remarks: `Item-Wise IRN ${m.IrnNo} | Bal: ${m.BalanceQty} | Stock: ${m.StockQty}`
             };
 
             if (existingIdx !== -1) {
@@ -771,7 +803,7 @@ export default function ItemIssue({ initialMode = "form" }) {
             return [...existingNonEmpty, newLineObj];
         });
 
-        setAutoFillToast(`Added ${m.ItemName} (Pending: ${m.BalanceQty} ${m.UOM}, Stock: ${m.StockQty} ${m.UOM}) from ${m.IrnNo}!`);
+        setAutoFillToast(`Selected Item-Wise IRN ${m.IrnNo}: ${m.ItemName} (Pending: ${m.BalanceQty} ${m.UOM}, Stock: ${m.StockQty} ${m.UOM})!`);
         setTimeout(() => setAutoFillToast(""), 4000);
     };
 
@@ -963,7 +995,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                 return [...prev, newRow];
             });
 
-            setAutoFillToast(`Auto-filled: ${matched.ItemName} (Pending: ${matched.BalanceQty} ${matched.UOM}, Stock: ${matched.StockQty} ${matched.UOM})`);
+            setAutoFillToast(`Auto-filled: ${matched.ItemName} [IRN: ${matched.IrnNo}] (Pending: ${matched.BalanceQty} ${matched.UOM}, Stock: ${matched.StockQty} ${matched.UOM})`);
             setTimeout(() => setAutoFillToast(""), 4500);
             setScanInput("");
         } else {
@@ -976,6 +1008,7 @@ export default function ItemIssue({ initialMode = "form" }) {
     // =========================================================================
     const filteredReqMaterials = catalogItems.filter(m => {
         const matchIrn = modalIrnFilter === "ALL" || m.IrnNo === modalIrnFilter;
+        const matchIrnCol = !reqFilterIrnNo || (m.IrnNo && m.IrnNo.toLowerCase().includes(reqFilterIrnNo.toLowerCase()));
         const matchItem = !reqFilterItem || m.ItemName.toLowerCase().includes(reqFilterItem.toLowerCase()) || m.ItemCode.toLowerCase().includes(reqFilterItem.toLowerCase()) || (m.IrnNo && m.IrnNo.toLowerCase().includes(reqFilterItem.toLowerCase()));
         const matchVariant = !reqFilterVariant || m.Variant.toLowerCase().includes(reqFilterVariant.toLowerCase());
         const matchSizeRange = !reqFilterSizeRange || m.SizeRange.toLowerCase().includes(reqFilterSizeRange.toLowerCase());
@@ -984,10 +1017,11 @@ export default function ItemIssue({ initialMode = "form" }) {
         const matchStock = !reqFilterStock || String(m.StockQty).includes(reqFilterStock);
         const matchAlready = !reqFilterAlreadyIssued || String(m.IssuedQty).includes(reqFilterAlreadyIssued);
         const matchBal = !reqFilterBalToIssue || String(m.BalanceQty).includes(reqFilterBalToIssue);
-        return matchIrn && matchItem && matchVariant && matchSizeRange && matchSize && matchReq && matchStock && matchAlready && matchBal;
+        return matchIrn && matchIrnCol && matchItem && matchVariant && matchSizeRange && matchSize && matchReq && matchStock && matchAlready && matchBal;
     });
 
     const handleResetReqFilters = () => {
+        setReqFilterIrnNo("");
         setReqFilterItem("");
         setReqFilterVariant("");
         setReqFilterSizeRange("");
@@ -1072,7 +1106,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                     issueQty: qty,
                     rate: m.Rate,
                     amount: parseFloat((qty * m.Rate).toFixed(2)),
-                    remarks: `Issued against pending IRN ${m.IrnNo || requisitionNo}`
+                    remarks: `Issued against Item-Wise IRN ${m.IrnNo || requisitionNo}`
                 };
             });
         });
@@ -1084,16 +1118,45 @@ export default function ItemIssue({ initialMode = "form" }) {
             }
         }
 
-        setAutoFillToast(`Loaded ${selectedItems.length} pending IRN item(s) with stock details into Item Issue!`);
+        setAutoFillToast(`Loaded ${selectedItems.length} item-wise IRN item(s) with stock details into Item Issue!`);
         setTimeout(() => setAutoFillToast(""), 4500);
         setActiveModal(null);
     };
 
-    // Line items change handler
+    // Line items change handler (supports both Item selection AND Item-Wise IRN No selection)
     const handleLineChange = (id, field, value) => {
         setLines(prev => prev.map(row => {
             if (row.id !== id) return row;
             const updated = { ...row, [field]: value };
+
+            if (field === "ioNo") {
+                const foundByIrn = catalogItems.find(it =>
+                    it.IrnNo && it.IrnNo.toLowerCase() === String(value).trim().toLowerCase()
+                );
+                if (foundByIrn) {
+                    updated.issueType = updated.issueType || "Lot Issue";
+                    updated.ioNo = foundByIrn.IrnNo;
+                    updated.item = foundByIrn.ItemName;
+                    updated.itemCode = foundByIrn.ItemCode;
+                    updated.group = foundByIrn.GroupName || updated.group;
+                    updated.description = `${foundByIrn.ItemName} [${foundByIrn.Variant}] - IRN: ${foundByIrn.IrnNo}`;
+                    updated.colour = foundByIrn.Variant || foundByIrn.Color || updated.colour;
+                    updated.typeSize = foundByIrn.Size || foundByIrn.SizeRange || updated.typeSize;
+                    updated.uom = foundByIrn.UOM || updated.uom || "PCS";
+                    updated.location = foundByIrn.Location || updated.location;
+                    updated.reqQty = foundByIrn.ReqQty || 0;
+                    updated.pendingQty = foundByIrn.BalanceQty || 0;
+                    updated.stockQty = foundByIrn.StockQty || 0;
+                    updated.issueQty = foundByIrn.BalanceQty > 0 ? foundByIrn.BalanceQty : (updated.issueQty || 1);
+                    updated.rate = foundByIrn.Rate || updated.rate;
+                    if (updated.issueQty && updated.rate) {
+                        updated.amount = parseFloat((parseFloat(updated.issueQty) * parseFloat(updated.rate)).toFixed(2));
+                    }
+                    updated.remarks = `Item-Wise IRN ${foundByIrn.IrnNo} (Stock: ${foundByIrn.StockQty} ${foundByIrn.UOM})`;
+                    setActiveItem4x4(foundByIrn);
+                    setRequisitionNo(foundByIrn.IrnNo);
+                }
+            }
 
             if (field === "item") {
                 const found = catalogItems.find(it =>
@@ -1106,6 +1169,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                     updated.itemCode = found.ItemCode;
                     updated.ioNo = found.IrnNo || updated.ioNo || requisitionNo;
                     updated.group = found.GroupName || updated.group;
+                    updated.description = `${found.ItemName} [${found.Variant}] - IRN: ${found.IrnNo}`;
                     updated.colour = found.Variant || found.Color || updated.colour;
                     updated.typeSize = found.Size || found.SizeRange || updated.typeSize;
                     updated.uom = found.UOM || updated.uom || "PCS";
@@ -1118,7 +1182,9 @@ export default function ItemIssue({ initialMode = "form" }) {
                     if (updated.issueQty && updated.rate) {
                         updated.amount = parseFloat((parseFloat(updated.issueQty) * parseFloat(updated.rate)).toFixed(2));
                     }
+                    updated.remarks = `Item-Wise IRN ${found.IrnNo} (Stock: ${found.StockQty} ${found.UOM})`;
                     setActiveItem4x4(found);
+                    if (found.IrnNo) setRequisitionNo(found.IrnNo);
                 }
             }
 
@@ -1728,37 +1794,176 @@ export default function ItemIssue({ initialMode = "form" }) {
                             />
                         </div>
 
-                        {/* ROW 2 - COL 4: Requisition No (Pending IRN Selector) */}
-                        <div className="tpcs-ii-field-group">
+                        {/* ROW 2 - COL 4: Requisition No (Item-Wise Pending IRN Selector) */}
+                        <div className="tpcs-ii-field-group" ref={irnDropdownRef} style={{ position: "relative" }}>
                             <label className="tpcs-ii-label">
-                                Requisition No (Pending IRN)
+                                Requisition No (Item-Wise Pending IRN)
                             </label>
                             <div className="tpcs-ii-input-group">
                                 <input
                                     type="text"
                                     className="tpcs-ii-input"
-                                    placeholder="Select Pending IRN No"
+                                    placeholder="Select Item-Wise Pending IRN No"
                                     value={requisitionNo}
-                                    onChange={(e) => setRequisitionNo(e.target.value)}
+                                    onFocus={() => setShowIrnLookupDropdown(true)}
+                                    onClick={() => setShowIrnLookupDropdown(true)}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        setRequisitionNo(val);
+                                        setShowIrnLookupDropdown(true);
+                                        const matchedItem = catalogItems.find(
+                                            it => it.IrnNo && it.IrnNo.toLowerCase() === val.trim().toLowerCase()
+                                        );
+                                        if (matchedItem) {
+                                            handleIssueSinglePendingItem(matchedItem);
+                                        }
+                                    }}
                                     list="pending-irns-datalist"
                                     style={{ fontWeight: 700, color: "#1976d2" }}
                                 />
                                 <datalist id="pending-irns-datalist">
-                                    {pendingIrnSummaries.map(irn => (
-                                        <option key={irn.irnNo} value={irn.irnNo}>
-                                            {irn.department} | Pending Qty: {irn.totalPendingQty} ({irn.status})
+                                    {catalogItems.map(it => (
+                                        <option key={it.IrnNo} value={it.IrnNo}>
+                                            {it.ItemName} ({it.ItemCode}) | Pending: {it.BalanceQty} {it.UOM} | Stock: {it.StockQty} {it.UOM}
                                         </option>
                                     ))}
                                 </datalist>
                                 <button
                                     type="button"
                                     className="tpcs-ii-addon-btn"
-                                    title="View Requisition Items"
-                                    onClick={() => setActiveModal("requisitionItems")}
+                                    title="Toggle Item-Wise Pending IRN Numbers List"
+                                    onClick={() => setShowIrnLookupDropdown(prev => !prev)}
                                 >
                                     <FaListUl />
                                 </button>
                             </div>
+
+                            {/* Interactive Item-Wise IRN Numbers Dropdown Panel */}
+                            {showIrnLookupDropdown && (
+                                <div style={{
+                                    position: "absolute",
+                                    top: "100%",
+                                    right: 0,
+                                    width: "560px",
+                                    maxWidth: "92vw",
+                                    maxHeight: "340px",
+                                    overflowY: "auto",
+                                    backgroundColor: "#ffffff",
+                                    border: "1.5px solid #1976d2",
+                                    borderRadius: "6px",
+                                    boxShadow: "0 10px 25px rgba(15, 23, 42, 0.18)",
+                                    zIndex: 1200,
+                                    marginTop: "4px"
+                                }}>
+                                    <div style={{
+                                        background: "#0f172a",
+                                        color: "#ffffff",
+                                        padding: "7px 12px",
+                                        fontSize: "11.5px",
+                                        fontWeight: 700,
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        position: "sticky",
+                                        top: 0,
+                                        zIndex: 2
+                                    }}>
+                                        <span>Item-Wise Pending IRN Numbers ({filteredHeaderIrnItems.length} Items)</span>
+                                        <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setShowIrnLookupDropdown(false);
+                                                    setActiveModal("requisitionItems");
+                                                }}
+                                                style={{
+                                                    background: "#2563eb",
+                                                    color: "#ffffff",
+                                                    border: "none",
+                                                    borderRadius: "3px",
+                                                    padding: "2px 8px",
+                                                    fontSize: "10.5px",
+                                                    fontWeight: 700,
+                                                    cursor: "pointer"
+                                                }}
+                                            >
+                                                Multi-Select Modal
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowIrnLookupDropdown(false)}
+                                                style={{
+                                                    background: "transparent",
+                                                    color: "#cbd5e1",
+                                                    border: "none",
+                                                    cursor: "pointer",
+                                                    fontSize: "12px"
+                                                }}
+                                            >
+                                                <FaTimes />
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "11px" }}>
+                                        <thead>
+                                            <tr style={{ background: "#f1f5f9", color: "#334155", borderBottom: "1px solid #cbd5e1", textAlign: "left" }}>
+                                                <th style={{ padding: "5px 8px" }}>Item-Wise IRN No</th>
+                                                <th style={{ padding: "5px 8px" }}>Item Name &amp; Code</th>
+                                                <th style={{ padding: "5px 8px" }}>Dept / Bin</th>
+                                                <th style={{ padding: "5px 8px", textAlign: "right" }}>Pending</th>
+                                                <th style={{ padding: "5px 8px", textAlign: "right" }}>Stock</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {filteredHeaderIrnItems.map(it => {
+                                                const isActive = requisitionNo === it.IrnNo;
+                                                return (
+                                                    <tr
+                                                        key={it.IrnNo}
+                                                        onClick={() => handleIssueSinglePendingItem(it)}
+                                                        style={{
+                                                            borderBottom: "1px solid #e2e8f0",
+                                                            cursor: "pointer",
+                                                            backgroundColor: isActive ? "#eff6ff" : "#ffffff"
+                                                        }}
+                                                    >
+                                                        <td style={{ padding: "6px 8px", fontWeight: 800, color: "#1976d2", fontFamily: "monospace", whiteSpace: "nowrap" }}>
+                                                            {it.IrnNo}
+                                                        </td>
+                                                        <td style={{ padding: "6px 8px" }}>
+                                                            <div style={{ fontWeight: 700, color: "#0f172a" }}>{it.ItemName}</div>
+                                                            <div style={{ fontSize: "10px", color: "#64748b", fontFamily: "monospace" }}>
+                                                                {it.ItemCode} • {it.Variant !== "N/A" ? it.Variant : it.Color}
+                                                            </div>
+                                                        </td>
+                                                        <td style={{ padding: "6px 8px", fontSize: "10.5px", color: "#475569" }}>
+                                                            <div style={{ fontWeight: 600 }}>{it.Department}</div>
+                                                            <div style={{ fontFamily: "monospace", color: "#047857", fontWeight: 700 }}>{it.Location}</div>
+                                                        </td>
+                                                        <td style={{ padding: "6px 8px", textAlign: "right", fontWeight: 800, color: "#b45309", whiteSpace: "nowrap" }}>
+                                                            {it.BalanceQty} {it.UOM}
+                                                        </td>
+                                                        <td style={{ padding: "6px 8px", textAlign: "right", whiteSpace: "nowrap" }}>
+                                                            <span style={{
+                                                                display: "inline-block",
+                                                                padding: "1px 6px",
+                                                                borderRadius: "8px",
+                                                                fontWeight: 800,
+                                                                fontSize: "10px",
+                                                                background: it.StockQty > 0 ? "#dcfce7" : "#fee2e2",
+                                                                color: it.StockQty > 0 ? "#166534" : "#991b1b"
+                                                            }}>
+                                                                {it.StockQty} {it.UOM}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
                         </div>
 
                         {/* ROW 3 - COL 1: Cutting Slip, Jobcard No */}
@@ -1808,7 +2013,7 @@ export default function ItemIssue({ initialMode = "form" }) {
 
                     {/* Display Button Row (Screenshot 2) */}
                     <div className="tpcs-ii-display-row" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
                             <button
                                 type="button"
                                 className="tpcs-ii-btn-display"
@@ -1818,7 +2023,18 @@ export default function ItemIssue({ initialMode = "form" }) {
                                 Display
                             </button>
                             <span style={{ fontSize: "12px", color: "#475569", fontWeight: 600 }}>
-                                Active IRN: <strong style={{ color: "#1976d2" }}>{requisitionNo || "-"}</strong>
+                                Active Item-Wise IRN:{" "}
+                                <strong style={{ color: "#1976d2", fontFamily: "monospace" }}>
+                                    {requisitionNo || "-"}
+                                </strong>
+                                {requisitionNo && (() => {
+                                    const matched = catalogItems.find(it => it.IrnNo === requisitionNo);
+                                    return matched ? (
+                                        <span style={{ marginLeft: "6px", color: "#047857", fontWeight: 700 }}>
+                                            ({matched.ItemName} [{matched.ItemCode}] • Pending: {matched.BalanceQty} {matched.UOM} • Stock: {matched.StockQty} {matched.UOM})
+                                        </span>
+                                    ) : null;
+                                })()}
                             </span>
                         </div>
 
@@ -1844,7 +2060,7 @@ export default function ItemIssue({ initialMode = "form" }) {
 
                     {/* ==========================================================
                        ITEM REQUISITION NOTE APPROVAL (EXACT USER SCREENSHOT)
-                       WITH PENDING ITEMS & CURRENT STOCK OF ITEM
+                       WITH ITEM-WISE IRN NUMBERS, PENDING ITEMS & CURRENT STOCK
                     =========================================================== */}
                     {showPendingIrnPanel && (
                         <div style={{
@@ -1857,14 +2073,27 @@ export default function ItemIssue({ initialMode = "form" }) {
                         }}>
                             {/* Title matching Screenshot + Close button */}
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-                                <h2 style={{
-                                    color: "#2073a9",
-                                    fontSize: "19px",
-                                    fontWeight: 500,
-                                    margin: 0
-                                }}>
-                                    Item Requisition Note Approval
-                                </h2>
+                                <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+                                    <h2 style={{
+                                        color: "#2073a9",
+                                        fontSize: "19px",
+                                        fontWeight: 500,
+                                        margin: 0
+                                    }}>
+                                        Item Requisition Note Approval (Item-Wise IRN Numbers)
+                                    </h2>
+                                    <span style={{
+                                        background: "#eff6ff",
+                                        color: "#1d4ed8",
+                                        border: "1px solid #bfdbfe",
+                                        borderRadius: "12px",
+                                        padding: "2px 10px",
+                                        fontSize: "11px",
+                                        fontWeight: 700
+                                    }}>
+                                        {pendingIrnSummaries.length} Item-Wise IRNs
+                                    </span>
+                                </div>
                                 <button
                                     type="button"
                                     onClick={() => setShowPendingIrnPanel(false)}
@@ -1917,11 +2146,11 @@ export default function ItemIssue({ initialMode = "form" }) {
 
                                 <div style={{ display: "flex", flexDirection: "column" }}>
                                     <label style={{ fontSize: "11.5px", fontWeight: 700, color: "#333333", marginBottom: "3px" }}>
-                                        Group/Model
+                                        Group/Model / Item-Wise IRN
                                     </label>
                                     <input
                                         type="text"
-                                        placeholder="Type and select Group/Model"
+                                        placeholder="Filter by Item, Group or IRN No..."
                                         value={pendingSearchQuery}
                                         onChange={(e) => setPendingSearchQuery(e.target.value)}
                                         list="irn-group-model-list"
@@ -1938,12 +2167,9 @@ export default function ItemIssue({ initialMode = "form" }) {
                                         }}
                                     />
                                     <datalist id="irn-group-model-list">
-                                        <option value="Packaging" />
-                                        <option value="Office Stationery" />
-                                        <option value="Leather" />
-                                        <option value="Lining" />
-                                        <option value="Reinforcement" />
-                                        <option value="Hardware" />
+                                        {catalogItems.map(it => (
+                                            <option key={it.IrnNo} value={it.IrnNo}>{it.ItemName} ({it.GroupName})</option>
+                                        ))}
                                     </datalist>
                                 </div>
                             </div>
@@ -2099,24 +2325,30 @@ export default function ItemIssue({ initialMode = "form" }) {
                                 </div>
                             </div>
 
-                            {/* Blue Header Table: Action | Req. No | Qty | No. of Rows | Approval Status */}
+                            {/* Blue Header Table: Action | Item-Wise IRN No (Req. No) | Item Name & Code | Rack Bin QR | Qty | Stock Qty | Approval Status */}
                             <div style={{ width: "100%", overflowX: "auto" }}>
                                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "11.5px" }}>
                                     <thead>
                                         <tr style={{ backgroundColor: "#2073a9", color: "#ffffff" }}>
-                                            <th style={{ width: "130px", padding: "6px 8px", border: "1px solid #1b608f", textAlign: "center", fontWeight: 600 }}>
+                                            <th style={{ width: "120px", padding: "6px 8px", border: "1px solid #1b608f", textAlign: "center", fontWeight: 600 }}>
                                                 Action
                                             </th>
                                             <th style={{ padding: "6px 10px", border: "1px solid #1b608f", textAlign: "center", fontWeight: 600 }}>
-                                                Req. No
+                                                Item-Wise IRN No (Req. No)
+                                            </th>
+                                            <th style={{ padding: "6px 10px", border: "1px solid #1b608f", textAlign: "left", fontWeight: 600 }}>
+                                                Item Name &amp; Code
+                                            </th>
+                                            <th style={{ width: "125px", padding: "6px 10px", border: "1px solid #1b608f", textAlign: "center", fontWeight: 600 }}>
+                                                Rack Bin QR
+                                            </th>
+                                            <th style={{ width: "175px", padding: "6px 10px", border: "1px solid #1b608f", textAlign: "center", fontWeight: 600 }}>
+                                                IRN Qty (Pending)
+                                            </th>
+                                            <th style={{ width: "135px", padding: "6px 10px", border: "1px solid #1b608f", textAlign: "center", fontWeight: 600 }}>
+                                                Item Stock Qty
                                             </th>
                                             <th style={{ width: "160px", padding: "6px 10px", border: "1px solid #1b608f", textAlign: "center", fontWeight: 600 }}>
-                                                Qty
-                                            </th>
-                                            <th style={{ width: "180px", padding: "6px 10px", border: "1px solid #1b608f", textAlign: "center", fontWeight: 600 }}>
-                                                No. of Rows
-                                            </th>
-                                            <th style={{ width: "220px", padding: "6px 10px", border: "1px solid #1b608f", textAlign: "center", fontWeight: 600 }}>
                                                 Approval Status
                                             </th>
                                         </tr>
@@ -2149,26 +2381,46 @@ export default function ItemIssue({ initialMode = "form" }) {
                                                                     type="button"
                                                                     className="tpcs-pirn-load-btn"
                                                                     onClick={() => handleSelectPendingIrn(irn, true)}
-                                                                    title={`Load pending items of ${irn.irnNo} into Item Issue`}
+                                                                    title={`Load ${irn.itemName} (${irn.irnNo}) into Item Issue`}
                                                                 >
                                                                     <span>Issue IRN</span> <FaArrowRight style={{ fontSize: "9px" }} />
                                                                 </button>
                                                             </div>
                                                         </td>
-                                                        <td style={{ padding: "5px 10px", border: "1px solid #dddddd", textAlign: "center", fontWeight: 700, color: "#2073a9" }}>
+                                                        <td style={{ padding: "5px 10px", border: "1px solid #dddddd", textAlign: "center", fontWeight: 800, color: "#2073a9", fontFamily: "monospace" }}>
                                                             {irn.irnNo}
-                                                            <span style={{ marginLeft: "8px", fontSize: "10.5px", color: "#64748b", fontWeight: 500 }}>
-                                                                ({irn.department} • {irn.date})
-                                                            </span>
+                                                            <div style={{ fontSize: "10px", color: "#64748b", fontWeight: 500, fontFamily: "inherit" }}>
+                                                                {irn.department} • {irn.date}
+                                                            </div>
+                                                        </td>
+                                                        <td style={{ padding: "5px 10px", border: "1px solid #dddddd", textAlign: "left" }}>
+                                                            <div style={{ fontWeight: 700, color: "#0f172a" }}>
+                                                                {irn.itemName}
+                                                            </div>
+                                                            <div style={{ fontSize: "10px", color: "#475569", fontFamily: "monospace", fontWeight: 600 }}>
+                                                                {irn.itemCode} | {irn.groupName} ({irn.variant})
+                                                            </div>
+                                                        </td>
+                                                        <td style={{ padding: "5px 10px", border: "1px solid #dddddd", textAlign: "center", fontFamily: "monospace", fontWeight: 700, color: "#047857" }}>
+                                                            {irn.location}
                                                         </td>
                                                         <td style={{ padding: "5px 10px", border: "1px solid #dddddd", textAlign: "center", fontWeight: 700 }}>
-                                                            {irn.totalReqQty}
+                                                            {irn.totalReqQty} {irn.uom}
                                                             <span style={{ marginLeft: "6px", color: "#b45309", fontSize: "10.5px" }}>
-                                                                (Pending: {irn.totalPendingQty})
+                                                                (Bal: {irn.totalPendingQty} {irn.uom})
                                                             </span>
                                                         </td>
-                                                        <td style={{ padding: "5px 10px", border: "1px solid #dddddd", textAlign: "center", fontWeight: 600 }}>
-                                                            {irn.totalItems}
+                                                        <td style={{ padding: "5px 10px", border: "1px solid #dddddd", textAlign: "center", fontWeight: 800 }}>
+                                                            <span style={{
+                                                                display: "inline-block",
+                                                                padding: "2px 8px",
+                                                                borderRadius: "10px",
+                                                                fontSize: "11px",
+                                                                background: irn.stockQty > 0 ? "#dcfce7" : "#fee2e2",
+                                                                color: irn.stockQty > 0 ? "#166534" : "#991b1b"
+                                                            }}>
+                                                                {irn.stockQty} {irn.uom}
+                                                            </span>
                                                         </td>
                                                         <td
                                                             style={{
@@ -2785,7 +3037,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                                                 />
                                             </th>
                                             <th style={{ width: "105px" }}>Issue Type</th>
-                                            <th style={{ width: "160px" }}>Pending IRN / IO No.</th>
+                                            <th style={{ width: "175px" }}>Item-Wise IRN No.</th>
                                             <th style={{ width: "110px" }}>Group</th>
                                             <th style={{ width: "190px" }}>Item <span className="tpcs-ii-req">*</span></th>
                                             <th style={{ width: "150px" }}>Description</th>
@@ -2843,17 +3095,25 @@ export default function ItemIssue({ initialMode = "form" }) {
                                                             <input
                                                                 type="text"
                                                                 className="tpcs-ii-tbl-input"
-                                                                placeholder="Pending IRN No"
+                                                                placeholder="Select Item-Wise IRN No"
                                                                 value={row.ioNo}
                                                                 onChange={(e) => handleLineChange(row.id, "ioNo", e.target.value)}
+                                                                list={`item-irns-datalist-${row.id}`}
                                                                 style={{ fontFamily: "monospace", fontWeight: 700, color: "#1976d2", fontSize: "11px" }}
                                                             />
+                                                            <datalist id={`item-irns-datalist-${row.id}`}>
+                                                                {catalogItems.map(it => (
+                                                                    <option key={it.IrnNo} value={it.IrnNo}>
+                                                                        {it.ItemName} ({it.ItemCode}) | Pending: {it.BalanceQty} {it.UOM} | Stock: {it.StockQty} {it.UOM}
+                                                                    </option>
+                                                                ))}
+                                                            </datalist>
                                                             <button
                                                                 type="button"
                                                                 className="tpcs-ii-addon-btn"
                                                                 style={{ height: "27px", padding: "0 6px" }}
                                                                 onClick={() => setActiveModal("requisitionItems")}
-                                                                title="Select from Pending IRN Items"
+                                                                title="Select from Item-Wise Pending IRN Items"
                                                             >
                                                                 <FaListUl style={{ fontSize: "10px" }} />
                                                             </button>
@@ -2881,7 +3141,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                                                         <datalist id={`items-datalist-${row.id}`}>
                                                             {catalogItems.map(it => (
                                                                 <option key={it.ItemCode} value={it.ItemName}>
-                                                                    IRN: {it.IrnNo} | Pending: {it.BalanceQty} {it.UOM} | Stock: {it.StockQty} {it.UOM}
+                                                                    Item-Wise IRN: {it.IrnNo} | Pending: {it.BalanceQty} {it.UOM} | Stock: {it.StockQty} {it.UOM}
                                                                 </option>
                                                             ))}
                                                         </datalist>
@@ -3424,7 +3684,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                 <div className="tpcs-ii-modal-backdrop" onClick={() => setActiveModal(null)}>
                     <div className="tpcs-req-modal-content" onClick={e => e.stopPropagation()}>
                         <div className="tpcs-req-modal-header">
-                            <h3 className="tpcs-req-modal-title">Requisition Items (Pending IRN & Stock Available)</h3>
+                            <h3 className="tpcs-req-modal-title">Requisition Items (Item-Wise Pending IRN & Stock Available)</h3>
                             <button className="tpcs-req-modal-close" onClick={() => setActiveModal(null)}>×</button>
                         </div>
 
@@ -3432,17 +3692,17 @@ export default function ItemIssue({ initialMode = "form" }) {
                             {/* Blue instruction line + Pending IRN Selector Pills */}
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px", marginBottom: "10px" }}>
                                 <div className="tpcs-req-instruction" style={{ margin: 0 }}>
-                                    Tick check box to select the items you want to issue
+                                    Tick check box to select the item-wise IRN items you want to issue
                                 </div>
 
                                 <div style={{ display: "flex", gap: "5px", alignItems: "center", flexWrap: "wrap" }}>
-                                    <span style={{ fontSize: "11.5px", fontWeight: 700, color: "#334155" }}>Pending IRN:</span>
+                                    <span style={{ fontSize: "11.5px", fontWeight: 700, color: "#334155" }}>Item-Wise Pending IRN:</span>
                                     <button
                                         type="button"
                                         className={`tpcs-pirn-pill-btn ${modalIrnFilter === "ALL" ? "active" : ""}`}
                                         onClick={() => setModalIrnFilter("ALL")}
                                     >
-                                        All IRNs
+                                        All 9 Item IRNs
                                     </button>
                                     {pendingIrnSummaries.map(irn => (
                                         <button
@@ -3450,8 +3710,9 @@ export default function ItemIssue({ initialMode = "form" }) {
                                             type="button"
                                             className={`tpcs-pirn-pill-btn ${modalIrnFilter === irn.irnNo ? "active" : ""}`}
                                             onClick={() => setModalIrnFilter(irn.irnNo)}
+                                            title={`${irn.itemName} (${irn.itemCode}) • Bin: ${irn.location}`}
                                         >
-                                            {irn.irnNo} (Bal: {irn.totalPendingQty})
+                                            {irn.irnNo} • {irn.itemName} (Bal: {irn.totalPendingQty})
                                         </button>
                                     ))}
                                 </div>
@@ -3469,20 +3730,29 @@ export default function ItemIssue({ initialMode = "form" }) {
                                 </button>
                             </div>
 
-                            {/* Table matching Screenshot 2 */}
+                            {/* Table matching Screenshot 2 + Item-Wise IRN No column */}
                             <div style={{ overflowX: "auto" }}>
                                 <table className="tpcs-req-table">
                                     <thead>
                                         {/* Row 1: Filters above each column */}
                                         <tr className="tpcs-req-filter-row">
                                             <td style={{ textAlign: "center", width: "40px" }}></td>
-                                            <td style={{ width: "170px" }}>
+                                            <td style={{ width: "160px" }}>
+                                                <input
+                                                    type="text"
+                                                    className="tpcs-req-filter-input"
+                                                    value={reqFilterIrnNo}
+                                                    onChange={e => setReqFilterIrnNo(e.target.value)}
+                                                    placeholder="Filter Item IRN No..."
+                                                />
+                                            </td>
+                                            <td style={{ width: "180px" }}>
                                                 <input
                                                     type="text"
                                                     className="tpcs-req-filter-input"
                                                     value={reqFilterItem}
                                                     onChange={e => setReqFilterItem(e.target.value)}
-                                                    placeholder="Filter Item / IRN..."
+                                                    placeholder="Filter Item Name / Code..."
                                                 />
                                             </td>
                                             <td style={{ width: "110px" }}>
@@ -3569,7 +3839,8 @@ export default function ItemIssue({ initialMode = "form" }) {
                                                     title="Select All"
                                                 />
                                             </th>
-                                            <th>Item ( & Pending IRN )</th>
+                                            <th>Item-Wise IRN No</th>
+                                            <th>Item Name & Code</th>
                                             <th>Variant</th>
                                             <th>Size Range</th>
                                             <th>Size</th>
@@ -3599,9 +3870,29 @@ export default function ItemIssue({ initialMode = "form" }) {
                                                         />
                                                     </td>
                                                     <td>
-                                                        <div style={{ fontWeight: 700 }}>{m.ItemName}</div>
-                                                        <div style={{ fontSize: "10px", color: "#1976d2", fontFamily: "monospace", fontWeight: 700 }}>
+                                                        <span
+                                                            style={{
+                                                                display: "inline-block",
+                                                                background: "#e0f2fe",
+                                                                color: "#0369a1",
+                                                                border: "1px solid #7dd3fc",
+                                                                borderRadius: "4px",
+                                                                padding: "2px 6px",
+                                                                fontSize: "11px",
+                                                                fontFamily: "monospace",
+                                                                fontWeight: 800
+                                                            }}
+                                                        >
                                                             {m.IrnNo}
+                                                        </span>
+                                                        <div style={{ fontSize: "9.5px", color: "#64748b", marginTop: "2px", fontWeight: 600 }}>
+                                                            {m.IrnDept} • {m.Location}
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div style={{ fontWeight: 700, color: "#0f172a" }}>{m.ItemName}</div>
+                                                        <div style={{ fontSize: "10px", color: "#475569", fontFamily: "monospace", fontWeight: 600 }}>
+                                                            {m.ItemCode} • {m.GroupName}
                                                         </div>
                                                     </td>
                                                     <td>{m.Variant}</td>
@@ -3641,7 +3932,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                                         })}
                                         {filteredReqMaterials.length === 0 && (
                                             <tr>
-                                                <td colSpan={10} style={{ textAlign: "center", padding: "20px", color: "#64748b" }}>
+                                                <td colSpan={11} style={{ textAlign: "center", padding: "20px", color: "#64748b" }}>
                                                     No requisition items match the filters. Click Reset to clear filters.
                                                 </td>
                                             </tr>

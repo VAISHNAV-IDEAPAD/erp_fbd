@@ -24,92 +24,208 @@ const DEFAULT_IRN_APPROVAL_RECORDS = [
     {
         RequisitionID: 101,
         ReqNo: "IRN/APP/9B/2627/2401",
+        ItemCode: "CRD-1001",
+        ItemName: "CARD BOARD",
+        Variant: "NATURAL",
+        UOM: "PCS",
         ReqDate: "27-10-2026",
         Department: "Packaging",
         GroupModel: "Packaging",
         Warehouse: "PLOT NO. 9B",
         Associate: "Apex Leather Works",
         ReqBy: "Ramesh Kumar",
-        TotalQty: 110,
-        PendingQty: 110,
-        RowCount: 3,
+        TotalQty: 100,
+        PendingQty: 100,
+        StockQty: 0,
+        Location: "BIN-D-01-02",
+        RowCount: 1,
         Status: "Pending",
         items: [
-            { ItemCode: "CRD-1001", ItemName: "CARD BOARD", Variant: "N/A", Size: "100", UOM: "PCS", ReqQty: 100, IssuedQty: 0, PendingQty: 100, StockQty: 0, Location: "BIN-D-01-02" },
-            { ItemCode: "SPR-2001", ItemName: "SPRING FILE", Variant: "BLUE", Size: "Standard", UOM: "PCS", ReqQty: 6, IssuedQty: 0, PendingQty: 6, StockQty: 50, Location: "BIN-D-01-01" },
-            { ItemCode: "IDX-3001", ItemName: "INDEX FILE BIG", Variant: "BLACK", Size: "Big", UOM: "PCS", ReqQty: 4, IssuedQty: 0, PendingQty: 4, StockQty: 40, Location: "BIN-D-01-01" }
+            { ItemCode: "CRD-1001", ItemName: "CARD BOARD", Variant: "NATURAL", Size: "100", UOM: "PCS", ReqQty: 100, IssuedQty: 0, PendingQty: 100, StockQty: 0, Location: "BIN-D-01-02" }
         ]
     },
     {
         RequisitionID: 102,
         ReqNo: "IRN/APP/9B/2627/2402",
-        ReqDate: "26-10-2026",
-        Department: "Assembly",
-        GroupModel: "Hardware",
-        Warehouse: "ACCESSORIES GODOWN 18",
-        Associate: "Balaji Trims & Fasteners",
-        ReqBy: "Pooja Verma",
-        TotalQty: 1450,
-        PendingQty: 1050,
-        RowCount: 2,
+        ItemCode: "SPR-2001",
+        ItemName: "SPRING FILE",
+        Variant: "BLUE",
+        UOM: "PCS",
+        ReqDate: "27-10-2026",
+        Department: "Packaging",
+        GroupModel: "Office Stationery",
+        Warehouse: "PLOT NO. 9B",
+        Associate: "Apex Leather Works",
+        ReqBy: "Ramesh Kumar",
+        TotalQty: 6,
+        PendingQty: 6,
+        StockQty: 50,
+        Location: "BIN-D-01-01",
+        RowCount: 1,
         Status: "Pending",
         items: [
-            { ItemCode: "HDW-2236", ItemName: "JAM RIVET SINGLE HEAD 7MM", Variant: "ANTIQUE BRASS (AB-701)", Size: "7mm", UOM: "SET", ReqQty: 1200, IssuedQty: 400, PendingQty: 800, StockQty: 5000, Location: "BIN-C-01-01" },
-            { ItemCode: "TRM-3012", ItemName: "NYLON ZIPPER #5 OPEN END 65CM", Variant: "NAVY (NVY-05)", Size: "65cm", UOM: "PCS", ReqQty: 250, IssuedQty: 0, PendingQty: 250, StockQty: 180, Location: "BIN-C-02-04" }
+            { ItemCode: "SPR-2001", ItemName: "SPRING FILE", Variant: "BLUE", Size: "Standard", UOM: "PCS", ReqQty: 6, IssuedQty: 0, PendingQty: 6, StockQty: 50, Location: "BIN-D-01-01" }
         ]
     },
     {
         RequisitionID: 103,
-        ReqNo: "REQ/AAPL9B/2627/042",
-        ReqDate: "24-10-2026",
-        Department: "Cutting Dept",
-        GroupModel: "Lining",
-        Warehouse: "RAW MATERIAL STORE 9B",
-        Associate: "K-Tex Textiles",
-        ReqBy: "Nikhil Singh",
-        TotalQty: 750,
-        PendingQty: 500,
-        RowCount: 2,
+        ReqNo: "IRN/APP/9B/2627/2403",
+        ItemCode: "IDX-3001",
+        ItemName: "INDEX FILE BIG",
+        Variant: "BLACK",
+        UOM: "PCS",
+        ReqDate: "27-10-2026",
+        Department: "Packaging",
+        GroupModel: "Office Stationery",
+        Warehouse: "PLOT NO. 9B",
+        Associate: "Apex Leather Works",
+        ReqBy: "Ramesh Kumar",
+        TotalQty: 4,
+        PendingQty: 4,
+        StockQty: 40,
+        Location: "BIN-D-01-03",
+        RowCount: 1,
         Status: "Pending",
         items: [
-            { ItemCode: "RNF-1085", ItemName: "HIGH DENSITY TOPLINER 0.4MM", Variant: "BLACK (BLK-02)", Size: "0.4mm", UOM: "MTR", ReqQty: 450, IssuedQty: 150, PendingQty: 300, StockQty: 1200, Location: "BIN-B-01-02" },
-            { ItemCode: "NONWO5064", ItemName: "TALIN 0.3MM WHITE", Variant: "WHITE (WHT-10)", Size: "0.3mm", UOM: "MTR", ReqQty: 300, IssuedQty: 100, PendingQty: 200, StockQty: 640, Location: "BIN-B-01-01" }
+            { ItemCode: "IDX-3001", ItemName: "INDEX FILE BIG", Variant: "BLACK", Size: "Big", UOM: "PCS", ReqQty: 4, IssuedQty: 0, PendingQty: 4, StockQty: 40, Location: "BIN-D-01-03" }
         ]
     },
     {
         RequisitionID: 104,
-        ReqNo: "REQ/AAPL9B/2627/041",
-        ReqDate: "22-10-2026",
-        Department: "Sampling Dept",
-        GroupModel: "Trims & Zippers",
-        Warehouse: "STORE 30",
-        Associate: "Classic Threads & Zips",
-        ReqBy: "Sunil Sharma",
-        TotalQty: 150,
-        PendingQty: 150,
-        RowCount: 2,
-        Status: "Pending",
-        items: [
-            { ItemCode: "TRM-3012", ItemName: "NYLON ZIPPER #5 OPEN END 65CM", Variant: "NAVY", Size: "65cm", UOM: "PCS", ReqQty: 100, IssuedQty: 0, PendingQty: 100, StockQty: 180, Location: "BIN-C-02-04" },
-            { ItemCode: "THD-1020", ItemName: "POLY-CORE SEWING THREAD 40/2", Variant: "NAVY", Size: "40/2", UOM: "SPOOL", ReqQty: 50, IssuedQty: 0, PendingQty: 50, StockQty: 320, Location: "BIN-C-03-01" }
-        ]
-    },
-    {
-        RequisitionID: 105,
-        ReqNo: "REQ/AAPL9B/2627/045",
+        ReqNo: "IRN/APP/9B/2627/2404",
+        ItemCode: "LTH-1093",
+        ItemName: "COW CULATTAS SINGLE LEATHER",
+        Variant: "BLACK (BLK-01)",
+        UOM: "SQFT",
         ReqDate: "25-10-2026",
         Department: "Cutting Dept",
         GroupModel: "Leather",
         Warehouse: "RAW MATERIAL STORE 9B",
         Associate: "Apex Leather Works",
         ReqBy: "Ramesh Kumar",
-        TotalQty: 320,
-        PendingQty: 250,
-        RowCount: 2,
-        Status: "Approved",
+        TotalQty: 200,
+        PendingQty: 150,
+        StockQty: 450,
+        Location: "BIN-A-01-01",
+        RowCount: 1,
+        Status: "Pending",
         items: [
-            { ItemCode: "LTH-1093", ItemName: "COW CULATTAS SINGLE LEATHER", Variant: "BLACK (BLK-01)", Size: "1.2-1.4mm", UOM: "SQFT", ReqQty: 200, IssuedQty: 50, PendingQty: 150, StockQty: 450, Location: "BIN-A-01-01" },
+            { ItemCode: "LTH-1093", ItemName: "COW CULATTAS SINGLE LEATHER", Variant: "BLACK (BLK-01)", Size: "1.2-1.4mm", UOM: "SQFT", ReqQty: 200, IssuedQty: 50, PendingQty: 150, StockQty: 450, Location: "BIN-A-01-01" }
+        ]
+    },
+    {
+        RequisitionID: 105,
+        ReqNo: "IRN/APP/9B/2627/2405",
+        ItemCode: "LTH-1112",
+        ItemName: "COW ECO VEG SIDE CRUST LEATHER",
+        Variant: "TAN (TAN-04)",
+        UOM: "SQFT",
+        ReqDate: "25-10-2026",
+        Department: "Cutting Dept",
+        GroupModel: "Leather",
+        Warehouse: "RAW MATERIAL STORE 9B",
+        Associate: "Apex Leather Works",
+        ReqBy: "Ramesh Kumar",
+        TotalQty: 120,
+        PendingQty: 100,
+        StockQty: 280,
+        Location: "BIN-A-02-01",
+        RowCount: 1,
+        Status: "Pending",
+        items: [
             { ItemCode: "LTH-1112", ItemName: "COW ECO VEG SIDE CRUST LEATHER", Variant: "TAN (TAN-04)", Size: "1.4-1.6mm", UOM: "SQFT", ReqQty: 120, IssuedQty: 20, PendingQty: 100, StockQty: 280, Location: "BIN-A-02-01" }
+        ]
+    },
+    {
+        RequisitionID: 106,
+        ReqNo: "IRN/APP/9B/2627/2406",
+        ItemCode: "RNF-1085",
+        ItemName: "HIGH DENSITY TOPLINER 0.4MM",
+        Variant: "BLACK (BLK-02)",
+        UOM: "MTR",
+        ReqDate: "24-10-2026",
+        Department: "Cutting Dept",
+        GroupModel: "Lining",
+        Warehouse: "RAW MATERIAL STORE 9B",
+        Associate: "K-Tex Textiles",
+        ReqBy: "Nikhil Singh",
+        TotalQty: 450,
+        PendingQty: 300,
+        StockQty: 1200,
+        Location: "BIN-B-01-02",
+        RowCount: 1,
+        Status: "Pending",
+        items: [
+            { ItemCode: "RNF-1085", ItemName: "HIGH DENSITY TOPLINER 0.4MM", Variant: "BLACK (BLK-02)", Size: "0.4mm", UOM: "MTR", ReqQty: 450, IssuedQty: 150, PendingQty: 300, StockQty: 1200, Location: "BIN-B-01-02" }
+        ]
+    },
+    {
+        RequisitionID: 107,
+        ReqNo: "IRN/APP/9B/2627/2407",
+        ItemCode: "NONWO5064",
+        ItemName: "TALIN 0.3MM WHITE",
+        Variant: "WHITE (WHT-10)",
+        UOM: "MTR",
+        ReqDate: "24-10-2026",
+        Department: "Cutting Dept",
+        GroupModel: "Reinforcement",
+        Warehouse: "RAW MATERIAL STORE 9B",
+        Associate: "K-Tex Textiles",
+        ReqBy: "Nikhil Singh",
+        TotalQty: 300,
+        PendingQty: 200,
+        StockQty: 640,
+        Location: "BIN-B-01-01",
+        RowCount: 1,
+        Status: "Pending",
+        items: [
+            { ItemCode: "NONWO5064", ItemName: "TALIN 0.3MM WHITE", Variant: "WHITE (WHT-10)", Size: "0.3mm", UOM: "MTR", ReqQty: 300, IssuedQty: 100, PendingQty: 200, StockQty: 640, Location: "BIN-B-01-01" }
+        ]
+    },
+    {
+        RequisitionID: 108,
+        ReqNo: "IRN/APP/9B/2627/2408",
+        ItemCode: "HDW-2236",
+        ItemName: "JAM RIVET SINGLE HEAD 7MM",
+        Variant: "ANTIQUE BRASS (AB-701)",
+        UOM: "SET",
+        ReqDate: "26-10-2026",
+        Department: "Assembly",
+        GroupModel: "Hardware",
+        Warehouse: "ACCESSORIES GODOWN 18",
+        Associate: "Balaji Trims & Fasteners",
+        ReqBy: "Pooja Verma",
+        TotalQty: 1200,
+        PendingQty: 800,
+        StockQty: 5000,
+        Location: "BIN-C-01-01",
+        RowCount: 1,
+        Status: "Pending",
+        items: [
+            { ItemCode: "HDW-2236", ItemName: "JAM RIVET SINGLE HEAD 7MM", Variant: "ANTIQUE BRASS (AB-701)", Size: "7mm", UOM: "SET", ReqQty: 1200, IssuedQty: 400, PendingQty: 800, StockQty: 5000, Location: "BIN-C-01-01" }
+        ]
+    },
+    {
+        RequisitionID: 109,
+        ReqNo: "IRN/APP/9B/2627/2409",
+        ItemCode: "TRM-3012",
+        ItemName: "NYLON ZIPPER #5 OPEN END 65CM",
+        Variant: "NAVY (NVY-05)",
+        UOM: "PCS",
+        ReqDate: "26-10-2026",
+        Department: "Stitching",
+        GroupModel: "Trims & Zippers",
+        Warehouse: "ACCESSORIES GODOWN 18",
+        Associate: "Balaji Trims & Fasteners",
+        ReqBy: "Sunil Sharma",
+        TotalQty: 250,
+        PendingQty: 250,
+        StockQty: 180,
+        Location: "BIN-C-02-04",
+        RowCount: 1,
+        Status: "Pending",
+        items: [
+            { ItemCode: "TRM-3012", ItemName: "NYLON ZIPPER #5 OPEN END 65CM", Variant: "NAVY (NVY-05)", Size: "65cm", UOM: "PCS", ReqQty: 250, IssuedQty: 0, PendingQty: 250, StockQty: 180, Location: "BIN-C-02-04" }
         ]
     }
 ];
@@ -536,7 +652,8 @@ export default function ItemRequisitionApproval() {
                                     <span>Action</span>
                                 </div>
                             </th>
-                            <th className="center" style={{ backgroundColor: "#2073a9" }}>Req. No</th>
+                            <th className="center" style={{ backgroundColor: "#2073a9" }}>Req. No (Item-Wise IRN)</th>
+                            <th className="center" style={{ backgroundColor: "#2073a9" }}>Item Name &amp; Code</th>
                             <th className="center" style={{ width: "130px", backgroundColor: "#2073a9" }}>Qty</th>
                             <th className="center" style={{ width: "180px", backgroundColor: "#2073a9" }}>No. of Rows</th>
                             <th className="center" style={{ width: "240px", backgroundColor: "#2073a9" }}>Approval Status</th>
@@ -545,14 +662,14 @@ export default function ItemRequisitionApproval() {
                     <tbody>
                         {loading ? (
                             <tr>
-                                <td colSpan="5" className="text-center py-5">
+                                <td colSpan="6" className="text-center py-5">
                                     <Spinner animation="border" size="sm" className="me-2 text-primary" />
                                     Loading Item Requisition Notes...
                                 </td>
                             </tr>
                         ) : rows.length === 0 ? (
                             <tr>
-                                <td colSpan="5" className="text-center py-5 text-muted">
+                                <td colSpan="6" className="text-center py-5 text-muted">
                                     No Item Requisition Notes found for the selected stage.
                                 </td>
                             </tr>
@@ -610,10 +727,16 @@ export default function ItemRequisitionApproval() {
                                                     </button>
                                                 </div>
                                             </td>
-                                            <td className="center" style={{ fontWeight: 700, color: "#2073a9" }}>
+                                            <td className="center" style={{ fontWeight: 700, color: "#2073a9", fontFamily: "monospace" }}>
                                                 {r.ReqNo}
-                                                <span style={{ marginLeft: "8px", fontSize: "10.5px", color: "#64748b", fontWeight: 500 }}>
+                                                <span style={{ marginLeft: "8px", fontSize: "10.5px", color: "#64748b", fontWeight: 500, fontFamily: "inherit" }}>
                                                     ({r.Department} • {r.ReqDate})
+                                                </span>
+                                            </td>
+                                            <td className="center" style={{ fontWeight: 700, color: "#0f172a" }}>
+                                                {r.ItemName || (r.items && r.items[0] ? r.items[0].ItemName : "-")}
+                                                <span style={{ marginLeft: "6px", fontSize: "10.5px", color: "#047857", fontFamily: "monospace" }}>
+                                                    [{r.ItemCode || (r.items && r.items[0] ? r.items[0].ItemCode : "")}]
                                                 </span>
                                             </td>
                                             <td className="center" style={{ fontWeight: 700 }}>
@@ -633,7 +756,7 @@ export default function ItemRequisitionApproval() {
                                         {/* Expanded Sub-Row: Displays What is Pending & Stock of Each Item in this IRN */}
                                         {isExpanded && r.items && r.items.length > 0 && (
                                             <tr>
-                                                <td colSpan="5" style={{ backgroundColor: "#f8fafc", padding: "10px 16px" }}>
+                                                <td colSpan="6" style={{ backgroundColor: "#f8fafc", padding: "10px 16px" }}>
                                                     <div style={{
                                                         display: "flex",
                                                         justifyContent: "space-between",

@@ -389,6 +389,28 @@ const INITIAL_STAGE_SERIES_CONFIG = {
     "Maintenance": { prefix: "ISMT/AAPL9B/2627/", nextSerial: 1, defaultDept: "Maintenance" }
 };
 
+const INITIAL_EMPTY_LINE = {
+    id: 1,
+    selected: false,
+    issueType: "",
+    ioNo: "",
+    group: "",
+    item: "",
+    itemCode: "",
+    description: "",
+    colour: "",
+    typeSize: "",
+    uom: "",
+    location: "",
+    reqQty: "",
+    pendingQty: "",
+    stockQty: "",
+    issueQty: "",
+    rate: "",
+    amount: "",
+    remarks: ""
+};
+
 export default function ItemIssue({ initialMode = "form" }) {
     const location = useLocation();
     const navigate = useNavigate();
@@ -401,8 +423,8 @@ export default function ItemIssue({ initialMode = "form" }) {
     const [rackQrBins, setRackQrBins] = useState(RACK_QR_BIN_CATALOG);
     const [activeRackBin, setActiveRackBin] = useState(RACK_QR_BIN_CATALOG[0]);
 
-    // Pending IRN & Stock Display Panel State
-    const [showPendingIrnPanel, setShowPendingIrnPanel] = useState(true);
+    // Pending IRN & Stock Display Panel State (starts closed for a clean blank form)
+    const [showPendingIrnPanel, setShowPendingIrnPanel] = useState(false);
     const [selectedIrnFilter, setSelectedIrnFilter] = useState("ALL");
     const [pendingSearchQuery, setPendingSearchQuery] = useState("");
     const [stockStatusFilter, setStockStatusFilter] = useState("ALL"); // ALL | IN_STOCK | LOW_STOCK | OUT_STOCK
@@ -410,7 +432,7 @@ export default function ItemIssue({ initialMode = "form" }) {
     // Stage-wise Prefix & Serial Counter Map (Every stage starts from No. 1)
     const [stageSeriesMap, setStageSeriesMap] = useState(INITIAL_STAGE_SERIES_CONFIG);
 
-    // Form Header State
+    // Form Header State: ONLY IssueNo (prefix + serial from 1) is populated initially; all other fields start blank
     const [issueTo, setIssueTo] = useState("Production");
     const [issuePrefix, setIssuePrefix] = useState("ISSP/AAPL9B/2627/");
     const [issueSerial, setIssueSerial] = useState("1");
@@ -422,7 +444,6 @@ export default function ItemIssue({ initialMode = "form" }) {
         if (cfg) {
             setIssuePrefix(cfg.prefix);
             setIssueSerial(String(cfg.nextSerial));
-            if (cfg.defaultDept) setDepartment(cfg.defaultDept);
         }
     };
 
@@ -434,32 +455,25 @@ export default function ItemIssue({ initialMode = "form" }) {
             const [matchedStage, cfg] = matchedEntry;
             setIssueTo(matchedStage);
             setIssueSerial(String(cfg.nextSerial));
-            if (cfg.defaultDept) setDepartment(cfg.defaultDept);
         } else {
             setIssueSerial("1");
         }
     };
-    const [issueDate, setIssueDate] = useState(() => {
-        const d = new Date();
-        const dd = String(d.getDate()).padStart(2, "0");
-        const mm = String(d.getMonth() + 1).padStart(2, "0");
-        const yyyy = d.getFullYear();
-        return `${dd}-${mm}-${yyyy}`;
-    });
 
-    const [associate, setAssociate] = useState("Apex Leather Works");
-    const [receivedBy, setReceivedBy] = useState("Ramesh Kumar");
-    const [department, setDepartment] = useState("Packaging");
-    const [stores, setStores] = useState("PLOT NO. 9B");
-    const [issuedBy, setIssuedBy] = useState("Admin");
-    const [requisitionNo, setRequisitionNo] = useState("IRN/APP/9B/2627/2401");
-    const [jobcardNo, setJobcardNo] = useState("JC-4512");
+    const [issueDate, setIssueDate] = useState("");
+    const [associate, setAssociate] = useState("");
+    const [receivedBy, setReceivedBy] = useState("");
+    const [department, setDepartment] = useState("");
+    const [stores, setStores] = useState("");
+    const [issuedBy, setIssuedBy] = useState("");
+    const [requisitionNo, setRequisitionNo] = useState("");
+    const [jobcardNo, setJobcardNo] = useState("");
     const [cuttingPlanNo, setCuttingPlanNo] = useState("");
 
     // =========================================================================
     // 4x4 QR CODE & LOCATION MODULE STATE (LEFT MIDDLE SIDE)
     // =========================================================================
-    const [show4x4Panel, setShow4x4Panel] = useState(true);
+    const [show4x4Panel, setShow4x4Panel] = useState(false);
     const [activeItem4x4, setActiveItem4x4] = useState(DEFAULT_MATERIAL_CATALOG[0]);
     const [scanInput, setScanInput] = useState("");
     const [scanLaserActive, setScanLaserActive] = useState(false);
@@ -479,79 +493,11 @@ export default function ItemIssue({ initialMode = "form" }) {
     const [reqFilterIssueQty, setReqFilterIssueQty] = useState("");
     const [modalIrnFilter, setModalIrnFilter] = useState("ALL");
 
-    const [tickedItemCodes, setTickedItemCodes] = useState(["CRD-1001", "SPR-2001", "IDX-3001"]);
-    const [rowIssueQtys, setRowIssueQtys] = useState({
-        "CRD-1001": 100,
-        "SPR-2001": 6,
-        "IDX-3001": 4
-    });
+    const [tickedItemCodes, setTickedItemCodes] = useState([]);
+    const [rowIssueQtys, setRowIssueQtys] = useState({});
 
-    // Table Lines State
-    const [lines, setLines] = useState([
-        {
-            id: 1,
-            selected: false,
-            issueType: "Lot Issue",
-            ioNo: "IRN/APP/9B/2627/2401",
-            group: "Packaging",
-            item: "CARD BOARD",
-            itemCode: "CRD-1001",
-            description: "Cardboard material for IRN/APP/9B/2627/2401",
-            colour: "N/A",
-            typeSize: "100",
-            uom: "PCS",
-            location: "BIN-D-01-02",
-            reqQty: 100,
-            pendingQty: 100,
-            stockQty: 0,
-            issueQty: 100,
-            rate: 15.0,
-            amount: 1500.0,
-            remarks: "Pending IRN issue"
-        },
-        {
-            id: 2,
-            selected: false,
-            issueType: "Lot Issue",
-            ioNo: "IRN/APP/9B/2627/2401",
-            group: "Office Stationery",
-            item: "SPRING FILE",
-            itemCode: "SPR-2001",
-            description: "Spring File for IRN/APP/9B/2627/2401",
-            colour: "BLUE",
-            typeSize: "Standard",
-            uom: "PCS",
-            location: "BIN-D-01-01",
-            reqQty: 6,
-            pendingQty: 6,
-            stockQty: 50,
-            issueQty: 6,
-            rate: 25.0,
-            amount: 150.0,
-            remarks: "Pending IRN issue"
-        },
-        {
-            id: 3,
-            selected: false,
-            issueType: "Lot Issue",
-            ioNo: "IRN/APP/9B/2627/2401",
-            group: "Office Stationery",
-            item: "INDEX FILE BIG",
-            itemCode: "IDX-3001",
-            description: "Index File Big for IRN/APP/9B/2627/2401",
-            colour: "BLACK",
-            typeSize: "Big",
-            uom: "PCS",
-            location: "BIN-D-01-01",
-            reqQty: 4,
-            pendingQty: 4,
-            stockQty: 40,
-            issueQty: 4,
-            rate: 45.0,
-            amount: 180.0,
-            remarks: "Pending IRN issue"
-        }
-    ]);
+    // Table Lines State: starts with a single blank row
+    const [lines, setLines] = useState([{ ...INITIAL_EMPTY_LINE }]);
 
     // Footer State
     const [remark, setRemark] = useState("");
@@ -1155,13 +1101,14 @@ export default function ItemIssue({ initialMode = "form" }) {
                     it.ItemCode.toLowerCase() === String(value).toLowerCase()
                 );
                 if (found) {
+                    updated.issueType = updated.issueType || "Lot Issue";
                     updated.item = found.ItemName;
                     updated.itemCode = found.ItemCode;
                     updated.ioNo = found.IrnNo || updated.ioNo || requisitionNo;
                     updated.group = found.GroupName || updated.group;
                     updated.colour = found.Variant || found.Color || updated.colour;
                     updated.typeSize = found.Size || found.SizeRange || updated.typeSize;
-                    updated.uom = found.UOM || updated.uom;
+                    updated.uom = found.UOM || updated.uom || "PCS";
                     updated.location = found.Location || updated.location;
                     updated.reqQty = found.ReqQty || 0;
                     updated.pendingQty = found.BalanceQty || 0;
@@ -1178,7 +1125,7 @@ export default function ItemIssue({ initialMode = "form" }) {
             if (field === "issueQty" || field === "rate") {
                 const qty = field === "issueQty" ? parseFloat(value) || 0 : parseFloat(row.issueQty) || 0;
                 const rate = field === "rate" ? parseFloat(value) || 0 : parseFloat(row.rate) || 0;
-                updated.amount = parseFloat((qty * rate).toFixed(2));
+                updated.amount = (qty && rate) ? parseFloat((qty * rate).toFixed(2)) : "";
             }
 
             return updated;
@@ -1190,24 +1137,9 @@ export default function ItemIssue({ initialMode = "form" }) {
         setLines(prev => [
             ...prev,
             {
+                ...INITIAL_EMPTY_LINE,
                 id: nextId,
-                selected: false,
-                issueType: "Lot Issue",
-                ioNo: requisitionNo || "",
-                group: "",
-                item: "",
-                description: "",
-                colour: "",
-                typeSize: "",
-                uom: "PCS",
-                location: "",
-                reqQty: 0,
-                pendingQty: 0,
-                stockQty: 0,
-                issueQty: "",
-                rate: "",
-                amount: 0,
-                remarks: ""
+                ioNo: requisitionNo || ""
             }
         ]);
     };
@@ -1215,24 +1147,8 @@ export default function ItemIssue({ initialMode = "form" }) {
     const handleDeleteLine = (id) => {
         if (lines.length <= 1) {
             setLines([{
-                id: 1,
-                selected: false,
-                issueType: "Lot Issue",
-                ioNo: requisitionNo || "",
-                group: "",
-                item: "",
-                description: "",
-                colour: "",
-                typeSize: "",
-                uom: "PCS",
-                location: "",
-                reqQty: 0,
-                pendingQty: 0,
-                stockQty: 0,
-                issueQty: "",
-                rate: "",
-                amount: 0,
-                remarks: ""
+                ...INITIAL_EMPTY_LINE,
+                id: 1
             }]);
             return;
         }
@@ -1394,37 +1310,20 @@ export default function ItemIssue({ initialMode = "form" }) {
     };
 
     const handleResetForm = () => {
+        setIssueDate("");
         setAssociate("");
         setReceivedBy("");
         setDepartment("");
-        setStores("RAW MATERIAL STORE 9B");
+        setStores("");
+        setIssuedBy("");
         setRequisitionNo("");
         setJobcardNo("");
         setCuttingPlanNo("");
         setRemark("");
         setInternalMemo("");
-        setLines([
-            {
-                id: 1,
-                selected: false,
-                issueType: "Lot Issue",
-                ioNo: "",
-                group: "",
-                item: "",
-                description: "",
-                colour: "",
-                typeSize: "",
-                uom: "PCS",
-                location: "",
-                reqQty: 0,
-                pendingQty: 0,
-                stockQty: 0,
-                issueQty: "",
-                rate: "",
-                amount: 0,
-                remarks: ""
-            }
-        ]);
+        setTickedItemCodes([]);
+        setRowIssueQtys({});
+        setLines([{ ...INITIAL_EMPTY_LINE }]);
         setShowActionMenu(false);
     };
 
@@ -1779,6 +1678,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                                 <input
                                     type="text"
                                     className="tpcs-ii-input"
+                                    placeholder="Select Date (DD-MM-YYYY)"
                                     value={issueDate}
                                     onChange={(e) => setIssueDate(e.target.value)}
                                 />
@@ -1787,8 +1687,10 @@ export default function ItemIssue({ initialMode = "form" }) {
                                     className="tpcs-ii-addon-btn"
                                     title="Select Date"
                                     onClick={() => {
-                                        const d = prompt("Enter Date (DD-MM-YYYY):", issueDate);
-                                        if (d) setIssueDate(d);
+                                        const now = new Date();
+                                        const defaultDate = issueDate || `${String(now.getDate()).padStart(2, "0")}-${String(now.getMonth() + 1).padStart(2, "0")}-${now.getFullYear()}`;
+                                        const d = prompt("Enter Date (DD-MM-YYYY):", defaultDate);
+                                        if (d !== null) setIssueDate(d);
                                     }}
                                 >
                                     <FaCalendarAlt />
@@ -1916,7 +1818,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                                 Display
                             </button>
                             <span style={{ fontSize: "12px", color: "#475569", fontWeight: 600 }}>
-                                Active IRN: <strong style={{ color: "#1976d2" }}>{requisitionNo || "All Pending IRNs"}</strong>
+                                Active IRN: <strong style={{ color: "#1976d2" }}>{requisitionNo || "-"}</strong>
                             </span>
                         </div>
 
@@ -2903,6 +2805,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                                     </thead>
                                     <tbody>
                                         {lines.map((row) => {
+                                            const hasItem = Boolean(row.item && row.item.trim() !== "");
                                             const stockNum = Number(row.stockQty) || 0;
                                             const pendingNum = Number(row.pendingQty) || 0;
                                             return (
@@ -2928,6 +2831,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                                                             value={row.issueType}
                                                             onChange={(e) => handleLineChange(row.id, "issueType", e.target.value)}
                                                         >
+                                                            <option value="">Select</option>
                                                             <option value="Lot Issue">Lot Issue</option>
                                                             <option value="General Issue">General Issue</option>
                                                             <option value="Direct Issue">Direct Issue</option>
@@ -3014,6 +2918,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                                                             value={row.uom}
                                                             onChange={(e) => handleLineChange(row.id, "uom", e.target.value)}
                                                         >
+                                                            <option value="">Select</option>
                                                             <option value="PCS">PCS</option>
                                                             <option value="SQFT">SQFT</option>
                                                             <option value="MTR">MTR</option>
@@ -3037,44 +2942,64 @@ export default function ItemIssue({ initialMode = "form" }) {
                                                         <input
                                                             type="text"
                                                             className="tpcs-ii-tbl-input"
-                                                            value={row.reqQty ?? 0}
+                                                            value={hasItem || row.reqQty !== "" ? row.reqQty : ""}
                                                             readOnly
                                                             style={{ background: "#f8fafc", textAlign: "right", fontWeight: 600 }}
                                                         />
                                                     </td>
                                                     <td style={{ textAlign: "right" }}>
-                                                        <div style={{
-                                                            background: pendingNum > 0 ? "#fffbeb" : "#f1f5f9",
-                                                            border: `1px solid ${pendingNum > 0 ? "#fcd34d" : "#cbd5e1"}`,
-                                                            color: pendingNum > 0 ? "#b45309" : "#64748b",
-                                                            borderRadius: "3px",
-                                                            padding: "3px 6px",
-                                                            fontWeight: 800,
-                                                            fontSize: "11.5px",
-                                                            textAlign: "right"
-                                                        }}>
-                                                            {pendingNum} {row.uom}
-                                                        </div>
+                                                        {hasItem || row.pendingQty !== "" ? (
+                                                            <div style={{
+                                                                background: pendingNum > 0 ? "#fffbeb" : "#f1f5f9",
+                                                                border: `1px solid ${pendingNum > 0 ? "#fcd34d" : "#cbd5e1"}`,
+                                                                color: pendingNum > 0 ? "#b45309" : "#64748b",
+                                                                borderRadius: "3px",
+                                                                padding: "3px 6px",
+                                                                fontWeight: 800,
+                                                                fontSize: "11.5px",
+                                                                textAlign: "right"
+                                                            }}>
+                                                                {pendingNum} {row.uom}
+                                                            </div>
+                                                        ) : (
+                                                            <input
+                                                                type="text"
+                                                                className="tpcs-ii-tbl-input"
+                                                                value=""
+                                                                readOnly
+                                                                style={{ background: "#f8fafc", textAlign: "right" }}
+                                                            />
+                                                        )}
                                                     </td>
                                                     <td style={{ textAlign: "right" }}>
-                                                        <div style={{
-                                                            background: stockNum <= 0 ? "#fee2e2" : (stockNum < pendingNum ? "#fef3c7" : "#dcfce7"),
-                                                            border: `1px solid ${stockNum <= 0 ? "#fca5a5" : (stockNum < pendingNum ? "#fcd34d" : "#86efac")}`,
-                                                            color: stockNum <= 0 ? "#991b1b" : (stockNum < pendingNum ? "#92400e" : "#166534"),
-                                                            borderRadius: "3px",
-                                                            padding: "3px 6px",
-                                                            fontWeight: 800,
-                                                            fontSize: "11.5px",
-                                                            textAlign: "right"
-                                                        }}>
-                                                            {stockNum} {row.uom}
-                                                        </div>
+                                                        {hasItem || row.stockQty !== "" ? (
+                                                            <div style={{
+                                                                background: stockNum <= 0 ? "#fee2e2" : (stockNum < pendingNum ? "#fef3c7" : "#dcfce7"),
+                                                                border: `1px solid ${stockNum <= 0 ? "#fca5a5" : (stockNum < pendingNum ? "#fcd34d" : "#86efac")}`,
+                                                                color: stockNum <= 0 ? "#991b1b" : (stockNum < pendingNum ? "#92400e" : "#166534"),
+                                                                borderRadius: "3px",
+                                                                padding: "3px 6px",
+                                                                fontWeight: 800,
+                                                                fontSize: "11.5px",
+                                                                textAlign: "right"
+                                                            }}>
+                                                                {stockNum} {row.uom}
+                                                            </div>
+                                                        ) : (
+                                                            <input
+                                                                type="text"
+                                                                className="tpcs-ii-tbl-input"
+                                                                value=""
+                                                                readOnly
+                                                                style={{ background: "#f8fafc", textAlign: "right" }}
+                                                            />
+                                                        )}
                                                     </td>
                                                     <td>
                                                         <input
                                                             type="number"
                                                             className="tpcs-ii-tbl-input"
-                                                            placeholder="0.00"
+                                                            placeholder=""
                                                             value={row.issueQty}
                                                             onChange={(e) => handleLineChange(row.id, "issueQty", e.target.value)}
                                                             style={{ textAlign: "right", fontWeight: 700, borderColor: "#1976d2" }}
@@ -3084,7 +3009,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                                                         <input
                                                             type="number"
                                                             className="tpcs-ii-tbl-input"
-                                                            placeholder="0.00"
+                                                            placeholder=""
                                                             value={row.rate}
                                                             onChange={(e) => handleLineChange(row.id, "rate", e.target.value)}
                                                             style={{ textAlign: "right" }}
@@ -3094,7 +3019,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                                                         <input
                                                             type="text"
                                                             className="tpcs-ii-tbl-input"
-                                                            value={row.amount ? row.amount.toLocaleString("en-IN", { minimumFractionDigits: 2 }) : "0.00"}
+                                                            value={row.amount ? Number(row.amount).toLocaleString("en-IN", { minimumFractionDigits: 2 }) : ""}
                                                             readOnly
                                                             style={{ background: "#f8fafc", textAlign: "right", fontWeight: 700 }}
                                                         />
@@ -3339,8 +3264,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                             <button
                                 type="button"
                                 onClick={() => {
-                                    setShow4x4Panel(true);
-                                    setShowPendingIrnPanel(true);
+                                    handleResetForm();
                                     setViewMode("form");
                                 }}
                                 style={{

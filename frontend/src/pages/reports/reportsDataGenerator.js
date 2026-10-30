@@ -1,5 +1,6 @@
 // reportsDataGenerator.js - Enterprise Data Generator & Exporter for V-Connect Inc. Reports Hub
 import React from "react";
+import { buildReportFromSpec } from "./reportSpecs";
 import {
     FaRegEdit,
     FaBoxOpen,
@@ -311,6 +312,10 @@ export function generateLiveReportData(report, filters = {}) {
     const fromDate = filters.fromDate || "2026-10-01";
     const toDate = filters.toDate || "2026-10-26";
 
+    // Report-specific layout (own columns/rows); falls back to the per-type templates below.
+    const specific = buildReportFromSpec(report?.id);
+    if (specific) return specific;
+
     switch (type) {
         case "costing": {
             const columns = ["Style Ref", "Buyer", "Item / Description", "Order Qty (Pcs)", "Planned Cost (₹)", "Actual Cost (₹)", "Variance (₹)", "Var %", "Status"];
@@ -533,7 +538,7 @@ export function printReportDocument(report, filters, columns, rows, summary) {
             <div class="meta-item"><strong>Branch / Unit:</strong><span>${branch}</span></div>
             <div class="meta-item"><strong>Financial Year:</strong><span>${fy}</span></div>
             <div class="meta-item"><strong>Report Period:</strong><span>${fromDate} to ${toDate}</span></div>
-            <div class="meta-item"><strong>Status:</strong><span>Verified against Live DB</span></div>
+            <div class="meta-item"><strong>Status:</strong><span>Sample data</span></div>
         </div>
 
         <table>

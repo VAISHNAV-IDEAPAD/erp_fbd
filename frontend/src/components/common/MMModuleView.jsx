@@ -1,7 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Container, Card, Table, Badge, Button, Modal, Form, Spinner, Row, Col } from "react-bootstrap";
-import { FaPlus, FaSyncAlt, FaSearch, FaBoxes } from "react-icons/fa";
+import {
+    FaPlus,
+    FaSyncAlt,
+    FaSearch,
+    FaBoxes,
+    FaDownload,
+    FaUpload,
+    FaBarcode,
+    FaCog,
+    FaThList,
+    FaFilter,
+    FaChevronDown,
+    FaCheckCircle,
+    FaTrash,
+    FaEye,
+    FaEdit
+} from "react-icons/fa";
 import axios from "axios";
+import "../../styles/purchaseOrder.css";
 
 export default function MMModuleView({
     title,
@@ -20,15 +37,24 @@ export default function MMModuleView({
     const [records, setRecords] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
+    const [materialSource, setMaterialSource] = useState("All"); // Domestic | Import | All
+    const [statusFilter, setStatusFilter] = useState("All");
+    const [selectedIds, setSelectedIds] = useState(new Set());
+    const [showBulkDropdown, setShowBulkDropdown] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const [activeRecord, setActiveRecord] = useState(null);
+
     const [newItem, setNewItem] = useState({
         DocNo: "",
         Department: "Manufacturing",
         ItemName: "Fabric / Material",
         Quantity: "100",
         Remarks: "",
-        Status: "Pending"
+        Status: "Pending",
+        MaterialSource: "Domestic"
     });
+
+    const fileInputRef = useRef(null);
 
     const loadData = async () => {
         setLoading(true);
@@ -57,7 +83,11 @@ export default function MMModuleView({
         }
 
         // Fallback default sample data
-        setRecords(initialSampleData);
+        setRecords(initialSampleData && initialSampleData.length > 0 ? initialSampleData : [
+            { id: 1, DocNo: `${moduleName ? moduleName.toUpperCase().slice(0, 3) : "DOC"}/9B/2627/001`, DocDate: "24-10-2026", Department: "RAW MATERIAL STORE 9B", ItemName: "COW LEATHER BLACK 1.2MM", Quantity: "500 SQFT", Status: "Approved", MaterialSource: "Domestic" },
+            { id: 2, DocNo: `${moduleName ? moduleName.toUpperCase().slice(0, 3) : "DOC"}/9B/2627/002`, DocDate: "22-10-2026", Department: "SEMI FINISH STORE 9B", ItemName: "CANVAS DRILL LINING 10 OZ", Quantity: "1,200 MTR", Status: "Pending", MaterialSource: "Import" },
+            { id: 3, DocNo: `${moduleName ? moduleName.toUpperCase().slice(0, 3) : "DOC"}/9B/2627/003`, DocDate: "20-10-2026", Department: "CUTTING DEPARTMENT", ItemName: "YKK METAL ZIPPER #5 15CM", Quantity: "3,500 PCS", Status: "Completed", MaterialSource: "Domestic" }
+        ]);
         setLoading(false);
     };
 
@@ -67,12 +97,12 @@ export default function MMModuleView({
 
     const handleCreate = (e) => {
         e.preventDefault();
-        const docNumber = newItem.DocNo || `${moduleName.toUpperCase().slice(0, 3)}-${Date.now().toString().slice(-4)}`;
+        const docNumber = newItem.DocNo || `${moduleName ? moduleName.toUpperCase().slice(0, 3) : "DOC"}/9B/2627/${Math.floor(100 + Math.random() * 900)}`;
         const record = {
             ...newItem,
             id: Date.now(),
             DocNo: docNumber,
-            DocDate: new Date().toISOString().split("T")[0]
+            DocDate: new Date().toLocaleDateString("en-GB").replace(/\//g, "-")
         };
 
         const updated = [record, ...records];
@@ -85,303 +115,517 @@ export default function MMModuleView({
             ItemName: "Fabric / Material",
             Quantity: "100",
             Remarks: "",
-            Status: "Pending"
+            Status: "Pending",
+            MaterialSource: "Domestic"
         });
     };
 
-    const filtered = records.filter(r =>
-        Object.values(r).some(val =>
-            String(val || "").toLowerCase().includes(searchTerm.toLowerCase())
-        )
-    );
+    const filtered = useMemo(() => {
+        return records.filter((r) => {
+            if (searchTerm.trim()) {
+                const q = searchTerm.toLowerCase();
+                const match = Object.values(r).some(val =>
+                    String(val || "").toLowerCase().includes(q)
+                );
+                if (!match) return false;
+            }
+            if (materialSource !== "All") {
+                const src = r.MaterialSource || "Domestic";
+                if (src !== materialSource) return false;
+            }
+            if (statusFilter !== "All") {
+                const stat = String(r.Status || "Pending").toLowerCase();
+                if (stat !== statusFilter.toLowerCase()) return false;
+            }
+            return true;
+        });
+    }, [records, searchTerm, materialSource, statusFilter]);
 
-        return (
-        <div style={{ backgroundColor: "#ffffff", padding: "18px 24px 60px 24px", minHeight: "calc(100vh - 65px)", fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
-            {/* Header: Title */}
-            <div style={{ marginBottom: "6px" }}>
-                <h2 style={{ fontSize: "20px", fontWeight: "700", color: "#1976d2", margin: "0 0 10px 0" }}>
-                    {title}
-                </h2>
-            </div>
+    const handleToggleSelectAll = (e) => {
+        if (e.target.checked) {
+            setSelectedIds(new Set(filtered.map(r => r.id || r.DocNo)));
+        } else {
+            setSelectedIds(new Set());
+        }
+    };
 
-            {/* Top Filter and New Button matching V-Connect Inc. screenshot */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "8px" }}>
-                <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
-                    <label style={{ fontSize: "12px", color: "#334155", fontWeight: 600 }}>Associate / Search</label>
-                    <input
-                        type="text"
-                        placeholder="Search records..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        style={{
-                            width: "220px",
-                            height: "28px",
-                            border: "1px solid #cbd5e1",
-                            borderRadius: "3px",
-                            padding: "2px 8px",
-                            fontSize: "12px",
-                            outline: "none"
-                        }}
-                    />
-                </div>
+    const handleToggleSelectRow = (id) => {
+        setSelectedIds(prev => {
+            const next = new Set(prev);
+            if (next.has(id)) next.delete(id);
+            else next.add(id);
+            return next;
+        });
+    };
 
+    const handleToggleStatus = (record) => {
+        const id = record.id || record.DocNo;
+        const newStatus = record.Status === "Approved" ? "Pending" : "Approved";
+        const updated = records.map(r => (r.id === id || r.DocNo === id) ? { ...r, Status: newStatus } : r);
+        setRecords(updated);
+        localStorage.setItem(`erp_mm_${moduleName}`, JSON.stringify(updated));
+    };
+
+    const handleDeleteRecord = (id) => {
+        if (!window.confirm("Are you sure you want to delete this record?")) return;
+        const updated = records.filter(r => (r.id !== id && r.DocNo !== id));
+        setRecords(updated);
+        localStorage.setItem(`erp_mm_${moduleName}`, JSON.stringify(updated));
+    };
+
+    const handleBulkAction = (action) => {
+        setShowBulkDropdown(false);
+        if (selectedIds.size === 0) {
+            alert("Please select at least one record using the checkboxes.");
+            return;
+        }
+        const ids = Array.from(selectedIds);
+        if (action === "Approve") {
+            const updated = records.map(r => ids.includes(r.id || r.DocNo) ? { ...r, Status: "Approved" } : r);
+            setRecords(updated);
+            localStorage.setItem(`erp_mm_${moduleName}`, JSON.stringify(updated));
+            setSelectedIds(new Set());
+        } else if (action === "Delete") {
+            if (!window.confirm(`Delete ${ids.length} selected record(s)?`)) return;
+            const updated = records.filter(r => !ids.includes(r.id || r.DocNo));
+            setRecords(updated);
+            localStorage.setItem(`erp_mm_${moduleName}`, JSON.stringify(updated));
+            setSelectedIds(new Set());
+        } else if (action === "Print") {
+            window.print();
+        }
+    };
+
+    const handleExportCSV = () => {
+        if (filtered.length === 0) return;
+        const colKeys = columns.map(c => c.key);
+        const colLabels = columns.map(c => c.label);
+        const csvRows = filtered.map(r => colKeys.map(k => `"${r[k] || ''}"`).join(","));
+        const csvContent = "data:text/csv;charset=utf-8," + [colLabels.join(","), ...csvRows].join("\n");
+        const link = document.createElement("a");
+        link.setAttribute("href", encodeURI(csvContent));
+        link.setAttribute("download", `${title.replace(/\s+/g, "_")}_${new Date().toISOString().slice(0, 10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    return (
+        <div className="po-list-page p-3">
+            {/* HEADER: Title & + New Button */}
+            <div className="d-flex justify-content-between align-items-center mb-2">
+                <h1 className="po-list-title mb-0">{title}</h1>
                 <div>
                     <button
                         type="button"
+                        className="po-btn-new-green"
                         onClick={() => setShowModal(true)}
-                        style={{
-                            backgroundColor: "#4caf50",
-                            color: "#ffffff",
-                            border: "none",
-                            borderRadius: "3px",
-                            padding: "6px 14px",
-                            fontSize: "12.5px",
-                            fontWeight: 600,
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: "5px",
-                            cursor: "pointer",
-                            boxShadow: "0 1px 2px rgba(0,0,0,0.1)"
-                        }}
                     >
-                        <FaPlus style={{ fontSize: "11px" }} />
-                        <span>New {title}</span>
+                        <FaPlus /> New {title} <FaChevronDown style={{ fontSize: 9 }} />
                     </button>
                 </div>
             </div>
 
-            {/* Secondary Toolbar matching V-Connect Inc. screenshot */}
-            <div style={{ display: "flex", gap: "6px", alignItems: "center", marginBottom: "12px" }}>
-                <button
-                    type="button"
-                    onClick={loadData}
-                    title="Reload"
-                    style={{
-                        width: "28px",
-                        height: "28px",
-                        border: "1px solid #cbd5e1",
-                        borderRadius: "3px",
-                        background: "#ffffff",
-                        color: "#475569",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        cursor: "pointer",
-                        fontSize: "12px"
-                    }}
-                >
-                    <FaSyncAlt className={loading ? "fa-spin" : ""} />
-                </button>
-                <button
-                    type="button"
-                    title="View Options"
-                    style={{
-                        width: "28px",
-                        height: "28px",
-                        border: "1px solid #cbd5e1",
-                        borderRadius: "3px",
-                        background: "#ffffff",
-                        color: "#475569",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        cursor: "pointer",
-                        fontSize: "12px"
-                    }}
-                >
-                    ☰
-                </button>
-                <button
-                    type="button"
-                    title="Settings"
-                    style={{
-                        width: "28px",
-                        height: "28px",
-                        border: "1px solid #cbd5e1",
-                        borderRadius: "3px",
-                        background: "#ffffff",
-                        color: "#475569",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        cursor: "pointer",
-                        fontSize: "12px"
-                    }}
-                >
-                    ⚙
-                </button>
-                <button
-                    type="button"
-                    style={{
-                        height: "28px",
-                        padding: "0 10px",
-                        border: "1px solid #cbd5e1",
-                        borderRadius: "3px",
-                        background: "#ffffff",
-                        color: "#334155",
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "5px",
-                        cursor: "pointer",
-                        fontSize: "12px"
-                    }}
-                >
-                    <span>Filter ▾</span>
-                </button>
+            {/* TOP FILTERS MATCHING JENIXCLOUD */}
+            <div className="po-list-filter-row mb-3">
+                <div className="po-list-filter-group">
+                    {/* Search Field */}
+                    <div className="po-list-filter-col">
+                        <label className="po-list-filter-label">Search / Associate</label>
+                        <input
+                            type="text"
+                            className="po-list-search-input"
+                            placeholder="Search records..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+
+                    {/* Material Source Radio */}
+                    <div className="po-list-filter-col">
+                        <label className="po-list-filter-label">Material Source</label>
+                        <div className="po-list-radio-group">
+                            <label className="po-list-radio-label">
+                                <input
+                                    type="radio"
+                                    name={`ms_${moduleName}`}
+                                    value="Domestic"
+                                    checked={materialSource === "Domestic"}
+                                    onChange={() => setMaterialSource("Domestic")}
+                                />
+                                Domestic
+                            </label>
+                            <label className="po-list-radio-label">
+                                <input
+                                    type="radio"
+                                    name={`ms_${moduleName}`}
+                                    value="Import"
+                                    checked={materialSource === "Import"}
+                                    onChange={() => setMaterialSource("Import")}
+                                />
+                                Import
+                            </label>
+                            <label className="po-list-radio-label">
+                                <input
+                                    type="radio"
+                                    name={`ms_${moduleName}`}
+                                    value="All"
+                                    checked={materialSource === "All"}
+                                    onChange={() => setMaterialSource("All")}
+                                />
+                                All
+                            </label>
+                        </div>
+                    </div>
+
+                    {/* Status Dropdown */}
+                    <div className="po-list-filter-col">
+                        <label className="po-list-filter-label">Status</label>
+                        <select
+                            className="po-list-select"
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                        >
+                            <option value="All">All</option>
+                            <option value="Approved">Approved</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
-            {/* Table matching screenshot */}
-            <div style={{ width: "100%", overflowX: "auto", border: "1px solid #cbd5e1", borderRadius: "2px" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "12px", minWidth: "900px" }}>
+            {/* ACTION TOOLBAR */}
+            <div className="po-table-toolbar">
+                <div className="po-toolbar-left">
+                    <button
+                        type="button"
+                        className="po-icon-btn"
+                        onClick={loadData}
+                        title="Refresh"
+                        disabled={loading}
+                    >
+                        <FaSyncAlt className={loading ? "fa-spin" : ""} />
+                    </button>
+                    <button type="button" className="po-icon-btn" title="Grid View">
+                        <FaThList />
+                    </button>
+                    <button type="button" className="po-icon-btn" title="Settings">
+                        <FaCog />
+                    </button>
+                    <button type="button" className="po-icon-btn" title="Barcode">
+                        <FaBarcode />
+                    </button>
+                    <button
+                        type="button"
+                        className="po-icon-btn"
+                        onClick={handleExportCSV}
+                        title="Export Excel"
+                    >
+                        <FaDownload />
+                    </button>
+                    <button
+                        type="button"
+                        className="po-icon-btn"
+                        onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                        title="Import"
+                    >
+                        <FaUpload />
+                    </button>
+                    <button type="button" className="po-icon-btn" title="Filter">
+                        <FaFilter /> Filter <FaChevronDown style={{ fontSize: 9 }} />
+                    </button>
+                </div>
+
+                <div className="po-toolbar-right">
+                    <div style={{ position: "relative" }}>
+                        <button
+                            type="button"
+                            className="po-btn-bulk"
+                            onClick={() => setShowBulkDropdown(!showBulkDropdown)}
+                        >
+                            <FaThList /> Bulk Action <FaChevronDown style={{ fontSize: 9 }} />
+                        </button>
+                        {showBulkDropdown && (
+                            <div
+                                style={{
+                                    position: "absolute",
+                                    right: 0,
+                                    top: "100%",
+                                    zIndex: 1050,
+                                    backgroundColor: "#ffffff",
+                                    border: "1px solid #cccccc",
+                                    boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                                    borderRadius: 3,
+                                    minWidth: 140,
+                                    padding: "4px 0"
+                                }}
+                            >
+                                <button
+                                    className="dropdown-item px-3 py-1 text-success"
+                                    style={{ fontSize: 11.5 }}
+                                    onClick={() => handleBulkAction("Approve")}
+                                >
+                                    <FaCheckCircle className="me-1" /> Approve Selected
+                                </button>
+                                <button
+                                    className="dropdown-item px-3 py-1 text-primary"
+                                    style={{ fontSize: 11.5 }}
+                                    onClick={() => handleBulkAction("Print")}
+                                >
+                                    <FaEye className="me-1" /> Print Selected
+                                </button>
+                                <button
+                                    className="dropdown-item px-3 py-1 text-danger"
+                                    style={{ fontSize: 11.5 }}
+                                    onClick={() => handleBulkAction("Delete")}
+                                >
+                                    <FaTrash className="me-1" /> Delete Selected
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {/* RIBBON TABLE MATCHING JENIXCLOUD */}
+            <div className="po-grid-table-container">
+                <table className="po-grid-table">
                     <thead>
-                        <tr style={{ backgroundColor: "#1976d2", color: "#ffffff", textAlign: "left" }}>
-                            <th style={{ padding: "8px 10px", fontWeight: 700, borderRight: "1px solid rgba(255,255,255,0.2)", width: "70px", textAlign: "center" }}>Action</th>
+                        <tr>
+                            <th className="text-center" style={{ width: 90 }}>Action</th>
                             {columns.map(col => (
-                                <th key={col.key} style={{ padding: "8px 10px", fontWeight: 700, borderRight: "1px solid rgba(255,255,255,0.2)" }}>{col.label}</th>
+                                <th key={col.key} className={col.key === "Quantity" ? "text-end" : ""}>{col.label}</th>
                             ))}
+                            <th className="text-center" style={{ width: 35 }}>
+                                <input
+                                    type="checkbox"
+                                    onChange={handleToggleSelectAll}
+                                    checked={filtered.length > 0 && selectedIds.size === filtered.length}
+                                />
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
-                        {filtered.map((item, idx) => (
-                            <tr key={item.id || idx} style={{ borderBottom: "1px solid #e2e8f0" }}>
-                                <td style={{ textAlign: "center", padding: "6px 8px", borderRight: "1px solid #f1f5f9" }}>
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowModal(true)}
-                                        title="View Record"
-                                        style={{
-                                            background: "#e0f2fe",
-                                            border: "1px solid #bae6fd",
-                                            color: "#0284c7",
-                                            borderRadius: "3px",
-                                            padding: "2px 6px",
-                                            cursor: "pointer",
-                                            fontSize: "11px"
-                                        }}
-                                    >
-                                        👁
-                                    </button>
-                                </td>
-                                {columns.map(col => {
-                                    const val = item[col.key];
-                                    if (col.key === "Status") {
-                                        return (
-                                            <td key={col.key} style={{ padding: "6px 10px", borderRight: "1px solid #f1f5f9" }}>
-                                                <span style={{
-                                                    background: val === "Completed" || val === "Approved" ? "#dcfce7" : "#fef3c7",
-                                                    color: val === "Completed" || val === "Approved" ? "#15803d" : "#b45309",
-                                                    padding: "2px 8px",
-                                                    borderRadius: "10px",
-                                                    fontSize: "11px",
-                                                    fontWeight: 600
-                                                }}>
-                                                    {val || "Pending"}
-                                                </span>
-                                            </td>
-                                        );
-                                    }
-                                    return (
-                                        <td key={col.key} style={{ padding: "6px 10px", borderRight: "1px solid #f1f5f9", fontWeight: col.key === "DocNo" ? 600 : 400, color: col.key === "DocNo" ? "#1976d2" : "#334155" }}>
-                                            {val !== undefined && val !== null ? String(val) : "-"}
+                        {filtered.length === 0 ? (
+                            Array.from({ length: 6 }).map((_, idx) => (
+                                <tr key={`empty-${idx}`} className="po-empty-row">
+                                    {Array.from({ length: columns.length + 2 }).map((_, cIdx) => (
+                                        <td key={`empty-c-${cIdx}`}>&nbsp;</td>
+                                    ))}
+                                </tr>
+                            ))
+                        ) : (
+                            filtered.map((item, idx) => {
+                                const id = item.id || item.DocNo || idx;
+                                const isSelected = selectedIds.has(id);
+                                const isApproved = item.Status === "Approved" || item.Status === "Completed";
+                                return (
+                                    <tr key={id} className={isSelected ? "po-row-selected" : ""}>
+                                        <td className="text-center">
+                                            <div className="d-flex align-items-center justify-content-center gap-1">
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-sm btn-link p-0 text-primary"
+                                                    title="View"
+                                                    onClick={() => {
+                                                        setActiveRecord(item);
+                                                        setShowModal(true);
+                                                    }}
+                                                >
+                                                    <FaEye size={12} />
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-sm btn-link p-0 text-secondary"
+                                                    title="Edit"
+                                                    onClick={() => {
+                                                        setActiveRecord(item);
+                                                        setShowModal(true);
+                                                    }}
+                                                >
+                                                    <FaEdit size={12} />
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className={`btn btn-sm btn-link p-0 ${isApproved ? "text-success" : "text-muted"}`}
+                                                    title={isApproved ? "Approved" : "Pending (Click to Approve)"}
+                                                    onClick={() => handleToggleStatus(item)}
+                                                >
+                                                    <FaCheckCircle size={12} />
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-sm btn-link p-0 text-danger"
+                                                    title="Delete"
+                                                    onClick={() => handleDeleteRecord(id)}
+                                                >
+                                                    <FaTrash size={11} />
+                                                </button>
+                                            </div>
                                         </td>
-                                    );
-                                })}
-                            </tr>
-                        ))}
-
-                        {/* Padding empty gridlines */}
-                        {Array.from({ length: Math.max(0, 16 - filtered.length) }).map((_, i) => (
-                            <tr key={'empty-' + i} style={{ borderBottom: "1px solid #eef2f6", height: "28px" }}>
-                                <td style={{ borderRight: "1px solid #f1f5f9" }}></td>
-                                {columns.map(col => (
-                                    <td key={col.key} style={{ borderRight: "1px solid #f1f5f9" }}></td>
-                                ))}
-                            </tr>
-                        ))}
+                                        {columns.map(col => {
+                                            const val = item[col.key];
+                                            if (col.key === "Status") {
+                                                return (
+                                                    <td key={col.key}>
+                                                        <Badge
+                                                            bg={isApproved ? "success" : "warning"}
+                                                            text={isApproved ? "white" : "dark"}
+                                                            style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px" }}
+                                                        >
+                                                            {val || "Pending"}
+                                                        </Badge>
+                                                    </td>
+                                                );
+                                            }
+                                            return (
+                                                <td
+                                                    key={col.key}
+                                                    className={col.key === "Quantity" ? "text-end fw-semibold" : col.key === "DocNo" ? "text-primary fw-semibold" : ""}
+                                                >
+                                                    {val !== undefined && val !== null ? String(val) : "-"}
+                                                </td>
+                                            );
+                                        })}
+                                        <td className="text-center">
+                                            <input
+                                                type="checkbox"
+                                                checked={isSelected}
+                                                onChange={() => handleToggleSelectRow(id)}
+                                            />
+                                        </td>
+                                    </tr>
+                                );
+                            })
+                        )}
                     </tbody>
                 </table>
             </div>
 
-            {/* CREATE MODAL */}
-            <Modal show={showModal} onHide={() => setShowModal(false)} centered>onHide={() => setShowModal(false)} centered>
-                <Form onSubmit={handleCreate}>
-                    <Modal.Header closeButton className="bg-primary text-white">
-                        <Modal.Title className="fs-6">New {title} Entry</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Row className="g-3">
-                            <Col md={12}>
+            {/* FOOTER SUMMARY */}
+            <div className="d-flex justify-content-between align-items-center mt-2 pt-1 text-muted small" style={{ fontSize: "11px" }}>
+                <div>
+                    Showing <strong>{filtered.length}</strong> record(s)
+                    {selectedIds.size > 0 && (
+                        <span className="ms-2 badge bg-primary text-white">
+                            {selectedIds.size} row(s) selected
+                        </span>
+                    )}
+                </div>
+                <div>
+                    <Button
+                        variant="outline-secondary"
+                        size="sm"
+                        style={{ fontSize: "11px", height: "24px", padding: "1px 8px" }}
+                        onClick={() => window.print()}
+                    >
+                        Print Register
+                    </Button>
+                </div>
+            </div>
+
+            {/* MODAL: NEW / VIEW RECORD */}
+            <Modal show={showModal} onHide={() => { setShowModal(false); setActiveRecord(null); }} size="lg">
+                <Modal.Header closeButton style={{ backgroundColor: "#337ab7", color: "#ffffff", padding: "8px 16px" }}>
+                    <Modal.Title style={{ fontSize: "14px", fontWeight: "700" }}>
+                        {activeRecord ? `View ${title}: ${activeRecord.DocNo}` : `New ${title}`}
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{ fontSize: "12px" }}>
+                    <Form onSubmit={handleCreate}>
+                        <Row className="g-2 mb-2">
+                            <Col md={6}>
                                 <Form.Group>
-                                    <Form.Label className="small fw-semibold">Document / Reference Number</Form.Label>
+                                    <Form.Label className="po-erp-label">Document No</Form.Label>
                                     <Form.Control
-                                        type="text"
-                                        placeholder="Leave blank for Auto-generated"
-                                        value={newItem.DocNo}
+                                        size="sm"
+                                        placeholder="Auto-generated if blank"
+                                        value={activeRecord ? activeRecord.DocNo : newItem.DocNo}
                                         onChange={(e) => setNewItem({ ...newItem, DocNo: e.target.value })}
-                                    />
-                                </Form.Group>
-                            </Col>
-                            <Col md={12}>
-                                <Form.Group>
-                                    <Form.Label className="small fw-semibold">Item / Material</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        required
-                                        placeholder="e.g. Cotton 40s Fabric, Sewing Thread, Zipper"
-                                        value={newItem.ItemName}
-                                        onChange={(e) => setNewItem({ ...newItem, ItemName: e.target.value })}
+                                        disabled={!!activeRecord}
                                     />
                                 </Form.Group>
                             </Col>
                             <Col md={6}>
                                 <Form.Group>
-                                    <Form.Label className="small fw-semibold">Quantity</Form.Label>
+                                    <Form.Label className="po-erp-label">Department / Store</Form.Label>
                                     <Form.Control
-                                        type="number"
-                                        required
-                                        value={newItem.Quantity}
-                                        onChange={(e) => setNewItem({ ...newItem, Quantity: e.target.value })}
-                                    />
-                                </Form.Group>
-                            </Col>
-                            <Col md={6}>
-                                <Form.Group>
-                                    <Form.Label className="small fw-semibold">Department</Form.Label>
-                                    <Form.Select
-                                        value={newItem.Department}
+                                        size="sm"
+                                        value={activeRecord ? activeRecord.Department : newItem.Department}
                                         onChange={(e) => setNewItem({ ...newItem, Department: e.target.value })}
-                                    >
-                                        <option value="Manufacturing">Manufacturing</option>
-                                        <option value="Cutting">Cutting</option>
-                                        <option value="Sewing">Sewing</option>
-                                        <option value="Finishing">Finishing</option>
-                                        <option value="Store">Store / Warehouse</option>
-                                    </Form.Select>
-                                </Form.Group>
-                            </Col>
-                            <Col md={12}>
-                                <Form.Group>
-                                    <Form.Label className="small fw-semibold">Remarks</Form.Label>
-                                    <Form.Control
-                                        as="textarea"
-                                        rows={2}
-                                        placeholder="Notes, instructions or inspection details..."
-                                        value={newItem.Remarks}
-                                        onChange={(e) => setNewItem({ ...newItem, Remarks: e.target.value })}
+                                        disabled={!!activeRecord}
                                     />
                                 </Form.Group>
                             </Col>
                         </Row>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" size="sm" onClick={() => setShowModal(false)}>
-                            Cancel
-                        </Button>
-                        <Button variant="primary" size="sm" type="submit">
-                            Save Record
-                        </Button>
-                    </Modal.Footer>
-                </Form>
+                        <Row className="g-2 mb-2">
+                            <Col md={6}>
+                                <Form.Group>
+                                    <Form.Label className="po-erp-label">Item / Material</Form.Label>
+                                    <Form.Control
+                                        size="sm"
+                                        value={activeRecord ? activeRecord.ItemName : newItem.ItemName}
+                                        onChange={(e) => setNewItem({ ...newItem, ItemName: e.target.value })}
+                                        disabled={!!activeRecord}
+                                    />
+                                </Form.Group>
+                            </Col>
+                            <Col md={6}>
+                                <Form.Group>
+                                    <Form.Label className="po-erp-label">Quantity</Form.Label>
+                                    <Form.Control
+                                        size="sm"
+                                        value={activeRecord ? activeRecord.Quantity : newItem.Quantity}
+                                        onChange={(e) => setNewItem({ ...newItem, Quantity: e.target.value })}
+                                        disabled={!!activeRecord}
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <Row className="g-2 mb-3">
+                            <Col md={6}>
+                                <Form.Group>
+                                    <Form.Label className="po-erp-label">Status</Form.Label>
+                                    <Form.Select
+                                        size="sm"
+                                        value={activeRecord ? activeRecord.Status : newItem.Status}
+                                        onChange={(e) => setNewItem({ ...newItem, Status: e.target.value })}
+                                        disabled={!!activeRecord}
+                                    >
+                                        <option value="Pending">Pending</option>
+                                        <option value="Approved">Approved</option>
+                                        <option value="Completed">Completed</option>
+                                    </Form.Select>
+                                </Form.Group>
+                            </Col>
+                            <Col md={6}>
+                                <Form.Group>
+                                    <Form.Label className="po-erp-label">Material Source</Form.Label>
+                                    <Form.Select
+                                        size="sm"
+                                        value={activeRecord ? (activeRecord.MaterialSource || "Domestic") : newItem.MaterialSource}
+                                        onChange={(e) => setNewItem({ ...newItem, MaterialSource: e.target.value })}
+                                        disabled={!!activeRecord}
+                                    >
+                                        <option value="Domestic">Domestic</option>
+                                        <option value="Import">Import</option>
+                                    </Form.Select>
+                                </Form.Group>
+                            </Col>
+                        </Row>
+                        <div className="d-flex justify-content-end gap-2">
+                            <Button variant="secondary" size="sm" onClick={() => { setShowModal(false); setActiveRecord(null); }}>
+                                Close
+                            </Button>
+                            {!activeRecord && (
+                                <Button variant="success" size="sm" type="submit" style={{ backgroundColor: "#5cb85c", borderColor: "#4cae4c" }}>
+                                    Save Record
+                                </Button>
+                            )}
+                        </div>
+                    </Form>
+                </Modal.Body>
             </Modal>
         </div>
     );

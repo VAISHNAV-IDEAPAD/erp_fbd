@@ -32,274 +32,537 @@ import "../../styles/itemIssue.css";
 
 const API_URL = process.env.REACT_APP_API_URL || "/api";
 
-// Master Catalog incorporating User Reference Screenshot items & ERP Inventory with Item-Wise Pending IRN Numbers
+// Master Catalog incorporating User Reference Excel items with Item-Wise Pending IRN Numbers & IO Mappings
 const DEFAULT_MATERIAL_CATALOG = [
+    // -------------------------------------------------------------
+    // IO/9B/2627/35 (SAMPLING) -> IRN/APP/9B/2627/1575 (BAG SAMPLING, 04-09-2026)
+    // -------------------------------------------------------------
     {
-        ItemCode: "CRD-1001",
-        ItemName: "CARD BOARD",
-        IrnNo: "IRN/APP/9B/2627/2401",
-        IrnDate: "27-10-2026",
-        Department: "Packaging",
-        Associate: "Apex Leather Works",
+        ItemCode: "HDW-6830",
+        ItemName: "BRITTEN HASP 12.4MM HT-6830",
+        IrnNo: "IRN/APP/9B/2627/1575",
+        IoNo: "IO/9B/2627/35",
+        IoStage: "Sampling",
+        JobcardNo: "IO/9B/2627/35 (Sampling)",
+        IrnDate: "04-09-2026",
+        Department: "BAG SAMPLING",
+        Associate: "Plot No. 9B",
         RequestedBy: "Ramesh Kumar",
-        JobcardNo: "JC-4512",
-        GroupName: "Packaging",
-        Variant: "N/A",
-        Color: "NATURAL",
-        ColorCode: "N/A",
-        SizeRange: "N/A",
-        Size: "100",
+        GroupName: "BRIDGE",
+        Variant: "57-14K GOLD",
+        Color: "57-14K GOLD",
+        ColorCode: "57-14K",
+        SizeRange: "12.4mm",
+        Size: "12.4mm",
         UOM: "PCS",
-        StockQty: 0,
-        ReqQty: 100,
-        IssuedQty: 0,
-        BalanceQty: 100,
-        Rate: 15.0,
-        Location: "BIN-D-01-02",
-        Warehouse: "PLOT NO. 9B",
-        Rack: "Rack D1",
-        Shelf: "Level 2",
-        Zone: "Zone D - Packaging",
-        Barcode: "BAR-CRD-1001",
+        StockQty: 25,
+        ReqQty: 4.0,
+        IssuedQty: 0.0,
+        BalanceQty: 4.0,
+        Rate: 45.0,
+        Location: "BIN-C-01-01",
+        Warehouse: "RAW MATERIAL STORE 9B",
+        Rack: "Rack C1",
+        Shelf: "Level 1",
+        Zone: "Zone C - Hardware",
+        Barcode: "BAR-HDW-6830",
         SlipId: "000000000000224"
     },
     {
-        ItemCode: "SPR-2001",
-        ItemName: "SPRING FILE",
-        IrnNo: "IRN/APP/9B/2627/2402",
-        IrnDate: "27-10-2026",
-        Department: "Packaging",
-        Associate: "Apex Leather Works",
+        ItemCode: "CHN-6582",
+        ItemName: "METAL CHAIN 9.2MM OVAL LINK CHAIN 2.5MMGG 138CM HT-6582",
+        IrnNo: "IRN/APP/9B/2627/1575",
+        IoNo: "IO/9B/2627/35",
+        IoStage: "Sampling",
+        JobcardNo: "IO/9B/2627/35 (Sampling)",
+        IrnDate: "04-09-2026",
+        Department: "BAG SAMPLING",
+        Associate: "Plot No. 9B",
         RequestedBy: "Ramesh Kumar",
-        JobcardNo: "JC-4512",
-        GroupName: "Office Stationery",
-        Variant: "N/A",
-        Color: "BLUE",
-        ColorCode: "N/A",
-        SizeRange: "N/A",
-        Size: "Standard",
+        GroupName: "CHAIN",
+        Variant: "57-14K GOLD",
+        Color: "57-14K GOLD",
+        ColorCode: "57-14K",
+        SizeRange: "138cm",
+        Size: "138cm",
         UOM: "PCS",
-        StockQty: 50,
-        ReqQty: 6,
-        IssuedQty: 0,
-        BalanceQty: 6,
-        Rate: 25.0,
-        Location: "BIN-D-01-01",
-        Warehouse: "PLOT NO. 9B",
-        Rack: "Rack D1",
-        Shelf: "Level 1",
-        Zone: "Zone D - Stationery",
-        Barcode: "BAR-SPR-2001",
+        StockQty: 10,
+        ReqQty: 2.0,
+        IssuedQty: 0.0,
+        BalanceQty: 2.0,
+        Rate: 125.0,
+        Location: "BIN-C-01-02",
+        Warehouse: "RAW MATERIAL STORE 9B",
+        Rack: "Rack C1",
+        Shelf: "Level 2",
+        Zone: "Zone C - Hardware",
+        Barcode: "BAR-CHN-6582",
         SlipId: "000000000000225"
     },
     {
-        ItemCode: "IDX-3001",
-        ItemName: "INDEX FILE BIG",
-        IrnNo: "IRN/APP/9B/2627/2403",
-        IrnDate: "27-10-2026",
-        Department: "Packaging",
-        Associate: "Apex Leather Works",
+        ItemCode: "PLR-3953",
+        ItemName: "PULLER METAL NO.3 TBH-3953",
+        IrnNo: "IRN/APP/9B/2627/1575",
+        IoNo: "IO/9B/2627/35",
+        IoStage: "Sampling",
+        JobcardNo: "IO/9B/2627/35 (Sampling)",
+        IrnDate: "04-09-2026",
+        Department: "BAG SAMPLING",
+        Associate: "Plot No. 9B",
         RequestedBy: "Ramesh Kumar",
-        JobcardNo: "JC-4512",
-        GroupName: "Office Stationery",
-        Variant: "N/A",
-        Color: "BLACK",
-        ColorCode: "N/A",
-        SizeRange: "N/A",
-        Size: "Big",
+        GroupName: "PULLER",
+        Variant: "57-14K GOLD",
+        Color: "57-14K GOLD",
+        ColorCode: "57-14K",
+        SizeRange: "No. 3",
+        Size: "No. 3",
         UOM: "PCS",
-        StockQty: 40,
-        ReqQty: 4,
-        IssuedQty: 0,
-        BalanceQty: 4,
-        Rate: 45.0,
-        Location: "BIN-D-01-03",
-        Warehouse: "PLOT NO. 9B",
-        Rack: "Rack D1",
+        StockQty: 30,
+        ReqQty: 2.0,
+        IssuedQty: 0.0,
+        BalanceQty: 2.0,
+        Rate: 18.0,
+        Location: "BIN-C-01-03",
+        Warehouse: "RAW MATERIAL STORE 9B",
+        Rack: "Rack C1",
         Shelf: "Level 3",
-        Zone: "Zone D - Stationery",
-        Barcode: "BAR-IDX-3001",
+        Zone: "Zone C - Hardware",
+        Barcode: "BAR-PLR-3953",
         SlipId: "000000000000226"
     },
     {
-        ItemCode: "LTH-1093",
-        ItemName: "COW CULATTAS SINGLE LEATHER",
-        IrnNo: "IRN/APP/9B/2627/2404",
-        IrnDate: "25-10-2026",
-        Department: "Cutting",
-        Associate: "Apex Leather Works",
+        ItemCode: "STP-03SG",
+        ItemName: "YKK BOTTOM STOPPER NO.3 03 SG BAH1 JMA",
+        IrnNo: "IRN/APP/9B/2627/1575",
+        IoNo: "IO/9B/2627/35",
+        IoStage: "Sampling",
+        JobcardNo: "IO/9B/2627/35 (Sampling)",
+        IrnDate: "04-09-2026",
+        Department: "BAG SAMPLING",
+        Associate: "Plot No. 9B",
         RequestedBy: "Ramesh Kumar",
-        JobcardNo: "JC-4515",
-        GroupName: "Leather",
-        Variant: "BLACK (BLK-01)",
-        Color: "BLACK",
-        ColorCode: "BLK-01",
-        SizeRange: "A Grade",
-        Size: "1.2-1.4mm",
-        UOM: "SQFT",
-        StockQty: 450,
-        ReqQty: 200,
-        IssuedQty: 50,
-        BalanceQty: 150,
-        Rate: 145.0,
-        Location: "BIN-A-01-01",
+        GroupName: "STOPPER",
+        Variant: "#57-14K GOLD -C722",
+        Color: "#57-14K GOLD -C722",
+        ColorCode: "C722",
+        SizeRange: "No. 3",
+        Size: "No. 3",
+        UOM: "PCS",
+        StockQty: 100,
+        ReqQty: 4.0,
+        IssuedQty: 2.0,
+        BalanceQty: 2.0,
+        Rate: 15.0,
+        Location: "BIN-C-01-04",
         Warehouse: "RAW MATERIAL STORE 9B",
-        Rack: "Rack A1",
-        Shelf: "Level 1",
-        Zone: "Zone A - Leather",
-        Barcode: "BAR-RL-1001",
+        Rack: "Rack C1",
+        Shelf: "Level 4",
+        Zone: "Zone C - Hardware",
+        Barcode: "BAR-STP-03SG",
         SlipId: "000000000000227"
     },
+
+    // -------------------------------------------------------------
+    // IO/9B/2627/35 (PRODUCTION) -> IRN/APP/9B/2627/2437 (BAG PRODUCTION, 30-10-2026)
+    // -------------------------------------------------------------
     {
-        ItemCode: "LTH-1112",
-        ItemName: "COW ECO VEG SIDE CRUST LEATHER",
-        IrnNo: "IRN/APP/9B/2627/2405",
-        IrnDate: "25-10-2026",
-        Department: "Cutting",
-        Associate: "Apex Leather Works",
-        RequestedBy: "Ramesh Kumar",
-        JobcardNo: "JC-4515",
-        GroupName: "Leather",
-        Variant: "TAN (TAN-04)",
-        Color: "TAN",
-        ColorCode: "TAN-04",
-        SizeRange: "Standard",
-        Size: "1.4-1.6mm",
-        UOM: "SQFT",
-        StockQty: 280,
-        ReqQty: 120,
-        IssuedQty: 20,
-        BalanceQty: 100,
-        Rate: 160.0,
-        Location: "BIN-A-02-01",
+        ItemCode: "LBL-COO01",
+        ItemName: "TB COO LABEL 1.8X1.9CM TB24-BSN-COO01",
+        IrnNo: "IRN/APP/9B/2627/2437",
+        IoNo: "IO/9B/2627/35",
+        IoStage: "Production",
+        JobcardNo: "IO/9B/2627/35 (Production)",
+        IrnDate: "30-10-2026",
+        Department: "BAG PRODUCTION",
+        Associate: "Plot No. 9B",
+        RequestedBy: "Sunil Sharma",
+        GroupName: "COO LABEL",
+        Variant: "N/A",
+        Color: "NATURAL",
+        ColorCode: "N/A",
+        SizeRange: "1.8X1.9CM",
+        Size: "1.8X1.9CM",
+        UOM: "PCS",
+        StockQty: 2500,
+        ReqQty: 1785.0,
+        IssuedQty: 0.0,
+        BalanceQty: 1785.0,
+        Rate: 3.5,
+        Location: "BIN-D-01-01",
         Warehouse: "RAW MATERIAL STORE 9B",
-        Rack: "Rack A2",
+        Rack: "Rack D1",
         Shelf: "Level 1",
-        Zone: "Zone A - Leather",
-        Barcode: "BAR-RL-1003",
+        Zone: "Zone D - Labels",
+        Barcode: "BAR-LBL-COO01",
         SlipId: "000000000000228"
     },
     {
-        ItemCode: "RNF-1085",
-        ItemName: "HIGH DENSITY TOPLINER 0.4MM",
-        IrnNo: "IRN/APP/9B/2627/2406",
-        IrnDate: "24-10-2026",
-        Department: "Cutting",
-        Associate: "K-Tex Textiles",
-        RequestedBy: "Nikhil Singh",
-        JobcardNo: "JC-4518",
-        GroupName: "Lining",
-        Variant: "BLACK (BLK-02)",
-        Color: "BLACK",
-        ColorCode: "BLK-02",
-        SizeRange: "Roll",
-        Size: "0.4mm",
+        ItemCode: "CRD-1800",
+        ItemName: "ROUND LEATHER CORD 1.8MM IMP",
+        IrnNo: "IRN/APP/9B/2627/2437",
+        IoNo: "IO/9B/2627/35",
+        IoStage: "Production",
+        JobcardNo: "IO/9B/2627/35 (Production)",
+        IrnDate: "30-10-2026",
+        Department: "BAG PRODUCTION",
+        Associate: "Plot No. 9B",
+        RequestedBy: "Sunil Sharma",
+        GroupName: "CORD",
+        Variant: "CAFFEINE",
+        Color: "CAFFEINE",
+        ColorCode: "CAF-01",
+        SizeRange: "1.8mm",
+        Size: "1.8mm",
         UOM: "MTR",
-        StockQty: 1200,
-        ReqQty: 450,
-        IssuedQty: 150,
-        BalanceQty: 300,
-        Rate: 32.5,
-        Location: "BIN-B-01-02",
-        Warehouse: "RAW MATERIAL STORE 9B",
-        Rack: "Rack B1",
-        Shelf: "Level 2",
-        Zone: "Zone B - Fabric & Lining",
-        Barcode: "BAR-RL-2003",
-        SlipId: "000000000000230"
-    },
-    {
-        ItemCode: "NONWO5064",
-        ItemName: "TALIN 0.3MM WHITE",
-        IrnNo: "IRN/APP/9B/2627/2407",
-        IrnDate: "24-10-2026",
-        Department: "Cutting",
-        Associate: "K-Tex Textiles",
-        RequestedBy: "Nikhil Singh",
-        JobcardNo: "JC-4518",
-        GroupName: "Reinforcement",
-        Variant: "WHITE (WHT-10)",
-        Color: "WHITE",
-        ColorCode: "WHT-10",
-        SizeRange: "Sheet",
-        Size: "0.3mm",
-        UOM: "MTR",
-        StockQty: 640,
-        ReqQty: 300,
-        IssuedQty: 100,
-        BalanceQty: 200,
-        Rate: 24.0,
+        StockQty: 8000,
+        ReqQty: 7497.0,
+        IssuedQty: 0.0,
+        BalanceQty: 7497.0,
+        Rate: 18.0,
         Location: "BIN-B-01-01",
         Warehouse: "RAW MATERIAL STORE 9B",
         Rack: "Rack B1",
         Shelf: "Level 1",
-        Zone: "Zone B - Fabric & Lining",
-        Barcode: "BAR-RL-2001",
-        SlipId: "000000000000231"
-    },
-    {
-        ItemCode: "HDW-2236",
-        ItemName: "JAM RIVET SINGLE HEAD 7MM",
-        IrnNo: "IRN/APP/9B/2627/2408",
-        IrnDate: "26-10-2026",
-        Department: "Assembly",
-        Associate: "Balaji Trims & Fasteners",
-        RequestedBy: "Pooja Verma",
-        JobcardNo: "JC-4520",
-        GroupName: "Hardware",
-        Variant: "ANTIQUE BRASS (AB-701)",
-        Color: "ANTIQUE BRASS",
-        ColorCode: "AB-701",
-        SizeRange: "Standard",
-        Size: "7mm",
-        UOM: "SET",
-        StockQty: 5000,
-        ReqQty: 1200,
-        IssuedQty: 400,
-        BalanceQty: 800,
-        Rate: 1.85,
-        Location: "BIN-C-01-01",
-        Warehouse: "ACCESSORIES GODOWN 18",
-        Rack: "Rack C1",
-        Shelf: "Level 1",
-        Zone: "Zone C - Hardware",
-        Barcode: "BAR-BIN-C0101",
+        Zone: "Zone B - Cord & Threads",
+        Barcode: "BAR-CRD-1800",
         SlipId: "000000000000229"
     },
     {
-        ItemCode: "TRM-3012",
-        ItemName: "NYLON ZIPPER #5 OPEN END 65CM",
-        IrnNo: "IRN/APP/9B/2627/2409",
-        IrnDate: "26-10-2026",
-        Department: "Stitching",
-        Associate: "Balaji Trims & Fasteners",
+        ItemCode: "THR-TEX70-FW",
+        ItemName: "TH-NY-TEX-70 T-40/3000",
+        IrnNo: "IRN/APP/9B/2627/2437",
+        IoNo: "IO/9B/2627/35",
+        IoStage: "Production",
+        JobcardNo: "IO/9B/2627/35 (Production)",
+        IrnDate: "30-10-2026",
+        Department: "BAG PRODUCTION",
+        Associate: "Plot No. 9B",
         RequestedBy: "Sunil Sharma",
-        JobcardNo: "JC-4520",
-        GroupName: "Trims & Zippers",
-        Variant: "NAVY (NVY-05)",
-        Color: "NAVY",
-        ColorCode: "NVY-05",
-        SizeRange: "Open End",
-        Size: "65cm",
-        UOM: "PCS",
-        StockQty: 180,
-        ReqQty: 250,
-        IssuedQty: 0,
-        BalanceQty: 250,
-        Rate: 18.5,
-        Location: "BIN-C-02-04",
-        Warehouse: "ACCESSORIES GODOWN 18",
-        Rack: "Rack C2",
-        Shelf: "Level 4",
-        Zone: "Zone C - Hardware",
-        Barcode: "BAR-TRM-3012",
+        GroupName: "A&E NYLON BOND THREADS",
+        Variant: "FW0323",
+        Color: "FW0323",
+        ColorCode: "FW0323",
+        SizeRange: "3000 MTR",
+        Size: "T-40/3000",
+        UOM: "CONE",
+        StockQty: 15,
+        ReqQty: 10.0,
+        IssuedQty: 6.0,
+        BalanceQty: 4.0,
+        Rate: 165.0,
+        Location: "BIN-B-01-02",
+        Warehouse: "RAW MATERIAL STORE 9B",
+        Rack: "Rack B1",
+        Shelf: "Level 2",
+        Zone: "Zone B - Cord & Threads",
+        Barcode: "BAR-THR-TEX70",
+        SlipId: "000000000000230"
+    },
+
+    // -------------------------------------------------------------
+    // IO/9B/2627/35 (PRODUCTION) -> IRN/APP/9B/2627/2292 (BAG PRODUCTION, 22-10-2026)
+    // -------------------------------------------------------------
+    {
+        ItemCode: "TAP-210D",
+        ItemName: "NY6 210D OXFORD PU 58 INCH YS-NY210D",
+        IrnNo: "IRN/APP/9B/2627/2292",
+        IoNo: "IO/9B/2627/35",
+        IoStage: "Production",
+        JobcardNo: "IO/9B/2627/35 (Production)",
+        IrnDate: "22-10-2026",
+        Department: "BAG PRODUCTION",
+        Associate: "Plot No. 9B",
+        RequestedBy: "Sunil Sharma",
+        GroupName: "Tapes",
+        Variant: "WHITE",
+        Color: "WHITE",
+        ColorCode: "WHT",
+        SizeRange: "58 INCH",
+        Size: "58 INCH",
+        UOM: "MTR",
+        StockQty: 50,
+        ReqQty: 23.205,
+        IssuedQty: 0.0,
+        BalanceQty: 23.205,
+        Rate: 85.0,
+        Location: "BIN-B-02-01",
+        Warehouse: "RAW MATERIAL STORE 9B",
+        Rack: "Rack B2",
+        Shelf: "Level 1",
+        Zone: "Zone B - Fabric & Lining",
+        Barcode: "BAR-TAP-210D",
+        SlipId: "000000000000231"
+    },
+
+    // -------------------------------------------------------------
+    // IO/9B/2627/35 (PRODUCTION) -> IRN/APP/9B/2627/2299 (BAG PRODUCTION, 22-10-2026)
+    // -------------------------------------------------------------
+    {
+        ItemCode: "RAF-1100",
+        ItemName: "THIN RAFFIA DR1100D.R",
+        IrnNo: "IRN/APP/9B/2627/2299",
+        IoNo: "IO/9B/2627/35",
+        IoStage: "Production",
+        JobcardNo: "IO/9B/2627/35 (Production)",
+        IrnDate: "22-10-2026",
+        Department: "BAG PRODUCTION",
+        Associate: "Plot No. 9B",
+        RequestedBy: "Sunil Sharma",
+        GroupName: "Raffia",
+        Variant: "NATURAL",
+        Color: "NATURAL",
+        ColorCode: "NAT",
+        SizeRange: "Standard",
+        Size: "Standard",
+        UOM: "KG",
+        StockQty: 15,
+        ReqQty: 5.36,
+        IssuedQty: 0.0,
+        BalanceQty: 5.36,
+        Rate: 420.0,
+        Location: "BIN-B-02-02",
+        Warehouse: "RAW MATERIAL STORE 9B",
+        Rack: "Rack B2",
+        Shelf: "Level 2",
+        Zone: "Zone B - Fabric & Lining",
+        Barcode: "BAR-RAF-1100",
         SlipId: "000000000000232"
+    },
+
+    // -------------------------------------------------------------
+    // IO/9B/2627/35 (PRODUCTION) -> IRN/APP/9B/2627/2241 (BAG PRODUCTION, 19-10-2026)
+    // -------------------------------------------------------------
+    {
+        ItemCode: "TAP-210D-2",
+        ItemName: "NY6 210D OXFORD PU 58 INCH YS-NY210D",
+        IrnNo: "IRN/APP/9B/2627/2241",
+        IoNo: "IO/9B/2627/35",
+        IoStage: "Production",
+        JobcardNo: "IO/9B/2627/35 (Production)",
+        IrnDate: "19-10-2026",
+        Department: "BAG PRODUCTION",
+        Associate: "Plot No. 9B",
+        RequestedBy: "Sunil Sharma",
+        GroupName: "Tapes",
+        Variant: "BLACK",
+        Color: "BLACK",
+        ColorCode: "BLK",
+        SizeRange: "58 INCH",
+        Size: "58 INCH",
+        UOM: "MTR",
+        StockQty: 20,
+        ReqQty: 0.205,
+        IssuedQty: 0.0,
+        BalanceQty: 0.205,
+        Rate: 85.0,
+        Location: "BIN-B-02-03",
+        Warehouse: "RAW MATERIAL STORE 9B",
+        Rack: "Rack B2",
+        Shelf: "Level 3",
+        Zone: "Zone B - Fabric & Lining",
+        Barcode: "BAR-TAP-210D2",
+        SlipId: "000000000000233"
+    },
+
+    // -------------------------------------------------------------
+    // IO/9B/2627/105 (PRODUCTION) -> IRN/APP/9B/2627/2028 (BAG PRODUCTION, 05-10-2026)
+    // -------------------------------------------------------------
+    {
+        ItemCode: "BDS-10MM",
+        ItemName: "STONE (PCS) 10MM",
+        IrnNo: "IRN/APP/9B/2627/2028",
+        IoNo: "IO/9B/2627/105",
+        IoStage: "Production",
+        JobcardNo: "IO/9B/2627/105 (Production)",
+        IrnDate: "05-10-2026",
+        Department: "BAG PRODUCTION",
+        Associate: "Plot No. 9B",
+        RequestedBy: "Pooja Verma",
+        GroupName: "Beads & Stones",
+        Variant: "10MM",
+        Color: "CLEAR",
+        ColorCode: "CLR-10",
+        SizeRange: "10MM",
+        Size: "10MM",
+        UOM: "PCS",
+        StockQty: 10000,
+        ReqQty: 6835.0,
+        IssuedQty: 0.0,
+        BalanceQty: 6835.0,
+        Rate: 1.25,
+        Location: "BIN-C-02-01",
+        Warehouse: "RAW MATERIAL STORE 9B",
+        Rack: "Rack C2",
+        Shelf: "Level 1",
+        Zone: "Zone C - Hardware & Stones",
+        Barcode: "BAR-BDS-10MM",
+        SlipId: "000000000000234"
+    },
+    {
+        ItemCode: "BDS-5MM",
+        ItemName: "STONE (PCS) 5MM",
+        IrnNo: "IRN/APP/9B/2627/2028",
+        IoNo: "IO/9B/2627/105",
+        IoStage: "Production",
+        JobcardNo: "IO/9B/2627/105 (Production)",
+        IrnDate: "05-10-2026",
+        Department: "BAG PRODUCTION",
+        Associate: "Plot No. 9B",
+        RequestedBy: "Pooja Verma",
+        GroupName: "Beads & Stones",
+        Variant: "5MM",
+        Color: "CLEAR",
+        ColorCode: "CLR-5",
+        SizeRange: "5MM",
+        Size: "5MM",
+        UOM: "PCS",
+        StockQty: 60000,
+        ReqQty: 48695.0,
+        IssuedQty: 0.0,
+        BalanceQty: 48695.0,
+        Rate: 0.75,
+        Location: "BIN-C-02-02",
+        Warehouse: "RAW MATERIAL STORE 9B",
+        Rack: "Rack C2",
+        Shelf: "Level 2",
+        Zone: "Zone C - Hardware & Stones",
+        Barcode: "BAR-BDS-5MM",
+        SlipId: "000000000000235"
+    },
+
+    // -------------------------------------------------------------
+    // IO/9B/2627/60 (PRODUCTION) -> IRN/APP/9B/2627/2402 (BAG PRODUCTION, 27-10-2026)
+    // -------------------------------------------------------------
+    {
+        ItemCode: "PPR-7550",
+        ItemName: "PAPER CORD 1MM ROUND FSC",
+        IrnNo: "IRN/APP/9B/2627/2402",
+        IoNo: "IO/9B/2627/60",
+        IoStage: "Production",
+        JobcardNo: "IO/9B/2627/60 (Production)",
+        IrnDate: "27-10-2026",
+        Department: "BAG PRODUCTION",
+        Associate: "Plot No. 9B",
+        RequestedBy: "Ramesh Kumar",
+        GroupName: "Paper & Stationery",
+        Variant: "PAPER",
+        Color: "NATURAL",
+        ColorCode: "NAT",
+        SizeRange: "1MM",
+        Size: "1MM",
+        UOM: "MTR",
+        StockQty: 3500,
+        ReqQty: 2280.0,
+        IssuedQty: 0.0,
+        BalanceQty: 2280.0,
+        Rate: 4.5,
+        Location: "BIN-B-02-04",
+        Warehouse: "RAW MATERIAL STORE 9B",
+        Rack: "Rack B2",
+        Shelf: "Level 4",
+        Zone: "Zone B - Cord & Threads",
+        Barcode: "BAR-PPR-7550",
+        SlipId: "000000000000236"
+    },
+
+    // -------------------------------------------------------------
+    // IO/9B/2627/20 (SAMPLING) -> IRN/APP/9B/2627/1549 (BAG SAMPLING, 02-09-2026)
+    // -------------------------------------------------------------
+    {
+        ItemCode: "RUN-ZN5",
+        ItemName: "ZNS RUNNER NO.5",
+        IrnNo: "IRN/APP/9B/2627/1549",
+        IoNo: "IO/9B/2627/20",
+        IoStage: "Sampling",
+        JobcardNo: "IO/9B/2627/20 (Sampling)",
+        IrnDate: "02-09-2026",
+        Department: "BAG SAMPLING",
+        Associate: "Plot No. 9B",
+        RequestedBy: "Ramesh Kumar",
+        GroupName: "Trims & Zippers",
+        Variant: "SHINY NICKEL",
+        Color: "SHINY NICKEL",
+        ColorCode: "SN-05",
+        SizeRange: "NO.5",
+        Size: "NO.5",
+        UOM: "PCS",
+        StockQty: 50,
+        ReqQty: 10.0,
+        IssuedQty: 0.0,
+        BalanceQty: 10.0,
+        Rate: 22.0,
+        Location: "BIN-C-02-03",
+        Warehouse: "RAW MATERIAL STORE 9B",
+        Rack: "Rack C2",
+        Shelf: "Level 3",
+        Zone: "Zone C - Hardware",
+        Barcode: "BAR-RUN-ZN5",
+        SlipId: "000000000000237"
+    }
+];
+
+// Master Internal Order (IO) Mappings from Excel with Sampling & Production distinctions
+const KNOWN_IO_MAPPINGS = [
+    {
+        ioNo: "IO/9B/2627/35 (Sampling)",
+        rawIoNo: "IO/9B/2627/35",
+        stage: "Sampling",
+        irnNo: "IRN/APP/9B/2627/1575",
+        department: "BAG SAMPLING",
+        warehouse: "RAW MATERIAL STORE 9B",
+        associate: "Plot No. 9B",
+        requestedBy: "Ramesh Kumar",
+        label: "IO/9B/2627/35 (Sampling) → IRN/APP/9B/2627/1575 (BAG SAMPLING • 4 Items)"
+    },
+    {
+        ioNo: "IO/9B/2627/35 (Production)",
+        rawIoNo: "IO/9B/2627/35",
+        stage: "Production",
+        irnNo: "IRN/APP/9B/2627/2437",
+        department: "BAG PRODUCTION",
+        warehouse: "RAW MATERIAL STORE 9B",
+        associate: "Plot No. 9B",
+        requestedBy: "Sunil Sharma",
+        label: "IO/9B/2627/35 (Production) → IRN/APP/9B/2627/2437 (BAG PRODUCTION • Labels, Cord, Thread)"
+    },
+    {
+        ioNo: "IO/9B/2627/105 (Production)",
+        rawIoNo: "IO/9B/2627/105",
+        stage: "Production",
+        irnNo: "IRN/APP/9B/2627/2028",
+        department: "BAG PRODUCTION",
+        warehouse: "RAW MATERIAL STORE 9B",
+        associate: "Plot No. 9B",
+        requestedBy: "Pooja Verma",
+        label: "IO/9B/2627/105 (Production) → IRN/APP/9B/2627/2028 (BAG PRODUCTION • Stones & Beads)"
+    },
+    {
+        ioNo: "IO/9B/2627/60 (Production)",
+        rawIoNo: "IO/9B/2627/60",
+        stage: "Production",
+        irnNo: "IRN/APP/9B/2627/2402",
+        department: "BAG PRODUCTION",
+        warehouse: "RAW MATERIAL STORE 9B",
+        associate: "Plot No. 9B",
+        requestedBy: "Ramesh Kumar",
+        label: "IO/9B/2627/60 (Production) → IRN/APP/9B/2627/2402 (BAG PRODUCTION • Paper Cord)"
+    },
+    {
+        ioNo: "IO/9B/2627/20 (Sampling)",
+        rawIoNo: "IO/9B/2627/20",
+        stage: "Sampling",
+        irnNo: "IRN/APP/9B/2627/1549",
+        department: "BAG SAMPLING",
+        warehouse: "RAW MATERIAL STORE 9B",
+        associate: "Plot No. 9B",
+        requestedBy: "Ramesh Kumar",
+        label: "IO/9B/2627/20 (Sampling) → IRN/APP/9B/2627/1549 (BAG SAMPLING • ZNS Runner)"
     }
 ];
 
 const DEFAULT_WAREHOUSES = [
-    "PLOT NO. 9B",
     "RAW MATERIAL STORE 9B",
+    "PLOT NO. 9B",
     "SEMI FINISH STORE 9B",
     "LEATHER WAREHOUSE PLOT 9B",
     "ACCESSORIES GODOWN 18",
@@ -307,8 +570,9 @@ const DEFAULT_WAREHOUSES = [
 ];
 
 const DEFAULT_SUPPLIERS = [
-    "Apex Leather Works",
+    "Plot No. 9B",
     "Balaji Trims & Fasteners",
+    "Apex Leather Works",
     "Supreme Leathercraft",
     "K-Tex Textiles",
     "Prime Leather Tanning",
@@ -317,66 +581,70 @@ const DEFAULT_SUPPLIERS = [
 ];
 
 const DEFAULT_DEPARTMENTS = [
+    "BAG PRODUCTION",
+    "BAG SAMPLING",
     "Production",
+    "Sampling",
+    "Sample Development",
     "Cutting",
     "Stitching",
     "Assembly",
     "Finishing",
-    "Quality Control",
     "Packaging"
 ];
 
 const INITIAL_SAVED_ISSUES = [
     {
         id: 1,
-        issueNo: "ISSP/AAPL9B/2627/2003",
-        date: "22-10-2026",
+        issueNo: "ISSP/AAPL9B/2627/2098",
+        date: "30-10-2026",
         issueTo: "Production",
-        associate: "Apex Leather Works",
-        department: "Cutting",
+        associate: "Plot No. 9B",
+        department: "BAG PRODUCTION",
         stores: "RAW MATERIAL STORE 9B",
-        issuedBy: "Nikhil Singh",
+        issuedBy: "Sunil Sharma",
         receivedBy: "Ramesh Kumar",
-        requisitionNo: "IRN/APP/9B/2627/2404",
-        jobcardNo: "JC-4512",
+        requisitionNo: "IRN/APP/9B/2627/2437",
+        jobcardNo: "IO/9B/2627/35 (Production)",
         cuttingPlanNo: "CP-2627-044",
-        remark: "Batch 104 Cutting leather issue",
-        internalMemo: "Bulk cutting line 1",
-        totalQty: 185.5,
-        totalAmount: 27872.5,
+        remark: "IO 35 Production run issue",
+        internalMemo: "Bulk bag production line",
+        totalQty: 9286.0,
+        totalAmount: 141850.5,
         status: "Completed",
         items: [
-            { id: 1, issueType: "Lot Issue", ioNo: "IRN/APP/9B/2627/2404", group: "Leather", item: "COW CULATTAS SINGLE LEATHER", description: "Upper cutting leather", colour: "BLACK", typeSize: "A Grade", uom: "SQFT", location: "BIN-A-01-01", reqQty: 200, pendingQty: 150, stockQty: 450, issueQty: 120.5, rate: 145, amount: 17472.5, remarks: "Checked by QC" },
-            { id: 2, issueType: "Lot Issue", ioNo: "IRN/APP/9B/2627/2405", group: "Leather", item: "COW ECO VEG SIDE CRUST LEATHER", description: "Counter reinforcement", colour: "TAN", typeSize: "Standard", uom: "SQFT", location: "BIN-A-02-01", reqQty: 120, pendingQty: 100, stockQty: 280, issueQty: 65, rate: 160, amount: 10400, remarks: "" }
+            { id: 1, issueType: "Lot Issue", ioNo: "IRN/APP/9B/2627/2437", group: "COO LABEL", item: "TB COO LABEL 1.8X1.9CM TB24-BSN-COO01", description: "TB COO Label", colour: "NATURAL", typeSize: "1.8X1.9CM", uom: "PCS", location: "BIN-D-01-01", reqQty: 1785.0, pendingQty: 1785.0, stockQty: 2500, issueQty: 1785.0, rate: 3.5, amount: 6247.5, remarks: "IO/9B/2627/35 (Production)" },
+            { id: 2, issueType: "Lot Issue", ioNo: "IRN/APP/9B/2627/2437", group: "CORD", item: "ROUND LEATHER CORD 1.8MM IMP", description: "Leather Cord", colour: "CAFFEINE", typeSize: "1.8mm", uom: "MTR", location: "BIN-B-01-01", reqQty: 7497.0, pendingQty: 7497.0, stockQty: 8000, issueQty: 7497.0, rate: 18.0, amount: 134946.0, remarks: "IO/9B/2627/35 (Production)" }
         ]
     },
     {
         id: 2,
-        issueNo: "ISSP/AAPL9B/2627/2002",
-        date: "21-10-2026",
-        issueTo: "Production",
-        associate: "Balaji Trims & Fasteners",
-        department: "Assembly",
-        stores: "SEMI FINISH STORE 9B",
-        issuedBy: "Nikhil Singh",
-        receivedBy: "Pooja Verma",
-        requisitionNo: "IRN/APP/9B/2627/2408",
-        jobcardNo: "JC-4509",
+        issueNo: "ISSS/AAPL9B/2627/1427",
+        date: "04-09-2026",
+        issueTo: "Sampling",
+        associate: "Plot No. 9B",
+        department: "BAG SAMPLING",
+        stores: "RAW MATERIAL STORE 9B",
+        issuedBy: "Ramesh Kumar",
+        receivedBy: "Sunil Sharma",
+        requisitionNo: "IRN/APP/9B/2627/1575",
+        jobcardNo: "IO/9B/2627/35 (Sampling)",
         cuttingPlanNo: "CP-2627-043",
-        remark: "Urgent hardware issue",
-        internalMemo: "Line 2 assembly run",
-        totalQty: 450,
-        totalAmount: 832.5,
+        remark: "IO 35 Sampling hardware issue",
+        internalMemo: "Bag sampling section",
+        totalQty: 10.0,
+        totalAmount: 496.0,
         status: "Completed",
         items: [
-            { id: 1, issueType: "Lot Issue", ioNo: "IRN/APP/9B/2627/2408", group: "Hardware", item: "JAM RIVET SINGLE HEAD 7MM", description: "Riveting section", colour: "ANTIQUE BRASS", typeSize: "7mm", uom: "SET", location: "BIN-C-01-01", reqQty: 1200, pendingQty: 800, stockQty: 5000, issueQty: 450, rate: 1.85, amount: 832.5, remarks: "" }
+            { id: 1, issueType: "Lot Issue", ioNo: "IRN/APP/9B/2627/1575", group: "BRIDGE", item: "BRITTEN HASP 12.4MM HT-6830", description: "Bridge Hasp Gold", colour: "57-14K GOLD", typeSize: "12.4mm", uom: "PCS", location: "BIN-C-01-01", reqQty: 4.0, pendingQty: 4.0, stockQty: 25, issueQty: 4.0, rate: 45.0, amount: 180.0, remarks: "IO/9B/2627/35 (Sampling)" },
+            { id: 2, issueType: "Lot Issue", ioNo: "IRN/APP/9B/2627/1575", group: "CHAIN", item: "METAL CHAIN 9.2MM OVAL LINK CHAIN 2.5MMGG 138CM HT-6582", description: "Metal chain gold", colour: "57-14K GOLD", typeSize: "138cm", uom: "PCS", location: "BIN-C-01-02", reqQty: 2.0, pendingQty: 2.0, stockQty: 10, issueQty: 2.0, rate: 125.0, amount: 250.0, remarks: "IO/9B/2627/35 (Sampling)" }
         ]
     }
 ];
 
 const INITIAL_STAGE_SERIES_CONFIG = {
-    "Production": { prefix: "ISSP/AAPL9B/2627/", nextSerial: 1, defaultDept: "Production" },
-    "Sampling": { prefix: "ISSS/AAPL9B/2627/", nextSerial: 1, defaultDept: "Sampling" },
+    "Production": { prefix: "ISSP/AAPL9B/2627/", nextSerial: 1, defaultDept: "BAG PRODUCTION" },
+    "Sampling": { prefix: "ISSS/AAPL9B/2627/", nextSerial: 1, defaultDept: "BAG SAMPLING" },
     "Sample Development": { prefix: "ISSDV/AAPL9B/2627/", nextSerial: 1, defaultDept: "Sample Development" },
     "General": { prefix: "ISSG/AAPL9B/2627/", nextSerial: 1, defaultDept: "General" },
     "Jobwork": { prefix: "ISSJ/AAPL9B/2627/", nextSerial: 1, defaultDept: "Jobwork" },
@@ -445,6 +713,29 @@ export default function ItemIssue({ initialMode = "form" }) {
             setIssuePrefix(cfg.prefix);
             setIssueSerial(String(cfg.nextSerial));
         }
+
+        // Seamless auto-switch between IO 35 Sampling and Production if IO 35 is in use
+        if (jobcardNo.includes("2627/35") || requisitionNo === "IRN/APP/9B/2627/1575" || requisitionNo === "IRN/APP/9B/2627/2437") {
+            if (newStage === "Sampling") {
+                setJobcardNo("IO/9B/2627/35 (Sampling)");
+                setRequisitionNo("IRN/APP/9B/2627/1575");
+                setSelectedIrnFilter("IRN/APP/9B/2627/1575");
+                setModalIrnFilter("IRN/APP/9B/2627/1575");
+                setDepartment("BAG SAMPLING");
+                setStores("RAW MATERIAL STORE 9B");
+                setAssociate("Plot No. 9B");
+                setReceivedBy("Ramesh Kumar");
+            } else if (newStage === "Production") {
+                setJobcardNo("IO/9B/2627/35 (Production)");
+                setRequisitionNo("IRN/APP/9B/2627/2437");
+                setSelectedIrnFilter("IRN/APP/9B/2627/2437");
+                setModalIrnFilter("IRN/APP/9B/2627/2437");
+                setDepartment("BAG PRODUCTION");
+                setStores("RAW MATERIAL STORE 9B");
+                setAssociate("Plot No. 9B");
+                setReceivedBy("Sunil Sharma");
+            }
+        }
     };
 
     // Switch prefix directly -> sync stage & load its serial counter starting from No. 1
@@ -482,6 +773,7 @@ export default function ItemIssue({ initialMode = "form" }) {
     // =========================================================================
     // REQUISITION ITEMS MODAL STATE (EXACT USER REFERENCE SCREENSHOT 2)
     // =========================================================================
+    const [reqFilterIoNo, setReqFilterIoNo] = useState("");
     const [reqFilterIrnNo, setReqFilterIrnNo] = useState("");
     const [reqFilterItem, setReqFilterItem] = useState("");
     const [reqFilterVariant, setReqFilterVariant] = useState("");
@@ -500,6 +792,10 @@ export default function ItemIssue({ initialMode = "form" }) {
     // Item-Wise Pending IRN Lookup Dropdown State for Header "Requisition No (Pending IRN)"
     const [showIrnLookupDropdown, setShowIrnLookupDropdown] = useState(false);
     const irnDropdownRef = useRef(null);
+
+    // Cutting Slip / Jobcard / IO No Lookup Dropdown State
+    const [showIoLookupDropdown, setShowIoLookupDropdown] = useState(false);
+    const ioDropdownRef = useRef(null);
 
     // Table Lines State: starts with a single blank row
     const [lines, setLines] = useState([{ ...INITIAL_EMPTY_LINE }]);
@@ -579,7 +875,7 @@ export default function ItemIssue({ initialMode = "form" }) {
         return () => { mounted = false; };
     }, []);
 
-    // Close action dropdown and Item-Wise IRN lookup dropdown on outside click
+    // Close action dropdown, Item-Wise IRN lookup dropdown, and IO lookup dropdown on outside click
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (actionBtnRef.current && !actionBtnRef.current.contains(e.target)) {
@@ -587,6 +883,9 @@ export default function ItemIssue({ initialMode = "form" }) {
             }
             if (irnDropdownRef.current && !irnDropdownRef.current.contains(e.target)) {
                 setShowIrnLookupDropdown(false);
+            }
+            if (ioDropdownRef.current && !ioDropdownRef.current.contains(e.target)) {
+                setShowIoLookupDropdown(false);
             }
         };
         document.addEventListener("mousedown", handleClickOutside);
@@ -599,10 +898,13 @@ export default function ItemIssue({ initialMode = "form" }) {
     const pendingIrnSummaries = React.useMemo(() => {
         const map = new Map();
         catalogItems.forEach(item => {
-            const irn = item.IrnNo || "IRN/APP/9B/2627/2401";
+            const irn = item.IrnNo || "IRN/APP/9B/2627/1575";
             if (!map.has(irn)) {
                 map.set(irn, {
                     irnNo: irn,
+                    ioNo: item.IoNo || "IO/9B/2627/35",
+                    ioStage: item.IoStage || (item.Department?.includes("SAMPLING") ? "Sampling" : "Production"),
+                    jobcardNo: item.JobcardNo || (item.IoNo ? `${item.IoNo} (${item.IoStage || 'Production'})` : "IO/9B/2627/35"),
                     itemCode: item.ItemCode,
                     itemName: item.ItemName,
                     groupName: item.GroupName,
@@ -610,12 +912,11 @@ export default function ItemIssue({ initialMode = "form" }) {
                     uom: item.UOM,
                     location: item.Location,
                     stockQty: Number(item.StockQty || 0),
-                    date: item.IrnDate || "27-10-2026",
-                    department: item.Department || "Production",
-                    associate: item.Associate || "Apex Leather Works",
-                    requestedBy: item.RequestedBy || "Ramesh Kumar",
+                    date: item.IrnDate || "04-09-2026",
+                    department: item.Department || "BAG PRODUCTION",
+                    associate: item.Associate || "Plot No. 9B",
+                    requestedBy: item.RequestedBy || "Sunil Sharma",
                     warehouse: item.Warehouse || "RAW MATERIAL STORE 9B",
-                    jobcardNo: item.JobcardNo || "JC-4512",
                     totalItems: 0,
                     pendingItemsCount: 0,
                     totalReqQty: 0,
@@ -656,9 +957,24 @@ export default function ItemIssue({ initialMode = "form" }) {
             it.ItemName.toLowerCase().includes(q) ||
             it.ItemCode.toLowerCase().includes(q) ||
             (it.Department && it.Department.toLowerCase().includes(q)) ||
-            (it.Location && it.Location.toLowerCase().includes(q))
+            (it.Location && it.Location.toLowerCase().includes(q)) ||
+            (it.JobcardNo && it.JobcardNo.toLowerCase().includes(q)) ||
+            (it.IoNo && it.IoNo.toLowerCase().includes(q))
         );
     }, [catalogItems, requisitionNo]);
+
+    // Filtered items for the header Cutting Slip / Jobcard / IO No Lookup Dropdown
+    const filteredHeaderIoItems = React.useMemo(() => {
+        const q = jobcardNo.trim().toLowerCase();
+        if (!q) return KNOWN_IO_MAPPINGS;
+        return KNOWN_IO_MAPPINGS.filter(io =>
+            io.ioNo.toLowerCase().includes(q) ||
+            io.rawIoNo.toLowerCase().includes(q) ||
+            io.stage.toLowerCase().includes(q) ||
+            io.irnNo.toLowerCase().includes(q) ||
+            io.department.toLowerCase().includes(q)
+        );
+    }, [jobcardNo]);
 
     // Filtered items for the live "What is Pending & Stock of That Item" table
     const displayedPendingItems = React.useMemo(() => {
@@ -669,6 +985,8 @@ export default function ItemIssue({ initialMode = "form" }) {
                 item.ItemName.toLowerCase().includes(q) ||
                 item.ItemCode.toLowerCase().includes(q) ||
                 (item.IrnNo && item.IrnNo.toLowerCase().includes(q)) ||
+                (item.JobcardNo && item.JobcardNo.toLowerCase().includes(q)) ||
+                (item.IoNo && item.IoNo.toLowerCase().includes(q)) ||
                 (item.Variant && item.Variant.toLowerCase().includes(q)) ||
                 (item.Color && item.Color.toLowerCase().includes(q)) ||
                 (item.Location && item.Location.toLowerCase().includes(q));
@@ -697,18 +1015,97 @@ export default function ItemIssue({ initialMode = "form" }) {
     const totalAmount = lines.reduce((acc, row) => acc + (parseFloat(row.amount) || 0), 0);
 
     // =========================================================================
+    // SELECT AN INTERNAL ORDER (IO NO) AND LINK ITS APPROPRIATE IRN FROM EXCEL
+    // =========================================================================
+    const handleSelectIo = (ioMapping, autoLoadToTable = false) => {
+        setJobcardNo(ioMapping.ioNo);
+        if (ioMapping.stage) {
+            handleStageChange(ioMapping.stage);
+        }
+        if (ioMapping.irnNo) {
+            setRequisitionNo(ioMapping.irnNo);
+            setSelectedIrnFilter(ioMapping.irnNo);
+            setModalIrnFilter(ioMapping.irnNo);
+        }
+        if (ioMapping.department) setDepartment(ioMapping.department);
+        if (ioMapping.warehouse) setStores(ioMapping.warehouse);
+        if (ioMapping.associate) setAssociate(ioMapping.associate);
+        if (ioMapping.requestedBy) setReceivedBy(ioMapping.requestedBy);
+        setShowIoLookupDropdown(false);
+
+        // Find items belonging to this IO / IRN
+        const itemsForIo = catalogItems.filter(it =>
+            (ioMapping.irnNo && it.IrnNo === ioMapping.irnNo) ||
+            (it.JobcardNo && it.JobcardNo === ioMapping.ioNo) ||
+            (it.IoNo === ioMapping.rawIoNo && it.IoStage === ioMapping.stage)
+        );
+
+        if (itemsForIo.length > 0) {
+            setActiveItem4x4(itemsForIo[0]);
+            setTickedItemCodes(itemsForIo.map(m => m.ItemCode));
+            const newQtys = { ...rowIssueQtys };
+            itemsForIo.forEach(m => {
+                newQtys[m.ItemCode] = m.BalanceQty > 0 ? m.BalanceQty : m.ReqQty;
+            });
+            setRowIssueQtys(newQtys);
+
+            if (autoLoadToTable) {
+                const loadedLines = itemsForIo.map((m, idx) => {
+                    const qty = m.BalanceQty > 0 ? m.BalanceQty : (m.ReqQty || 1);
+                    return {
+                        id: idx + 1,
+                        selected: false,
+                        issueType: "Lot Issue",
+                        ioNo: m.IrnNo,
+                        group: m.GroupName,
+                        item: m.ItemName,
+                        itemCode: m.ItemCode,
+                        description: `${m.ItemName} [${m.Variant}] - IO: ${ioMapping.ioNo}`,
+                        colour: m.Variant || m.Color,
+                        typeSize: m.Size || m.SizeRange,
+                        uom: m.UOM,
+                        location: m.Location,
+                        reqQty: m.ReqQty,
+                        pendingQty: m.BalanceQty,
+                        stockQty: m.StockQty,
+                        issueQty: qty,
+                        rate: m.Rate,
+                        amount: parseFloat((qty * m.Rate).toFixed(2)),
+                        remarks: `IO: ${ioMapping.ioNo} | IRN: ${m.IrnNo} (Stock: ${m.StockQty} ${m.UOM})`
+                    };
+                });
+                setLines(loadedLines);
+                setAutoFillToast(`Linked ${ioMapping.ioNo} → IRN: ${ioMapping.irnNo} (${loadedLines.length} item(s) loaded)!`);
+                setTimeout(() => setAutoFillToast(""), 4500);
+            } else {
+                setAutoFillToast(`Selected ${ioMapping.ioNo} → Linked to ${ioMapping.irnNo} (${ioMapping.department})`);
+                setTimeout(() => setAutoFillToast(""), 3500);
+            }
+        }
+    };
+
+    // =========================================================================
     // SELECT A PENDING IRN OR LOAD ITS PENDING ITEMS INTO ISSUE FORM
     // =========================================================================
     const handleSelectPendingIrn = (irnSummary, autoLoadToTable = false) => {
         setSelectedIrnFilter(irnSummary.irnNo);
+        setModalIrnFilter(irnSummary.irnNo);
         setRequisitionNo(irnSummary.irnNo);
         setDepartment(irnSummary.department);
         setStores(irnSummary.warehouse);
         setAssociate(irnSummary.associate);
         setReceivedBy(irnSummary.requestedBy);
+
+        // Auto link IO and Stage
         if (irnSummary.jobcardNo) {
             setJobcardNo(irnSummary.jobcardNo);
+        } else if (irnSummary.ioNo) {
+            setJobcardNo(`${irnSummary.ioNo} (${irnSummary.ioStage || 'Production'})`);
         }
+        if (irnSummary.ioStage) {
+            handleStageChange(irnSummary.ioStage);
+        }
+        setShowIrnLookupDropdown(false);
 
         const pendingItemsForIrn = irnSummary.items.filter(it => it.BalanceQty > 0);
         const itemsToUse = pendingItemsForIrn.length > 0 ? pendingItemsForIrn : irnSummary.items;
@@ -734,7 +1131,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                     group: m.GroupName,
                     item: m.ItemName,
                     itemCode: m.ItemCode,
-                    description: `${m.ItemName} [${m.Variant}] - IRN: ${m.IrnNo}`,
+                    description: `${m.ItemName} [${m.Variant}] - IRN: ${m.IrnNo} • IO: ${irnSummary.jobcardNo || irnSummary.ioNo}`,
                     colour: m.Variant || m.Color,
                     typeSize: m.Size || m.SizeRange,
                     uom: m.UOM,
@@ -745,11 +1142,11 @@ export default function ItemIssue({ initialMode = "form" }) {
                     issueQty: qty,
                     rate: m.Rate,
                     amount: parseFloat((qty * m.Rate).toFixed(2)),
-                    remarks: `Pending IRN ${m.IrnNo} (Stock: ${m.StockQty} ${m.UOM})`
+                    remarks: `Pending IRN ${m.IrnNo} | IO: ${irnSummary.jobcardNo || irnSummary.ioNo} (Stock: ${m.StockQty} ${m.UOM})`
                 };
             });
             setLines(loadedLines);
-            setAutoFillToast(`Loaded ${loadedLines[0].item} [IRN: ${irnSummary.irnNo}] into Item Issue!`);
+            setAutoFillToast(`Loaded ${loadedLines.length} item(s) for ${irnSummary.jobcardNo || irnSummary.ioNo} [IRN: ${irnSummary.irnNo}] into Item Issue!`);
             setTimeout(() => setAutoFillToast(""), 4500);
         }
     };
@@ -762,8 +1159,16 @@ export default function ItemIssue({ initialMode = "form" }) {
         if (m.Warehouse) setStores(m.Warehouse);
         if (m.Associate) setAssociate(m.Associate);
         if (m.RequestedBy) setReceivedBy(m.RequestedBy);
-        if (m.JobcardNo) setJobcardNo(m.JobcardNo);
+        if (m.JobcardNo) {
+            setJobcardNo(m.JobcardNo);
+        } else if (m.IoNo) {
+            setJobcardNo(`${m.IoNo} (${m.IoStage || 'Production'})`);
+        }
+        if (m.IoStage) {
+            handleStageChange(m.IoStage);
+        }
         setShowIrnLookupDropdown(false);
+        setShowIoLookupDropdown(false);
 
         const qtyToIssue = parseFloat(rowIssueQtys[m.ItemCode]) || (m.BalanceQty > 0 ? m.BalanceQty : m.ReqQty || 1);
 
@@ -781,7 +1186,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                 group: m.GroupName,
                 item: m.ItemName,
                 itemCode: m.ItemCode,
-                description: `${m.ItemName} [${m.Variant}] - Loc: ${m.Location}`,
+                description: `${m.ItemName} [${m.Variant}] - IO: ${m.JobcardNo || m.IoNo} • Loc: ${m.Location}`,
                 colour: m.Variant || m.Color,
                 typeSize: m.Size || m.SizeRange,
                 uom: m.UOM,
@@ -792,7 +1197,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                 issueQty: qtyToIssue,
                 rate: m.Rate,
                 amount: parseFloat((qtyToIssue * m.Rate).toFixed(2)),
-                remarks: `Item-Wise IRN ${m.IrnNo} | Bal: ${m.BalanceQty} | Stock: ${m.StockQty}`
+                remarks: `Item-Wise IRN ${m.IrnNo} | IO: ${m.JobcardNo || m.IoNo} | Bal: ${m.BalanceQty} | Stock: ${m.StockQty}`
             };
 
             if (existingIdx !== -1) {
@@ -803,7 +1208,7 @@ export default function ItemIssue({ initialMode = "form" }) {
             return [...existingNonEmpty, newLineObj];
         });
 
-        setAutoFillToast(`Selected Item-Wise IRN ${m.IrnNo}: ${m.ItemName} (Pending: ${m.BalanceQty} ${m.UOM}, Stock: ${m.StockQty} ${m.UOM})!`);
+        setAutoFillToast(`Selected Item-Wise IRN ${m.IrnNo}: ${m.ItemName} [IO: ${m.JobcardNo || m.IoNo}]!`);
         setTimeout(() => setAutoFillToast(""), 4000);
     };
 
@@ -1008,6 +1413,7 @@ export default function ItemIssue({ initialMode = "form" }) {
     // =========================================================================
     const filteredReqMaterials = catalogItems.filter(m => {
         const matchIrn = modalIrnFilter === "ALL" || m.IrnNo === modalIrnFilter;
+        const matchIoCol = !reqFilterIoNo || (m.JobcardNo && m.JobcardNo.toLowerCase().includes(reqFilterIoNo.toLowerCase())) || (m.IoNo && m.IoNo.toLowerCase().includes(reqFilterIoNo.toLowerCase()));
         const matchIrnCol = !reqFilterIrnNo || (m.IrnNo && m.IrnNo.toLowerCase().includes(reqFilterIrnNo.toLowerCase()));
         const matchItem = !reqFilterItem || m.ItemName.toLowerCase().includes(reqFilterItem.toLowerCase()) || m.ItemCode.toLowerCase().includes(reqFilterItem.toLowerCase()) || (m.IrnNo && m.IrnNo.toLowerCase().includes(reqFilterItem.toLowerCase()));
         const matchVariant = !reqFilterVariant || m.Variant.toLowerCase().includes(reqFilterVariant.toLowerCase());
@@ -1017,10 +1423,11 @@ export default function ItemIssue({ initialMode = "form" }) {
         const matchStock = !reqFilterStock || String(m.StockQty).includes(reqFilterStock);
         const matchAlready = !reqFilterAlreadyIssued || String(m.IssuedQty).includes(reqFilterAlreadyIssued);
         const matchBal = !reqFilterBalToIssue || String(m.BalanceQty).includes(reqFilterBalToIssue);
-        return matchIrn && matchIrnCol && matchItem && matchVariant && matchSizeRange && matchSize && matchReq && matchStock && matchAlready && matchBal;
+        return matchIrn && matchIoCol && matchIrnCol && matchItem && matchVariant && matchSizeRange && matchSize && matchReq && matchStock && matchAlready && matchBal;
     });
 
     const handleResetReqFilters = () => {
+        setReqFilterIoNo("");
         setReqFilterIrnNo("");
         setReqFilterItem("");
         setReqFilterVariant("");
@@ -1095,7 +1502,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                     group: m.GroupName,
                     item: m.ItemName,
                     itemCode: m.ItemCode,
-                    description: `${m.ItemName} [${m.Variant}] - Loc: ${m.Location}`,
+                    description: `${m.ItemName} [${m.Variant}] - IO: ${m.JobcardNo || m.IoNo} • Loc: ${m.Location}`,
                     colour: m.Variant || m.Color,
                     typeSize: m.Size || m.SizeRange,
                     uom: m.UOM,
@@ -1106,7 +1513,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                     issueQty: qty,
                     rate: m.Rate,
                     amount: parseFloat((qty * m.Rate).toFixed(2)),
-                    remarks: `Issued against Item-Wise IRN ${m.IrnNo || requisitionNo}`
+                    remarks: `Issued against Item-Wise IRN ${m.IrnNo || requisitionNo} [${m.JobcardNo || m.IoNo}]`
                 };
             });
         });
@@ -1116,22 +1523,43 @@ export default function ItemIssue({ initialMode = "form" }) {
             if (selectedItems[0].IrnNo) {
                 setRequisitionNo(selectedItems[0].IrnNo);
             }
+            if (selectedItems[0].JobcardNo) {
+                setJobcardNo(selectedItems[0].JobcardNo);
+            }
+            if (selectedItems[0].IoStage) {
+                handleStageChange(selectedItems[0].IoStage);
+            }
+            if (selectedItems[0].Department) {
+                setDepartment(selectedItems[0].Department);
+            }
+            if (selectedItems[0].Warehouse) {
+                setStores(selectedItems[0].Warehouse);
+            }
+            if (selectedItems[0].Associate) {
+                setAssociate(selectedItems[0].Associate);
+            }
+            if (selectedItems[0].RequestedBy) {
+                setReceivedBy(selectedItems[0].RequestedBy);
+            }
         }
 
-        setAutoFillToast(`Loaded ${selectedItems.length} item-wise IRN item(s) with stock details into Item Issue!`);
+        setAutoFillToast(`Loaded ${selectedItems.length} item-wise IRN item(s) for ${selectedItems[0]?.JobcardNo || "IO"} into Item Issue!`);
         setTimeout(() => setAutoFillToast(""), 4500);
         setActiveModal(null);
     };
 
-    // Line items change handler (supports both Item selection AND Item-Wise IRN No selection)
+    // Line items change handler (supports both Item selection AND Item-Wise IRN / IO No selection)
     const handleLineChange = (id, field, value) => {
         setLines(prev => prev.map(row => {
             if (row.id !== id) return row;
             const updated = { ...row, [field]: value };
 
             if (field === "ioNo") {
+                const valStr = String(value).trim().toLowerCase();
                 const foundByIrn = catalogItems.find(it =>
-                    it.IrnNo && it.IrnNo.toLowerCase() === String(value).trim().toLowerCase()
+                    (it.IrnNo && it.IrnNo.toLowerCase() === valStr) ||
+                    (it.JobcardNo && it.JobcardNo.toLowerCase().includes(valStr)) ||
+                    (it.IoNo && it.IoNo.toLowerCase() === valStr)
                 );
                 if (foundByIrn) {
                     updated.issueType = updated.issueType || "Lot Issue";
@@ -1139,7 +1567,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                     updated.item = foundByIrn.ItemName;
                     updated.itemCode = foundByIrn.ItemCode;
                     updated.group = foundByIrn.GroupName || updated.group;
-                    updated.description = `${foundByIrn.ItemName} [${foundByIrn.Variant}] - IRN: ${foundByIrn.IrnNo}`;
+                    updated.description = `${foundByIrn.ItemName} [${foundByIrn.Variant}] - IRN: ${foundByIrn.IrnNo} • IO: ${foundByIrn.JobcardNo || foundByIrn.IoNo}`;
                     updated.colour = foundByIrn.Variant || foundByIrn.Color || updated.colour;
                     updated.typeSize = foundByIrn.Size || foundByIrn.SizeRange || updated.typeSize;
                     updated.uom = foundByIrn.UOM || updated.uom || "PCS";
@@ -1152,9 +1580,13 @@ export default function ItemIssue({ initialMode = "form" }) {
                     if (updated.issueQty && updated.rate) {
                         updated.amount = parseFloat((parseFloat(updated.issueQty) * parseFloat(updated.rate)).toFixed(2));
                     }
-                    updated.remarks = `Item-Wise IRN ${foundByIrn.IrnNo} (Stock: ${foundByIrn.StockQty} ${foundByIrn.UOM})`;
+                    updated.remarks = `Item-Wise IRN ${foundByIrn.IrnNo} | IO: ${foundByIrn.JobcardNo || foundByIrn.IoNo} (Stock: ${foundByIrn.StockQty} ${foundByIrn.UOM})`;
                     setActiveItem4x4(foundByIrn);
                     setRequisitionNo(foundByIrn.IrnNo);
+                    if (foundByIrn.JobcardNo) setJobcardNo(foundByIrn.JobcardNo);
+                    if (foundByIrn.IoStage) handleStageChange(foundByIrn.IoStage);
+                    if (foundByIrn.Department) setDepartment(foundByIrn.Department);
+                    if (foundByIrn.Warehouse) setStores(foundByIrn.Warehouse);
                 }
             }
 
@@ -1169,7 +1601,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                     updated.itemCode = found.ItemCode;
                     updated.ioNo = found.IrnNo || updated.ioNo || requisitionNo;
                     updated.group = found.GroupName || updated.group;
-                    updated.description = `${found.ItemName} [${found.Variant}] - IRN: ${found.IrnNo}`;
+                    updated.description = `${found.ItemName} [${found.Variant}] - IRN: ${found.IrnNo} • IO: ${found.JobcardNo || found.IoNo}`;
                     updated.colour = found.Variant || found.Color || updated.colour;
                     updated.typeSize = found.Size || found.SizeRange || updated.typeSize;
                     updated.uom = found.UOM || updated.uom || "PCS";
@@ -1182,9 +1614,13 @@ export default function ItemIssue({ initialMode = "form" }) {
                     if (updated.issueQty && updated.rate) {
                         updated.amount = parseFloat((parseFloat(updated.issueQty) * parseFloat(updated.rate)).toFixed(2));
                     }
-                    updated.remarks = `Item-Wise IRN ${found.IrnNo} (Stock: ${found.StockQty} ${found.UOM})`;
+                    updated.remarks = `Item-Wise IRN ${found.IrnNo} | IO: ${found.JobcardNo || found.IoNo} (Stock: ${found.StockQty} ${found.UOM})`;
                     setActiveItem4x4(found);
                     if (found.IrnNo) setRequisitionNo(found.IrnNo);
+                    if (found.JobcardNo) setJobcardNo(found.JobcardNo);
+                    if (found.IoStage) handleStageChange(found.IoStage);
+                    if (found.Department) setDepartment(found.Department);
+                    if (found.Warehouse) setStores(found.Warehouse);
                 }
             }
 
@@ -1227,6 +1663,17 @@ export default function ItemIssue({ initialMode = "form" }) {
 
     // Display button action
     const handleDisplay = () => {
+        if (requisitionNo) {
+            setModalIrnFilter(requisitionNo);
+        } else if (jobcardNo) {
+            const matchedIo = KNOWN_IO_MAPPINGS.find(m =>
+                jobcardNo.toLowerCase().includes(m.rawIoNo.toLowerCase()) ||
+                jobcardNo.toLowerCase().includes(m.ioNo.toLowerCase())
+            );
+            if (matchedIo) {
+                setModalIrnFilter(matchedIo.irnNo);
+            }
+        }
         setActiveModal("requisitionItems");
     };
 
@@ -1391,6 +1838,12 @@ export default function ItemIssue({ initialMode = "form" }) {
         setRowIssueQtys({});
         setLines([{ ...INITIAL_EMPTY_LINE }]);
         setShowActionMenu(false);
+        setShowIoLookupDropdown(false);
+        setShowIrnLookupDropdown(false);
+        setSelectedIrnFilter("ALL");
+        setModalIrnFilter("ALL");
+        setPendingSearchQuery("");
+        setStockStatusFilter("ALL");
     };
 
     const filteredIssues = savedIssues.filter(item => {
@@ -1966,26 +2419,175 @@ export default function ItemIssue({ initialMode = "form" }) {
                             )}
                         </div>
 
-                        {/* ROW 3 - COL 1: Cutting Slip, Jobcard No */}
-                        <div className="tpcs-ii-field-group">
-                            <label className="tpcs-ii-label">Cutting Slip,Jobcard No</label>
+                        {/* ROW 3 - COL 1: Cutting Slip / Jobcard / IO No */}
+                        <div className="tpcs-ii-field-group" ref={ioDropdownRef} style={{ position: "relative" }}>
+                            <label className="tpcs-ii-label">
+                                Cutting Slip / Jobcard / IO No
+                            </label>
                             <div className="tpcs-ii-input-group">
                                 <input
                                     type="text"
                                     className="tpcs-ii-input"
-                                    placeholder="Select Cutting Slip,Jobcard No"
+                                    placeholder="Select IO No (e.g. IO/9B/2627/35)"
                                     value={jobcardNo}
-                                    onChange={(e) => setJobcardNo(e.target.value)}
+                                    onFocus={() => setShowIoLookupDropdown(true)}
+                                    onClick={() => setShowIoLookupDropdown(true)}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        setJobcardNo(val);
+                                        setShowIoLookupDropdown(true);
+                                        const matchedIo = KNOWN_IO_MAPPINGS.find(
+                                            io => io.ioNo.toLowerCase() === val.trim().toLowerCase() ||
+                                                  io.rawIoNo.toLowerCase() === val.trim().toLowerCase()
+                                        );
+                                        if (matchedIo) {
+                                            handleSelectIo(matchedIo, false);
+                                        }
+                                    }}
+                                    list="known-ios-datalist"
+                                    style={{ fontWeight: 700, color: "#0f172a" }}
                                 />
+                                <datalist id="known-ios-datalist">
+                                    {KNOWN_IO_MAPPINGS.map(io => (
+                                        <option key={io.ioNo} value={io.ioNo}>
+                                            {io.label}
+                                        </option>
+                                    ))}
+                                </datalist>
                                 <button
                                     type="button"
                                     className="tpcs-ii-addon-btn"
-                                    title="View Items for Jobcard"
-                                    onClick={() => setActiveModal("requisitionItems")}
+                                    title="Toggle Internal Orders (IO) List"
+                                    onClick={() => setShowIoLookupDropdown(prev => !prev)}
                                 >
                                     <FaListUl />
                                 </button>
                             </div>
+
+                            {/* Interactive IO Selection Dropdown Panel */}
+                            {showIoLookupDropdown && (
+                                <div style={{
+                                    position: "absolute",
+                                    top: "100%",
+                                    left: 0,
+                                    width: "600px",
+                                    maxWidth: "92vw",
+                                    maxHeight: "340px",
+                                    overflowY: "auto",
+                                    backgroundColor: "#ffffff",
+                                    border: "1.5px solid #0f172a",
+                                    borderRadius: "6px",
+                                    boxShadow: "0 10px 25px rgba(15, 23, 42, 0.2)",
+                                    zIndex: 1200,
+                                    marginTop: "4px"
+                                }}>
+                                    <div style={{
+                                        background: "#0f172a",
+                                        color: "#ffffff",
+                                        padding: "7px 12px",
+                                        fontSize: "11.5px",
+                                        fontWeight: 700,
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        position: "sticky",
+                                        top: 0,
+                                        zIndex: 2
+                                    }}>
+                                        <span>Internal Orders (IO) &amp; Linked Pending IRNs ({filteredHeaderIoItems.length})</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowIoLookupDropdown(false)}
+                                            style={{
+                                                background: "transparent",
+                                                color: "#cbd5e1",
+                                                border: "none",
+                                                cursor: "pointer",
+                                                fontSize: "12px"
+                                            }}
+                                        >
+                                            <FaTimes />
+                                        </button>
+                                    </div>
+
+                                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "11px" }}>
+                                        <thead>
+                                            <tr style={{ background: "#f1f5f9", color: "#334155", borderBottom: "1px solid #cbd5e1", textAlign: "left" }}>
+                                                <th style={{ padding: "6px 8px" }}>IO Number &amp; Stage</th>
+                                                <th style={{ padding: "6px 8px" }}>Linked Pending IRN</th>
+                                                <th style={{ padding: "6px 8px" }}>Department</th>
+                                                <th style={{ padding: "6px 8px", textAlign: "center" }}>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {filteredHeaderIoItems.map(io => {
+                                                const isActive = jobcardNo === io.ioNo || jobcardNo === io.rawIoNo;
+                                                const isSampling = io.stage === "Sampling";
+                                                return (
+                                                    <tr
+                                                        key={io.ioNo}
+                                                        onClick={() => handleSelectIo(io, false)}
+                                                        style={{
+                                                            borderBottom: "1px solid #e2e8f0",
+                                                            cursor: "pointer",
+                                                            backgroundColor: isActive ? "#eff6ff" : "#ffffff"
+                                                        }}
+                                                    >
+                                                        <td style={{ padding: "6px 8px", fontWeight: 800 }}>
+                                                            <div style={{ color: isSampling ? "#b45309" : "#1e40af", fontFamily: "monospace", fontSize: "11.5px" }}>
+                                                                {io.ioNo}
+                                                            </div>
+                                                            <span style={{
+                                                                display: "inline-block",
+                                                                padding: "1px 6px",
+                                                                borderRadius: "6px",
+                                                                fontSize: "9.5px",
+                                                                fontWeight: 700,
+                                                                marginTop: "2px",
+                                                                background: isSampling ? "#fef3c7" : "#dbeafe",
+                                                                color: isSampling ? "#92400e" : "#1e40af"
+                                                            }}>
+                                                                {io.stage} Stage
+                                                            </span>
+                                                        </td>
+                                                        <td style={{ padding: "6px 8px" }}>
+                                                            <div style={{ fontWeight: 800, color: "#1976d2", fontFamily: "monospace" }}>
+                                                                {io.irnNo}
+                                                            </div>
+                                                            <div style={{ fontSize: "10px", color: "#64748b" }}>
+                                                                {io.warehouse}
+                                                            </div>
+                                                        </td>
+                                                        <td style={{ padding: "6px 8px", fontSize: "11px", fontWeight: 600, color: "#334155" }}>
+                                                            <div>{io.department}</div>
+                                                            <div style={{ fontSize: "10px", color: "#64748b" }}>Req By: {io.requestedBy}</div>
+                                                        </td>
+                                                        <td style={{ padding: "6px 8px", textAlign: "center" }} onClick={e => e.stopPropagation()}>
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => handleSelectIo(io, true)}
+                                                                style={{
+                                                                    background: isSampling ? "#d97706" : "#2563eb",
+                                                                    color: "#ffffff",
+                                                                    border: "none",
+                                                                    borderRadius: "3px",
+                                                                    padding: "3px 8px",
+                                                                    fontSize: "10px",
+                                                                    fontWeight: 700,
+                                                                    cursor: "pointer"
+                                                                }}
+                                                                title={`Load items for ${io.ioNo}`}
+                                                            >
+                                                                Load Items
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
                         </div>
 
                         {/* ROW 3 - COL 2: Cutting Plan No */}
@@ -2325,13 +2927,16 @@ export default function ItemIssue({ initialMode = "form" }) {
                                 </div>
                             </div>
 
-                            {/* Blue Header Table: Action | Item-Wise IRN No (Req. No) | Item Name & Code | Rack Bin QR | Qty | Stock Qty | Approval Status */}
+                            {/* Blue Header Table: Action | IO No | Item-Wise IRN No (Req. No) | Item Name & Code | Rack Bin QR | Qty | Stock Qty | Approval Status */}
                             <div style={{ width: "100%", overflowX: "auto" }}>
                                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "11.5px" }}>
                                     <thead>
                                         <tr style={{ backgroundColor: "#2073a9", color: "#ffffff" }}>
-                                            <th style={{ width: "120px", padding: "6px 8px", border: "1px solid #1b608f", textAlign: "center", fontWeight: 600 }}>
+                                            <th style={{ width: "115px", padding: "6px 8px", border: "1px solid #1b608f", textAlign: "center", fontWeight: 600 }}>
                                                 Action
+                                            </th>
+                                            <th style={{ width: "175px", padding: "6px 10px", border: "1px solid #1b608f", textAlign: "center", fontWeight: 600 }}>
+                                                Internal Order (IO No)
                                             </th>
                                             <th style={{ padding: "6px 10px", border: "1px solid #1b608f", textAlign: "center", fontWeight: 600 }}>
                                                 Item-Wise IRN No (Req. No)
@@ -2357,6 +2962,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                                         {pendingIrnSummaries.map(irn => {
                                             const isSelectedIrn = selectedIrnFilter === irn.irnNo;
                                             const isPendingStatus = irn.totalPendingQty > 0;
+                                            const isSampling = irn.ioStage === "Sampling";
                                             return (
                                                 <React.Fragment key={irn.irnNo}>
                                                     <tr
@@ -2382,10 +2988,36 @@ export default function ItemIssue({ initialMode = "form" }) {
                                                                     className="tpcs-pirn-load-btn"
                                                                     onClick={() => handleSelectPendingIrn(irn, true)}
                                                                     title={`Load ${irn.itemName} (${irn.irnNo}) into Item Issue`}
+                                                                    style={{
+                                                                        background: isSampling ? "#d97706" : "#2073a9"
+                                                                    }}
                                                                 >
                                                                     <span>Issue IRN</span> <FaArrowRight style={{ fontSize: "9px" }} />
                                                                 </button>
                                                             </div>
+                                                        </td>
+                                                        <td style={{ padding: "5px 10px", border: "1px solid #dddddd", textAlign: "center" }}>
+                                                            <div style={{
+                                                                fontWeight: 800,
+                                                                fontFamily: "monospace",
+                                                                color: isSampling ? "#b45309" : "#1e40af",
+                                                                fontSize: "11.5px"
+                                                            }}>
+                                                                {irn.jobcardNo || irn.ioNo}
+                                                            </div>
+                                                            <span style={{
+                                                                display: "inline-block",
+                                                                marginTop: "2px",
+                                                                padding: "1px 6px",
+                                                                borderRadius: "8px",
+                                                                fontSize: "9.5px",
+                                                                fontWeight: 700,
+                                                                background: isSampling ? "#fef3c7" : "#dbeafe",
+                                                                color: isSampling ? "#92400e" : "#1e40af",
+                                                                border: `1px solid ${isSampling ? "#fcd34d" : "#bfdbfe"}`
+                                                            }}>
+                                                                {irn.ioStage} Stage
+                                                            </span>
                                                         </td>
                                                         <td style={{ padding: "5px 10px", border: "1px solid #dddddd", textAlign: "center", fontWeight: 800, color: "#2073a9", fontFamily: "monospace" }}>
                                                             {irn.irnNo}
@@ -3696,25 +4328,33 @@ export default function ItemIssue({ initialMode = "form" }) {
                                 </div>
 
                                 <div style={{ display: "flex", gap: "5px", alignItems: "center", flexWrap: "wrap" }}>
-                                    <span style={{ fontSize: "11.5px", fontWeight: 700, color: "#334155" }}>Item-Wise Pending IRN:</span>
+                                    <span style={{ fontSize: "11.5px", fontWeight: 700, color: "#334155" }}>IO &amp; Pending IRN Filters:</span>
                                     <button
                                         type="button"
                                         className={`tpcs-pirn-pill-btn ${modalIrnFilter === "ALL" ? "active" : ""}`}
                                         onClick={() => setModalIrnFilter("ALL")}
                                     >
-                                        All 9 Item IRNs
+                                        All Items ({catalogItems.length})
                                     </button>
-                                    {pendingIrnSummaries.map(irn => (
-                                        <button
-                                            key={irn.irnNo}
-                                            type="button"
-                                            className={`tpcs-pirn-pill-btn ${modalIrnFilter === irn.irnNo ? "active" : ""}`}
-                                            onClick={() => setModalIrnFilter(irn.irnNo)}
-                                            title={`${irn.itemName} (${irn.itemCode}) • Bin: ${irn.location}`}
-                                        >
-                                            {irn.irnNo} • {irn.itemName} (Bal: {irn.totalPendingQty})
-                                        </button>
-                                    ))}
+                                    {pendingIrnSummaries.map(irn => {
+                                        const isSampling = irn.ioStage === "Sampling";
+                                        return (
+                                            <button
+                                                key={irn.irnNo}
+                                                type="button"
+                                                className={`tpcs-pirn-pill-btn ${modalIrnFilter === irn.irnNo ? "active" : ""}`}
+                                                onClick={() => setModalIrnFilter(irn.irnNo)}
+                                                title={`${irn.itemName} (${irn.itemCode}) • Bin: ${irn.location}`}
+                                                style={{
+                                                    borderColor: isSampling ? "#d97706" : "#2563eb",
+                                                    color: isSampling ? "#92400e" : "#1e40af",
+                                                    fontWeight: modalIrnFilter === irn.irnNo ? 800 : 600
+                                                }}
+                                            >
+                                                {irn.jobcardNo || irn.ioNo}: {irn.irnNo} ({irn.items.length} Itm)
+                                            </button>
+                                        );
+                                    })}
                                 </div>
                             </div>
 
@@ -3730,13 +4370,22 @@ export default function ItemIssue({ initialMode = "form" }) {
                                 </button>
                             </div>
 
-                            {/* Table matching Screenshot 2 + Item-Wise IRN No column */}
+                            {/* Table matching Screenshot 2 + IO No and Item-Wise IRN No column */}
                             <div style={{ overflowX: "auto" }}>
                                 <table className="tpcs-req-table">
                                     <thead>
                                         {/* Row 1: Filters above each column */}
                                         <tr className="tpcs-req-filter-row">
                                             <td style={{ textAlign: "center", width: "40px" }}></td>
+                                            <td style={{ width: "165px" }}>
+                                                <input
+                                                    type="text"
+                                                    className="tpcs-req-filter-input"
+                                                    value={reqFilterIoNo}
+                                                    onChange={e => setReqFilterIoNo(e.target.value)}
+                                                    placeholder="Filter IO No..."
+                                                />
+                                            </td>
                                             <td style={{ width: "160px" }}>
                                                 <input
                                                     type="text"
@@ -3839,8 +4488,9 @@ export default function ItemIssue({ initialMode = "form" }) {
                                                     title="Select All"
                                                 />
                                             </th>
+                                            <th>IO No. &amp; Stage</th>
                                             <th>Item-Wise IRN No</th>
-                                            <th>Item Name & Code</th>
+                                            <th>Item Name &amp; Code</th>
                                             <th>Variant</th>
                                             <th>Size Range</th>
                                             <th>Size</th>
@@ -3855,6 +4505,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                                         {filteredReqMaterials.map((m) => {
                                             const isTicked = tickedItemCodes.includes(m.ItemCode);
                                             const issueQtyVal = rowIssueQtys[m.ItemCode] ?? (m.BalanceQty > 0 ? m.BalanceQty : m.ReqQty || "");
+                                            const isSampling = m.IoStage === "Sampling";
 
                                             return (
                                                 <tr
@@ -3873,6 +4524,26 @@ export default function ItemIssue({ initialMode = "form" }) {
                                                         <span
                                                             style={{
                                                                 display: "inline-block",
+                                                                background: isSampling ? "#fef3c7" : "#dbeafe",
+                                                                color: isSampling ? "#92400e" : "#1e40af",
+                                                                border: `1px solid ${isSampling ? "#fcd34d" : "#93c5fd"}`,
+                                                                borderRadius: "4px",
+                                                                padding: "2px 6px",
+                                                                fontSize: "11px",
+                                                                fontFamily: "monospace",
+                                                                fontWeight: 800
+                                                            }}
+                                                        >
+                                                            {m.JobcardNo || m.IoNo}
+                                                        </span>
+                                                        <div style={{ fontSize: "9.5px", color: "#64748b", marginTop: "2px", fontWeight: 600 }}>
+                                                            {m.IoStage || "Production"} Stage
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <span
+                                                            style={{
+                                                                display: "inline-block",
                                                                 background: "#e0f2fe",
                                                                 color: "#0369a1",
                                                                 border: "1px solid #7dd3fc",
@@ -3886,7 +4557,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                                                             {m.IrnNo}
                                                         </span>
                                                         <div style={{ fontSize: "9.5px", color: "#64748b", marginTop: "2px", fontWeight: 600 }}>
-                                                            {m.IrnDept} • {m.Location}
+                                                            {m.Department} • {m.Location}
                                                         </div>
                                                     </td>
                                                     <td>
@@ -3932,7 +4603,7 @@ export default function ItemIssue({ initialMode = "form" }) {
                                         })}
                                         {filteredReqMaterials.length === 0 && (
                                             <tr>
-                                                <td colSpan={11} style={{ textAlign: "center", padding: "20px", color: "#64748b" }}>
+                                                <td colSpan={12} style={{ textAlign: "center", padding: "20px", color: "#64748b" }}>
                                                     No requisition items match the filters. Click Reset to clear filters.
                                                 </td>
                                             </tr>

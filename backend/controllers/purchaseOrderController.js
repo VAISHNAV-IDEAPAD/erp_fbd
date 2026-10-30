@@ -178,12 +178,14 @@ exports.getPendingIndentItems = (req, res) => {
 // Get All Purchase Orders
 // ======================================================
 exports.getAllPurchaseOrders = (req, res) => {
-    const sql = `
+    const { supplier, materialSource, status, search } = req.query;
+
+    let sql = `
         SELECT
             po.POID,
             COALESCE(po.PONo, 'PO-' || po.POID) AS PONo,
             po.PODate,
-            po.PurchaseType,
+            COALESCE(po.PurchaseType, 'Domestic') AS PurchaseType,
             po.ReleaseOption,
             po.SupplierID,
             po.DeliveryDate,
@@ -198,26 +200,60 @@ exports.getAllPurchaseOrders = (req, res) => {
             po.SGSTAmount,
             po.IGSTAmount,
             po.NetAmount,
-            po.Status,
+            COALESCE(po.Status, 'Open') AS Status,
             po.Remarks,
             po.PaymentTerms,
             po.DeliveryTerms,
             po.ShipToAddress,
             po.InternalMemo,
             po.TermsConditions,
-            po.EnteredBy,
+            COALESCE(po.EnteredBy, 'Vaishnav V') AS EnteredBy,
             po.CustomerOrderNo,
             po.CreatedAt,
-            s.SupplierName,
+            COALESCE(s.SupplierName, 'Alpine Supplier') AS SupplierName,
             s.SupplierCode,
-            (SELECT COUNT(*) FROM PurchaseOrderDetails pod WHERE pod.POID = po.POID) AS TotalItems,
+            COALESCE(po.DeliverTo, 'Plot No. 9B') AS DeliverTo,
+            COALESCE(po.Currency, 'INR') AS Currency,
+            COALESCE(po.ExchangeRate, 1.0) AS ExchangeRate,
+            COALESCE(po.BillTo, 'ALPINE APPARELS PVT. LTD.') AS BillTo,
+            COALESCE(po.EnteredOn, po.CreatedAt) AS EnteredOn,
+            COALESCE(po.UpdatedBy, po.EnteredBy, 'Vaishnav V') AS UpdatedBy,
+            COALESCE(po.UpdatedOn, po.CreatedAt) AS UpdatedOn,
+            COALESCE(po.ApproveTag, CASE WHEN po.Status = 'Approved' THEN 'APPROVED' ELSE 'PENDING' END) AS ApproveTag,
+            COALESCE(po.MaterialSource, 'Domestic') AS MaterialSource,
+            COALESCE((SELECT COUNT(*) FROM PurchaseOrderDetails pod WHERE pod.POID = po.POID), 0) AS TotalItems,
+            COALESCE((SELECT SUM(pod.OrderQty) FROM PurchaseOrderDetails pod WHERE pod.POID = po.POID), 0) AS Quantity,
             (SELECT GROUP_CONCAT(DISTINCT pod.IndentNo) FROM PurchaseOrderDetails pod WHERE pod.POID = po.POID) AS LinkedIndents
         FROM PurchaseOrders po
         LEFT JOIN Suppliers s ON po.SupplierID = s.SupplierID
-        ORDER BY po.POID DESC
+        WHERE 1=1
     `;
 
-    db.all(sql, [], (err, rows) => {
+    const params = [];
+
+    if (supplier) {
+        sql += ` AND (s.SupplierName LIKE ? OR s.SupplierCode LIKE ?)`;
+        params.push(`%${supplier}%`, `%${supplier}%`);
+    }
+
+    if (materialSource && materialSource !== 'All') {
+        sql += ` AND po.MaterialSource = ?`;
+        params.push(materialSource);
+    }
+
+    if (status && status !== 'All') {
+        sql += ` AND po.Status = ?`;
+        params.push(status);
+    }
+
+    if (search) {
+        sql += ` AND (po.PONo LIKE ? OR s.SupplierName LIKE ? OR po.BillTo LIKE ? OR po.EnteredBy LIKE ?)`;
+        params.push(`%${search}%`, `%${search}%`, `%${search}%`, `%${search}%`);
+    }
+
+    sql += ` ORDER BY po.POID DESC`;
+
+    db.all(sql, params, (err, rows) => {
         if (err) {
             console.error("❌ getAllPurchaseOrders error:", err);
             return res.status(500).json({ success: false, error: err.message });

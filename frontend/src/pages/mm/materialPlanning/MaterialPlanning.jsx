@@ -12,10 +12,10 @@ import {
     FaFilePdf, 
     FaFilter, 
     FaCheck, 
+    FaSearch,
     FaExternalLinkAlt 
 } from "react-icons/fa";
 import { materialPlanningService } from "../../../services/materialPlanningService";
-import TypeaheadDropdown from "../../../components/common/TypeaheadDropdown";
 import "../../../styles/materialPlanning.css";
 
 export default function MaterialPlanning() {
@@ -107,54 +107,67 @@ export default function MaterialPlanning() {
     };
 
     // -------------------------------------------------------------------------
-    // DROPDOWN OPTIONS (MEMOIZED FOR ULTRA-FAST FILTERING)
+    // IO LOOKUP MODAL STATE & HANDLERS
     // -------------------------------------------------------------------------
-    const ioOptions = useMemo(() => {
-        return (ioList || []).map(io => ({
-            label: io.IONo,
-            value: io.IONo,
-            subtext: io.Customer ? `${io.Customer}${io.Season ? " - " + io.Season : ""}` : ""
-        }));
+    const [showIOLookupModal, setShowIOLookupModal] = useState(false);
+    const [ioLookupSearch, setIoLookupSearch] = useState("");
+    const [ioLookupCustomer, setIoLookupCustomer] = useState("All");
+    const [ioLookupSeason, setIoLookupSeason] = useState("All");
+    const [lookupSelectedIOs, setLookupSelectedIOs] = useState([]);
+
+    const handleOpenIOLookup = () => {
+        setLookupSelectedIOs([...selectedIOs]);
+        setIoLookupSearch("");
+        setIoLookupCustomer("All");
+        setIoLookupSeason("All");
+        setShowIOLookupModal(true);
+    };
+
+    const handleApplyIOLookup = () => {
+        setSelectedIOs([...lookupSelectedIOs]);
+        setShowIOLookupModal(false);
+    };
+
+    const toggleLookupIO = (ioNo) => {
+        if (lookupSelectedIOs.includes(ioNo)) {
+            setLookupSelectedIOs(lookupSelectedIOs.filter(x => x !== ioNo));
+        } else {
+            setLookupSelectedIOs([...lookupSelectedIOs, ioNo]);
+        }
+    };
+
+    const distinctCustomers = useMemo(() => {
+        return Array.from(new Set((ioList || []).map(i => i.Customer).filter(Boolean))).sort();
     }, [ioList]);
 
-    const groupOptions = useMemo(() => {
-        return (itemGroups || []).map(g => ({
-            label: g,
-            value: g
-        }));
-    }, [itemGroups]);
+    const distinctSeasons = useMemo(() => {
+        return Array.from(new Set((ioList || []).map(i => i.Season).filter(Boolean))).sort();
+    }, [ioList]);
 
-    const itemOptions = useMemo(() => {
-        return (itemsList || []).map(it => ({
-            label: it.ItemCode ? `${it.ItemCode} - ${it.ItemName}` : it.ItemName,
-            value: it.ItemCode || it.ItemName,
-            code: it.ItemCode,
-            subtext: it.Category || it.ItemType || ""
-        }));
-    }, [itemsList]);
-
-    const categoryOptions = useMemo(() => {
-        const cats = new Set([
-            "CHEMICAL & ADHESIVE", "CONSUMABLE ITEMS", "CORRUGATED", "ECOVERDE THREADS",
-            "BEADS", "CHAIN", "HANG TAG", "INTER LINING", "LABEL", "LEATHER",
-            "LINING", "MICRO PACK", "PACKING MATERIAL", "PAPER", "POLY BAG",
-            "POLY FILL", "POLYESTER FABRIC", "RAFFIA", "RUBBER SHEET",
-            "STICKER", "STRING", "TAPE", "Fabrics", "Zippers", "Trims", "Hardware"
-        ]);
-        (itemsList || []).forEach(i => {
-            if (i.Category) cats.add(i.Category);
-            if (i.ItemType) cats.add(i.ItemType);
+    const filteredLookupIOs = useMemo(() => {
+        const q = (ioLookupSearch || "").trim().toLowerCase();
+        return (ioList || []).filter(io => {
+            if (ioLookupCustomer !== "All" && io.Customer !== ioLookupCustomer) return false;
+            if (ioLookupSeason !== "All" && io.Season !== ioLookupSeason) return false;
+            if (!q) return true;
+            const matchNo = (io.IONo || "").toLowerCase().includes(q);
+            const matchCust = (io.Customer || "").toLowerCase().includes(q);
+            const matchPo = (io.CustomerOrderNo || "").toLowerCase().includes(q);
+            const matchSo = (io.SoNo || "").toLowerCase().includes(q);
+            const matchSeason = (io.Season || "").toLowerCase().includes(q);
+            return matchNo || matchCust || matchPo || matchSo || matchSeason;
         });
-        return Array.from(cats).sort().map(c => ({ label: c, value: c }));
-    }, [itemsList]);
+    }, [ioList, ioLookupSearch, ioLookupCustomer, ioLookupSeason]);
 
-    const sizeOptions = useMemo(() => {
-        return (sizeList || []).map(sz => ({ label: sz, value: sz }));
-    }, [sizeList]);
-
-    const colourOptions = useMemo(() => {
-        return (colourList || []).map(c => ({ label: c, value: c }));
-    }, [colourList]);
+    const handleSelectAllFilteredIOs = () => {
+        const filteredNos = filteredLookupIOs.map(i => i.IONo);
+        const allSelected = filteredNos.length > 0 && filteredNos.every(no => lookupSelectedIOs.includes(no));
+        if (allSelected) {
+            setLookupSelectedIOs(lookupSelectedIOs.filter(no => !filteredNos.includes(no)));
+        } else {
+            setLookupSelectedIOs(Array.from(new Set([...lookupSelectedIOs, ...filteredNos])));
+        }
+    };
 
     // -------------------------------------------------------------------------
     // ADD / REMOVE HELPERS FOR LISTBOXES
@@ -422,24 +435,37 @@ export default function MaterialPlanning() {
                         </button>
                     </div>
 
-                    {/* IO No Input - Pure White ERP Dropdown */}
+                    {/* IO No Input & Lookup */}
                     <div>
                         <label className="mp-erp-label">IO No</label>
-                        <TypeaheadDropdown
-                            value={currentIOInput}
-                            onChange={(val) => setCurrentIOInput(val)}
-                            options={ioOptions}
-                            placeholder="Type and Select IO No"
-                            showAddButton={true}
-                            onAdd={(val) => handleAddIO(val)}
-                            onSelect={(raw, label) => {
-                                const ioVal = label || (raw && raw.value) || currentIOInput;
-                                handleAddIO(ioVal);
-                            }}
-                            showSubtext={true}
-                            dropdownWidth="100%"
-                            clearable={true}
-                        />
+                        <div className="mp-input-group">
+                            <input 
+                                type="text" 
+                                className="mp-erp-input" 
+                                placeholder="Type and Select IO No"
+                                value={currentIOInput}
+                                onChange={(e) => setCurrentIOInput(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") handleAddIO();
+                                }}
+                            />
+                            <button 
+                                type="button" 
+                                className="mp-btn-addon" 
+                                title="Add IO No"
+                                onClick={() => handleAddIO()}
+                            >
+                                <FaPlus size={10} />
+                            </button>
+                            <button 
+                                type="button" 
+                                className="mp-btn-addon text-primary" 
+                                title="Open IO Lookup"
+                                onClick={handleOpenIOLookup}
+                            >
+                                <FaListUl size={10} />
+                            </button>
+                        </div>
                     </div>
 
                     {/* IO No Listbox */}
@@ -468,8 +494,8 @@ export default function MaterialPlanning() {
                                 <button 
                                     type="button" 
                                     className="mp-listbox-action-icon text-primary" 
-                                    title="View IO Summary"
-                                    onClick={() => alert(`Selected IOs: ${selectedIOs.join(", ") || "All"}`)}
+                                    title="Open IO Lookup"
+                                    onClick={handleOpenIOLookup}
                                 >
                                     <FaListUl size={10} />
                                 </button>
@@ -601,23 +627,29 @@ export default function MaterialPlanning() {
                     COLUMN 2: ITEM GROUP, CATEGORY, REQ DATE & INDENT OPTIONS
                     ========================================================= */}
                 <div className="mp-column">
-                    {/* Item Group Input - Pure White ERP Dropdown */}
+                    {/* Item Group Input */}
                     <div>
                         <label className="mp-erp-label">Item Group</label>
-                        <TypeaheadDropdown
-                            value={currentGroupInput}
-                            onChange={(val) => setCurrentGroupInput(val)}
-                            options={groupOptions}
-                            placeholder="Item Group"
-                            showAddButton={true}
-                            onAdd={(val) => handleAddGroup(val)}
-                            onSelect={(raw, label) => {
-                                const grpVal = label || (raw && raw.value) || currentGroupInput;
-                                handleAddGroup(grpVal);
-                            }}
-                            dropdownWidth="100%"
-                            clearable={true}
-                        />
+                        <div className="mp-input-group">
+                            <input 
+                                type="text" 
+                                className="mp-erp-input" 
+                                placeholder="Item Group"
+                                value={currentGroupInput}
+                                onChange={(e) => setCurrentGroupInput(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") handleAddGroup();
+                                }}
+                            />
+                            <button 
+                                type="button" 
+                                className="mp-btn-addon" 
+                                title="Add Group"
+                                onClick={() => handleAddGroup()}
+                            >
+                                <FaPlus size={10} />
+                            </button>
+                        </div>
                     </div>
 
                     {/* Item Group Listbox */}
@@ -656,20 +688,15 @@ export default function MaterialPlanning() {
                         </div>
                     </div>
 
-                    {/* Item Category - Pure White ERP Dropdown */}
+                    {/* Item Category */}
                     <div>
                         <label className="mp-erp-label">Item Category</label>
-                        <TypeaheadDropdown
-                            value={itemCategory}
-                            onChange={(val) => setItemCategory(val)}
-                            options={categoryOptions}
+                        <input 
+                            type="text" 
+                            className="mp-erp-input" 
                             placeholder="Type & select Item Category"
-                            showAddButton={false}
-                            onSelect={(raw, label) => {
-                                setItemCategory(label || (raw && raw.value) || "");
-                            }}
-                            dropdownWidth="100%"
-                            clearable={true}
+                            value={itemCategory}
+                            onChange={(e) => setItemCategory(e.target.value)}
                         />
                     </div>
 
@@ -721,34 +748,41 @@ export default function MaterialPlanning() {
                     COLUMN 3: ITEM, SIZE, BUYER PO & MRP SUMMARY
                     ========================================================= */}
                 <div className="mp-column">
-                    {/* Item Input - Pure White ERP Dropdown */}
+                    {/* Item Input */}
                     <div>
                         <label className="mp-erp-label">Item</label>
-                        <TypeaheadDropdown
-                            value={currentItemInput}
-                            onChange={(val) => setCurrentItemInput(val)}
-                            options={itemOptions}
-                            placeholder="Item"
-                            showAddButton={true}
-                            onAdd={(val) => handleAddItem(val)}
-                            onSelect={(raw, label) => {
-                                const code = (raw && raw.code) || (raw && raw.value) || label || currentItemInput;
-                                handleAddItem(code);
-                            }}
-                            secondaryButton={{
-                                icon: <FaListUl size={10} />,
-                                title: "Select from Master",
-                                onClick: () => {
+                        <div className="mp-input-group">
+                            <input 
+                                type="text" 
+                                className="mp-erp-input" 
+                                placeholder="Item"
+                                value={currentItemInput}
+                                onChange={(e) => setCurrentItemInput(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") handleAddItem();
+                                }}
+                            />
+                            <button 
+                                type="button" 
+                                className="mp-btn-addon" 
+                                title="Add Item"
+                                onClick={() => handleAddItem()}
+                            >
+                                <FaPlus size={10} />
+                            </button>
+                            <button 
+                                type="button" 
+                                className="mp-btn-addon" 
+                                title="Select from Master"
+                                onClick={() => {
                                     if (itemsList.length > 0) {
                                         handleAddItem(itemsList[0].ItemCode);
                                     }
-                                }
-                            }}
-                            showSubtext={true}
-                            showCode={true}
-                            dropdownWidth="min(500px, 100%)"
-                            clearable={true}
-                        />
+                                }}
+                            >
+                                <FaListUl size={10} />
+                            </button>
+                        </div>
                     </div>
 
                     {/* Item Listbox */}
@@ -787,18 +821,15 @@ export default function MaterialPlanning() {
                         </div>
                     </div>
 
-                    {/* Size - Pure White ERP Dropdown */}
+                    {/* Size */}
                     <div>
                         <label className="mp-erp-label">Size</label>
-                        <TypeaheadDropdown
-                            value={sizeInput}
-                            onChange={(val) => setSizeInput(val)}
-                            options={sizeOptions}
+                        <input 
+                            type="text" 
+                            className="mp-erp-input" 
                             placeholder="Type and select Size"
-                            showAddButton={false}
-                            onSelect={(raw, label) => setSizeInput(label || (raw && raw.value) || "")}
-                            dropdownWidth="100%"
-                            clearable={true}
+                            value={sizeInput}
+                            onChange={(e) => setSizeInput(e.target.value)}
                         />
                     </div>
 
@@ -850,23 +881,29 @@ export default function MaterialPlanning() {
                     COLUMN 4: COLOUR, GLOBAL & APPROVED PLAN NOS
                     ========================================================= */}
                 <div className="mp-column">
-                    {/* Colour Input - Pure White ERP Dropdown */}
+                    {/* Colour Input */}
                     <div>
                         <label className="mp-erp-label">Colour</label>
-                        <TypeaheadDropdown
-                            value={currentColourInput}
-                            onChange={(val) => setCurrentColourInput(val)}
-                            options={colourOptions}
-                            placeholder="Colour"
-                            showAddButton={true}
-                            onAdd={(val) => handleAddColour(val)}
-                            onSelect={(raw, label) => {
-                                const colVal = label || (raw && raw.value) || currentColourInput;
-                                handleAddColour(colVal);
-                            }}
-                            dropdownWidth="100%"
-                            clearable={true}
-                        />
+                        <div className="mp-input-group">
+                            <input 
+                                type="text" 
+                                className="mp-erp-input" 
+                                placeholder="Colour"
+                                value={currentColourInput}
+                                onChange={(e) => setCurrentColourInput(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") handleAddColour();
+                                }}
+                            />
+                            <button 
+                                type="button" 
+                                className="mp-btn-addon" 
+                                title="Add Colour"
+                                onClick={() => handleAddColour()}
+                            >
+                                <FaPlus size={10} />
+                            </button>
+                        </div>
                     </div>
 
                     {/* Colour Listbox */}
@@ -1198,6 +1235,151 @@ export default function MaterialPlanning() {
                         </Button>
                     </div>
                 </Modal.Body>
+            </Modal>
+
+            {/* =========================================================
+                IO LOOKUP MODAL (AS USUAL)
+                ========================================================= */}
+            <Modal 
+                show={showIOLookupModal} 
+                onHide={() => setShowIOLookupModal(false)} 
+                size="lg" 
+                centered
+            >
+                <Modal.Header closeButton style={{ background: "#2b579a", color: "#ffffff", padding: "8px 16px" }}>
+                    <Modal.Title style={{ fontSize: "13px", fontWeight: "700", display: "flex", alignItems: "center", gap: "8px" }}>
+                        <FaListUl /> Internal Order (IO) Lookup
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{ padding: "12px" }}>
+                    {/* Filter bar */}
+                    <div style={{ display: "flex", gap: "8px", marginBottom: "10px", alignItems: "center" }}>
+                        <div style={{ flex: 2, position: "relative" }}>
+                            <input 
+                                type="text" 
+                                className="mp-erp-input w-100" 
+                                placeholder="Search by IO No, Customer, Buyer PO, Season..."
+                                value={ioLookupSearch}
+                                onChange={(e) => setIoLookupSearch(e.target.value)}
+                                autoFocus
+                            />
+                        </div>
+                        <div style={{ flex: 1 }}>
+                            <select 
+                                className="mp-erp-select w-100"
+                                value={ioLookupCustomer}
+                                onChange={(e) => setIoLookupCustomer(e.target.value)}
+                            >
+                                <option value="All">All Customers</option>
+                                {distinctCustomers.map(c => <option key={c} value={c}>{c}</option>)}
+                            </select>
+                        </div>
+                        <div style={{ flex: 1 }}>
+                            <select 
+                                className="mp-erp-select w-100"
+                                value={ioLookupSeason}
+                                onChange={(e) => setIoLookupSeason(e.target.value)}
+                            >
+                                <option value="All">All Seasons</option>
+                                {distinctSeasons.map(s => <option key={s} value={s}>{s}</option>)}
+                            </select>
+                        </div>
+                        {(ioLookupSearch || ioLookupCustomer !== "All" || ioLookupSeason !== "All") && (
+                            <button 
+                                type="button" 
+                                className="mp-btn-addon"
+                                style={{ height: "26px", padding: "0 8px" }}
+                                onClick={() => {
+                                    setIoLookupSearch("");
+                                    setIoLookupCustomer("All");
+                                    setIoLookupSeason("All");
+                                }}
+                            >
+                                Reset
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Table */}
+                    <div style={{ maxHeight: "350px", overflowY: "auto", border: "1px solid #dee2e6", borderRadius: "3px" }}>
+                        <Table hover size="sm" className="mb-0 text-nowrap" style={{ fontSize: "11.5px" }}>
+                            <thead style={{ backgroundColor: "#f1f5f9", position: "sticky", top: 0, zIndex: 2 }}>
+                                <tr>
+                                    <th style={{ width: "35px", textAlign: "center" }}>
+                                        <input 
+                                            type="checkbox"
+                                            checked={filteredLookupIOs.length > 0 && filteredLookupIOs.every(i => lookupSelectedIOs.includes(i.IONo))}
+                                            onChange={handleSelectAllFilteredIOs}
+                                        />
+                                    </th>
+                                    <th>IO No</th>
+                                    <th>Customer</th>
+                                    <th>Buyer PO / Order No</th>
+                                    <th>Season</th>
+                                    <th className="text-end">Total Qty</th>
+                                    <th>Delivery Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {filteredLookupIOs.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="7" className="text-center py-4 text-muted">
+                                            No Internal Orders match your search criteria.
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    filteredLookupIOs.map((io) => {
+                                        const isSelected = lookupSelectedIOs.includes(io.IONo);
+                                        return (
+                                            <tr 
+                                                key={io.IOID || io.IONo} 
+                                                onClick={() => toggleLookupIO(io.IONo)}
+                                                style={{ cursor: "pointer", backgroundColor: isSelected ? "#e8f0fe" : "transparent" }}
+                                            >
+                                                <td style={{ textAlign: "center" }} onClick={(e) => e.stopPropagation()}>
+                                                    <input 
+                                                        type="checkbox"
+                                                        checked={isSelected}
+                                                        onChange={() => toggleLookupIO(io.IONo)}
+                                                    />
+                                                </td>
+                                                <td className="fw-bold text-primary">{io.IONo}</td>
+                                                <td>{io.Customer || "-"}</td>
+                                                <td>{io.CustomerOrderNo || io.SoNo || "-"}</td>
+                                                <td>{io.Season || "-"}</td>
+                                                <td className="text-end fw-semibold">{io.TotalQty ? io.TotalQty.toLocaleString() : "-"}</td>
+                                                <td>{io.DeliveryDate || "-"}</td>
+                                            </tr>
+                                        );
+                                    })
+                                )}
+                            </tbody>
+                        </Table>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer style={{ padding: "6px 16px", display: "flex", justifyContent: "space-between", backgroundColor: "#f8fafc" }}>
+                    <div style={{ fontSize: "11.5px", color: "#475569" }}>
+                        Showing <strong>{filteredLookupIOs.length}</strong> IO(s) | Selected: <strong style={{ color: "#1a73e8" }}>{lookupSelectedIOs.length}</strong>
+                    </div>
+                    <div className="d-flex gap-2">
+                        <Button 
+                            variant="secondary" 
+                            size="sm" 
+                            onClick={() => setShowIOLookupModal(false)} 
+                            style={{ fontSize: "11px", height: "26px" }}
+                        >
+                            Cancel
+                        </Button>
+                        <Button 
+                            variant="primary" 
+                            size="sm" 
+                            onClick={handleApplyIOLookup}
+                            style={{ fontSize: "11px", height: "26px", backgroundColor: "#2b579a", borderColor: "#2b579a" }}
+                        >
+                            <FaCheck size={10} className="me-1" /> Apply Selection ({lookupSelectedIOs.length})
+                        </Button>
+                    </div>
+                </Modal.Footer>
             </Modal>
         </div>
     );

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Form, Button } from "react-bootstrap";
-import { FaPlus, FaTimes } from "react-icons/fa";
+import { FaPlus, FaTimes, FaListUl } from "react-icons/fa";
 import "../../styles/typeaheadDropdown.css";
 
 /**
@@ -12,12 +12,13 @@ import "../../styles/typeaheadDropdown.css";
  * @param {string} placeholder - Placeholder text
  * @param {boolean} showAddButton - If true, shows the [+] button attached to the right
  * @param {function} onAdd - Called with (value) when [+] button is clicked or Enter is pressed
+ * @param {object} secondaryButton - Optional extra action button (e.g. { icon, title, onClick })
  * @param {boolean} clearable - If true, shows [x] clear button when input has text
  * @param {string} size - Input size: "sm" (default) or "md"
  * @param {boolean} disabled - Whether input is disabled
  * @param {string} className - Additional CSS class for container
- * @param {string} dropdownWidth - Width for the dropdown menu (default: "min(550px, max(100%, 320px))")
- * @param {number} maxHeight - Max height of dropdown list in px (default: 240)
+ * @param {string} dropdownWidth - Width for the dropdown menu (default: "100%")
+ * @param {number} maxHeight - Max height of dropdown list in px (default: 220)
  */
 export default function TypeaheadDropdown({
   value = "",
@@ -26,6 +27,7 @@ export default function TypeaheadDropdown({
   placeholder = "Type and select...",
   showAddButton = false,
   onAdd,
+  secondaryButton = null,
   clearable = true,
   requiredIndicator = false,
   size = "sm",
@@ -33,8 +35,8 @@ export default function TypeaheadDropdown({
   className = "",
   align = "left",
   onSelect,
-  dropdownWidth = "min(520px, max(100%, 360px))",
-  maxHeight = 240,
+  dropdownWidth = "100%",
+  maxHeight = 220,
   autoSelectOnEnter = false,
   showSubtext = false,
   showCode = false
@@ -149,11 +151,12 @@ export default function TypeaheadDropdown({
   const handleSelectOption = (opt) => {
     selectingRef.current = true;
     const itemData = opt.raw !== undefined ? opt.raw : opt;
+    const itemVal = opt.value !== undefined ? opt.value : opt.label;
     if (onChange) {
-      onChange(opt.label, itemData);
+      onChange(itemVal, itemData);
     }
     if (onSelect) {
-      onSelect(itemData, opt.label);
+      onSelect(itemData, itemVal);
     }
     setIsOpen(false);
     setActiveIndex(-1);
@@ -239,12 +242,25 @@ export default function TypeaheadDropdown({
           <Button
             variant="outline-secondary"
             size={size}
-            className="typeahead-btn-add"
+            className={`typeahead-btn-add ${secondaryButton ? "has-secondary" : ""}`}
             onClick={handleAddClick}
             disabled={disabled}
             title="Add to list"
           >
-            <FaPlus />
+            <FaPlus size={10} />
+          </Button>
+        )}
+
+        {secondaryButton && (
+          <Button
+            variant="outline-secondary"
+            size={size}
+            className="typeahead-btn-add typeahead-btn-secondary"
+            onClick={secondaryButton.onClick}
+            disabled={disabled}
+            title={secondaryButton.title || "Action"}
+          >
+            {secondaryButton.icon || <FaListUl size={10} />}
           </Button>
         )}
       </div>

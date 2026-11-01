@@ -15,6 +15,7 @@ import {
     FaExternalLinkAlt 
 } from "react-icons/fa";
 import { materialPlanningService } from "../../../services/materialPlanningService";
+import TypeaheadDropdown from "../../../components/common/TypeaheadDropdown";
 import "../../../styles/materialPlanning.css";
 
 export default function MaterialPlanning() {
@@ -104,6 +105,56 @@ export default function MaterialPlanning() {
             setLoadingMasters(false);
         }
     };
+
+    // -------------------------------------------------------------------------
+    // DROPDOWN OPTIONS (MEMOIZED FOR ULTRA-FAST FILTERING)
+    // -------------------------------------------------------------------------
+    const ioOptions = useMemo(() => {
+        return (ioList || []).map(io => ({
+            label: io.IONo,
+            value: io.IONo,
+            subtext: io.Customer ? `${io.Customer}${io.Season ? " - " + io.Season : ""}` : ""
+        }));
+    }, [ioList]);
+
+    const groupOptions = useMemo(() => {
+        return (itemGroups || []).map(g => ({
+            label: g,
+            value: g
+        }));
+    }, [itemGroups]);
+
+    const itemOptions = useMemo(() => {
+        return (itemsList || []).map(it => ({
+            label: it.ItemCode ? `${it.ItemCode} - ${it.ItemName}` : it.ItemName,
+            value: it.ItemCode || it.ItemName,
+            code: it.ItemCode,
+            subtext: it.Category || it.ItemType || ""
+        }));
+    }, [itemsList]);
+
+    const categoryOptions = useMemo(() => {
+        const cats = new Set([
+            "CHEMICAL & ADHESIVE", "CONSUMABLE ITEMS", "CORRUGATED", "ECOVERDE THREADS",
+            "BEADS", "CHAIN", "HANG TAG", "INTER LINING", "LABEL", "LEATHER",
+            "LINING", "MICRO PACK", "PACKING MATERIAL", "PAPER", "POLY BAG",
+            "POLY FILL", "POLYESTER FABRIC", "RAFFIA", "RUBBER SHEET",
+            "STICKER", "STRING", "TAPE", "Fabrics", "Zippers", "Trims", "Hardware"
+        ]);
+        (itemsList || []).forEach(i => {
+            if (i.Category) cats.add(i.Category);
+            if (i.ItemType) cats.add(i.ItemType);
+        });
+        return Array.from(cats).sort().map(c => ({ label: c, value: c }));
+    }, [itemsList]);
+
+    const sizeOptions = useMemo(() => {
+        return (sizeList || []).map(sz => ({ label: sz, value: sz }));
+    }, [sizeList]);
+
+    const colourOptions = useMemo(() => {
+        return (colourList || []).map(c => ({ label: c, value: c }));
+    }, [colourList]);
 
     // -------------------------------------------------------------------------
     // ADD / REMOVE HELPERS FOR LISTBOXES
@@ -371,35 +422,24 @@ export default function MaterialPlanning() {
                         </button>
                     </div>
 
-                    {/* IO No Input */}
+                    {/* IO No Input - Pure White ERP Dropdown */}
                     <div>
                         <label className="mp-erp-label">IO No</label>
-                        <div className="mp-input-group">
-                            <input 
-                                type="text" 
-                                className="mp-erp-input" 
-                                placeholder="Type and Select IO No"
-                                value={currentIOInput}
-                                onChange={(e) => setCurrentIOInput(e.target.value)}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") handleAddIO();
-                                }}
-                                list="io-datalist"
-                            />
-                            <datalist id="io-datalist">
-                                {ioList.map((io) => (
-                                    <option key={io.IOID} value={io.IONo}>{io.Customer} - {io.Season}</option>
-                                ))}
-                            </datalist>
-                            <button 
-                                type="button" 
-                                className="mp-btn-addon" 
-                                title="Add IO No"
-                                onClick={() => handleAddIO()}
-                            >
-                                <FaPlus size={10} />
-                            </button>
-                        </div>
+                        <TypeaheadDropdown
+                            value={currentIOInput}
+                            onChange={(val) => setCurrentIOInput(val)}
+                            options={ioOptions}
+                            placeholder="Type and Select IO No"
+                            showAddButton={true}
+                            onAdd={(val) => handleAddIO(val)}
+                            onSelect={(raw, label) => {
+                                const ioVal = label || (raw && raw.value) || currentIOInput;
+                                handleAddIO(ioVal);
+                            }}
+                            showSubtext={true}
+                            dropdownWidth="100%"
+                            clearable={true}
+                        />
                     </div>
 
                     {/* IO No Listbox */}
@@ -561,35 +601,23 @@ export default function MaterialPlanning() {
                     COLUMN 2: ITEM GROUP, CATEGORY, REQ DATE & INDENT OPTIONS
                     ========================================================= */}
                 <div className="mp-column">
-                    {/* Item Group Input */}
+                    {/* Item Group Input - Pure White ERP Dropdown */}
                     <div>
                         <label className="mp-erp-label">Item Group</label>
-                        <div className="mp-input-group">
-                            <input 
-                                type="text" 
-                                className="mp-erp-input" 
-                                placeholder="Item Group"
-                                value={currentGroupInput}
-                                onChange={(e) => setCurrentGroupInput(e.target.value)}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") handleAddGroup();
-                                }}
-                                list="group-datalist"
-                            />
-                            <datalist id="group-datalist">
-                                {itemGroups.map((g, idx) => (
-                                    <option key={idx} value={g} />
-                                ))}
-                            </datalist>
-                            <button 
-                                type="button" 
-                                className="mp-btn-addon" 
-                                title="Add Group"
-                                onClick={() => handleAddGroup()}
-                            >
-                                <FaPlus size={10} />
-                            </button>
-                        </div>
+                        <TypeaheadDropdown
+                            value={currentGroupInput}
+                            onChange={(val) => setCurrentGroupInput(val)}
+                            options={groupOptions}
+                            placeholder="Item Group"
+                            showAddButton={true}
+                            onAdd={(val) => handleAddGroup(val)}
+                            onSelect={(raw, label) => {
+                                const grpVal = label || (raw && raw.value) || currentGroupInput;
+                                handleAddGroup(grpVal);
+                            }}
+                            dropdownWidth="100%"
+                            clearable={true}
+                        />
                     </div>
 
                     {/* Item Group Listbox */}
@@ -628,15 +656,20 @@ export default function MaterialPlanning() {
                         </div>
                     </div>
 
-                    {/* Item Category */}
+                    {/* Item Category - Pure White ERP Dropdown */}
                     <div>
                         <label className="mp-erp-label">Item Category</label>
-                        <input 
-                            type="text" 
-                            className="mp-erp-input" 
-                            placeholder="Type & select Item Category"
+                        <TypeaheadDropdown
                             value={itemCategory}
-                            onChange={(e) => setItemCategory(e.target.value)}
+                            onChange={(val) => setItemCategory(val)}
+                            options={categoryOptions}
+                            placeholder="Type & select Item Category"
+                            showAddButton={false}
+                            onSelect={(raw, label) => {
+                                setItemCategory(label || (raw && raw.value) || "");
+                            }}
+                            dropdownWidth="100%"
+                            clearable={true}
                         />
                     </div>
 
@@ -688,47 +721,34 @@ export default function MaterialPlanning() {
                     COLUMN 3: ITEM, SIZE, BUYER PO & MRP SUMMARY
                     ========================================================= */}
                 <div className="mp-column">
-                    {/* Item Input */}
+                    {/* Item Input - Pure White ERP Dropdown */}
                     <div>
                         <label className="mp-erp-label">Item</label>
-                        <div className="mp-input-group">
-                            <input 
-                                type="text" 
-                                className="mp-erp-input" 
-                                placeholder="Item"
-                                value={currentItemInput}
-                                onChange={(e) => setCurrentItemInput(e.target.value)}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") handleAddItem();
-                                }}
-                                list="items-datalist"
-                            />
-                            <datalist id="items-datalist">
-                                {itemsList.map((it) => (
-                                    <option key={it.ItemID} value={it.ItemCode}>{it.ItemName} ({it.Category})</option>
-                                ))}
-                            </datalist>
-                            <button 
-                                type="button" 
-                                className="mp-btn-addon" 
-                                title="Add Item"
-                                onClick={() => handleAddItem()}
-                            >
-                                <FaPlus size={10} />
-                            </button>
-                            <button 
-                                type="button" 
-                                className="mp-btn-addon" 
-                                title="Select from Master"
-                                onClick={() => {
+                        <TypeaheadDropdown
+                            value={currentItemInput}
+                            onChange={(val) => setCurrentItemInput(val)}
+                            options={itemOptions}
+                            placeholder="Item"
+                            showAddButton={true}
+                            onAdd={(val) => handleAddItem(val)}
+                            onSelect={(raw, label) => {
+                                const code = (raw && raw.code) || (raw && raw.value) || label || currentItemInput;
+                                handleAddItem(code);
+                            }}
+                            secondaryButton={{
+                                icon: <FaListUl size={10} />,
+                                title: "Select from Master",
+                                onClick: () => {
                                     if (itemsList.length > 0) {
                                         handleAddItem(itemsList[0].ItemCode);
                                     }
-                                }}
-                            >
-                                <FaListUl size={10} />
-                            </button>
-                        </div>
+                                }
+                            }}
+                            showSubtext={true}
+                            showCode={true}
+                            dropdownWidth="min(500px, 100%)"
+                            clearable={true}
+                        />
                     </div>
 
                     {/* Item Listbox */}
@@ -767,22 +787,19 @@ export default function MaterialPlanning() {
                         </div>
                     </div>
 
-                    {/* Size */}
+                    {/* Size - Pure White ERP Dropdown */}
                     <div>
                         <label className="mp-erp-label">Size</label>
-                        <input 
-                            type="text" 
-                            className="mp-erp-input" 
-                            placeholder="Type and select Size"
+                        <TypeaheadDropdown
                             value={sizeInput}
-                            onChange={(e) => setSizeInput(e.target.value)}
-                            list="size-datalist"
+                            onChange={(val) => setSizeInput(val)}
+                            options={sizeOptions}
+                            placeholder="Type and select Size"
+                            showAddButton={false}
+                            onSelect={(raw, label) => setSizeInput(label || (raw && raw.value) || "")}
+                            dropdownWidth="100%"
+                            clearable={true}
                         />
-                        <datalist id="size-datalist">
-                            {sizeList.map((sz, idx) => (
-                                <option key={idx} value={sz} />
-                            ))}
-                        </datalist>
                     </div>
 
                     {/* Buyer PO */}
@@ -833,35 +850,23 @@ export default function MaterialPlanning() {
                     COLUMN 4: COLOUR, GLOBAL & APPROVED PLAN NOS
                     ========================================================= */}
                 <div className="mp-column">
-                    {/* Colour Input */}
+                    {/* Colour Input - Pure White ERP Dropdown */}
                     <div>
                         <label className="mp-erp-label">Colour</label>
-                        <div className="mp-input-group">
-                            <input 
-                                type="text" 
-                                className="mp-erp-input" 
-                                placeholder="Colour"
-                                value={currentColourInput}
-                                onChange={(e) => setCurrentColourInput(e.target.value)}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") handleAddColour();
-                                }}
-                                list="colour-datalist"
-                            />
-                            <datalist id="colour-datalist">
-                                {colourList.map((col, idx) => (
-                                    <option key={idx} value={col} />
-                                ))}
-                            </datalist>
-                            <button 
-                                type="button" 
-                                className="mp-btn-addon" 
-                                title="Add Colour"
-                                onClick={() => handleAddColour()}
-                            >
-                                <FaPlus size={10} />
-                            </button>
-                        </div>
+                        <TypeaheadDropdown
+                            value={currentColourInput}
+                            onChange={(val) => setCurrentColourInput(val)}
+                            options={colourOptions}
+                            placeholder="Colour"
+                            showAddButton={true}
+                            onAdd={(val) => handleAddColour(val)}
+                            onSelect={(raw, label) => {
+                                const colVal = label || (raw && raw.value) || currentColourInput;
+                                handleAddColour(colVal);
+                            }}
+                            dropdownWidth="100%"
+                            clearable={true}
+                        />
                     </div>
 
                     {/* Colour Listbox */}

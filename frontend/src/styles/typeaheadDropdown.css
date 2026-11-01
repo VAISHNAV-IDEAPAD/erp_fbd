@@ -18,14 +18,19 @@
 
 .typeahead-input {
   font-size: 11.5px !important;
-  height: 24px !important;
+  height: 26px !important;
   color: #333333 !important;
   border-color: #cccccc !important;
   border-radius: 2px !important;
   background-color: #ffffff !important;
-  padding: 2px 20px 2px 6px !important;
+  padding: 2px 20px 2px 7px !important;
   box-shadow: none !important;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.typeahead-input-group:has(.typeahead-btn-add) .typeahead-input {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
 }
 
 .typeahead-input:focus {
@@ -36,10 +41,11 @@
 
 .typeahead-btn-add {
   font-size: 10px !important;
-  height: 24px !important;
-  padding: 0 8px !important;
-  border-color: #cccccc !important;
-  background-color: #f8fafc !important;
+  height: 26px !important;
+  padding: 0 9px !important;
+  border: 1px solid #cccccc !important;
+  border-left: none !important;
+  background-color: #ffffff !important;
   color: #333333 !important;
   display: inline-flex;
   align-items: center;
@@ -51,9 +57,22 @@
 }
 
 .typeahead-btn-add:hover {
-  background-color: #e2e8f0 !important;
+  background-color: #f5f5f5 !important;
   color: #000000 !important;
   border-color: #999999 !important;
+}
+
+.typeahead-btn-add.has-secondary {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.typeahead-btn-secondary {
+  border-left: none !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-top-right-radius: 2px !important;
+  border-bottom-right-radius: 2px !important;
 }
 
 .typeahead-clear-btn {
@@ -104,23 +123,24 @@
   top: 1px;
 }
 
-/* Floating Dropdown Overlay */
+/* Floating Dropdown Overlay - Pure White Enterprise ERP Dropdown */
 .typeahead-menu {
   position: absolute;
   top: 100%;
   left: 0;
-  z-index: 99999;
-  min-width: 100%;
+  z-index: 99999 !important;
+  min-width: 100% !important;
+  width: 100% !important;
   background-color: #ffffff !important;
-  border: 1px solid #cccccc !important;
-  border-radius: 2px !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.175) !important;
+  border: 1px solid #7ba7e1 !important;
+  border-radius: 0 0 2px 2px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
   margin-top: 1px;
-  max-height: 240px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 0;
-  list-style: none;
+  max-height: 220px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: 0 !important;
+  list-style: none !important;
 }
 
 /* Custom Sleek Scrollbar */
@@ -139,30 +159,31 @@
 }
 
 .typeahead-item {
-  padding: 3.5px 8px !important;
+  padding: 4px 8px !important;
   font-size: 11.5px !important;
-  color: #333333 !important;
+  color: #222222 !important;
   background-color: #ffffff !important;
-  cursor: pointer;
-  border-bottom: 1px solid #f4f4f4;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  white-space: normal;
-  word-break: break-word;
-  line-height: 1.35;
+  cursor: pointer !important;
+  border-bottom: 1px solid #f2f2f2 !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  line-height: 1.4 !important;
   transition: background-color 0.1s ease;
 }
 
 .typeahead-item:last-child {
-  border-bottom: none;
+  border-bottom: none !important;
 }
 
 .typeahead-item:hover,
 .typeahead-item.active {
-  background-color: #337ab7 !important;
-  color: #ffffff !important;
-  font-weight: 500;
+  background-color: #e8f0fe !important;
+  color: #1a73e8 !important;
+  font-weight: 500 !important;
 }
 
 .typeahead-item-code {

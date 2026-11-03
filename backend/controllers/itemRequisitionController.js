@@ -1,229 +1,443 @@
 const db = require("../config/database");
 
 // ======================================================
-// INITIAL SAMPLE SEED DATA MATCHING V-CONNECT INC. ERP
+// INITIAL SAMPLE SEED DATA MATCHING TPCS FASHION / JENIXCLOUD ERP
 // ======================================================
 const SEED_ITEM_REQUISITIONS = [
     {
-        ReqNo: "REQ/AAPL9B/2627/045",
-        IssueNo: "IS/AAPL9B/2627/088",
-        ReqDate: "14-10-2026",
+        ReqNo: "IRN/APP/9B/2627/2501",
+        ReqType: "Production",
+        Shift: "Shift I",
+        IssueNo: "",
+        ReqDate: "03-11-2026",
         Associate: "Apex Leather Works",
+        Supplier: "Apex Leather Works",
         Warehouse: "RAW MATERIAL STORE 9B",
-        Remark: "Batch 104 Cutting requisition",
-        InternalMemo: "Line 1 bulk cutting",
-        Department: "Cutting Dept",
+        StoreName: "RAW MATERIAL STORE 9B",
+        ReceivedBy: "Nikhil Singh",
+        ApprovedBy: "Praveen Sharma",
+        IssuedBy: "Ramesh Kumar",
+        Department: "BAG SAMPLING",
+        Currency: "INR",
+        ExchangeRate: 1.00,
+        Remark: "Production lot priority sampling hardware and trims",
+        InternalMemo: "IRN approved under Work Order IO/9B/2627/35",
         Transporter: "In-House Transfer",
         ReqBy: "Ramesh Kumar",
-        EntryOn: "14-10-2026 10:15AM",
+        EntryOn: "03-11-2026 10:15AM",
+        Status: "Pending",
+        EntryBy: "Ramesh Kumar",
+        UpdatedBy: "Admin",
+        TotalQty: 25.0,
+        RowCount: 3,
+        details: [
+            {
+                IoNo: "IO/9B/2627/35",
+                ItemCode: "HDW-6830",
+                ItemName: "BRITTEN HASP 12.4MM HT-6830",
+                Variant: "57-14K GOLD",
+                SizeRange: "12.4mm",
+                Color: "57-14K GOLD",
+                Quantity: 15.0,
+                UOM: "PCS",
+                RequiredDate: "05-11-2026",
+                Rate: 45.0,
+                Amount: 675.0,
+                Remarks: "Flap closure assembly"
+            },
+            {
+                IoNo: "IO/9B/2627/35",
+                ItemCode: "CHN-6582",
+                ItemName: "METAL CHAIN 9.2MM OVAL LINK 2.5MMGG HT-6582",
+                Variant: "57-14K GOLD",
+                SizeRange: "138cm",
+                Color: "57-14K GOLD",
+                Quantity: 6.0,
+                UOM: "PCS",
+                RequiredDate: "05-11-2026",
+                Rate: 125.0,
+                Amount: 750.0,
+                Remarks: "Shoulder strap hardware"
+            },
+            {
+                IoNo: "IO/9B/2627/35",
+                ItemCode: "PLR-3953",
+                ItemName: "PULLER METAL NO.3 TBH-3953",
+                Variant: "57-14K GOLD",
+                SizeRange: "No. 3",
+                Color: "57-14K GOLD",
+                Quantity: 4.0,
+                UOM: "PCS",
+                RequiredDate: "05-11-2026",
+                Rate: 18.0,
+                Amount: 72.0,
+                Remarks: "Inner zip slider"
+            }
+        ]
+    },
+    {
+        ReqNo: "IRN/APP/9B/2627/2500",
+        ReqType: "Production",
+        Shift: "Shift I",
+        IssueNo: "IS/AAPL9B/2627/088",
+        ReqDate: "02-11-2026",
+        Associate: "Balaji Trims & Fasteners",
+        Supplier: "Balaji Trims & Fasteners",
+        Warehouse: "RAW MATERIAL STORE 9B",
+        StoreName: "RAW MATERIAL STORE 9B",
+        ReceivedBy: "Sunil Sharma",
+        ApprovedBy: "Praveen Sharma",
+        IssuedBy: "Sunil Sharma",
+        Department: "Cutting Dept",
+        Currency: "INR",
+        ExchangeRate: 1.00,
+        Remark: "Main batch cutting requisition leather crust",
+        InternalMemo: "Fast track cutting line 2",
+        Transporter: "Self",
+        ReqBy: "Sunil Sharma",
+        EntryOn: "02-11-2026 09:30AM",
         Status: "Approved",
-        EntryBy: "Nikhil Singh",
+        EntryBy: "Sunil Sharma",
         UpdatedBy: "Admin",
         TotalQty: 185.5,
         RowCount: 2,
         details: [
-            { ItemCode: "LTH-1093", ItemName: "COW CULATTAS SINGLE LEATHER", Color: "BLACK", Quantity: 120.5, UOM: "SQFT", RequiredDate: "15-10-2026", Remarks: "Upper cutting" },
-            { ItemCode: "LTH-1112", ItemName: "COW ECO VEG SIDE CRUST LEATHER", Color: "TAN", Quantity: 65.0, UOM: "SQFT", RequiredDate: "15-10-2026", Remarks: "Counter reinforcement" }
+            {
+                IoNo: "IO/9B/2627/168",
+                ItemCode: "LTH-1093",
+                ItemName: "COW CULATTAS SINGLE LEATHER",
+                Variant: "REGULAR",
+                SizeRange: "Standard",
+                Color: "BLACK",
+                Quantity: 120.5,
+                UOM: "SQFT",
+                RequiredDate: "03-11-2026",
+                Rate: 165.0,
+                Amount: 19882.5,
+                Remarks: "Upper panel cutting"
+            },
+            {
+                IoNo: "IO/9B/2627/168",
+                ItemCode: "LTH-1112",
+                ItemName: "COW ECO VEG SIDE CRUST LEATHER",
+                Variant: "NATURAL GRAIN",
+                SizeRange: "Standard",
+                Color: "TAN",
+                Quantity: 65.0,
+                UOM: "SQFT",
+                RequiredDate: "03-11-2026",
+                Rate: 180.0,
+                Amount: 11700.0,
+                Remarks: "Gusset and counter reinforcement"
+            }
         ]
     },
     {
-        ReqNo: "REQ/AAPL9B/2627/044",
+        ReqNo: "IRN/APP/9B/2627/2499",
+        ReqType: "Production",
+        Shift: "Shift II",
         IssueNo: "IS/AAPL9B/2627/087",
-        ReqDate: "13-10-2026",
-        Associate: "Balaji Trims & Fasteners",
+        ReqDate: "01-11-2026",
+        Associate: "Supreme Leathercraft",
+        Supplier: "Supreme Leathercraft",
         Warehouse: "SEMI FINISH STORE 9B",
-        Remark: "Urgent sampling line fasteners",
-        InternalMemo: "Internal sample dev FY26-27",
-        Department: "Sampling Dept",
-        Transporter: "Self",
-        ReqBy: "Nikhil Singh",
-        EntryOn: "13-10-2026 01:45PM",
+        StoreName: "SEMI FINISH STORE 9B",
+        ReceivedBy: "Pooja Verma",
+        ApprovedBy: "Praveen Sharma",
+        IssuedBy: "Pooja Verma",
+        Department: "Stitching Floor",
+        Currency: "INR",
+        ExchangeRate: 1.00,
+        Remark: "Stitching section fasteners and eyelets",
+        InternalMemo: "Production line shift II allocation",
+        Transporter: "In-House Transfer",
+        ReqBy: "Pooja Verma",
+        EntryOn: "01-11-2026 02:40PM",
         Status: "Issued",
-        EntryBy: "Admin",
-        UpdatedBy: "Admin",
+        EntryBy: "Pooja Verma",
+        UpdatedBy: "Nikhil Singh",
         TotalQty: 450.0,
         RowCount: 1,
         details: [
-            { ItemCode: "HDW-2236", ItemName: "JAM RIVET SINGLE HEAD 7MM", Color: "ANTIQUE BRASS", Quantity: 450.0, UOM: "SET", RequiredDate: "14-10-2026", Remarks: "Riveting section" }
+            {
+                IoNo: "IO/9B/2627/172",
+                ItemCode: "HDW-2236",
+                ItemName: "JAM RIVET SINGLE HEAD 7MM",
+                Variant: "NICKEL FREE",
+                SizeRange: "7mm",
+                Color: "ANTIQUE BRASS",
+                Quantity: 450.0,
+                UOM: "SET",
+                RequiredDate: "02-11-2026",
+                Rate: 2.2,
+                Amount: 990.0,
+                Remarks: "Corner riveting section"
+            }
         ]
     },
     {
-        ReqNo: "REQ/AAPL9B/2627/043",
-        IssueNo: "IS/AAPL9B/2627/086",
-        ReqDate: "12-10-2026",
-        Associate: "Supreme Leathercraft",
-        Warehouse: "SEMI FINISH STORE 18",
-        Remark: "Stitching floor material request",
-        InternalMemo: "Regular order dispatch",
-        Department: "Stitching Floor",
-        Transporter: "In-House Transfer",
-        ReqBy: "Pooja Verma",
-        EntryOn: "12-10-2026 11:20AM",
-        Status: "Completed",
-        EntryBy: "Pooja Verma",
-        UpdatedBy: "Nikhil Singh",
-        TotalQty: 320.0,
-        RowCount: 2,
-        details: [
-            { ItemCode: "SFS-105", ItemName: "Reinforcement Strips 25mm", Color: "WHITE", Quantity: 200.0, UOM: "MTR", RequiredDate: "13-10-2026", Remarks: "Collar reinforcement" },
-            { ItemCode: "SFS-106", ItemName: "Padded Tongue Inserts", Color: "NATURAL", Quantity: 120.0, UOM: "PCS", RequiredDate: "13-10-2026", Remarks: "Assembly line" }
-        ]
-    },
-    {
-        ReqNo: "REQ/AAPL9B/2627/042",
+        ReqNo: "IRN/APP/9B/2627/2498",
+        ReqType: "Sampling",
+        Shift: "Shift I",
         IssueNo: "",
-        ReqDate: "12-10-2026",
+        ReqDate: "31-10-2026",
         Associate: "K-Tex Textiles",
-        Warehouse: "RAW MATERIAL STORE 9B",
-        Remark: "MT-21980 Lining fabric requirement",
-        InternalMemo: "Export batch lining",
-        Department: "Cutting Dept",
-        Transporter: "Blue Dart Logistics",
+        Supplier: "K-Tex Textiles",
+        Warehouse: "STORE 30",
+        StoreName: "STORE 30",
+        ReceivedBy: "Ramesh Kumar",
+        ApprovedBy: "Praveen Sharma",
+        IssuedBy: "Sunil Sharma",
+        Department: "Sampling Dept",
+        Currency: "INR",
+        ExchangeRate: 1.00,
+        Remark: "High density topliner for lining development",
+        InternalMemo: "Proto sample test batch",
+        Transporter: "In-House Transfer",
         ReqBy: "Ramesh Kumar",
-        EntryOn: "12-10-2026 10:10AM",
+        EntryOn: "31-10-2026 11:15AM",
         Status: "Pending",
         EntryBy: "Ramesh Kumar",
         UpdatedBy: "",
         TotalQty: 600.0,
         RowCount: 1,
         details: [
-            { ItemCode: "RNF-1085", ItemName: "HIGH DENSITY TOPLINER 0.4MM", Color: "BLACK", Quantity: 600.0, UOM: "MTR", RequiredDate: "16-10-2026", Remarks: "Lining cutting" }
+            {
+                IoNo: "IO/9B/2627/180",
+                ItemCode: "RNF-1085",
+                ItemName: "HIGH DENSITY TOPLINER 0.4MM",
+                Variant: "ECO RESIN",
+                SizeRange: "0.4mm",
+                Color: "BLACK",
+                Quantity: 600.0,
+                UOM: "MTR",
+                RequiredDate: "02-11-2026",
+                Rate: 85.0,
+                Amount: 51000.0,
+                Remarks: "Lining reinforcement"
+            }
         ]
     },
     {
-        ReqNo: "REQ/AAPL9B/2627/041",
+        ReqNo: "IRN/APP/9B/2627/2497",
+        ReqType: "General",
+        Shift: "Shift I",
         IssueNo: "",
-        ReqDate: "11-10-2026",
+        ReqDate: "30-10-2026",
         Associate: "Classic Threads & Zips",
-        Warehouse: "STORE 30",
-        Remark: "Zipper and core spun thread lot",
-        InternalMemo: "Sampling accessories dev",
-        Department: "Sampling Dept",
+        Supplier: "Classic Threads & Zips",
+        Warehouse: "RAW MATERIAL STORE 9B",
+        StoreName: "RAW MATERIAL STORE 9B",
+        ReceivedBy: "Ramesh Kumar",
+        ApprovedBy: "Praveen Sharma",
+        IssuedBy: "Sunil Sharma",
+        Department: "Finishing Dept",
+        Currency: "INR",
+        ExchangeRate: 1.00,
+        Remark: "Nylon zippers & poly-core sewing threads",
+        InternalMemo: "Finishing & edge stitching lot",
         Transporter: "In-House Transfer",
-        ReqBy: "Sunil Sharma",
-        EntryOn: "11-10-2026 09:30AM",
-        Status: "Draft",
-        EntryBy: "Sunil Sharma",
+        ReqBy: "Ramesh Kumar",
+        EntryOn: "30-10-2026 04:00PM",
+        Status: "Pending",
+        EntryBy: "Ramesh Kumar",
         UpdatedBy: "",
         TotalQty: 150.0,
         RowCount: 2,
         details: [
-            { ItemCode: "TRM-3012", ItemName: "NYLON ZIPPER #5 OPEN END 65CM", Color: "NAVY", Quantity: 100.0, UOM: "PCS", RequiredDate: "15-10-2026", Remarks: "Outer jacket" },
-            { ItemCode: "THD-1020", ItemName: "POLY-CORE SEWING THREAD 40/2", Color: "NAVY", Quantity: 50.0, UOM: "SPOOL", RequiredDate: "15-10-2026", Remarks: "Matching color thread" }
+            {
+                IoNo: "IO/9B/2627/185",
+                ItemCode: "TRM-3012",
+                ItemName: "NYLON ZIPPER #5 OPEN END 65CM",
+                Variant: "WATER REPELLENT",
+                SizeRange: "65cm",
+                Color: "NAVY",
+                Quantity: 100.0,
+                UOM: "PCS",
+                RequiredDate: "01-11-2026",
+                Rate: 24.0,
+                Amount: 2400.0,
+                Remarks: "Outer jacket closure"
+            },
+            {
+                IoNo: "IO/9B/2627/185",
+                ItemCode: "THD-1020",
+                ItemName: "POLY-CORE SEWING THREAD 40/2",
+                Variant: "BONDED",
+                SizeRange: "40/2",
+                Color: "NAVY",
+                Quantity: 50.0,
+                UOM: "SPOOL",
+                RequiredDate: "01-11-2026",
+                Rate: 35.0,
+                Amount: 1750.0,
+                Remarks: "Matching color thread"
+            }
         ]
     }
 ];
 
-// Initialize database with seed records if empty
+// Initialize database with seed records if empty or outdated
 function initializeSeedData() {
     db.get("SELECT COUNT(*) as count FROM ItemRequisitions", (err, row) => {
         if (!err && row && row.count === 0) {
-            console.log("Seeding ItemRequisitions table with initial V-Connect records...");
-            let remaining = SEED_ITEM_REQUISITIONS.length;
-            SEED_ITEM_REQUISITIONS.forEach(req => {
-                db.run(
-                    `INSERT INTO ItemRequisitions (
-                        ReqNo, IssueNo, ReqDate, Associate, Warehouse, Remark, InternalMemo,
-                        Department, Transporter, ReqBy, EntryOn, Status, EntryBy, UpdatedBy,
-                        TotalQty, RowCount
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                    [
-                        req.ReqNo,
-                        req.IssueNo || "",
-                        req.ReqDate,
-                        req.Associate || "",
-                        req.Warehouse || "",
-                        req.Remark || "",
-                        req.InternalMemo || "",
-                        req.Department || "",
-                        req.Transporter || "",
-                        req.ReqBy || "",
-                        req.EntryOn || "",
-                        req.Status || "Pending",
-                        req.EntryBy || "Admin",
-                        req.UpdatedBy || "",
-                        req.TotalQty || 0,
-                        req.RowCount || (req.details ? req.details.length : 1)
-                    ],
-                    function (err) {
-                        if (!err && req.details && req.details.length > 0) {
-                            const reqId = this.lastID;
-                            req.details.forEach(d => {
-                                db.run(
-                                    `INSERT INTO ItemRequisitionDetails (
-                                        RequisitionID, ItemCode, ItemName, Color, Quantity, UOM, RequiredDate, Remarks
-                                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-                                    [
-                                        reqId,
-                                        d.ItemCode || "",
-                                        d.ItemName || "",
-                                        d.Color || "",
-                                        d.Quantity || 0,
-                                        d.UOM || "PCS",
-                                        d.RequiredDate || "",
-                                        d.Remarks || ""
-                                    ]
+            console.log("Seeding ItemRequisitions database with TPCS Fashion sample data...");
+            const insertReq = db.prepare(`
+                INSERT INTO ItemRequisitions (
+                    ReqNo, ReqType, Shift, IssueNo, ReqDate, Associate, Supplier,
+                    Warehouse, StoreName, ReceivedBy, ApprovedBy, IssuedBy,
+                    Department, Currency, ExchangeRate, Remark, InternalMemo,
+                    Transporter, ReqBy, EntryOn, Status, EntryBy, UpdatedBy,
+                    TotalQty, RowCount
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `);
+
+            const insertDetail = db.prepare(`
+                INSERT INTO ItemRequisitionDetails (
+                    RequisitionID, IoNo, ItemCode, ItemName, Variant, SizeRange,
+                    Color, Quantity, UOM, RequiredDate, Rate, Amount, Remarks
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `);
+
+            SEED_ITEM_REQUISITIONS.forEach((req) => {
+                insertReq.run(
+                    req.ReqNo,
+                    req.ReqType,
+                    req.Shift,
+                    req.IssueNo,
+                    req.ReqDate,
+                    req.Associate,
+                    req.Supplier,
+                    req.Warehouse,
+                    req.StoreName,
+                    req.ReceivedBy,
+                    req.ApprovedBy,
+                    req.IssuedBy,
+                    req.Department,
+                    req.Currency,
+                    req.ExchangeRate,
+                    req.Remark,
+                    req.InternalMemo,
+                    req.Transporter,
+                    req.ReqBy,
+                    req.EntryOn,
+                    req.Status,
+                    req.EntryBy,
+                    req.UpdatedBy,
+                    req.TotalQty,
+                    req.RowCount,
+                    function (err2) {
+                        if (!err2 && this.lastID) {
+                            const newId = this.lastID;
+                            req.details.forEach((det) => {
+                                insertDetail.run(
+                                    newId,
+                                    det.IoNo || "",
+                                    det.ItemCode,
+                                    det.ItemName,
+                                    det.Variant || "",
+                                    det.SizeRange || "",
+                                    det.Color,
+                                    det.Quantity,
+                                    det.UOM,
+                                    det.RequiredDate,
+                                    det.Rate || 0,
+                                    det.Amount || 0,
+                                    det.Remarks
                                 );
                             });
-                        }
-                        if (--remaining === 0) {
-                            console.log("✓ Seeded ItemRequisitions successfully.");
                         }
                     }
                 );
             });
+
+            insertReq.finalize();
+            insertDetail.finalize();
         }
     });
 }
 
-// Run after a short delay to ensure tables exist
-setTimeout(initializeSeedData, 1000);
-
-// ======================================================
-// CONTROLLER HANDLERS
-// ======================================================
+// Run seed verification
+setTimeout(initializeSeedData, 800);
 
 // GET /api/item-requisitions
 exports.getAllItemRequisitions = (req, res) => {
-    const { search, associate, status, department, warehouse } = req.query;
+    const { search, associate, supplier, status, department, warehouse, shift } = req.query;
 
-    let query = "SELECT * FROM ItemRequisitions WHERE 1=1";
+    let query = `
+        SELECT 
+            r.*,
+            COALESCE(r.Supplier, r.Associate) as SupplierName,
+            COALESCE(r.StoreName, r.Warehouse) as ActiveStoreName
+        FROM ItemRequisitions r
+        WHERE 1=1
+    `;
     const params = [];
 
-    if (search && search.trim()) {
-        const s = `%${search.trim().toLowerCase()}%`;
-        query += " AND (LOWER(Associate) LIKE ? OR LOWER(ReqNo) LIKE ? OR LOWER(IssueNo) LIKE ? OR LOWER(Remark) LIKE ? OR LOWER(Department) LIKE ? OR LOWER(ReqBy) LIKE ?)";
-        params.push(s, s, s, s, s, s);
-    }
-
-    if (associate && associate !== "All" && associate.trim()) {
-        query += " AND LOWER(Associate) LIKE ?";
-        params.push(`%${associate.trim().toLowerCase()}%`);
+    if (search || supplier || associate) {
+        const s = search || supplier || associate;
+        query += " AND (r.Associate LIKE ? OR r.Supplier LIKE ? OR r.ReqNo LIKE ? OR r.Remark LIKE ? OR r.Department LIKE ?)";
+        params.push(`%${s}%`, `%${s}%`, `%${s}%`, `%${s}%`, `%${s}%`);
     }
 
     if (status && status !== "All") {
-        query += " AND Status = ?";
+        query += " AND r.Status = ?";
         params.push(status);
     }
 
     if (department && department !== "All") {
-        query += " AND Department = ?";
+        query += " AND r.Department = ?";
         params.push(department);
     }
 
     if (warehouse && warehouse !== "All") {
-        query += " AND Warehouse = ?";
-        params.push(warehouse);
+        query += " AND (r.Warehouse = ? OR r.StoreName = ?)";
+        params.push(warehouse, warehouse);
     }
 
-    query += " ORDER BY RequisitionID DESC";
+    if (shift && shift !== "All") {
+        query += " AND r.Shift = ?";
+        params.push(shift);
+    }
+
+    query += " ORDER BY r.RequisitionID DESC";
 
     db.all(query, params, (err, rows) => {
         if (err) {
             console.error("Error fetching ItemRequisitions:", err);
-            return res.json({ success: true, data: SEED_ITEM_REQUISITIONS });
+            return res.status(500).json({ success: false, error: err.message, data: SEED_ITEM_REQUISITIONS });
         }
-        res.json({ success: true, data: rows });
+
+        if (!rows || rows.length === 0) {
+            return res.json({ success: true, count: SEED_ITEM_REQUISITIONS.length, data: SEED_ITEM_REQUISITIONS });
+        }
+
+        // Fetch detail rows for each requisition
+        db.all("SELECT * FROM ItemRequisitionDetails", [], (errDetails, detailRows) => {
+            const detailsMap = {};
+            if (!errDetails && detailRows) {
+                detailRows.forEach((d) => {
+                    if (!detailsMap[d.RequisitionID]) {
+                        detailsMap[d.RequisitionID] = [];
+                    }
+                    detailsMap[d.RequisitionID].push(d);
+                });
+            }
+
+            const combined = rows.map((r) => ({
+                ...r,
+                Supplier: r.Supplier || r.Associate,
+                StoreName: r.StoreName || r.Warehouse || "RAW MATERIAL STORE 9B",
+                Shift: r.Shift || "Shift I",
+                ReqType: r.ReqType || "Production",
+                Currency: r.Currency || "INR",
+                ExchangeRate: r.ExchangeRate || 1.00,
+                IssuedBy: r.IssuedBy || "-",
+                details: detailsMap[r.RequisitionID] || []
+            }));
+
+            res.json({ success: true, count: combined.length, data: combined });
+        });
     });
 };
 
@@ -231,18 +445,27 @@ exports.getAllItemRequisitions = (req, res) => {
 exports.getItemRequisitionById = (req, res) => {
     const { id } = req.params;
 
-    db.get("SELECT * FROM ItemRequisitions WHERE RequisitionID = ? OR ReqNo = ?", [id, id], (err, header) => {
-        if (err || !header) {
-            const fallback = SEED_ITEM_REQUISITIONS.find(r => String(r.ReqNo) === String(id));
-            if (fallback) return res.json({ success: true, data: fallback });
-            return res.status(404).json({ success: false, message: "Requisition not found" });
+    db.get("SELECT * FROM ItemRequisitions WHERE RequisitionID = ?", [id], (err, reqRow) => {
+        if (err) {
+            return res.status(500).json({ success: false, error: err.message });
+        }
+        if (!reqRow) {
+            return res.status(404).json({ success: false, message: "Item Requisition not found" });
         }
 
-        db.all("SELECT * FROM ItemRequisitionDetails WHERE RequisitionID = ?", [header.RequisitionID], (err, details) => {
-            if (err) {
-                return res.json({ success: true, data: { ...header, details: [] } });
+        db.all("SELECT * FROM ItemRequisitionDetails WHERE RequisitionID = ?", [id], (err2, details) => {
+            if (err2) {
+                return res.status(500).json({ success: false, error: err2.message });
             }
-            res.json({ success: true, data: { ...header, details } });
+            res.json({
+                success: true,
+                data: {
+                    ...reqRow,
+                    Supplier: reqRow.Supplier || reqRow.Associate,
+                    StoreName: reqRow.StoreName || reqRow.Warehouse,
+                    details: details || []
+                }
+            });
         });
     });
 };
@@ -250,28 +473,40 @@ exports.getItemRequisitionById = (req, res) => {
 // POST /api/item-requisitions
 exports.createItemRequisition = (req, res) => {
     const data = req.body;
-    const reqNo = data.ReqNo || `REQ/AAPL9B/2627/${Date.now().toString().slice(-4)}`;
     const items = Array.isArray(data.details || data.items) ? (data.details || data.items) : [];
     const totalQty = items.reduce((sum, it) => sum + Number(it.Quantity || 0), 0);
     const rowCount = Math.max(items.length, 1);
 
+    const reqNo = data.ReqNo || `IRN/APP/9B/2627/${Math.floor(2500 + Math.random() * 500)}`;
+
     const query = `
         INSERT INTO ItemRequisitions (
-            ReqNo, IssueNo, ReqDate, Associate, Warehouse, Remark, InternalMemo,
-            Department, Transporter, ReqBy, EntryOn, Status, EntryBy, UpdatedBy,
+            ReqNo, ReqType, Shift, IssueNo, ReqDate, Associate, Supplier,
+            Warehouse, StoreName, ReceivedBy, ApprovedBy, IssuedBy,
+            Department, Currency, ExchangeRate, Remark, InternalMemo,
+            Transporter, ReqBy, EntryOn, Status, EntryBy, UpdatedBy,
             TotalQty, RowCount
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const params = [
         reqNo,
+        data.ReqType || "Production",
+        data.Shift || "Shift I",
         data.IssueNo || "",
-        data.ReqDate || new Date().toLocaleDateString("en-GB").replace(/\//g, "-"),
-        data.Associate || data.SupplierName || "",
-        data.Warehouse || data.Stores || "RAW MATERIAL STORE 9B",
+        data.ReqDate || data.Date || new Date().toLocaleDateString("en-GB").replace(/\//g, "-"),
+        data.Associate || data.Supplier || "",
+        data.Supplier || data.Associate || "",
+        data.Warehouse || data.StoreName || data.Stores || "RAW MATERIAL STORE 9B",
+        data.StoreName || data.Warehouse || data.Stores || "RAW MATERIAL STORE 9B",
+        data.ReceivedBy || "",
+        data.ApprovedBy || "",
+        data.IssuedBy || "-",
+        data.Department || "BAG SAMPLING",
+        data.Currency || "INR",
+        Number(data.ExchangeRate) || 1.00,
         data.Remark || "",
         data.InternalMemo || "",
-        data.Department || "Sampling Dept",
         data.Transporter || "In-House Transfer",
         data.ReqBy || "Admin",
         data.EntryOn || new Date().toLocaleString(),
@@ -288,23 +523,29 @@ exports.createItemRequisition = (req, res) => {
             return res.status(500).json({ success: false, error: err.message });
         }
 
-        const requisitionId = this.lastID;
+        const requisitionId = this.lastID || Math.floor(Math.random() * 10000);
         if (items.length > 0) {
             const detailStmt = db.prepare(`
                 INSERT INTO ItemRequisitionDetails (
-                    RequisitionID, ItemCode, ItemName, Color, Quantity, UOM, RequiredDate, Remarks
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    RequisitionID, IoNo, ItemCode, ItemName, Variant, SizeRange,
+                    Color, Quantity, UOM, RequiredDate, Rate, Amount, Remarks
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `);
 
-            items.forEach(d => {
+            items.forEach((d) => {
                 detailStmt.run(
                     requisitionId,
+                    d.IoNo || "",
                     d.ItemCode || "",
                     d.ItemName || "",
+                    d.Variant || "",
+                    d.SizeRange || "",
                     d.Color || "",
                     Number(d.Quantity) || 0,
                     d.UOM || "PCS",
-                    d.RequiredDate || "",
+                    d.RequiredDate || data.ReqDate || "",
+                    Number(d.Rate) || 0,
+                    Number(d.Amount) || ((Number(d.Quantity) || 0) * (Number(d.Rate) || 0)),
                     d.Remarks || ""
                 );
             });
@@ -314,7 +555,15 @@ exports.createItemRequisition = (req, res) => {
         res.status(201).json({
             success: true,
             message: "Item Requisition Note created successfully",
-            data: { RequisitionID: requisitionId, ReqNo: reqNo, ...data, TotalQty: totalQty, RowCount: rowCount }
+            data: {
+                RequisitionID: requisitionId,
+                ReqNo: reqNo,
+                ...data,
+                Supplier: data.Supplier || data.Associate,
+                StoreName: data.StoreName || data.Stores || "RAW MATERIAL STORE 9B",
+                TotalQty: totalQty,
+                RowCount: rowCount
+            }
         });
     });
 };
@@ -329,22 +578,33 @@ exports.updateItemRequisition = (req, res) => {
 
     const query = `
         UPDATE ItemRequisitions SET
-            IssueNo = ?, ReqDate = ?, Associate = ?, Warehouse = ?, Remark = ?,
-            InternalMemo = ?, Department = ?, Transporter = ?, ReqBy = ?, Status = ?,
+            ReqType = ?, Shift = ?, IssueNo = ?, ReqDate = ?, Associate = ?,
+            Supplier = ?, Warehouse = ?, StoreName = ?, ReceivedBy = ?, ApprovedBy = ?,
+            IssuedBy = ?, Department = ?, Currency = ?, ExchangeRate = ?,
+            Remark = ?, InternalMemo = ?, Transporter = ?, ReqBy = ?, Status = ?,
             UpdatedBy = ?, TotalQty = ?, RowCount = ?
         WHERE RequisitionID = ?
     `;
 
     const params = [
+        data.ReqType || "Production",
+        data.Shift || "Shift I",
         data.IssueNo || "",
-        data.ReqDate,
-        data.Associate,
-        data.Warehouse,
+        data.ReqDate || data.Date,
+        data.Associate || data.Supplier,
+        data.Supplier || data.Associate,
+        data.Warehouse || data.StoreName || data.Stores,
+        data.StoreName || data.Warehouse || data.Stores,
+        data.ReceivedBy || "",
+        data.ApprovedBy || "",
+        data.IssuedBy || "-",
+        data.Department,
+        data.Currency || "INR",
+        Number(data.ExchangeRate) || 1.00,
         data.Remark,
         data.InternalMemo,
-        data.Department,
-        data.Transporter,
-        data.ReqBy,
+        data.Transporter || "In-House Transfer",
+        data.ReqBy || "Admin",
         data.Status || "Pending",
         data.UpdatedBy || "Admin",
         totalQty,
@@ -362,19 +622,25 @@ exports.updateItemRequisition = (req, res) => {
             db.run("DELETE FROM ItemRequisitionDetails WHERE RequisitionID = ?", [id], () => {
                 const detailStmt = db.prepare(`
                     INSERT INTO ItemRequisitionDetails (
-                        RequisitionID, ItemCode, ItemName, Color, Quantity, UOM, RequiredDate, Remarks
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                        RequisitionID, IoNo, ItemCode, ItemName, Variant, SizeRange,
+                        Color, Quantity, UOM, RequiredDate, Rate, Amount, Remarks
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 `);
 
-                items.forEach(d => {
+                items.forEach((d) => {
                     detailStmt.run(
                         id,
+                        d.IoNo || "",
                         d.ItemCode || "",
                         d.ItemName || "",
+                        d.Variant || "",
+                        d.SizeRange || "",
                         d.Color || "",
                         Number(d.Quantity) || 0,
                         d.UOM || "PCS",
                         d.RequiredDate || "",
+                        Number(d.Rate) || 0,
+                        Number(d.Amount) || ((Number(d.Quantity) || 0) * (Number(d.Rate) || 0)),
                         d.Remarks || ""
                     );
                 });

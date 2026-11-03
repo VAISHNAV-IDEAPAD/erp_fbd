@@ -1,6 +1,6 @@
 /* ==========================================================================
-   V-CONNECT INC. - ITEM REQUISITION NOTE STYLES
-   Exact Replica of JenixCloud / V-CONNECT INC. Item Requisition Note Interface
+   TPCS FASHION / JENIXCLOUD ERP - ITEM REQUISITION NOTE STYLES
+   Exact Replica of JenixCloud Item Requisition Note (List & Create/Edit Form)
    ========================================================================== */
 
 .item-requisition-page {
@@ -13,45 +13,38 @@
 
 /* Page Header Title */
 .ir-page-title {
-    font-size: 22px;
+    font-size: 21px;
     font-weight: 600;
-    color: #1a5695;
-    margin-bottom: 14px;
+    color: #1b6ca8;
+    margin-bottom: 12px;
     letter-spacing: -0.2px;
 }
 
 /* --------------------------------------------------------------------------
-   TOP CRITERIA ROW (Associate Search, Status Dropdown & New Button)
+   LIST VIEW: TOP ROW (Supplier Search & + New Requisition Note Button)
    -------------------------------------------------------------------------- */
-.ir-top-row {
+.ir-list-top-row {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
     gap: 16px;
     flex-wrap: wrap;
 }
 
-.ir-criteria-group {
-    display: flex;
-    align-items: flex-end;
-    gap: 18px;
-    flex-wrap: wrap;
-}
-
-.ir-field-item {
+.ir-supplier-group {
     display: flex;
     flex-direction: column;
 }
 
 .ir-field-label {
-    font-size: 12.5px;
-    font-weight: 500;
-    color: #475569;
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
     margin-bottom: 4px;
 }
 
-.ir-search-input {
+.ir-supplier-input {
     height: 32px;
     width: 250px;
     padding: 4px 10px;
@@ -64,135 +57,172 @@
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-.ir-search-input:focus {
-    border-color: #2172ba;
-    box-shadow: 0 0 0 2px rgba(33, 114, 186, 0.2);
+.ir-supplier-input:focus {
+    border-color: #1b6ca8;
+    box-shadow: 0 0 0 2px rgba(27, 108, 168, 0.15);
 }
 
-.ir-search-input::placeholder {
+.ir-supplier-input::placeholder {
     color: #94a3b8;
     font-size: 12px;
 }
 
-.ir-status-select {
-    height: 32px;
-    min-width: 140px;
-    padding: 4px 10px;
-    font-size: 12.5px;
-    border: 1px solid #cbd5e1;
-    border-radius: 3px;
-    background: #ffffff;
-    color: #1e293b;
-    outline: none;
-    cursor: pointer;
-    transition: border-color 0.15s ease-in-out;
-}
-
-.ir-status-select:focus {
-    border-color: #2172ba;
-}
-
-.ir-btn-new {
-    background-color: #35aa47;
-    border: 1px solid #2e943e;
+.ir-btn-new-requisition {
+    background-color: #28a745;
+    border: 1px solid #23923d;
     color: #ffffff;
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 600;
-    padding: 6px 16px;
-    border-radius: 3px;
-    cursor: pointer;
+    padding: 6px 14px;
+    border-radius: 4px;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out;
 }
 
-.ir-btn-new:hover {
-    background-color: #2e943e;
-    color: #ffffff;
+.ir-btn-new-requisition:hover {
+    background-color: #218838;
 }
 
 /* --------------------------------------------------------------------------
-   TOOLBAR ROW
+   LIST VIEW: TOOLBAR ROW (Icons + Filter + Pagination + Bulk Action)
    -------------------------------------------------------------------------- */
 .ir-toolbar-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
-    padding: 2px 0;
+    margin-bottom: 12px;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
-.ir-toolbar-actions {
+.ir-toolbar-left {
     display: flex;
     align-items: center;
     gap: 6px;
 }
 
 .ir-tool-btn {
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background-color: #ffffff;
+    background: #ffffff;
     border: 1px solid #cbd5e1;
     border-radius: 3px;
-    color: #475569;
+    color: #1b6ca8;
+    font-size: 12px;
     cursor: pointer;
-    font-size: 12.5px;
-    transition: all 0.15s ease;
+    transition: all 0.15s ease-in-out;
 }
 
 .ir-tool-btn:hover {
-    background-color: #f1f5f9;
-    color: #2172ba;
+    background: #f1f5f9;
     border-color: #94a3b8;
 }
 
-.ir-tool-btn-filter {
-    width: auto;
+.ir-filter-toggle-btn {
+    height: 32px;
     padding: 0 10px;
-    gap: 5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    color: #1b6ca8;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
 }
 
-.ir-tool-btn-filter.active {
-    background-color: #f1f5f9;
-    color: #2172ba;
-    border-color: #2172ba;
+.ir-filter-toggle-btn.active,
+.ir-filter-toggle-btn:hover {
+    background: #f1f5f9;
+    border-color: #1b6ca8;
 }
 
-.ir-page-badge {
+.ir-toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ir-pagination-group {
+    display: flex;
+    align-items: center;
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid #cbd5e1;
+}
+
+.ir-page-pill {
+    min-width: 28px;
+    height: 28px;
+    padding: 0 6px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 24px;
-    height: 24px;
-    padding: 0 6px;
-    background: #e2e8f0;
-    color: #334155;
-    border-radius: 3px;
+    background: #ffffff;
+    border: none;
+    border-right: 1px solid #cbd5e1;
+    color: #1b6ca8;
     font-size: 12px;
     font-weight: 600;
+    cursor: pointer;
+    transition: background 0.12s;
+}
+
+.ir-page-pill:last-child {
+    border-right: none;
+}
+
+.ir-page-pill:hover {
+    background: #f1f5f9;
+}
+
+.ir-page-pill.active {
+    background: #1b6ca8;
+    color: #ffffff;
+    cursor: default;
+}
+
+.ir-bulk-dropdown-btn {
+    height: 28px;
+    padding: 0 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    color: #1b6ca8;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.ir-bulk-dropdown-btn:hover {
+    background: #f1f5f9;
 }
 
 /* --------------------------------------------------------------------------
-   EXPANDABLE FILTER DRAWER
+   FILTER DRAWER PANEL
    -------------------------------------------------------------------------- */
-.ir-filter-card {
-    background-color: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 4px;
-    padding: 12px 16px;
-    margin-bottom: 12px;
+.ir-filter-drawer {
     display: flex;
     align-items: flex-end;
-    gap: 16px;
+    gap: 12px;
+    padding: 12px 14px;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    margin-bottom: 14px;
     flex-wrap: wrap;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
 }
 
 .ir-filter-item {
@@ -200,307 +230,192 @@
     flex-direction: column;
 }
 
-.ir-filter-label {
-    font-size: 11.5px;
-    font-weight: 600;
-    color: #64748b;
-    margin-bottom: 4px;
-}
-
 .ir-filter-select,
-.ir-filter-input {
-    height: 28px;
+.ir-filter-text {
+    height: 30px;
     min-width: 150px;
-    padding: 2px 8px;
+    padding: 3px 8px;
     font-size: 12px;
     border: 1px solid #cbd5e1;
     border-radius: 3px;
-    background: #ffffff;
+    background: #fff;
     color: #1e293b;
     outline: none;
 }
 
-.ir-filter-btn-reset {
-    height: 28px;
+.ir-filter-reset-btn {
+    height: 30px;
     padding: 0 12px;
     font-size: 12px;
-    border: 1px solid #cbd5e1;
-    background: #ffffff;
-    color: #64748b;
+    font-weight: 600;
+    color: #475569;
+    background: #e2e8f0;
+    border: none;
     border-radius: 3px;
     cursor: pointer;
-    transition: all 0.15s ease;
 }
 
-.ir-filter-btn-reset:hover {
-    background: #f1f5f9;
-    color: #0f172a;
+.ir-filter-reset-btn:hover {
+    background: #cbd5e1;
 }
 
 /* --------------------------------------------------------------------------
-   MAIN DATA TABLE
+   LIST VIEW: DATA TABLE (13 Columns exact match to Screenshot 1)
    -------------------------------------------------------------------------- */
 .ir-table-container {
     width: 100%;
     overflow-x: auto;
     border: 1px solid #cbd5e1;
-    background-color: #ffffff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+    background: #ffffff;
 }
 
-.ir-table {
+.ir-data-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 12px;
-    color: #1e293b;
-    white-space: nowrap;
+    min-width: 1100px;
 }
 
-.ir-table thead tr {
-    background-color: #2172ba;
+.ir-data-table thead th {
+    background-color: #1e70ba;
     color: #ffffff;
-}
-
-.ir-table th {
-    padding: 7px 10px;
     font-weight: 600;
-    font-size: 12px;
+    padding: 8px 10px;
+    border: 1px solid #175d9e;
     text-align: left;
-    border-right: 1px solid rgba(255, 255, 255, 0.25);
-    border-bottom: 1px solid #cbd5e1;
+    white-space: nowrap;
     user-select: none;
 }
 
-.ir-table th:last-child {
-    border-right: none;
-}
-
-.ir-table th.th-center,
-.ir-table td.td-center {
+.ir-data-table thead th.th-center {
     text-align: center;
 }
 
-.ir-table th.th-right,
-.ir-table td.td-right {
+.ir-data-table thead th.th-right {
     text-align: right;
 }
 
-.ir-table tbody tr {
+.ir-data-table tbody tr {
     border-bottom: 1px solid #e2e8f0;
-    transition: background-color 0.1s ease;
+    transition: background-color 0.12s ease-in-out;
+    cursor: pointer;
 }
 
-.ir-table tbody tr:hover {
-    background-color: #f1f5f9;
+.ir-data-table tbody tr:hover {
+    background-color: #f1f8ff;
 }
 
-.ir-table tbody tr.row-selected {
-    background-color: #e0f2fe !important;
+.ir-data-table tbody tr.row-selected {
+    background-color: #e0f2fe;
 }
 
-.ir-table tbody tr.empty-grid-row {
-    height: 28px;
+.ir-data-table tbody tr.empty-row {
+    height: 34px;
+    cursor: default;
+    background-color: #ffffff;
 }
 
-.ir-table tbody tr.empty-grid-row:hover {
-    background-color: transparent;
+.ir-data-table tbody tr.empty-row:hover {
+    background-color: #ffffff;
 }
 
-.ir-table td {
+.ir-data-table tbody td {
     padding: 6px 10px;
-    border-right: 1px solid #e2e8f0;
-    color: #334155;
+    border: 1px solid #e2e8f0;
+    color: #1e293b;
     vertical-align: middle;
+    white-space: nowrap;
 }
 
-.ir-table td:last-child {
-    border-right: none;
+.ir-data-table tbody td.td-center {
+    text-align: center;
 }
 
-/* Action Dropdown inside table */
+.ir-data-table tbody td.td-right {
+    text-align: right;
+}
+
+/* Action Dropdown Button in Cell */
 .ir-action-cell {
     position: relative;
     text-align: center;
-    width: 80px;
+    width: 75px;
 }
 
-.ir-action-btn {
-    background-color: #2172ba;
-    color: #ffffff;
-    border: none;
-    border-radius: 3px;
-    padding: 3px 8px;
-    font-size: 11px;
-    cursor: pointer;
+.ir-action-select-btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 4px;
+    height: 24px;
+    padding: 0 8px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    font-size: 11px;
     font-weight: 500;
-    transition: background-color 0.15s ease;
+    color: #334155;
+    cursor: pointer;
+    transition: background 0.12s;
 }
 
-.ir-action-btn:hover {
-    background-color: #1a5695;
+.ir-action-select-btn:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
 }
 
-.ir-action-menu {
+.ir-action-popover {
     position: absolute;
-    left: 10px;
-    top: 26px;
+    top: 100%;
+    left: 8px;
+    margin-top: 2px;
     background: #ffffff;
     border: 1px solid #cbd5e1;
     border-radius: 4px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     z-index: 1050;
-    min-width: 130px;
-    padding: 4px 0;
+    min-width: 110px;
     text-align: left;
+    overflow: hidden;
 }
 
-.ir-action-menu-item {
-    padding: 6px 12px;
-    font-size: 12px;
-    color: #334155;
+.ir-action-item {
     display: flex;
     align-items: center;
     gap: 8px;
+    padding: 6px 12px;
+    font-size: 11.5px;
+    color: #334155;
     cursor: pointer;
-    transition: background-color 0.1s ease;
+    transition: background 0.12s;
 }
 
-.ir-action-menu-item:hover {
-    background-color: #f1f5f9;
-    color: #2172ba;
+.ir-action-item:hover {
+    background: #f1f5f9;
 }
 
-.ir-action-menu-item.danger:hover {
-    background-color: #fee2e2;
+.ir-action-item.danger {
     color: #dc2626;
 }
 
-/* Status Pill */
-.ir-status-pill {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 600;
+.ir-action-item.danger:hover {
+    background: #fee2e2;
 }
 
-.ir-status-pill.approved {
-    background-color: #dcfce7;
-    color: #15803d;
-}
-
-.ir-status-pill.issued {
-    background-color: #e0f2fe;
-    color: #0369a1;
-}
-
-.ir-status-pill.completed {
-    background-color: #d1fae5;
-    color: #065f46;
-}
-
-.ir-status-pill.pending {
-    background-color: #fef3c7;
-    color: #b45309;
-}
-
-.ir-status-pill.draft {
-    background-color: #f1f5f9;
-    color: #475569;
-}
-
-/* --------------------------------------------------------------------------
-   MODALS (New, Edit, View Details)
-   -------------------------------------------------------------------------- */
-.ir-modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(15, 23, 42, 0.55);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-    padding: 16px;
-    backdrop-filter: blur(1px);
-}
-
-.ir-modal-container {
+/* ==========================================================================
+   CREATE / EDIT FORM VIEW (Screenshots 2 & 3)
+   ========================================================================== */
+.ir-form-container {
     background: #ffffff;
-    border-radius: 5px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    width: 100%;
-    max-width: 980px;
-    max-height: 90vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    animation: irModalFadeIn 0.2s ease-out;
 }
 
-@keyframes irModalFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-8px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.ir-modal-header {
-    background-color: #2172ba;
-    color: #ffffff;
-    padding: 12px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.ir-modal-header h3 {
-    margin: 0;
-    font-size: 16px;
-    font-weight: 600;
-    color: #ffffff;
-}
-
-.ir-modal-close-btn {
-    background: none;
-    border: none;
-    color: #ffffff;
-    font-size: 16px;
-    cursor: pointer;
-    opacity: 0.8;
-    transition: opacity 0.15s;
-}
-
-.ir-modal-close-btn:hover {
-    opacity: 1;
-}
-
-.ir-modal-body {
-    padding: 18px 20px;
-    overflow-y: auto;
-    flex: 1;
-}
-
-.ir-form-grid {
+.ir-form-header-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px 18px;
-    margin-bottom: 18px;
-}
-
-@media (max-width: 768px) {
-    .ir-form-grid {
-        grid-template-columns: 1fr;
-    }
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px 20px;
+    margin-bottom: 14px;
+    align-items: flex-start;
 }
 
 .ir-form-group {
@@ -508,20 +423,20 @@
     flex-direction: column;
 }
 
-.ir-form-group.full-width {
-    grid-column: 1 / -1;
-}
-
 .ir-form-label {
     font-size: 12px;
     font-weight: 600;
-    color: #475569;
+    color: #334155;
     margin-bottom: 4px;
 }
 
-.ir-form-input,
+.ir-required {
+    color: #ef4444;
+    margin-left: 2px;
+}
+
 .ir-form-select,
-.ir-form-textarea {
+.ir-form-input {
     height: 32px;
     padding: 4px 10px;
     font-size: 12.5px;
@@ -530,107 +445,391 @@
     background: #ffffff;
     color: #1e293b;
     outline: none;
-    transition: border-color 0.15s ease;
-}
-
-.ir-form-textarea {
-    height: 60px;
-    resize: vertical;
-}
-
-.ir-form-input:focus,
-.ir-form-select:focus,
-.ir-form-textarea:focus {
-    border-color: #2172ba;
-    box-shadow: 0 0 0 2px rgba(33, 114, 186, 0.15);
-}
-
-.ir-form-input:disabled {
-    background-color: #f1f5f9;
-    color: #64748b;
-}
-
-/* Modal Items Table */
-.ir-modal-items-title {
-    font-size: 13.5px;
-    font-weight: 600;
-    color: #1e293b;
-    margin: 16px 0 8px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.ir-modal-items-table {
     width: 100%;
-    border-collapse: collapse;
+    transition: border-color 0.15s ease-in-out;
+}
+
+.ir-form-select:focus,
+.ir-form-input:focus {
+    border-color: #1b6ca8;
+    box-shadow: 0 0 0 2px rgba(27, 108, 168, 0.15);
+}
+
+/* Composite Req No Field */
+.ir-composite-reqno {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.ir-reqno-prefix-select {
+    height: 32px;
+    border: 1px solid #cbd5e1;
+    border-right: none;
+    border-radius: 3px 0 0 3px;
+    background: #ffffff;
     font-size: 12px;
+    padding: 0 6px;
+    color: #1e293b;
+    outline: none;
+    flex: 1.5;
+}
+
+.ir-reqno-number-input {
+    height: 32px;
+    width: 65px;
+    border: 1px solid #cbd5e1;
+    border-right: none;
+    border-radius: 0;
+    text-align: center;
+    font-size: 12.5px;
+    font-weight: 600;
+    outline: none;
+    background: #ffffff;
+}
+
+.ir-reqno-gear-btn {
+    height: 32px;
+    width: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 0 3px 3px 0;
+    color: #1b6ca8;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.ir-reqno-gear-btn:hover {
+    background: #e2e8f0;
+}
+
+/* Date input with calendar icon button */
+.ir-date-group {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.ir-date-input {
+    height: 32px;
+    border: 1px solid #cbd5e1;
+    border-right: none;
+    border-radius: 3px 0 0 3px;
+    padding: 4px 10px;
+    font-size: 12.5px;
+    outline: none;
+    flex: 1;
+    background: #ffffff;
+}
+
+.ir-date-cal-btn {
+    height: 32px;
+    width: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 0 3px 3px 0;
+    color: #475569;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   TAB BAR & GENERAL SECTION CARD
+   -------------------------------------------------------------------------- */
+.ir-tab-nav {
+    display: flex;
+    border-bottom: 2px solid #1e70ba;
+    margin-top: 14px;
+    margin-bottom: 0;
+}
+
+.ir-tab-pill {
+    padding: 6px 20px;
+    background: #1e70ba;
+    color: #ffffff;
+    font-size: 12.5px;
+    font-weight: 600;
+    border: none;
+    border-radius: 3px 3px 0 0;
+    cursor: pointer;
+}
+
+.ir-general-card {
+    border: 1px solid #cbd5e1;
+    border-top: none;
+    background: #ffffff;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.ir-general-row-1 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
     margin-bottom: 12px;
 }
 
-.ir-modal-items-table th {
-    background: #f1f5f9;
-    color: #475569;
-    padding: 6px 8px;
-    text-align: left;
-    border: 1px solid #cbd5e1;
-    font-weight: 600;
+.ir-general-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 16px;
 }
 
-.ir-modal-items-table td {
-    padding: 4px 6px;
-    border: 1px solid #cbd5e1;
-}
-
-.ir-modal-items-table input,
-.ir-modal-items-table select {
+/* --------------------------------------------------------------------------
+   LINE ITEMS TABLE (Screenshot 2 & 3)
+   -------------------------------------------------------------------------- */
+.ir-line-items-container {
     width: 100%;
-    height: 26px;
-    padding: 2px 6px;
-    font-size: 12px;
+    overflow-x: auto;
     border: 1px solid #cbd5e1;
-    border-radius: 2px;
+    border-radius: 3px;
+    margin-bottom: 10px;
+}
+
+.ir-line-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    min-width: 1200px;
+}
+
+.ir-line-table thead th {
+    background-color: #1e70ba;
+    color: #ffffff;
+    font-weight: 600;
+    padding: 8px 10px;
+    border: 1px solid #175d9e;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.ir-line-table tbody td {
+    padding: 4px 6px;
+    border: 1px solid #e2e8f0;
+    vertical-align: middle;
+}
+
+/* IO No Input with list button */
+.ir-io-input-group {
+    display: flex;
+    align-items: center;
+    min-width: 160px;
+}
+
+.ir-io-input {
+    height: 28px;
+    flex: 1;
+    border: 1px solid #cbd5e1;
+    border-right: none;
+    border-radius: 3px 0 0 3px;
+    padding: 2px 8px;
+    font-size: 12px;
     outline: none;
 }
 
-.ir-modal-footer {
-    background: #f8fafc;
-    border-top: 1px solid #e2e8f0;
-    padding: 12px 20px;
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
+.ir-io-lookup-btn {
+    height: 28px;
+    width: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 0 3px 3px 0;
+    color: #1b6ca8;
+    cursor: pointer;
+    font-size: 11px;
 }
 
-.ir-btn-save {
-    background-color: #35aa47;
-    color: #ffffff;
-    border: 1px solid #2e943e;
-    padding: 6px 18px;
-    font-size: 12.5px;
-    font-weight: 600;
+.ir-io-lookup-btn:hover {
+    background: #e2e8f0;
+}
+
+.ir-cell-input {
+    width: 100%;
+    height: 28px;
+    border: 1px solid #cbd5e1;
     border-radius: 3px;
+    padding: 2px 8px;
+    font-size: 12px;
+    outline: none;
+    background: #ffffff;
+}
+
+.ir-cell-input:focus {
+    border-color: #1b6ca8;
+}
+
+.ir-cell-delete-btn {
+    background: transparent;
+    border: none;
+    color: #ef4444;
     cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.ir-cell-delete-btn:hover {
+    background: #fee2e2;
+}
+
+/* + Add Another Line Link */
+.ir-add-line-btn {
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    color: #1b6ca8;
+    font-size: 12.5px;
+    font-weight: 600;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 0;
+    margin-bottom: 16px;
+}
+
+.ir-add-line-btn:hover {
+    text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   TEXTAREAS ROW (Remark & Memo for internal use)
+   -------------------------------------------------------------------------- */
+.ir-textareas-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.ir-textarea-field {
+    width: 100%;
+    height: 90px;
+    border: 1px solid #cbd5e1;
+    border-radius: 3px;
+    padding: 8px 10px;
+    font-size: 12.5px;
+    color: #1e293b;
+    resize: vertical;
+    outline: none;
+    background: #ffffff;
+}
+
+.ir-textarea-field:focus {
+    border-color: #1b6ca8;
+    box-shadow: 0 0 0 2px rgba(27, 108, 168, 0.15);
+}
+
+.ir-textarea-field::placeholder {
+    color: #94a3b8;
+}
+
+/* --------------------------------------------------------------------------
+   BOTTOM ACTION BAR (Screenshot 3)
+   -------------------------------------------------------------------------- */
+.ir-bottom-actions-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 10px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.ir-btn-attachments {
+    background-color: #1e70ba;
+    border: 1px solid #175d9e;
+    color: #ffffff;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.ir-btn-attachments:hover {
+    background-color: #175d9e;
+}
+
+.ir-bottom-right-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ir-btn-save {
+    background-color: #28a745;
+    border: 1px solid #23923d;
+    color: #ffffff;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
 }
 
 .ir-btn-save:hover {
-    background-color: #2e943e;
+    background-color: #218838;
 }
 
-.ir-btn-cancel {
-    background-color: #ffffff;
-    color: #475569;
-    border: 1px solid #cbd5e1;
-    padding: 6px 14px;
+.ir-btn-action-dropdown {
+    background-color: #28a745;
+    border: 1px solid #23923d;
+    color: #ffffff;
     font-size: 12.5px;
-    font-weight: 500;
-    border-radius: 3px;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     cursor: pointer;
 }
 
-.ir-btn-cancel:hover {
-    background-color: #f1f5f9;
+.ir-btn-action-dropdown:hover {
+    background-color: #218838;
+}
+
+.ir-btn-view-return {
+    background-color: #1e70ba;
+    border: 1px solid #175d9e;
+    color: #ffffff;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.ir-btn-view-return:hover {
+    background-color: #175d9e;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+    .ir-general-row-1,
+    .ir-general-row-2,
+    .ir-textareas-container {
+        grid-template-columns: 1fr;
+    }
 }
